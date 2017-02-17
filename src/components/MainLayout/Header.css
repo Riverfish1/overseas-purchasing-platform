@@ -1,0 +1,33 @@
+.header {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 100px 0 50px;
+}
+
+.header .mr10 {
+  margin-right: 10px;
+}
+
+.header .logo {
+  float: left;
+  display: inline-block;
+  width: 20%;
+  height: 50px;
+  background: url('../../assets/images/logo.png') no-repeat;
+}
+
+.header .user {
+  float: right;
+}
+
+.footer {
+  width: 100%;
+  height: 50px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: #ccc;
+  text-align: center;
+  line-height: 50px;
+}

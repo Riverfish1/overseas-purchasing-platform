@@ -1,0 +1,9 @@
+.wrapper {
+  min-width: 900px;
+  position: absolute;
+  top: 50px;
+  left: 200px;
+  right: 0;
+  bottom: 50px;
+  overflow: auto;
+}

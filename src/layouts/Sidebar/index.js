@@ -12,8 +12,7 @@ function Sidebar() {
         mode="inline"
         theme="dark"
       >
-        <SubMenu key="permissionMng" title={<span><Icon type="folder" /><span>权限管理</span></span>}>
-        </SubMenu>
+        <SubMenu key="permissionMng" title={<span><Icon type="folder" /><span>权限管理</span></span>} />
         <SubMenu key="product" title={<span><Icon type="folder" /><span>商品</span></span>}>
           <Menu.Item key="productMng"><Link to="/products"><Icon type="appstore" /> 商品管理</Link></Menu.Item>
           <Menu.Item key="skuMng"><Link to="/products"><Icon type="folder" /> SKU管理</Link></Menu.Item>

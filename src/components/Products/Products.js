@@ -4,6 +4,9 @@ import { Link } from 'dva/router';
 import { Table, Pagination, Input, Button, Row, Col, Select, DatePicker, Form, Icon } from 'antd';
 import ProductsModal from './ProductsModal';
 import styles from './Products.less';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -23,7 +26,7 @@ class Products extends Component {
       if (err) {
         return;
       }
-      
+
     });
   }
 
@@ -44,7 +47,7 @@ class Products extends Component {
     const columns = [
       {
         title: '序号', dataIndex: 'order', key: 'order',
-        render(record, index) {
+        render(text, record, index) {
           return index + 1;
         },
       },
@@ -131,9 +134,12 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('category', {
+                  initialValue: '全部',
                   rules: [{ required: true, message: '请输入类目' }],
                 })(
-                  <Select />
+                  <Select>
+                    <Option value="clothes">衣服</Option>
+                  </Select>
                 )}
               </FormItem>
             </Col>
@@ -143,9 +149,12 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {
+                  initialValue: '全部',
                   rules: [{ required: true, message: '请输入品牌' }],
                 })(
-                  <Select />
+                  <Select>
+                    <Option value="uniqlo">优衣库</Option>
+                  </Select>
                 )}
               </FormItem>
             </Col>
@@ -157,6 +166,7 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('category', {
+                  initialValue: moment('2015-01-01', 'YYYY-MM-DD'),
                   rules: [{ required: true, message: '请输入开始销售时间' }],
                 })(
                   <DatePicker />
@@ -169,6 +179,7 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {
+                  initialValue: moment('2015-01-01', 'YYYY-MM-DD'),
                   rules: [{ required: true, message: '请输入结束销售时间' }],
                 })(
                   <DatePicker />
@@ -186,7 +197,7 @@ class Products extends Component {
           </Row>
           <Row className={styles.plus}>
             <Col>
-              <Button onClick={this.showModal.bind(this)}>添加</Button>
+              <Button type="primary" onClick={this.showModal.bind(this)}>添加</Button>
             </Col>
           </Row>
           <Row>
@@ -196,6 +207,7 @@ class Products extends Component {
                 dataSource={dataSource}
                 bordered
                 size="large"
+                rowKey={record => record.id}
               />
             </Col>
           </Row>

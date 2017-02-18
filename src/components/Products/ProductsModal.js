@@ -30,13 +30,18 @@ class ProductsModal extends Component {
 
   }
 
+  handleDelete(id) {
+
+  }
+
   render() {
     let that = this;
     const { form, visible, close } = this.props;
     const { getFieldDecorator } = form;
     const modalProps = {
       visible,
-      width: 800,
+      width: 900,
+      wrapClassName: 'modalStyle',
       title: '添加',
       maskClosable: false,
       closable: true,
@@ -54,54 +59,57 @@ class ProductsModal extends Component {
     const tableProps = {
       columns: [
         {
-          title: '序号', dataIndex: 'order', key: 'order',
-          render(record, index) {
+          title: '序号', dataIndex: 'order', key: 'order', width: '6%',
+          render(text, record, index) {
             return index + 1;
           },
         },
         {
-          title: '尺寸', dataIndex: 'size', key: 'size',
-          render(record, index) {
+          title: '尺寸', dataIndex: 'size', key: 'size', width: '14%',
+          render(text, record, index) {
             return <Input />
           },
         },
         {
-          title: '颜色', dataIndex: 'color', key: 'color',
-          render(record, index) {
+          title: '颜色', dataIndex: 'color', key: 'color', width: '14%',
+          render(text, record, index) {
             return <Input />
           },
         },
         {
-          title: '库存', dataIndex: 'inventory', key: 'inventory',
-          render(record, index) {
+          title: '库存', dataIndex: 'inventory', key: 'inventory', width: '14%',
+          render(text, record, index) {
             return <Input />
           },
         },
         {
-          title: '虚拟库存', dataIndex: 'virtualInventory', key: 'virtualInventory',
-          render(record, index) {
+          title: '虚拟库存', dataIndex: 'virtualInventory', key: 'virtualInventory', width: '14%',
+          render(text, record, index) {
             return <Input />
           },
         },
         {
-          title: 'barcode', dataIndex: 'barcode', key: 'barcode',
-          render(record, index) {
+          title: 'barcode', dataIndex: 'barcode', key: 'barcode', width: '14%',
+          render(text, record, index) {
             return <Input />
           },
         },
         {
-          title: '重量(KG)', dataIndex: 'weight', key: 'weight',
-          render(record, index) {
+          title: '重量(KG)', dataIndex: 'weight', key: 'weight', width: '14%',
+          render(text, record, index) {
             return <Input />
           },
         },
         {
           title: '操作', dataIndex: 'operator', key: 'operator',
-          render(record, index) {
-            return <Input />
+          render(text, record, index) {
+            return <a href="javascript:void(0)" onClick={that.handleDelete.bind(this)}>删除</a>
           },
         },
       ],
+      dataSource: this.props.dataSource,
+      borderde: false,
+      pagination: true,
     };
     return (
       <Modal 
@@ -295,7 +303,7 @@ class ProductsModal extends Component {
                 {getFieldDecorator('weight', {
                   rules: [{ required: true, message: '请输入重量' }],
                 })(
-                  <Input style={{width: 117}} />
+                  <Input style={{width: 133.5}} />
                 )}  KG
               </FormItem>
             </Col>
@@ -378,12 +386,15 @@ class ProductsModal extends Component {
           </Row>
           <Row>
             <Col>
-              <Button onClick={this.addSKU.bind(this)}>新增SKU</Button>
+              <Button type="primary" onClick={this.addSKU.bind(this)}>新增SKU</Button>
             </Col>
           </Row>
-          <Table
-            {...tableProps}
-          />
+          <Row>
+            <Table
+              {...tableProps}
+              rowKey={record => record.id}
+            />
+          </Row>
         </Form>
       </Modal>
     );
@@ -395,7 +406,7 @@ class ProductsModal extends Component {
 function mapStateToProps(state) {
   const { dataSource } = state.products;
   return {
-    loading: state.loading.models.users,
+    loading: state.loading.models.products,
     dataSource,
   };
 }

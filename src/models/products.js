@@ -6,15 +6,15 @@ export default {
     dataSource: [],
   },
   reducers: {
-    saveTable(state, { payload: { data: dataSource } }) {
-      return { ...state, dataSource };
+    saveTable(state, { payload: dataSource }) {
+      return { ...state, ...dataSource };
     },
   },
   effects: {
     * queryProductTable({ payload: { page = 1 } }, { call, put }) {
       const { data } = yield call(queryProductTable, { page });
       yield put({
-        type: 'save',
+        type: 'saveTable',
         payload: {
           dataSource: data.dataSource,
         },
@@ -24,7 +24,7 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        if (pathname === '/products') {
+        if (pathname === '/products/productsList') {
           dispatch({ type: 'queryProductTable', payload: query });
         }
       });

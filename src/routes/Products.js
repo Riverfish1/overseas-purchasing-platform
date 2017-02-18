@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import styles from './Products.css';
+import styles from './Products.less';
 import ProductsComponent from '../components/Products/Products';
 import MainLayout from '../components/MainLayout/MainLayout';
 

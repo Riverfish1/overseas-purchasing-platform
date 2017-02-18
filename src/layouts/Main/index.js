@@ -4,10 +4,11 @@ import styles from './style.less';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
 import Breadcrumb from '../Breadcrumb';
+import { routerCfg } from '../../constants';
 
 function MainLayout({ children, location }) {
   const { pathname } = location;
-  const showLogin = pathname === '/login';
+  const showLogin = pathname === `/${routerCfg.LOGIN}`;
   const wrapperClass = classNames({
     [styles.wrapper]: true,
     [styles.loginWrapper]: showLogin,
@@ -15,9 +16,9 @@ function MainLayout({ children, location }) {
   return (
     <div id="main">
       {!showLogin && <Header location={location} />}
-      {!showLogin && <Sidebar />}
+      {!showLogin && <Sidebar location={location} />}
       <div className={wrapperClass}>
-        {!showLogin && <Breadcrumb />}
+        {!showLogin && <Breadcrumb location={location} />}
         <div className={styles.content}>
           {children}
         </div>

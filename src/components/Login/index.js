@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Button, Row, Form, Input } from 'antd';
+import { routerCfg } from '../../constants';
 import logoImg from '../../assets/images/logo.png';
 import styles from './style.less';
 
@@ -23,7 +24,7 @@ class Login extends Component {
     });
   }
   submitLogin() {
-    window.redirector('/products');
+    window.redirector(`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`);
   }
   render() {
     const { handleOk } = this;

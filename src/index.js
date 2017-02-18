@@ -2,10 +2,14 @@ import dva from 'dva';
 import { hashHistory } from 'dva/router';
 import createLoading from 'dva-loading';
 import { message } from 'antd';
+import utilRegister from './utils';
 import './index.html';
 import './index.css';
 
 const ERROR_MSG_DURATION = 3; // 3 秒
+
+// 注册辅助方法
+utilRegister();
 
 // 1. Initialize
 const app = dva({

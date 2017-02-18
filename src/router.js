@@ -1,7 +1,11 @@
 import React from 'react';
 import { Router } from 'dva/router';
+import { routerCfg } from './constants';
+
+// 视图组件
 import MainLayout from './layouts/Main';
 import Login from './components/Login';
+import Overview from './components/Overview';
 import Products from './components/Products/Products';
 
 const cached = {};
@@ -20,18 +24,26 @@ function RouterConfig({ history, app }) {
     onEnter(nextState, replace, callback) {
       // 请求权限码
       const { location } = nextState;
-      if (location.pathname === '/') replace('/login');
+      if (location.pathname === '/') replace(`/${routerCfg.LOGIN}`);
+      callback();
+    },
+    onChange(prev, nextState, replace, callback) {
+      // 请求权限码
+      const { location } = nextState;
+      if (location.pathname === '/') replace(`/${routerCfg.LOGIN}`);
       callback();
     },
     childRoutes: [
       {
-        path: '/login',
-        name: 'Login',
+        path: `/${routerCfg.LOGIN}`,
         component: Login,
       },
       {
-        path: '/products',
-        name: 'Products',
+        path: `/${routerCfg.OVERVIEW}`,
+        component: Overview,
+      },
+      {
+        path: `/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`,
         getComponent(nextState, cb) {
           require.ensure([], (require) => {
             registerModel(app, require('./models/products'));

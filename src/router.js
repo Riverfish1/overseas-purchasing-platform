@@ -1,7 +1,12 @@
 import React from 'react';
 import { Router } from 'dva/router';
-import IndexPage from './routes/IndexPage';
-import Products from './routes/Products';
+import { routerCfg } from './constants';
+
+// 视图组件
+import MainLayout from './layouts/Main';
+import Login from './components/Login';
+import Overview from './components/Overview';
+import Products from './components/Products/Products';
 
 const cached = {};
 function registerModel(app, model) {
@@ -12,27 +17,42 @@ function registerModel(app, model) {
 }
 
 function RouterConfig({ history, app }) {
-  const routes = [
-    {
-      path: '/',
-      name: 'IndexPage',
-      getComponent(nextState, cb) {
-        require.ensure([], (require) => {
-          cb(null, IndexPage);
-        });
-      },
+  const routes = {
+    path: '/',
+    component: MainLayout,
+    indexRoute: { component: Login },
+    onEnter(nextState, replace, callback) {
+      // 请求权限码
+      const { location } = nextState;
+      if (location.pathname === '/') replace(`/${routerCfg.LOGIN}`);
+      callback();
     },
-    {
-      path: '/products',
-      name: 'ProductsPage',
-      getComponent(nextState, cb) {
-        require.ensure([], (require) => {
-          registerModel(app, require('./models/products'));
-          cb(null, Products);
-        });
-      },
+    onChange(prev, nextState, replace, callback) {
+      // 请求权限码
+      const { location } = nextState;
+      if (location.pathname === '/') replace(`/${routerCfg.LOGIN}`);
+      callback();
     },
-  ];
+    childRoutes: [
+      {
+        path: `/${routerCfg.LOGIN}`,
+        component: Login,
+      },
+      {
+        path: `/${routerCfg.OVERVIEW}`,
+        component: Overview,
+      },
+      {
+        path: `/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`,
+        getComponent(nextState, cb) {
+          require.ensure([], (require) => {
+            registerModel(app, require('./models/products'));
+            cb(null, Products);
+          });
+        },
+      },
+    ],
+  };
 
   return <Router history={history} routes={routes} />;
 }

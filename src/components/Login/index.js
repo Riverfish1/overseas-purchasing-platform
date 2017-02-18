@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Button, Row, Form, Input } from 'antd';
-import { routerCfg } from '../../constants';
+import { connect } from 'dva';
 import logoImg from '../../assets/images/logo.png';
 import styles from './style.less';
 
@@ -23,8 +23,12 @@ class Login extends Component {
       p.submitLogin(values);
     });
   }
-  submitLogin() {
-    window.redirector(`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`);
+  submitLogin(payload) {
+    console.log(payload);
+    this.props.dispatch({
+      type: 'session/login',
+      payload,
+    });
   }
   render() {
     const { handleOk } = this;
@@ -73,4 +77,8 @@ Login.propTypes = {
   form: PropTypes.object,
 };
 
-export default Form.create()(Login);
+function mapStateToProps({ session }) {
+  return { session };
+}
+
+export default connect(mapStateToProps)(Form.create()(Login));

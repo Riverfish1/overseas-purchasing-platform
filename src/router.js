@@ -17,6 +17,7 @@ function registerModel(app, model) {
 }
 
 function RouterConfig({ history, app }) {
+  registerModel(app, require('./models/session'));
   const routes = {
     path: '/',
     component: MainLayout,

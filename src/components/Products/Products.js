@@ -22,11 +22,17 @@ class Products extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
+    this.props.form.validateFieldsAndScroll((err, values) => {
       if (err) {
         return;
       }
-
+      console.log(values);
+      this.props.dispatch({
+        type: 'products/queryItemList',
+        payload: {
+          ...values
+        },
+      });
     });
   }
 
@@ -52,31 +58,31 @@ class Products extends Component {
         },
       },
       {
-        title: '商品名称', dataIndex: 'productsName', key: 'productsName', 
+        title: '商品名称', dataIndex: 'productsName', key: 'productsName',
       },
       {
-        title: '商品代码', dataIndex: 'productsCode', key: 'productsCode', 
+        title: '商品代码', dataIndex: 'productsCode', key: 'productsCode',
       },
       {
-        title: '商品图片', dataIndex: 'productsImage', key: 'productsImage', 
+        title: '商品图片', dataIndex: 'productsImage', key: 'productsImage',
       },
       {
-        title: '商品品牌', dataIndex: 'productsBrand', key: 'productsBrand', 
+        title: '商品品牌', dataIndex: 'productsBrand', key: 'productsBrand',
       },
       {
-        title: '销售类型', dataIndex: 'salesType', key: 'salesType', 
+        title: '销售类型', dataIndex: 'salesType', key: 'salesType',
       },
       {
-        title: '商品类目', dataIndex: 'productsCategory', key: 'productsCategory', 
+        title: '商品类目', dataIndex: 'productsCategory', key: 'productsCategory',
       },
       {
-        title: '采购地点', dataIndex: 'purchaseDest', key: 'purchaseDest', 
+        title: '采购地点', dataIndex: 'purchaseDest', key: 'purchaseDest',
       },
       {
-        title: '开始销售时间', dataIndex: 'startTime', key: 'startTime', 
+        title: '开始销售时间', dataIndex: 'startTime', key: 'startTime',
       },
       {
-        title: '结束销售时间', dataIndex: 'endTime', key: 'endTime', 
+        title: '结束销售时间', dataIndex: 'endTime', key: 'endTime',
       },
     ];
 
@@ -93,36 +99,26 @@ class Products extends Component {
             <Col span={6}>
               <FormItem
                 label="商品编码"
+
                 {...formItemLayout}
               >
-                {getFieldDecorator('productCode', {
+                {getFieldDecorator('itemCode', {
                   rules: [{ required: true, message: '请输入商品编码' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入商品编码"/>
                 )}
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem
                 label="商品名称"
+
                 {...formItemLayout}
               >
-                {getFieldDecorator('productName', {
+                {getFieldDecorator('name', {
                   rules: [{ required: true, message: '请输入商品名称' }],
                 })(
-                  <Input />
-                )}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem
-                label="英文名称"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('enName', {
-                  rules: [{ required: true, message: '请输入英文名称' }],
-                })(
-                  <Input />
+                  <Input placeholder="请输入商品名称"/>
                 )}
               </FormItem>
             </Col>
@@ -133,12 +129,12 @@ class Products extends Component {
                 label="类目"
                 {...formItemLayout}
               >
-                {getFieldDecorator('category', {
-                  initialValue: '全部',
+                {getFieldDecorator('categoryId', {
+                  initialValue: ['全部'],
                   rules: [{ required: true, message: '请输入类目' }],
                 })(
                   <Select>
-                    <Option value="clothes">衣服</Option>
+                    <Option value="1234">衣服</Option>
                   </Select>
                 )}
               </FormItem>
@@ -149,7 +145,7 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {
-                  initialValue: '全部',
+                  initialValue: ['全部'],
                   rules: [{ required: true, message: '请输入品牌' }],
                 })(
                   <Select>
@@ -165,7 +161,7 @@ class Products extends Component {
                 label="开始销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('category', {
+                {getFieldDecorator('startGmt', {
                   initialValue: moment('2015-01-01', 'YYYY-MM-DD'),
                   rules: [{ required: true, message: '请输入开始销售时间' }],
                 })(
@@ -178,7 +174,7 @@ class Products extends Component {
                 label="结束销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('brand', {
+                {getFieldDecorator('endGmt', {
                   initialValue: moment('2015-01-01', 'YYYY-MM-DD'),
                   rules: [{ required: true, message: '请输入结束销售时间' }],
                 })(
@@ -212,13 +208,13 @@ class Products extends Component {
             </Col>
           </Row>
         </Form>
-        <ProductsModal 
+        <ProductsModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
         />
       </div>
     );
-    
+
   }
 
 }

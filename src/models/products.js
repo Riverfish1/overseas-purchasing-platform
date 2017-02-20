@@ -1,4 +1,4 @@
-import { queryProductTable, queryItemList } from '../services/products';
+import { addProducts, queryItemList } from '../services/products';
 
 export default {
   namespace: 'products',
@@ -9,13 +9,13 @@ export default {
     saveTable(state, { payload: dataSource }) {
       return { ...state, ...dataSource };
     },
-    savaItemList(state, { payload: data }) {
-      return { ...state, data };
+    savaItemList(state, { payload: dataSource }) {
+      return { ...state, dataSource };
     },
   },
   effects: {
-    * queryProductTable({ payload: { page = 1 } }, { call, put }) {
-      const { data } = yield call(queryProductTable, { page });
+    * addProducts({ payload }, { call, put }) {
+      const { data } = yield call(addProducts, { payload });
       yield put({
         type: 'saveTable',
         payload: {

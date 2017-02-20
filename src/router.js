@@ -7,6 +7,8 @@ import MainLayout from './layouts/Main';
 import Login from './components/Login';
 import Overview from './components/Overview';
 import Products from './components/Products/Products';
+import Sku from './components/Sku/Sku';
+import Category from './components/Category/Category';
 
 const cached = {};
 function registerModel(app, model) {
@@ -49,6 +51,24 @@ function RouterConfig({ history, app }) {
           require.ensure([], (require) => {
             registerModel(app, require('./models/products'));
             cb(null, Products);
+          });
+        },
+      },
+      {
+        path: `/${routerCfg.PRODUCTS}/${routerCfg.SKU_LIST}`,
+        getComponent(nextState, cb) {
+          require.ensure([], (require) => {
+            registerModel(app, require('./models/products'));
+            cb(null, Sku);
+          });
+        },
+      },
+      {
+        path: `/${routerCfg.PRODUCTS}/${routerCfg.CATE_LIST}`,
+        getComponent(nextState, cb) {
+          require.ensure([], (require) => {
+            registerModel(app, require('./models/products'));
+            cb(null, Category);
           });
         },
       },

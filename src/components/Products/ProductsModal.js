@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Modal, Table, Pagination, Input, Button, Row, Col, Select, DatePicker, Form, Icon } from 'antd';
+import { Modal, Table, Pagination, Input, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon } from 'antd';
 import styles from './Products.less';
 
 const FormItem = Form.Item;
@@ -12,26 +12,42 @@ class ProductsModal extends Component {
   constructor() {
     super();
     this.state = {
-
+      skuList: [], // sku数据
     };
   }
 
-  handleSubmit(e) {
-    console.log(e);
+  handleSubmit() {
+    const { form, dispatch } = this.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }
-      
+      console.log(fieldsValue);
+      const values = {
+        ...fieldsValue,
+        'startDate': fieldsValue['startDate'].format('YYYY-MM-DD'),
+        'endDate': fieldsValue['endDate'].format('YYYY-MM-DD'),
+      };
+      dispatch({
+        type: 'products/addProducts',
+        payload: { ...values },
+      });
     });
   }
 
   addSKU() {
-
+    const { skuList } = this.state;
+    const { form } = this.props;
+    const { setFieldsValue } = form;
+    let id = 1;
+    skuList.push({
+      color: '', scale: '', inventory: '', virtualInventory: '', weight: '', skuCode: '', id,
+    });
   }
 
   handleDelete(id) {
-
+    const { skuList } = this.state;
+    skuList.filter(item => id !== item.id);
   }
 
   render() {
@@ -59,55 +75,55 @@ class ProductsModal extends Component {
     const tableProps = {
       columns: [
         {
-          title: '序号', dataIndex: 'order', key: 'order', width: '6%',
+          title: '序号', key: 'order', width: '6%',
           render(text, record, index) {
             return index + 1;
           },
         },
         {
-          title: '尺寸', dataIndex: 'size', key: 'size', width: '14%',
+          title: '尺寸', dataIndex: 'scale', key: 'scale', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <Input value={text} />
           },
         },
         {
           title: '颜色', dataIndex: 'color', key: 'color', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <Input value={text} />
           },
         },
         {
           title: '库存', dataIndex: 'inventory', key: 'inventory', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <Input value={text} />
           },
         },
         {
           title: '虚拟库存', dataIndex: 'virtualInventory', key: 'virtualInventory', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <Input value={text} />
           },
         },
         {
-          title: 'barcode', dataIndex: 'barcode', key: 'barcode', width: '14%',
+          title: 'barcode', dataIndex: 'skuCode', key: 'skuCode', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <Input value={text} />
           },
         },
         {
           title: '重量(KG)', dataIndex: 'weight', key: 'weight', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <Input value={text} />
           },
         },
         {
-          title: '操作', dataIndex: 'operator', key: 'operator',
+          title: '操作', key: 'operator',
           render(text, record, index) {
-            return <a href="javascript:void(0)" onClick={that.handleDelete.bind(this)}>删除</a>
+            return <a href="javascript:void(0)" onClick={that.handleDelete.bind(this, record.id)}>删除</a>
           },
         },
       ],
-      dataSource: this.props.dataSource,
+      dataSource: this.state.skuList,
       borderde: false,
       pagination: true,
     };
@@ -122,10 +138,10 @@ class ProductsModal extends Component {
                 label="商品编码"
                 {...formItemLayout}
               >
-                {getFieldDecorator('productCode', {
+                {getFieldDecorator('itemCode', {
                   rules: [{ required: true, message: '请输入商品编码' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入商品编码" />
                 )}
               </FormItem>
             </Col>
@@ -134,10 +150,10 @@ class ProductsModal extends Component {
                 label="商品名称"
                 {...formItemLayout}
               >
-                {getFieldDecorator('productName', {
+                {getFieldDecorator('name', {
                   rules: [{ required: true, message: '请输入商品名称' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入商品名称" />
                 )}
               </FormItem>
             </Col>
@@ -149,7 +165,7 @@ class ProductsModal extends Component {
                 {getFieldDecorator('enName', {
                   rules: [{ required: true, message: '请输入英文名称' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入英文名称" />
                 )}
               </FormItem>
             </Col>
@@ -160,10 +176,10 @@ class ProductsModal extends Component {
                 label="商品简称"
                 {...formItemLayout}
               >
-                {getFieldDecorator('productAbbr', {
+                {getFieldDecorator('itemShort', {
                   rules: [{ required: true, message: '请输入商品简称' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入商品简称" />
                 )}
               </FormItem>
             </Col>
@@ -172,10 +188,12 @@ class ProductsModal extends Component {
                 label="所属类目"
                 {...formItemLayout}
               >
-                {getFieldDecorator('category', {
-                  rules: [{ required: true, message: '请输入所属类目' }],
+                {getFieldDecorator('categoryId', {
+                  rules: [{ required: true, message: '请选择所属类目' }],
                 })(
-                  <Select />
+                  <Select placeholder="请选择所属类目" >
+                    <Option value="1">衣服</Option>
+                  </Select>
                 )}
               </FormItem>
             </Col>
@@ -185,9 +203,11 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {
-                  rules: [{ required: true, message: '请输入品牌' }],
+                  rules: [{ required: true, message: '请选择品牌' }],
                 })(
-                  <Select />
+                  <Select placeholder="请选择品牌" >
+                    <Option value="100">优衣库</Option>
+                  </Select>
                 )}
               </FormItem>
             </Col>
@@ -199,9 +219,14 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('country', {
-                  rules: [{ required: true, message: '请输入国家' }],
+                  rules: [{ required: true, message: '请选择国家' }],
                 })(
-                  <Select />
+                  <Select placeholder="请选择国家">
+                    <Option value="1">美国</Option>
+                    <Option value="2">德国</Option>
+                    <Option value="3">日本</Option>
+                    <Option value="4">澳洲</Option>
+                  </Select>
                 )}
               </FormItem>
             </Col>
@@ -211,9 +236,12 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('currency', {
-                  rules: [{ required: true, message: '请输入币种' }],
+                  rules: [{ required: true, message: '请选择币种' }],
                 })(
-                  <Select />
+                  <Select placeholder="请选择币种">
+                    <Option value="1">人民币</Option>
+                    <Option value="2">美元</Option>
+                  </Select>
                 )}
               </FormItem>
             </Col>
@@ -222,10 +250,13 @@ class ProductsModal extends Component {
                 label="是否身份证"
                 {...formItemLayout}
               >
-                {getFieldDecorator('isIdCard', {
-                  rules: [{ required: true, message: '请输入是否身份证' }],
+                {getFieldDecorator('idCard', {
+                  rules: [{ required: true, message: '请选择是否身份证' }],
                 })(
-                  <Select />
+                  <Select placeholder="请选择是否身份证">
+                    <Option value="1">是</Option>
+                    <Option value="2">否</Option>
+                  </Select>
                 )}
               </FormItem>
             </Col>
@@ -236,7 +267,7 @@ class ProductsModal extends Component {
                 label="销售开始时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('startTime', {
+                {getFieldDecorator('startDate', {
                   rules: [{ required: true, message: '请输入商品编码' }],
                 })(
                   <DatePicker />
@@ -248,7 +279,7 @@ class ProductsModal extends Component {
                 label="销售结束时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('endTime', {
+                {getFieldDecorator('endDate', {
                   rules: [{ required: true, message: '请输入商品名称' }],
                 })(
                   <DatePicker />
@@ -260,10 +291,10 @@ class ProductsModal extends Component {
                 label="采购站点"
                 {...formItemLayout}
               >
-                {getFieldDecorator('enName', {
-                  rules: [{ required: true, message: '请输入英文名称' }],
+                {getFieldDecorator('buySite', {
+                  rules: [{ required: true, message: '请输入采购站点' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入采购站点" />
                 )}
               </FormItem>
             </Col>
@@ -277,7 +308,7 @@ class ProductsModal extends Component {
                 {getFieldDecorator('spec', {
                   rules: [{ required: true, message: '请输入规格' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入规格" />
                 )}
               </FormItem>
             </Col>
@@ -289,7 +320,7 @@ class ProductsModal extends Component {
                 {getFieldDecorator('model', {
                   rules: [{ required: true, message: '请输入型号' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入型号" />
                 )}
               </FormItem>
             </Col>
@@ -301,9 +332,10 @@ class ProductsModal extends Component {
                 wrapperCol={{ span: 14 }}
               >
                 {getFieldDecorator('weight', {
+                  initialValue: '0',
                   rules: [{ required: true, message: '请输入重量' }],
                 })(
-                  <Input style={{width: 133.5}} />
+                  <InputNumber step={0.01} min={0} style={{width: 133.5}} placeholder="请输入重量" />
                 )}  KG
               </FormItem>
             </Col>
@@ -317,7 +349,7 @@ class ProductsModal extends Component {
                 {getFieldDecorator('unit', {
                   rules: [{ required: true, message: '请输入单位' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入单位" />
                 )}
               </FormItem>
             </Col>
@@ -329,7 +361,7 @@ class ProductsModal extends Component {
                 {getFieldDecorator('source', {
                   rules: [{ required: true, message: '请输入来源' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入来源" />
                 )}
               </FormItem>
             </Col>
@@ -338,10 +370,10 @@ class ProductsModal extends Component {
                 label="联系人"
                 {...formItemLayout}
               >
-                {getFieldDecorator('linkman', {
+                {getFieldDecorator('contactPerson', {
                   rules: [{ required: true, message: '请输入联系人' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入联系人" />
                 )}
               </FormItem>
             </Col>
@@ -352,10 +384,10 @@ class ProductsModal extends Component {
                 label="产地"
                 {...formItemLayout}
               >
-                {getFieldDecorator('region', {
+                {getFieldDecorator('origin', {
                   rules: [{ required: true, message: '请输入产地' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入产地" />
                 )}
               </FormItem>
             </Col>
@@ -364,10 +396,10 @@ class ProductsModal extends Component {
                 label="联系电话"
                 {...formItemLayout}
               >
-                {getFieldDecorator('contactPhone', {
+                {getFieldDecorator('contactTel', {
                   rules: [{ required: true, message: '请输入联系电话' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入联系电话" />
                 )}
               </FormItem>
             </Col>
@@ -376,10 +408,10 @@ class ProductsModal extends Component {
                 label="备注"
                 {...formItemLayout}
               >
-                {getFieldDecorator('note', {
-                  rules: [{ required: true, message: '请输入备注' }],
+                {getFieldDecorator('remark', {
+                  rules: [{ message: '请输入备注' }],
                 })(
-                  <Input />
+                  <Input placeholder="请输入备注" />
                 )}
               </FormItem>
             </Col>

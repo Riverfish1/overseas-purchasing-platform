@@ -22,10 +22,15 @@ class Products extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
+    this.props.form.validateFieldsAndScroll((err, filedsValue) => {
       if (err) {
         return;
       }
+      const values = {
+        ...filedsValue,
+        'startDateStr': filedsValue['startDateStr'].format('YYYY-MM-DD'),
+        'endDateStr': filedsValue['endDateStr'].format('YYYY-MM-DD'),
+      };
       console.log(values);
       this.props.dispatch({
         type: 'products/queryItemList',
@@ -58,31 +63,31 @@ class Products extends Component {
         },
       },
       {
-        title: '商品名称', dataIndex: 'productsName', key: 'productsName',
+        title: '商品名称', dataIndex: 'name', key: 'name',
       },
       {
-        title: '商品代码', dataIndex: 'productsCode', key: 'productsCode',
+        title: '商品代码', dataIndex: 'itemCode', key: 'itemCode',
       },
       {
         title: '商品图片', dataIndex: 'productsImage', key: 'productsImage',
       },
       {
-        title: '商品品牌', dataIndex: 'productsBrand', key: 'productsBrand',
+        title: '商品品牌', dataIndex: 'brand', key: 'brand',
       },
       {
-        title: '销售类型', dataIndex: 'salesType', key: 'salesType',
+        title: '销售类型', dataIndex: 'saleType', key: 'saleType',
       },
       {
-        title: '商品类目', dataIndex: 'productsCategory', key: 'productsCategory',
+        title: '商品类目', dataIndex: 'categoryId', key: 'categoryId',
       },
       {
         title: '采购地点', dataIndex: 'purchaseDest', key: 'purchaseDest',
       },
       {
-        title: '开始销售时间', dataIndex: 'startTime', key: 'startTime',
+        title: '开始销售时间', dataIndex: 'startDateStr', key: 'startDateStr',
       },
       {
-        title: '结束销售时间', dataIndex: 'endTime', key: 'endTime',
+        title: '结束销售时间', dataIndex: 'endDateStr', key: 'endDateStr',
       },
     ];
 
@@ -130,11 +135,10 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('categoryId', {
-                  initialValue: ['全部'],
-                  rules: [{ required: true, message: '请输入类目' }],
+                  rules: [{ required: true, message: '请选择类目' }],
                 })(
-                  <Select>
-                    <Option value="1234">衣服</Option>
+                  <Select placeholder="请选择类目">
+                    <Option value="103">衣服</Option>
                   </Select>
                 )}
               </FormItem>
@@ -145,10 +149,9 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {
-                  initialValue: ['全部'],
-                  rules: [{ required: true, message: '请输入品牌' }],
+                  rules: [{ required: true, message: '请选择品牌' }],
                 })(
-                  <Select>
+                  <Select placeholder="请选择品牌">
                     <Option value="uniqlo">优衣库</Option>
                   </Select>
                 )}
@@ -161,11 +164,10 @@ class Products extends Component {
                 label="开始销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('startGmt', {
-                  initialValue: moment('2015-01-01', 'YYYY-MM-DD'),
-                  rules: [{ required: true, message: '请输入开始销售时间' }],
+                {getFieldDecorator('startDateStr', {
+                  rules: [{ required: true, message: '请选择开始销售时间' }],
                 })(
-                  <DatePicker />
+                  <DatePicker placeholder="请选择开始销售时间" />
                 )}
               </FormItem>
             </Col>
@@ -174,11 +176,10 @@ class Products extends Component {
                 label="结束销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('endGmt', {
-                  initialValue: moment('2015-01-01', 'YYYY-MM-DD'),
-                  rules: [{ required: true, message: '请输入结束销售时间' }],
+                {getFieldDecorator('endDateStr', {
+                  rules: [{ required: true, message: '请选择结束销售时间' }],
                 })(
-                  <DatePicker />
+                  <DatePicker placeholder="请选择结束销售时间" />
                 )}
               </FormItem>
             </Col>
@@ -193,7 +194,7 @@ class Products extends Component {
           </Row>
           <Row className={styles.plus}>
             <Col>
-              <Button type="primary" onClick={this.showModal.bind(this)}>添加</Button>
+              <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button>
             </Col>
           </Row>
           <Row>

@@ -10,10 +10,16 @@ function toForm(data) {
   return str;
 }
 
-export function queryProductTable({ payload }) {
-  return request(`/mock/products${toForm(payload)}`);
+export function addProducts({ payload }) {
+  return request(`/item/add${toForm(payload)}`, {
+    method: 'POST',
+    credentials: true,
+  });
 }
 
 export function queryItemList({ payload }) {
-  return request(`item/queryItemList${toForm(payload)}`);
+  return request(`item/queryItemList${toForm(payload)}`, {
+    method: 'POST',
+    credentials: true,
+  });
 }

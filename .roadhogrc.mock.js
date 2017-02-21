@@ -1,19 +1,13 @@
 export default {
   // 支持值为 Object 和 Array
   'GET /mock/users': { users: [1,2] },
-  'GET /haierp1/static/agent/index.js': function(req, res) {
+  'GET /haierp1/web/index.js': function(req, res) {
     res.redirect('http:\/\/localhost:8000\/index.js');
-  },
-  'GET /haierp1/static/agent/vendor.min.js': function(req, res) {
-    res.redirect('http:\/\/localhost:8000\/index.js');
-  },
-  'GET /*.js': function(req, res) {
-    res.redirect('http:\/\/localhost:8000\/*.js');
   },
   'GET /sockjs-node/info': function(req, res) {
     res.redirect('http:\/\/localhost:8000\/sockjs-node/info?t=' + new Date().getTime());
   },
-  'POST /item/queryItemList': function(req, res) {
+  'POST /item/queryItemList': {
     "success": true,
     "msg": "",
     "data": [

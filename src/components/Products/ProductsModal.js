@@ -7,6 +7,8 @@ import styles from './Products.less';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+let uuid = 1;
+
 class ProductsModal extends Component {
 
   constructor() {
@@ -28,6 +30,7 @@ class ProductsModal extends Component {
         'startDate': fieldsValue['startDate'].format('YYYY-MM-DD'),
         'endDate': fieldsValue['endDate'].format('YYYY-MM-DD'),
       };
+      console.log(values);
       dispatch({
         type: 'products/addProducts',
         payload: { ...values },
@@ -39,19 +42,21 @@ class ProductsModal extends Component {
     const { skuList } = this.state;
     const { form } = this.props;
     const { setFieldsValue } = form;
-    let id = 1;
-    skuList.push({
-      color: '', scale: '', inventory: '', virtualInventory: '', weight: '', skuCode: '', id,
-    });
+    const obj = {
+      color: '', scale: '', inventory: '', virtualInventory: '', weight: '', skuCode: '', id: uuid, order: uuid,    
+    };
+    uuid += 1;
+    skuList.push(obj);
   }
 
   handleDelete(id) {
     const { skuList } = this.state;
-    skuList.filter(item => id !== item.id);
+    let skuData = skuList.filter(item => id !== item.id);
+    this.setState({ skuList: skuData })
   }
 
   render() {
-    let that = this;
+    let p = this;
     const { form, visible, close } = this.props;
     const { getFieldDecorator } = form;
     const modalProps = {
@@ -62,7 +67,7 @@ class ProductsModal extends Component {
       maskClosable: false,
       closable: true,
       onOk() {
-        that.handleSubmit();
+        p.handleSubmit();
       },
       onCancel() {
         close(false);
@@ -72,7 +77,7 @@ class ProductsModal extends Component {
       labelCol: { span: 11 },
       wrapperCol: { span: 13 },
     };
-    const tableProps = {
+    const modalTableProps = {
       columns: [
         {
           title: '序号', key: 'order', width: '6%',
@@ -83,48 +88,48 @@ class ProductsModal extends Component {
         {
           title: '尺寸', dataIndex: 'scale', key: 'scale', width: '14%',
           render(text, record, index) {
-            return <Input value={text} />
+            return <Input />
           },
         },
         {
           title: '颜色', dataIndex: 'color', key: 'color', width: '14%',
           render(text, record, index) {
-            return <Input value={text} />
+            return <Input />
           },
         },
         {
           title: '库存', dataIndex: 'inventory', key: 'inventory', width: '14%',
           render(text, record, index) {
-            return <Input value={text} />
+            return <Input />
           },
         },
         {
           title: '虚拟库存', dataIndex: 'virtualInventory', key: 'virtualInventory', width: '14%',
           render(text, record, index) {
-            return <Input value={text} />
+            return <Input />
           },
         },
         {
           title: 'barcode', dataIndex: 'skuCode', key: 'skuCode', width: '14%',
           render(text, record, index) {
-            return <Input value={text} />
+            return <Input />
           },
         },
         {
           title: '重量(KG)', dataIndex: 'weight', key: 'weight', width: '14%',
           render(text, record, index) {
-            return <Input value={text} />
+            return <Input />
           },
         },
         {
           title: '操作', key: 'operator',
           render(text, record, index) {
-            return <a href="javascript:void(0)" onClick={that.handleDelete.bind(this, record.id)}>删除</a>
+            return <a href="javascript:void(0)" onClick={() => { p.handleDelete(record.id) } }>删除</a>
           },
         },
       ],
-      dataSource: this.state.skuList,
-      borderde: false,
+      dataSource: p.state.skuList,
+      bordered: false,
       pagination: true,
     };
     return (
@@ -325,19 +330,16 @@ class ProductsModal extends Component {
                 )}
               </FormItem>
             </Col>
-            <Col span={10}>
+            <Col span={7}>
               <FormItem
-                label="重量"
-                style={{ marginLeft: 10 }}
-                labelCol={{ span: 7}}
-                wrapperCol={{ span: 14 }}
+                label="重量（kg）"
+                {...formItemLayout}
               >
                 {getFieldDecorator('weight', {
-                  initialValue: '0',
                   rules: [{ required: true, message: '请输入重量' }],
                 })(
                   <InputNumber step={0.01} min={0} style={{width: 133.5}} placeholder="请输入重量" />
-                )}  KG
+                )}
               </FormItem>
             </Col>
           </Row>
@@ -424,7 +426,7 @@ class ProductsModal extends Component {
           </Row>
           <Row>
             <Table
-              {...tableProps}
+              {...modalTableProps}
               rowKey={record => record.id}
             />
           </Row>

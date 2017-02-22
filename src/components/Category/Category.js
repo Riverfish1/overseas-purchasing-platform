@@ -57,7 +57,7 @@ class Category extends Component {
 
     const columns = [
       {
-        title: '类别名称', dataIndex: 'cateName', key: 'cateName',
+        title: '类别名称', dataIndex: 'name', key: 'name',
       },
       {
         title: '类别代码', dataIndex: 'cateCode', key: 'cateCode',
@@ -77,7 +77,7 @@ class Category extends Component {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
-    const { dataSource, form } = this.props;
+    const { cateList, form } = this.props;
     return (
       <div className={styles.normal}>
         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -90,10 +90,11 @@ class Category extends Component {
             <Col>
               <Table
                 columns={columns}
-                dataSource={dataSource}
+                dataSource={cateList.data}
                 bordered
                 size="large"
                 rowKey={record => record.id}
+                pagination={{ total: cateList.totalCount, pageSize: 10 }}
               />
             </Col>
           </Row>
@@ -110,15 +111,15 @@ class Category extends Component {
 }
 
 function mapStateToProps(state) {
-  const { dataSource } = state.products;
+  const { cateList } = state.products;
   return {
     loading: state.loading.models.products,
-    dataSource,
+    cateList,
   };
 }
 
 Category.PropTypes = {
-  dataSource: PropTypes.array.isRequired,
+  cateList: PropTypes.array.isRequired,
 };
 
 Category = Form.create()(Category);

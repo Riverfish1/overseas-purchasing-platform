@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Modal, Table, Pagination, Input, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon } from 'antd';
+import { Modal, Table, Pagination, Input, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Upload } from 'antd';
 import styles from './Sku.less';
 
 const FormItem = Form.Item;
@@ -12,8 +12,8 @@ class SkuModal extends Component {
   constructor() {
     super();
     this.state = {
-      skuList: [], // sku数据
       previewVisible: false, // 上传图片的modal是否显示
+      previewImage: '', // 上传图片的url
     };
   }
 
@@ -24,14 +24,9 @@ class SkuModal extends Component {
         return;
       }
       console.log(fieldsValue);
-      const values = {
-        ...fieldsValue,
-        'startDate': fieldsValue['startDate'].format('YYYY-MM-DD'),
-        'endDate': fieldsValue['endDate'].format('YYYY-MM-DD'),
-      };
       dispatch({
         type: 'products/addSku',
-        payload: { ...values },
+        payload: { ...fieldsValue },
       });
     });
   }
@@ -40,34 +35,24 @@ class SkuModal extends Component {
 
   }
 
-  addSKU() {
-    const { skuList } = this.state;
-    const { form } = this.props;
-    const { setFieldsValue } = form;
-    let id = 1;
-    skuList.push({
-      color: '', scale: '', inventory: '', virtualInventory: '', weight: '', skuCode: '', id,
-    });
-  }
+  checkImg(rules, value, callback) {
 
-  handleDelete(id) {
-    const { skuList } = this.state;
-    skuList.filter(item => id !== item.id);
   }
 
   render() {
-    let that = this;
-    const { previewVisible, skuList } = this.state;
+    let p = this;
+    const { previewVisible, previewImage, skuList } = this.state;
     const { form, visible, close } = this.props;
     const { getFieldDecorator } = form;
     const modalProps = {
       visible,
       width: 900,
       title: '添加',
+      wrapClassName: 'modalStyle',
       maskClosable: false,
       closable: true,
       onOk() {
-        that.handleSubmit();
+        p.handleSubmit();
       },
       onCancel() {
         close(false);
@@ -78,7 +63,23 @@ class SkuModal extends Component {
       wrapperCol: { span: 13 },
     };
     const uploadProps = {
-
+      action: "/upload.do",
+      listType: "picture-card",
+      fileList: [{
+        uid: -1,
+        name: 'xxx.png',
+        status: 'done',
+        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+      }],
+      onPreview(file) {
+        p.setState({
+          previewVisible: true,
+          previewImage: file.url || file.thumbUrl,
+        })
+      },
+      onChange({ fileList }) {
+        p.setState({ fileList, })
+      },
     };
     return (
       <Modal 
@@ -179,31 +180,31 @@ class SkuModal extends Component {
                 {getFieldDecorator('spec', {
                   rules: [{ required: true, message: '请输入成本价' }],
                 })(
-                  <InputNumber step={0.01} min={0} placeholder="请输入成本价" />
+                  <InputNumber style={{ width: '100%' }} step={0.01} min={0} placeholder="请输入成本价" />
                 )}
               </FormItem>
             </Col>
             <Col span={7}>
               <FormItem
-                label="预估运费（rmb）"
+                label="预估运费(rmb)"
                 {...formItemLayout}
               >
                 {getFieldDecorator('model', {
-                  rules: [{ required: true, message: '请输入预估运费（rmb）' }],
+                  rules: [{ required: true, message: '请输入预估运费(rmb)' }],
                 })(
-                  <InputNumber step={0.01} min={0} placeholder="请输入预估运费（rmb）" />
+                  <InputNumber style={{ width: '100%' }} step={0.01} min={0} placeholder="请输入预估运费(rmb)" />
                 )}
               </FormItem>
             </Col>
-            <Col span={10}>
+            <Col span={7}>
               <FormItem
-                label="销售价（rmb）"
+                label="销售价(rmb)"
+                {...formItemLayout}
               >
                 {getFieldDecorator('weight', {
-                  initialValue: '0',
-                  rules: [{ required: true, message: '请输入销售价（rmb）' }],
+                  rules: [{ required: true, message: '请输入销售价(rmb)' }],
                 })(
-                  <InputNumber step={0.01} min={0} placeholder="请输入销售价（rmb）" />
+                  <InputNumber style={{ width: '100%' }} step={0.01} min={0} placeholder="请输入销售价(rmb)" />
                 )}
               </FormItem>
             </Col>
@@ -217,16 +218,18 @@ class SkuModal extends Component {
                 {getFieldDecorator('unit', {
                   rules: [{ required: true, message: '请输入可售库存' }],
                 })(
-                  <InputNumber step={1} min={0} placeholder="请输入可售库存" />
+                  <InputNumber style={{ width: '100%' }} step={1} min={0} placeholder="请输入可售库存" />
                 )}
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={10}>
-            <Col span={7}>
+          <Row>
+            <Col>
               <FormItem
                 label="备注"
-                {...formItemLayout}
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 9 }}
+                style={{ marginRight: '-20px' }}
               >
                 {getFieldDecorator('origin', {
                   rules: [{ message: '请输入备注' }],
@@ -236,24 +239,28 @@ class SkuModal extends Component {
               </FormItem>
             </Col>
           </Row>
-          {/*<Row gutter={10}>
+          <Row>
             <Col>
               <FormItem
                 label="添加图片"
-                {...formItemLayout}
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 9 }}
+                style={{ marginRight: '-20px' }}
               >
                 {getFieldDecorator('picUrl', { rules: [{ validator: this.checkImg.bind(this) }] })(
-                  <Upload {...uploadProps}>
-                    <Icon type="plus" className="upload-plus" />
-                    <div className="ant-upload-text">上传图片</div>
-                  </Upload>
-                  <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-                    <img alt="example" style={{ width: '100%' }} />
-                  </Modal>
+                  <div>
+                    <Upload {...uploadProps}>
+                      <Icon type="plus" className={styles.uploadPlus} />
+                      <div className="ant-upload-text">上传图片</div>
+                    </Upload>
+                    <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+                      <img alt="example" style={{ width: '100%' }} />
+                    </Modal>
+                  </div>
                 )}
               </FormItem>
             </Col>
-          </Row>*/}
+          </Row>
         </Form>
       </Modal>
     );
@@ -263,10 +270,10 @@ class SkuModal extends Component {
 }
 
 function mapStateToProps(state) {
-  const { dataSource } = state.products;
+  const { skuList } = state.products;
   return {
     loading: state.loading.models.products,
-    dataSource,
+    skuList,
   };
 }
 

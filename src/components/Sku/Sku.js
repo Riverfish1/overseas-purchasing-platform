@@ -63,94 +63,94 @@ class Sku extends Component {
         },
       },
       {
-        title: '是否推荐', dataIndex: 'name', key: 'name',
+        title: '是否推荐', dataIndex: 'name', key: '1',
       },
       {
-        title: '是否促销', dataIndex: 'itemCode', key: 'itemCode',
+        title: '是否促销', dataIndex: 'itemCode', key: '2',
       },
       {
-        title: '销售类别', dataIndex: 'productsImage', key: 'productsImage',
+        title: '销售类别', dataIndex: 'productsImage', key: '3',
       },
       {
-        title: 'SKU编号', dataIndex: 'brand', key: 'brand',
+        title: 'SKU编号', dataIndex: 'brand', key: '4',
       },
       {
-        title: '商品类型', dataIndex: 'saleType', key: 'saleType',
+        title: '商品类型', dataIndex: 'saleType', key: '5',
       },
       {
-        title: 'SKU主图', dataIndex: 'categoryId', key: 'categoryId',
+        title: 'SKU主图', dataIndex: 'categoryId', key: '6',
       },
       {
-        title: '简称', dataIndex: 'purchaseDest', key: 'purchaseDest',
+        title: '简称', dataIndex: 'purchaseDest', key: '7',
       },
       {
-        title: '全称', dataIndex: 'startDateStr', key: 'startDateStr',
+        title: '全称', dataIndex: 'startDateStr', key: '8',
       },
       {
-        title: '英文名称', dataIndex: 'endDateStr', key: 'endDateStr',
+        title: '英文名称', dataIndex: 'endDateStr', key: '9',
       },
       {
-        title: '商品颜色', dataIndex: 'name', key: 'name',
+        title: '商品颜色', dataIndex: 'name', key: '10',
       },
       {
-        title: '商品尺寸', dataIndex: 'itemCode', key: 'itemCode',
+        title: '商品尺寸', dataIndex: 'itemCode', key: '11',
       },
       {
-        title: '品牌', dataIndex: 'productsImage', key: 'productsImage',
+        title: '品牌', dataIndex: 'productsImage', key: '12',
       },
       {
-        title: '条码', dataIndex: 'brand', key: 'brand',
+        title: '条码', dataIndex: 'brand', key: '13',
       },
       {
-        title: '允许销售', dataIndex: 'saleType', key: 'saleType',
+        title: '允许销售', dataIndex: 'saleType', key: '14',
       },
       {
-        title: '可售库存', dataIndex: 'categoryId', key: 'categoryId',
+        title: '可售库存', dataIndex: 'categoryId', key: '15',
       },
       {
-        title: 'ERP锁定库存', dataIndex: 'purchaseDest', key: 'purchaseDest',
+        title: 'ERP锁定库存', dataIndex: 'purchaseDest', key: '16',
       },
       {
-        title: '第三方平台锁定', dataIndex: 'startDateStr', key: 'startDateStr',
+        title: '第三方平台锁定', dataIndex: 'startDateStr', key: '17',
       },
       {
-        title: '实际库存（包含在途库存）', dataIndex: 'endDateStr', key: 'endDateStr',
+        title: '实际库存（包含在途库存）', dataIndex: 'endDateStr', key: '18',
       },
       {
-        title: '成本价', dataIndex: 'startDateStr', key: 'startDateStr',
+        title: '成本价', dataIndex: 'startDateStr', key: '19',
       },
       {
-        title: '预估运费（人民币）', dataIndex: 'endDateStr', key: 'endDateStr',
+        title: '预估运费（人民币）', dataIndex: 'endDateStr', key: '20',
       },
       {
-        title: '销售价（人民币）', dataIndex: 'name', key: 'name',
+        title: '销售价（人民币）', dataIndex: 'name', key: '21',
       },
       {
-        title: '商品重量', dataIndex: 'itemCode', key: 'itemCode',
+        title: '商品重量', dataIndex: 'itemCode', key: '22',
       },
       {
-        title: '单位', dataIndex: 'productsImage', key: 'productsImage',
+        title: '单位', dataIndex: 'productsImage', key: '23',
       },
       {
-        title: '产地', dataIndex: 'brand', key: 'brand',
+        title: '产地', dataIndex: 'brand', key: '24',
       },
       {
-        title: '商品来源', dataIndex: 'saleType', key: 'saleType',
+        title: '商品来源', dataIndex: 'saleType', key: '25',
       },
       {
-        title: '联系人', dataIndex: 'categoryId', key: 'categoryId',
+        title: '联系人', dataIndex: 'categoryId', key: '26',
       },
       {
-        title: '联系人电话', dataIndex: 'purchaseDest', key: 'purchaseDest',
+        title: '联系人电话', dataIndex: 'purchaseDest', key: '27',
       },
       {
-        title: '商品代码', dataIndex: 'startDateStr', key: 'startDateStr',
+        title: '商品代码', dataIndex: 'startDateStr', key: '28',
       },
       {
-        title: '联系人备注', dataIndex: 'endDateStr', key: 'endDateStr',
+        title: '联系人备注', dataIndex: 'endDateStr', key: '29',
       },
       {
-        title: '商品备注', dataIndex: 'endDateStr', key: 'endDateStr',
+        title: '商品备注', dataIndex: 'endDateStr', key: '30',
       },
     ];
 
@@ -158,7 +158,7 @@ class Sku extends Component {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
-    const { dataSource, form } = this.props;
+    const { skuList, form } = this.props;
     const { getFieldDecorator } = form;
     return (
       <div className={styles.normal}>
@@ -172,11 +172,12 @@ class Sku extends Component {
             <Col>
               <Table
                 columns={columns}
-                dataSource={dataSource}
+                dataSource={skuList.data}
                 bordered
                 size="large"
-                scroll={{ x: '800px' }}
+                scroll={{ x: 2400 }}
                 rowKey={record => record.id}
+                pagination={{ total: skuList.totalCount, pageSize: 10 }}
               />
             </Col>
           </Row>
@@ -193,10 +194,10 @@ class Sku extends Component {
 }
 
 function mapStateToProps(state) {
-  const { dataSource } = state.products;
+  const { skuList } = state.products;
   return {
     loading: state.loading.models.products,
-    dataSource,
+    skuList,
   };
 }
 

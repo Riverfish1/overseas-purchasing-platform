@@ -69,7 +69,7 @@ class Products extends Component {
         title: '商品代码', dataIndex: 'itemCode', key: 'itemCode',
       },
       {
-        title: '商品图片', dataIndex: 'productsImage', key: 'productsImage',
+        title: '商品图片', dataIndex: 'mainPic', key: 'mainPic',
       },
       {
         title: '商品品牌', dataIndex: 'brand', key: 'brand',
@@ -81,13 +81,13 @@ class Products extends Component {
         title: '商品类目', dataIndex: 'categoryId', key: 'categoryId',
       },
       {
-        title: '采购地点', dataIndex: 'purchaseDest', key: 'purchaseDest',
+        title: '采购地点', dataIndex: 'buySite', key: 'buySite',
       },
       {
-        title: '开始销售时间', dataIndex: 'startDateStr', key: 'startDateStr',
+        title: '开始销售时间', dataIndex: 'startDate', key: 'startDate',
       },
       {
-        title: '结束销售时间', dataIndex: 'endDateStr', key: 'endDateStr',
+        title: '结束销售时间', dataIndex: 'endDate', key: 'endDate',
       },
     ];
 
@@ -95,7 +95,7 @@ class Products extends Component {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
-    const { dataSource, form } = this.props;
+    const { productsList, form } = this.props;
     const { getFieldDecorator } = form;
     return (
       <div className={styles.normal}>
@@ -201,10 +201,11 @@ class Products extends Component {
             <Col>
               <Table
                 columns={columns}
-                dataSource={dataSource}
+                dataSource={productsList.data}
                 bordered
                 size="large"
                 rowKey={record => record.id}
+                pagination={{ total: productsList.totalCount, pageSize: 10 }}
               />
             </Col>
           </Row>
@@ -221,15 +222,15 @@ class Products extends Component {
 }
 
 function mapStateToProps(state) {
-  const { dataSource } = state.products;
+  const { productsList } = state.products;
   return {
     loading: state.loading.models.products,
-    dataSource,
+    productsList: productsList,
   };
 }
 
 Products.PropTypes = {
-  dataSource: PropTypes.array.isRequired,
+  productsList: PropTypes.array.isRequired,
   form: PropTypes.object.isRequired,
 };
 

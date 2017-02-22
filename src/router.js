@@ -20,6 +20,7 @@ function registerModel(app, model) {
 
 function RouterConfig({ history, app }) {
   registerModel(app, require('./models/session'));
+  registerModel(app, require('./models/products'));
   const routes = {
     path: '/',
     component: MainLayout,
@@ -48,8 +49,7 @@ function RouterConfig({ history, app }) {
       {
         path: `/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`,
         getComponent(nextState, cb) {
-          require.ensure([], (require) => {
-            registerModel(app, require('./models/products'));
+          require.ensure([], () => {
             cb(null, Products);
           });
         },
@@ -57,8 +57,7 @@ function RouterConfig({ history, app }) {
       {
         path: `/${routerCfg.PRODUCTS}/${routerCfg.SKU_LIST}`,
         getComponent(nextState, cb) {
-          require.ensure([], (require) => {
-            registerModel(app, require('./models/products'));
+          require.ensure([], () => {
             cb(null, Sku);
           });
         },
@@ -66,8 +65,7 @@ function RouterConfig({ history, app }) {
       {
         path: `/${routerCfg.PRODUCTS}/${routerCfg.CATE_LIST}`,
         getComponent(nextState, cb) {
-          require.ensure([], (require) => {
-            registerModel(app, require('./models/products'));
+          require.ensure([], () => {
             cb(null, Category);
           });
         },

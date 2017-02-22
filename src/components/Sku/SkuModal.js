@@ -63,7 +63,6 @@ class SkuModal extends Component {
     const modalProps = {
       visible,
       width: 900,
-      wrapClassName: 'modalStyle',
       title: '添加',
       maskClosable: false,
       closable: true,
@@ -84,6 +83,7 @@ class SkuModal extends Component {
     return (
       <Modal 
         {...modalProps}
+        className={styles.modalStyle}
       >
         <Form onSubmit={this.handleSubmit.bind(this)}>
           <Row gutter={10}>
@@ -185,25 +185,25 @@ class SkuModal extends Component {
             </Col>
             <Col span={7}>
               <FormItem
-                label="预估运费（人民币）"
+                label="预估运费（rmb）"
                 {...formItemLayout}
               >
                 {getFieldDecorator('model', {
-                  rules: [{ required: true, message: '请输入预估运费（人民币）' }],
+                  rules: [{ required: true, message: '请输入预估运费（rmb）' }],
                 })(
-                  <InputNumber step={0.01} min={0} placeholder="请输入预估运费（人民币）" />
+                  <InputNumber step={0.01} min={0} placeholder="请输入预估运费（rmb）" />
                 )}
               </FormItem>
             </Col>
             <Col span={10}>
               <FormItem
-                label="销售价（人民币）"
+                label="销售价（rmb）"
               >
                 {getFieldDecorator('weight', {
                   initialValue: '0',
-                  rules: [{ required: true, message: '请输入销售价（人民币）' }],
+                  rules: [{ required: true, message: '请输入销售价（rmb）' }],
                 })(
-                  <InputNumber step={0.01} min={0} placeholder="请输入销售价（人民币）" />
+                  <InputNumber step={0.01} min={0} placeholder="请输入销售价（rmb）" />
                 )}
               </FormItem>
             </Col>

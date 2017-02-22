@@ -1,6 +1,6 @@
 /* eslint-disable object-property-newline */
 export const API_URL = 'http://118.178.126.143/haierp1/haiLogin';
-export const PAGE_SIZE = 3;
+export const BASE_URL = 'http://118.178.126.143/haierp1';
 
 // 路由字符串常量配置
 export const routerCfg = {

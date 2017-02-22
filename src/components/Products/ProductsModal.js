@@ -130,6 +130,7 @@ class ProductsModal extends Component {
     return (
       <Modal 
         {...modalProps}
+        className={styles.modalStyle}
       >
         <Form onSubmit={this.handleSubmit.bind(this)}>
           <Row gutter={10}>

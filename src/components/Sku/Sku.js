@@ -175,7 +175,7 @@ class Sku extends Component {
                 dataSource={dataSource}
                 bordered
                 size="large"
-                scroll={{ x: '100%' }}
+                scroll={{ x: '800px' }}
                 rowKey={record => record.id}
               />
             </Col>

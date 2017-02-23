@@ -64,11 +64,13 @@ export default {
     },
     * queryItemList({ payload }, { call, put }) {
       const { data } = yield call(queryItemList, { payload });
-      console.log(data);
-      yield put({
-        type: 'savaItemList',
-        payload: data,
-      });
+      console.log('queryItemList success', data);
+      if (data.success) {
+        yield put({
+          type: 'savaItemList',
+          payload: data,
+        });
+      }
     },
     * querySkuList({ payload }, { call, put }) {
       const { data } = yield call(querySkuList, { payload });

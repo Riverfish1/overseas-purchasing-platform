@@ -201,11 +201,11 @@ class Products extends Component {
             <Col>
               <Table
                 columns={columns}
-                dataSource={productsList.data}
+                dataSource={productsList.rows}
                 bordered
                 size="large"
                 rowKey={record => record.id}
-                pagination={{ total: productsList.totalCount, pageSize: 10 }}
+                pagination={{ total: productsList.total }}
               />
             </Col>
           </Row>

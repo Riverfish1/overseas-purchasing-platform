@@ -31,7 +31,7 @@ export function addCate({ payload }) {
 };
 
 export function queryItemList({ payload }) {
-  return request(`/item/queryItemList${toForm(payload)}`, {
+  return request(`/haierp1/item/queryItemList${toForm(payload)}`, {
     method: 'POST',
     credentials: true,
     mode: 'no-cors',
@@ -39,16 +39,15 @@ export function queryItemList({ payload }) {
 };
 
 export function querySkuList({ payload }) {
-  return request(`/sku/querySkuList${toForm(payload)}`, {
+  return request(`/haierp1/sku/querySkuList${toForm(payload)}`, {
     method: 'POST',
     credentials: true,
   });
 };
 
 export function queryCateList({ payload }) {
-  return request(`/cate/queryCateList${toForm(payload)}`, {
+  return request(`/haierp1/cate/queryCateList${toForm(payload)}`, {
     method: 'POST',
     credentials: true,
   });
 };
-

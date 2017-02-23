@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Modal, Table, Pagination, Input, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon } from 'antd';
+import { Modal, Table, Pagination, Input, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Popconfirm } from 'antd';
 import styles from './Products.less';
 
 const FormItem = Form.Item;
@@ -11,8 +11,8 @@ let uuid = 1;
 
 class ProductsModal extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       skuList: [], // sku数据
     };
@@ -88,43 +88,45 @@ class ProductsModal extends Component {
         {
           title: '尺寸', dataIndex: 'scale', key: 'scale', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <div>{getFieldDecorator('scale', {})(<Input />)}</div>
           },
         },
         {
           title: '颜色', dataIndex: 'color', key: 'color', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <div>{getFieldDecorator('color', {})(<Input />)}</div>
           },
         },
         {
           title: '库存', dataIndex: 'inventory', key: 'inventory', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <div>{getFieldDecorator('inventory', {})(<Input />)}</div>
           },
         },
         {
           title: '虚拟库存', dataIndex: 'virtualInventory', key: 'virtualInventory', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <div>{getFieldDecorator('virtualInventory', {})(<Input />)}</div>
           },
         },
         {
           title: 'barcode', dataIndex: 'skuCode', key: 'skuCode', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <div>{getFieldDecorator('skuCode', {})(<Input />)}</div>
           },
         },
         {
           title: '重量(KG)', dataIndex: 'weight', key: 'weight', width: '14%',
           render(text, record, index) {
-            return <Input />
+            return <div>{getFieldDecorator('weight', {})(<Input />)}</div>
           },
         },
         {
           title: '操作', key: 'operator',
           render(text, record, index) {
-            return <a href="javascript:void(0)" onClick={() => { p.handleDelete(record.id) } }>删除</a>
+            return <Popconfirm title="确定删除?" onConfirm={p.handleDelete(record.id)}>
+            <a href="javascript:void(0)">删除</a>
+          </Popconfirm>
           },
         },
       ],

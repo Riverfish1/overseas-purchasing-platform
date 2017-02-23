@@ -56,7 +56,7 @@ class Products extends Component {
         p.props.dispatch({ type: 'products/queryProduct', payload: { id: id[0] } });
       });
     } else {
-      message.error('只能选择一个进行修改');
+      message.error('至少选择一个，且只能选择一个进行修改');
     }
   }
 

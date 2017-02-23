@@ -63,7 +63,7 @@ class SkuModal extends Component {
       wrapperCol: { span: 13 },
     };
     const uploadProps = {
-      action: "/upload.do",
+      action: "/uploadFile/picUpload",
       listType: "picture-card",
       fileList: [{
         uid: -1,

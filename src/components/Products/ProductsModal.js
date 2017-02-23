@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Modal, Table, Pagination, Input, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Popconfirm } from 'antd';
+import { Modal, Table, Pagination, Input, Upload, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Popconfirm } from 'antd';
 import styles from './Products.less';
 
 const FormItem = Form.Item;
@@ -15,36 +15,13 @@ class ProductsModal extends Component {
     super(props);
     this.state = {
       skuList: [], // sku数据
+      previewVisible: false,
+
     };
   }
 
   componentWillMount() {
-    const { modalValues, form } = this.props;
-    const { setFieldsValue } = form;
-    modalValues && setFieldsValue({
-      brand: modalValues.brand,
-      buySite: modalValues.buySite,
-      categoryName: modalValues.categoryName,
-      contactPerson: modalValues.contactPerson,
-      contactTel: modalValues.contactTel,
-      country: modalValues.country,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-      brand: modalValues.brand,
-    })
+    
   }
 
   handleSubmit() {
@@ -76,6 +53,14 @@ class ProductsModal extends Component {
     skuList.push(obj);
   }
 
+  handleCancel() {
+    this.setState({ previewVisible: false });
+  }
+
+  checkImg(rules, values, callback) {
+    callback();
+  }
+
   handleDelete(id) {
     const { skuList } = this.state;
     let skuData = skuList.filter(item => id !== item.id);
@@ -84,7 +69,8 @@ class ProductsModal extends Component {
 
   render() {
     let p = this;
-    const { form, visible, close, brands } = this.props;
+    const { form, visible, close, brands, modalValues } = this.props;
+    const { previewVisible } = this.state;
     const { getFieldDecorator } = form;
     const modalProps = {
       visible,
@@ -98,6 +84,24 @@ class ProductsModal extends Component {
       },
       onCancel() {
         close(false);
+      },
+    };
+    const uploadProps = {
+      action: '/haierp1/uploadFile/picUpload',
+      listType: 'picture-card',
+      data(file) {
+        return {
+          pic: file.name,
+        }
+      },
+      onPreview(file) {
+        p.setState({
+          previewVisible: true,
+          previewImage: file.url || file.thumbUrl,
+        })
+      },
+      onChange({ fileList }) {
+        p.setState({ fileList, })
       },
     };
     const formItemLayout = {
@@ -157,7 +161,7 @@ class ProductsModal extends Component {
           },
         },
       ],
-      dataSource: p.state.skuList,
+      dataSource: (modalValues && modalValues.data && modalValues.data.itemSkus) || [],
       bordered: false,
       pagination: true,
     };
@@ -174,7 +178,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemCode', {
-                  rules: [{ required: true, message: '请输入商品编码' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.itemCode,
+                  rules: [{ message: '请输入商品编码' }],
                 })(
                   <Input placeholder="请输入商品编码" />
                 )}
@@ -186,7 +191,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('name', {
-                  rules: [{ required: true, message: '请输入商品名称' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.name,
+                  rules: [{required: true, message: '请输入商品名称' }],
                 })(
                   <Input placeholder="请输入商品名称" />
                 )}
@@ -198,7 +204,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('enName', {
-                  rules: [{ required: true, message: '请输入英文名称' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.enName,
+                  rules: [{ message: '请输入英文名称' }],
                 })(
                   <Input placeholder="请输入英文名称" />
                 )}
@@ -212,7 +219,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemShort', {
-                  rules: [{ required: true, message: '请输入商品简称' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.itemShort,
+                  rules: [{ message: '请输入商品简称' }],
                 })(
                   <Input placeholder="请输入商品简称" />
                 )}
@@ -224,7 +232,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('categoryId', {
-                  rules: [{ required: true, message: '请选择所属类目' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.categoryId,
+                  rules: [{requied: true, message: '请选择所属类目' }],
                 })(
                   <Select placeholder="请选择所属类目" >
                     <Option value="1">衣服</Option>
@@ -238,7 +247,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {
-                  rules: [{ required: true, message: '请选择品牌' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.brand,
+                  rules: [{requied: true, message: '请选择品牌' }],
                 })(
                   <Select placeholder="请选择品牌" >
                     {brands && brands.data.map(item => {
@@ -256,7 +266,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('country', {
-                  rules: [{ required: true, message: '请选择国家' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.country === 1 ? '美国' : modalValues && modalValues.data && modalValues.data.country === 2 ? '德国' : modalValues && modalValues.data && modalValues.data.country === 3 ? '日本' : '澳洲' ,
+                  rules: [{ message: '请选择国家' }],
                 })(
                   <Select placeholder="请选择国家">
                     <Option value="1">美国</Option>
@@ -273,7 +284,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('currency', {
-                  rules: [{ required: true, message: '请选择币种' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.currency === 1 ? '人民币' : '美元',
+                  rules: [{ message: '请选择币种' }],
                 })(
                   <Select placeholder="请选择币种">
                     <Option value="1">人民币</Option>
@@ -288,7 +300,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('idCard', {
-                  rules: [{ required: true, message: '请选择是否身份证' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.idCard === 1 ? '是' : '否' ,
+                  rules: [{ message: '请选择是否身份证' }],
                 })(
                   <Select placeholder="请选择是否身份证">
                     <Option value="1">是</Option>
@@ -305,7 +318,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('startDate', {
-                  rules: [{ required: true, message: '请输入商品编码' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.startDateStr,
+                  rules: [{ message: '请输入销售开始时间' }],
                 })(
                   <DatePicker />
                 )}
@@ -317,7 +331,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('endDate', {
-                  rules: [{ required: true, message: '请输入商品名称' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.endDateStr,
+                  rules: [{ message: '请输入销售结束时间' }],
                 })(
                   <DatePicker />
                 )}
@@ -329,7 +344,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('buySite', {
-                  rules: [{ required: true, message: '请输入采购站点' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.buySite,
+                  rules: [{ message: '请输入采购站点' }],
                 })(
                   <Input placeholder="请输入采购站点" />
                 )}
@@ -343,7 +359,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('spec', {
-                  rules: [{ required: true, message: '请输入规格' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.spec,
+                  rules: [{ message: '请输入规格' }],
                 })(
                   <Input placeholder="请输入规格" />
                 )}
@@ -355,7 +372,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('model', {
-                  rules: [{ required: true, message: '请输入型号' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.model,
+                  rules: [{ message: '请输入型号' }],
                 })(
                   <Input placeholder="请输入型号" />
                 )}
@@ -367,7 +385,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('weight', {
-                  rules: [{ required: true, message: '请输入重量' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.weight,
+                  rules: [{ message: '请输入重量' }],
                 })(
                   <InputNumber step={0.01} min={0} style={{width: 133.5}} placeholder="请输入重量" />
                 )}
@@ -381,7 +400,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('unit', {
-                  rules: [{ required: true, message: '请输入单位' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.unit,
+                  rules: [{ message: '请输入单位' }],
                 })(
                   <Input placeholder="请输入单位" />
                 )}
@@ -393,7 +413,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('source', {
-                  rules: [{ required: true, message: '请输入来源' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.source,
+                  rules: [{ message: '请输入来源' }],
                 })(
                   <Input placeholder="请输入来源" />
                 )}
@@ -405,7 +426,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('contactPerson', {
-                  rules: [{ required: true, message: '请输入联系人' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.contactPerson,
+                  rules: [{ message: '请输入联系人' }],
                 })(
                   <Input placeholder="请输入联系人" />
                 )}
@@ -419,7 +441,8 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('origin', {
-                  rules: [{ required: true, message: '请输入产地' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.origin,
+                  rules: [{ message: '请输入产地' }],
                 })(
                   <Input placeholder="请输入产地" />
                 )}
@@ -431,21 +454,49 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('contactTel', {
-                  rules: [{ required: true, message: '请输入联系电话' }],
+                  initialValue: modalValues && modalValues.data && modalValues.data.contactTel,
+                  rules: [{ message: '请输入联系电话' }],
                 })(
                   <Input placeholder="请输入联系电话" />
                 )}
               </FormItem>
             </Col>
-            <Col span={7}>
+          </Row>
+          <Row>
+            <Col>
               <FormItem
                 label="备注"
-                {...formItemLayout}
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 9 }}
+                style={{ marginRight: '-20px' }}
               >
                 {getFieldDecorator('remark', {
+                  initialValue: modalValues && modalValues.data && modalValues.data.remark,
                   rules: [{ message: '请输入备注' }],
                 })(
-                  <Input placeholder="请输入备注" />
+                  <Input type="textarea" placeholder="请输入备注" />
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <FormItem
+                label="添加图片"
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 9 }}
+                style={{ marginRight: '-20px' }}
+              >
+                {getFieldDecorator('picUrl', { rules: [{ validator: this.checkImg.bind(this) }] })(
+                  <div>
+                    <Upload {...uploadProps}>
+                      <Icon type="plus" className={styles.uploadPlus} />
+                      <div className="ant-upload-text">上传图片</div>
+                    </Upload>
+                    <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel.bind(this)}>
+                      <img alt="example" style={{ width: '100%' }} />
+                    </Modal>
+                  </div>
                 )}
               </FormItem>
             </Col>

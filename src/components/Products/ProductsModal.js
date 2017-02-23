@@ -40,8 +40,6 @@ class ProductsModal extends Component {
 
   addSKU() {
     const { skuList } = this.state;
-    const { form } = this.props;
-    const { setFieldsValue } = form;
     const obj = {
       color: '', scale: '', inventory: '', virtualInventory: '', weight: '', skuCode: '', id: uuid, order: uuid,    
     };
@@ -52,7 +50,7 @@ class ProductsModal extends Component {
   handleDelete(id) {
     const { skuList } = this.state;
     let skuData = skuList.filter(item => id !== item.id);
-    this.setState({ skuList: skuData })
+    this.setState({ skuList: skuData });
   }
 
   render() {

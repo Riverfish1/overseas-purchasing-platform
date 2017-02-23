@@ -18,6 +18,35 @@ class ProductsModal extends Component {
     };
   }
 
+  componentWillMount() {
+    const { modalValues, form } = this.props;
+    const { setFieldsValue } = form;
+    modalValues && setFieldsValue({
+      brand: modalValues.brand,
+      buySite: modalValues.buySite,
+      categoryName: modalValues.categoryName,
+      contactPerson: modalValues.contactPerson,
+      contactTel: modalValues.contactTel,
+      country: modalValues.country,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+      brand: modalValues.brand,
+    })
+  }
+
   handleSubmit() {
     const { form, dispatch } = this.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
@@ -55,7 +84,7 @@ class ProductsModal extends Component {
 
   render() {
     let p = this;
-    const { form, visible, close } = this.props;
+    const { form, visible, close, brands } = this.props;
     const { getFieldDecorator } = form;
     const modalProps = {
       visible,
@@ -212,7 +241,9 @@ class ProductsModal extends Component {
                   rules: [{ required: true, message: '请选择品牌' }],
                 })(
                   <Select placeholder="请选择品牌" >
-                    <Option value="100">优衣库</Option>
+                    {brands && brands.data.map(item => {
+                      return <Option key={item.id} value={item.name} title={item.name}>{item.name}</Option>
+                    })}
                   </Select>
                 )}
               </FormItem>
@@ -439,10 +470,10 @@ class ProductsModal extends Component {
 }
 
 function mapStateToProps(state) {
-  const { dataSource } = state.products;
+  const { brands } = state.products;
   return {
     loading: state.loading.models.products,
-    dataSource,
+    brands,
   };
 }
 

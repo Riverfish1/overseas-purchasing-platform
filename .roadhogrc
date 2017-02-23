@@ -5,10 +5,10 @@
   "publicPath": "/",
   "autoprefixer": null,
   "proxy": {
-    "/api": {
-      "target": "http://jsonplaceholder.typicode.com/",
+    "/": {
+      "target": "http://118.178.126.143/",
       "changeOrigin": true,
-      "pathRewrite": { "^/api" : "" }
+      "pathRewrite": { "^/" : "" }
     }
   },
   "extraBabelPlugins": [

@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Table, Pagination, Input, Button, Row, Col, Select, DatePicker, Form, Icon } from 'antd';
+import { Table, Pagination, Input, Button, message, Row, Col, Select, DatePicker, Form, Icon } from 'antd';
 import ProductsModal from './ProductsModal';
 import styles from './Products.less';
 import moment from 'moment';
@@ -17,6 +17,7 @@ class Products extends Component {
     super();
     this.state = {
       modalVisible: false,
+      updateId: [], // 修改商品传的id
     };
   }
 
@@ -28,23 +29,35 @@ class Products extends Component {
       }
       const values = {
         ...filedsValue,
-        'startDateStr': filedsValue['startDateStr'].format('YYYY-MM-DD'),
-        'endDateStr': filedsValue['endDateStr'].format('YYYY-MM-DD'),
+        'startGmt': filedsValue['startGmt'] && filedsValue['startGmt'].format('YYYY-MM-DD'),
+        'endGmt': filedsValue['endGmt'] && filedsValue['endGmt'].format('YYYY-MM-DD'),
       };
       console.log(values);
       this.props.dispatch({
         type: 'products/queryItemList',
-        payload: {
-          ...values
-        },
+        payload: { ...values },
       });
     });
   }
 
-  showModal() {
+  addModal() {
     this.setState({
       modalVisible: true,
-    })
+    });
+  }
+
+  updateModal(id) {
+    let p = this;
+    console.log(id);
+    if (id.length === 1) {
+      this.setState({
+        modalVisible: true,
+      }, () => {
+        p.props.dispatch({ type: 'products/queryProduct', payload: { id: id[0] } });
+      });
+    } else {
+      message.error('只能选择一个进行修改');
+    }
   }
 
   closeModal(modalVisible) {
@@ -54,7 +67,7 @@ class Products extends Component {
   }
 
   render() {
-
+    let p = this;
     const columns = [
       {
         title: '序号', dataIndex: 'order', key: 'order',
@@ -91,11 +104,18 @@ class Products extends Component {
       },
     ];
 
+    const rowSelection = {
+      getCheckboxProps: record => ({}),
+      onChange(selectedRowKeys) {
+        p.setState({ updateId: selectedRowKeys });
+      },
+    }
+
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
-    const { productsList, form } = this.props;
+    const { form, productsList, brands, updateProductsValues } = this.props;
     const { getFieldDecorator } = form;
     return (
       <div className={styles.normal}>
@@ -108,7 +128,7 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemCode', {
-                  rules: [{ required: true, message: '请输入商品编码' }],
+                  rules: [{ message: '请输入商品编码' }],
                 })(
                   <Input placeholder="请输入商品编码"/>
                 )}
@@ -121,7 +141,7 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('name', {
-                  rules: [{ required: true, message: '请输入商品名称' }],
+                  rules: [{ message: '请输入商品名称' }],
                 })(
                   <Input placeholder="请输入商品名称"/>
                 )}
@@ -135,7 +155,7 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('categoryId', {
-                  rules: [{ required: true, message: '请选择类目' }],
+                  rules: [{ message: '请选择类目' }],
                 })(
                   <Select placeholder="请选择类目">
                     <Option value="103">衣服</Option>
@@ -149,10 +169,10 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {
-                  rules: [{ required: true, message: '请选择品牌' }],
+                  rules: [{ message: '请选择品牌' }],
                 })(
                   <Select placeholder="请选择品牌">
-                    <Option value="uniqlo">优衣库</Option>
+                    {/*brands && brands.map(item => (<Option key={item.name}>{item.name}</Option>))*/}
                   </Select>
                 )}
               </FormItem>
@@ -164,8 +184,8 @@ class Products extends Component {
                 label="开始销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('startDateStr', {
-                  rules: [{ required: true, message: '请选择开始销售时间' }],
+                {getFieldDecorator('startGmt', {
+                  rules: [{ message: '请选择开始销售时间' }],
                 })(
                   <DatePicker placeholder="请选择开始销售时间" />
                 )}
@@ -176,8 +196,8 @@ class Products extends Component {
                 label="结束销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('endDateStr', {
-                  rules: [{ required: true, message: '请选择结束销售时间' }],
+                {getFieldDecorator('endGmt', {
+                  rules: [{ message: '请选择结束销售时间' }],
                 })(
                   <DatePicker placeholder="请选择结束销售时间" />
                 )}
@@ -192,27 +212,33 @@ class Products extends Component {
               <Button size="large" type="ghost">清空</Button>
             </Col>
           </Row>
-          <Row className={styles.plus}>
-            <Col>
-              <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Table
-                columns={columns}
-                dataSource={productsList.rows}
-                bordered
-                size="large"
-                rowKey={record => record.id}
-                pagination={{ total: productsList.total }}
-              />
-            </Col>
-          </Row>
         </Form>
+        <Row className={styles.plus}>
+          <Col span={3}>
+            <Button type="primary" size="large" onClick={this.addModal.bind(this)}>添加商品</Button>
+          </Col>
+          <Col span={3}>
+            <Button size="large" onClick={this.updateModal.bind(this, p.state.updateId)}>修改商品</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Table
+              columns={columns}
+              dataSource={productsList && productsList.rows}
+              bordered
+              size="large"
+              rowKey={record => record.id}
+              rowSelection={rowSelection}
+              pagination={{ total: productsList && productsList.total }}
+            />
+          </Col>
+        </Row>
         <ProductsModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
+          modalValues={updateProductsValues}
+          brands={brands}
         />
       </div>
     );
@@ -222,10 +248,12 @@ class Products extends Component {
 }
 
 function mapStateToProps(state) {
-  const { productsList } = state.products;
+  const { product } = state.products;
   return {
     loading: state.loading.models.products,
-    productsList: productsList,
+    productsList: product.productsList,
+    updateProductsValues: product.updateProductsValues,
+    brands: product.brands,
   };
 }
 

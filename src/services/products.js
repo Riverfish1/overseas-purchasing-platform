@@ -3,40 +3,72 @@ import request from '../utils/request';
 function toForm(data) {
   let str = '?';
   Object.keys(data).forEach((el, index) => {
-    if (index > 0) str += '&';
-    str += `${el}=${data[el]}`;
+    if (data[el]) {
+      str += '&';
+      str += `${el}=${data[el]}`;
+    }
   });
   return str;
 }
 
+export function queryItemList({ payload }) {
+  return request(`/haierp1/item/queryItemList${toForm(payload)}`, {
+    method: 'POST',
+    credentials: true,
+  });
+};
+
+
+export function queryProduct({ payload }) {
+  return request(`/haierp1/item/query${toForm(payload)}`, {
+    method: 'POST',
+    credentials: true,
+  });
+};
+
+export function updateProducts({ payload }) {
+  return request(`/haierp1/item/update${toForm(payload)}`, {
+    method: 'POST',
+    credentials: true,
+  });
+};
+
 export function addProducts({ payload }) {
-  return request(`/item/add${toForm(payload)}`, {
+  return request(`/haierp1/item/add${toForm(payload)}`, {
+    method: 'POST',
+    credentials: true,
+  });
+};
+
+
+export function queryBrands() {
+  return request('/haierp1/item/brand/queryBrands', {
+    method: 'POST',
+    credentials: true,
+  });
+};
+
+export function queryCates() {
+  return request('/haierp1/item/brand/queryCates', {
     method: 'POST',
     credentials: true,
   });
 };
 
 export function addSku({ payload }) {
-  return request(`/sku/add${toForm(payload)}`, {
+  return request(`/haierp1/sku/add${toForm(payload)}`, {
     method: 'POST',
     credentials: true,
   });
 };
 
 export function addCate({ payload }) {
-  return request(`/cate/add${toForm(payload)}`, {
+  return request(`/haierp1/category/add${toForm(payload)}`, {
     method: 'POST',
     credentials: true,
   });
 };
 
-export function queryItemList({ payload }) {
-  return request(`/haierp1/item/queryItemList${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-    mode: 'no-cors',
-  });
-};
 
 export function querySkuList({ payload }) {
   return request(`/haierp1/sku/querySkuList${toForm(payload)}`, {

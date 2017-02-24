@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Modal, Table, Pagination, Input, Upload, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Popconfirm } from 'antd';
+import { Modal, Table, Pagination, message, Input, Upload, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Popconfirm } from 'antd';
 import styles from './Products.less';
 
 const FormItem = Form.Item;
@@ -16,7 +16,7 @@ class ProductsModal extends Component {
     this.state = {
       skuList: [], // sku数据
       previewVisible: false,
-
+      previewImage: '',
     };
   }
 
@@ -25,22 +25,23 @@ class ProductsModal extends Component {
   }
 
   handleSubmit() {
-    const { form, dispatch } = this.props;
+    let p = this;
+    const { form, dispatch, close } = this.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }
-      console.log(fieldsValue);
       const values = {
         ...fieldsValue,
-        'startDate': fieldsValue['startDate'].format('YYYY-MM-DD'),
-        'endDate': fieldsValue['endDate'].format('YYYY-MM-DD'),
+        'startDate': fieldsValue['startDate'] && fieldsValue['startDate'].format('YYYY-MM-DD'),
+        'endDate': fieldsValue['endDate'] && fieldsValue['endDate'].format('YYYY-MM-DD'),
       };
       console.log(values);
       dispatch({
         type: 'products/addProducts',
         payload: { ...values },
       });
+      close(false);
     });
   }
 
@@ -69,8 +70,8 @@ class ProductsModal extends Component {
 
   render() {
     let p = this;
-    const { form, visible, close, brands, modalValues } = this.props;
-    const { previewVisible } = this.state;
+    const { form, visible, close, brands = [], modalValues = {} } = this.props;
+    const { previewVisible, previewImage } = this.state;
     const { getFieldDecorator } = form;
     const modalProps = {
       visible,
@@ -94,14 +95,31 @@ class ProductsModal extends Component {
           pic: file.name,
         }
       },
+      beforeUpload(file) {
+        const isImg = file.type === 'image/jpeg' || file.type === 'image/bmp' || file.type === 'image/gif' || file.type === 'image/png';
+        if (!isImg) { message.error('请上传图片文件'); }
+        return isImg;
+      },
+      name: 'pic',
       onPreview(file) {
         p.setState({
           previewVisible: true,
           previewImage: file.url || file.thumbUrl,
         })
       },
-      onChange({ fileList }) {
-        p.setState({ fileList, })
+      onChange(info) {
+        if (info.file.status === 'done') {
+          if (info.file.response && info.file.response.success) {
+            message.success(`${info.file.name} 成功上传`);
+            // 添加文件预览
+            const newFile = info.file;
+            newFile.url = info.file.response.data;
+            console.log(info.fileList);
+          } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
+        } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
+        // 限制一个图片
+        const fileLength = info.fileList.length;
+        p.setState({ certFileList: fileLength > 1 ? [info.fileList[fileLength - 1]] : info.fileList });
       },
     };
     const formItemLayout = {
@@ -233,10 +251,10 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('categoryId', {
                   initialValue: modalValues && modalValues.data && modalValues.data.categoryId,
-                  rules: [{requied: true, message: '请选择所属类目' }],
+                  rules: [{ required: true, message: '请选择所属类目' }],
                 })(
                   <Select placeholder="请选择所属类目" >
-                    <Option value="1">衣服</Option>
+                    <Option value="1">男人</Option>
                   </Select>
                 )}
               </FormItem>
@@ -248,11 +266,11 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('brand', {
                   initialValue: modalValues && modalValues.data && modalValues.data.brand,
-                  rules: [{requied: true, message: '请选择品牌' }],
+                  rules: [{ required: true, message: '请选择品牌' }],
                 })(
                   <Select placeholder="请选择品牌" >
-                    {brands && brands.data.map(item => {
-                      return <Option key={item.id} value={item.name} title={item.name}>{item.name}</Option>
+                    {brands && brands.map(item => {
+                      return <Option key={item.id}>{item.name}</Option>
                     })}
                   </Select>
                 )}
@@ -266,7 +284,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('country', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.country === 1 ? '美国' : modalValues && modalValues.data && modalValues.data.country === 2 ? '德国' : modalValues && modalValues.data && modalValues.data.country === 3 ? '日本' : '澳洲' ,
+                  initialValue: modalValues && modalValues.data ? (modalValues.data.country === 1 ? '美国' : modalValues.data.country === 2 ? '德国' : modalValues.data.country === 3 ? '日本' : modalValues.data.country === 4 ? '澳洲' : '' ) : '',
                   rules: [{ message: '请选择国家' }],
                 })(
                   <Select placeholder="请选择国家">
@@ -284,7 +302,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('currency', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.currency === 1 ? '人民币' : '美元',
+                  initialValue: modalValues && modalValues.data ? modalValues.data.currency === 1 ? '人民币' : modalValues.data.currency === 2 ? '美元' : '' : '',
                   rules: [{ message: '请选择币种' }],
                 })(
                   <Select placeholder="请选择币种">
@@ -300,7 +318,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('idCard', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.idCard === 1 ? '是' : '否' ,
+                  initialValue: modalValues && modalValues.data ? modalValues.data.idCard === 1 ? '是' : modalValues.data.idCard === 2 ? '否' : '' : '' ,
                   rules: [{ message: '请选择是否身份证' }],
                 })(
                   <Select placeholder="请选择是否身份证">
@@ -467,7 +485,7 @@ class ProductsModal extends Component {
               <FormItem
                 label="备注"
                 labelCol={{ span: 3 }}
-                wrapperCol={{ span: 9 }}
+                wrapperCol={{ span: 11 }}
                 style={{ marginRight: '-20px' }}
               >
                 {getFieldDecorator('remark', {
@@ -484,7 +502,7 @@ class ProductsModal extends Component {
               <FormItem
                 label="添加图片"
                 labelCol={{ span: 3 }}
-                wrapperCol={{ span: 9 }}
+                wrapperCol={{ span: 18 }}
                 style={{ marginRight: '-20px' }}
               >
                 {getFieldDecorator('picUrl', { rules: [{ validator: this.checkImg.bind(this) }] })(
@@ -493,8 +511,8 @@ class ProductsModal extends Component {
                       <Icon type="plus" className={styles.uploadPlus} />
                       <div className="ant-upload-text">上传图片</div>
                     </Upload>
-                    <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel.bind(this)}>
-                      <img alt="example" style={{ width: '100%' }} />
+                    <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
+                      <img alt="example" style={{ width: '100%' }} src={previewImage} />
                     </Modal>
                   </div>
                 )}
@@ -524,9 +542,13 @@ function mapStateToProps(state) {
   const { brands } = state.products;
   return {
     loading: state.loading.models.products,
-    brands,
+    brands: brands.data,
   };
 }
+
+ProductsModal.PropTypes = {
+  brands: PropTypes.array.isRequired,
+};
 
 ProductsModal = Form.create()(ProductsModal);
 

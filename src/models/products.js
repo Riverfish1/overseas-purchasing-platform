@@ -4,50 +4,29 @@ import {
   queryProduct, // 查询单个商品，修改之前调用
   addProducts, // 增加商品
   queryBrands, // 获取品牌
-  queryCates, // 获取类目
-  addSku,
-  addCate,
-  querySkuList,
-  queryCateList,
+  queryCatesTree, // 获取类目
 } from '../services/products';
 
 export default {
   namespace: 'products',
   state: {
-    product: {
-      productsList: [],
-      updateProductsValues: '', // 修改商品时的值
-      brands: '', // 品牌
-    },
-    skuList: [],
-    cateList: [],
+    productsList: [],
+    productsValues: {}, // 修改商品时的值
+    brands: [], // 品牌
+    tree: [], // 类目树
   },
   reducers: {
-    saveProducts(state, { payload: dataSource }) {
-      return { ...state, ...dataSource };
-    },
-    saveSku(state, { payload: dataSource }) {
-      return { ...state, ...dataSource };
-    },
-    saveCate(state, { payload: dataSource }) {
-      return { ...state, ...dataSource };
+    saveCatesTree(state, { payload: data }) {
+      return { ...state, tree: data };
     },
     savaItemList(state, { payload: data }) {
-      const product = { ...product, productsList: data };
-      return { ...state, product };
-    },
-    savaSkuList(state, { payload: data }) {
-      return { ...state, skuList: data };
-    },
-    savaCateList(state, { payload: data }) {
-      return { ...state, cateList: data };
+      return { ...state, productsList: data };
     },
     saveBrands(state, { payload: data }) { // 保存品牌
       return { ...state, brands: data };
     },
-    savaUpdateProducts(state, { payload: data }) {
-      const product = { ...product, updateProductsValues: data };
-      return { ...state, product };
+    savaProductsValue(state, { payload: data }) {
+      return { ...state, productsValues: data };
     }
   },
   effects: {
@@ -55,10 +34,8 @@ export default {
       const { data } = yield call(addProducts, { payload });
       if (data.success) {
         yield put({
-          type: 'saveProducts',
-          payload: {
-            dataSource: data.dataSource,
-          },
+          type: 'queryItemList',
+          payload: {},
         });
       }
     },
@@ -67,7 +44,7 @@ export default {
       console.log('queryProduct success', data);
       if (data.success) {
         yield put({
-          type: 'savaUpdateProducts',
+          type: 'savaProductsValue',
           payload: data,
         });
       }
@@ -78,6 +55,7 @@ export default {
       if (data.success) {
         yield put({
           type: 'queryItemList',
+          payload: {},
         });
       }
     },
@@ -101,52 +79,13 @@ export default {
         });
       }
     },
-    * queryCates({ payload }, { call, put }) { // 获取类目
-      const { data } = yield call(queryCates);
-      console.log('queryCates success', data);
+    * queryCatesTree({ payload }, { call, put }) {
+      console.log(payload);
+      const { data } = yield call(queryCatesTree);
+      console.log('queryCatesTree success', data);
       if (data.success) {
         yield put({
-          type: 'saveCates',
-          payload: data,
-        });
-      }
-    },
-    * addSku({ payload }, { call, put }) { // 新建SKU
-      const { data } = yield call(addSku, { payload });
-      if (data.success) {
-        yield put({
-          type: 'saveSku',
-          payload: {
-            dataSource: data.dataSource,
-          },
-        });
-      }
-    },
-    * addCate({ payload }, { call, put }) { // 新建类目
-      const { data } = yield call(addCate, { payload });
-      if (data.success) {
-        yield put({
-          type: 'saveCate',
-          payload: {
-            dataSource: data.dataSource,
-          },
-        });
-      }
-    },
-    * querySkuList({ payload }, { call, put }) { // SKU管理列表
-      const { data } = yield call(querySkuList, { payload });
-      if (data.success) {
-        yield put({
-          type: 'savaSkuList',
-          payload: data,
-        });
-      }
-    },
-    * queryCateList({ payload }, { call, put }) { // 类目管理列表
-      const { data } = yield call(queryCateList, { payload });
-      if (data.success) {
-        yield put({
-          type: 'savaCateList',
+          type: 'saveCatesTree',
           payload: data,
         });
       }
@@ -157,14 +96,8 @@ export default {
       return history.listen(({ pathname, query }) => {
         if (pathname === '/products/productsList') {
           dispatch({ type: 'queryItemList', payload: query });
-          dispatch({ type: 'queryBrands' });
-          dispatch({ type: 'queryCates' });
-        }
-        if (pathname === '/products/skuList') {
-          dispatch({ type: 'querySkuList', payload: query });
-        }
-        if (pathname === '/products/cateList') {
-          dispatch({ type: 'queryCateList', payload: query });
+          dispatch({ type: 'queryBrands', payload: query });
+          dispatch({ type: 'queryCatesTree', payload: query });
         }
       });
     },

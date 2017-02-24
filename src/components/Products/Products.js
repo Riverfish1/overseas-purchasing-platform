@@ -68,6 +68,12 @@ class Products extends Component {
 
   render() {
     let p = this;
+    const { form, productsList = {}, brands = [], productsValues = {}, } = this.props;
+    const { getFieldDecorator } = form;
+    const formItemLayout = {
+      labelCol: { span: 10 },
+      wrapperCol: { span: 14 },
+    };
     const columns = [
       {
         title: '序号', dataIndex: 'order', key: 'order',
@@ -103,20 +109,21 @@ class Products extends Component {
         title: '结束销售时间', dataIndex: 'endDate', key: 'endDate',
       },
     ];
-
     const rowSelection = {
       getCheckboxProps: record => ({}),
       onChange(selectedRowKeys) {
         p.setState({ updateId: selectedRowKeys });
       },
-    }
-
-    const formItemLayout = {
-      labelCol: { span: 10 },
-      wrapperCol: { span: 14 },
     };
-    const { form, productsList, brands, updateProductsValues } = this.props;
-    const { getFieldDecorator } = form;
+
+    const paginationProps = {
+      total: productsList && productsList.total,
+      pageSize: 10,
+      onChange(page) {
+
+      },
+    };
+
     return (
       <div className={styles.normal}>
         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -172,7 +179,9 @@ class Products extends Component {
                   rules: [{ message: '请选择品牌' }],
                 })(
                   <Select placeholder="请选择品牌">
-                    {/*brands && brands.map(item => (<Option key={item.name}>{item.name}</Option>))*/}
+                    {brands && brands.map((item, index) => {
+                      return <Option key={item.name}>{item.name}</Option>
+                    } )}
                   </Select>
                 )}
               </FormItem>
@@ -230,14 +239,14 @@ class Products extends Component {
               size="large"
               rowKey={record => record.id}
               rowSelection={rowSelection}
-              pagination={{ total: productsList && productsList.total }}
+              pagination={paginationProps}
             />
           </Col>
         </Row>
         <ProductsModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
-          modalValues={updateProductsValues}
+          modalValues={productsValues}
           brands={brands}
         />
       </div>
@@ -248,18 +257,20 @@ class Products extends Component {
 }
 
 function mapStateToProps(state) {
-  const { product } = state.products;
+  const { productsList, productsValues, brands } = state.products;
   return {
     loading: state.loading.models.products,
-    productsList: product.productsList,
-    updateProductsValues: product.updateProductsValues,
-    brands: product.brands,
+    productsList,
+    productsValues,
+    brands: brands.data,
   };
 }
 
 Products.PropTypes = {
   productsList: PropTypes.array.isRequired,
   form: PropTypes.object.isRequired,
+  brands: PropTypes.array.isRequired,
+  productsValues: PropTypes.object.isRequired,
 };
 
 Products = Form.create()(Products);

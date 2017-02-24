@@ -11,7 +11,7 @@ function toForm(data) {
 }
 
 export function login({ payload }) {
-  return request(`${API_URL}/login${toForm(payload)}`, {
+  return request(`/haierp1/haiLogin/login${toForm(payload)}`, {
     method: 'POST',
     credentials: true,
   });

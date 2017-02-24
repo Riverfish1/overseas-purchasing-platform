@@ -48,8 +48,8 @@ export function queryBrands() {
   });
 };
 
-export function queryCates() {
-  return request('/haierp1/item/brand/queryCates', {
+export function queryCatesTree() {
+  return request('/haierp1/category/tree', {
     method: 'POST',
     credentials: true,
   });

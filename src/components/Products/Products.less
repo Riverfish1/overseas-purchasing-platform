@@ -13,13 +13,30 @@
   margin: 0 .5em;
 }
 
-.plus {
-	margin: 20px 0 10px 0;
-	padding-top: 20px;
-	border-top: 1px solid #ddd;
-}
-
 .uploadPlus {
   font-size: 28px;
 }
 
+.listBtnGroup, .productBtn {
+  overflow: hidden;
+  button {
+    float: left;
+    &:first-child {
+      margin-right: 15px;
+    }
+  }
+}
+
+.listBtnGroup {
+  padding-left: 89px;
+}
+
+.productBtn {
+  margin-top: 15px;
+	padding: 15px 0;
+	border-top: 1px solid #ddd;
+}
+
+.productModalBtn {
+  padding-bottom: 15px;
+}

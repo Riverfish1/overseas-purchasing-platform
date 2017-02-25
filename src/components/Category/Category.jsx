@@ -54,7 +54,6 @@ class Category extends Component {
   }
 
   render() {
-
     const columns = [
       {
         title: '类别名称', dataIndex: 'name', key: 'name',
@@ -66,7 +65,7 @@ class Category extends Component {
         title: '服务费率', dataIndex: 'servicesRate', key: 'servicesRate',
       },
       {
-        title: '属性名称', dataIndex: 'propName', key: 'propName',
+        title: '最近修改', dataIndex: 'gmtModify', key: 'gmtModify',
       },
       {
         title: '备注', dataIndex: 'remark', key: 'remark',
@@ -77,12 +76,13 @@ class Category extends Component {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
+    
     const { cateList = {}, form } = this.props;
     return (
       <div className={styles.normal}>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row className={styles.plus}>
-            <Col>
+          <Row>
+            <Col className={styles.operBtn}>
               <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button>
             </Col>
           </Row>

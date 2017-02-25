@@ -21,9 +21,9 @@ export const navigation = [
   { key: routerCfg.OVERVIEW, name: '总览', icon: 'laptop' },
   { key: routerCfg.PRODUCTS, name: '商品管理', icon: 'bars',
     child: [
-      { key: routerCfg.PRODUCTS_LIST, name: '商品列表', icon: 'bars' },
-      { key: routerCfg.SKU_LIST, name: 'SKU管理', icon: 'bars' },
-      { key: routerCfg.CATE_LIST, name: '类目管理', icon: 'bars' },
+      { key: routerCfg.PRODUCTS_LIST, name: '商品列表' },
+      { key: routerCfg.SKU_LIST, name: 'SKU管理' },
+      { key: routerCfg.CATE_LIST, name: '类目管理' },
     ],
   },
   { key: routerCfg.SALE, name: '销售管理', icon: 'book',

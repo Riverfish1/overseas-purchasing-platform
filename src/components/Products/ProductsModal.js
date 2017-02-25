@@ -1,19 +1,16 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
-import { Modal, Table, Pagination, message, Input, Upload, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Popconfirm, TreeSelect } from 'antd';
-import styles from './Products.less';
+import { Modal, Table, message, Input, Upload, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Popconfirm, TreeSelect } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+import styles from './Products.less';
+
 moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 let uuid = 1;
-
-function getEmptyInput(str) {
-}
 
 class ProductsModal extends Component {
 
@@ -26,35 +23,44 @@ class ProductsModal extends Component {
     };
   }
 
-  componentWillMount() {
-    
-  }
-
   handleSubmit() {
-    let p = this;
-    const { form, dispatch, close } = this.props;
+    const { form, dispatch, modalValues } = this.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }
       const values = {
         ...fieldsValue,
-        'startDate': fieldsValue['startDate'] && fieldsValue['startDate'].format('YYYY-MM-DD'),
-        'endDate': fieldsValue['endDate'] && fieldsValue['endDate'].format('YYYY-MM-DD'),
+        startDate: fieldsValue.startDate && fieldsValue.startDate.format('YYYY-MM-DD'),
+        endDate: fieldsValue.endDate && fieldsValue.endDate.format('YYYY-MM-DD'),
       };
       console.log(values);
-      dispatch({
-        type: 'products/addProducts',
-        payload: { ...values },
-      });
-      close(false);
+      if (modalValues && modalValues.data) {
+        dispatch({
+          type: 'products/updateProducts',
+          payload: { ...values, id: modalValues.data.id },
+        });
+      } else {
+        dispatch({
+          type: 'products/addProducts',
+          payload: { ...values },
+        });
+      }
+
+      this.closeModal();
     });
+  }
+
+  closeModal() {
+    const { form, close } = this.props;
+    form.resetFields();
+    close(false);
   }
 
   addSKU() {
     uuid += 1;
     const obj = {
-      color: 'EMPTY', scale: 'EMPTY', inventory: 'EMPTY', virtualInventory: 'EMPTY', weight: 'EMPTY', skuCode: 'EMPTY', id: uuid, order: uuid,    
+      color: 'EMPTY', scale: 'EMPTY', inventory: 'EMPTY', virtualInventory: 'EMPTY', weight: 'EMPTY', skuCode: 'EMPTY', id: uuid, order: uuid,
     };
     const _skuList = [];
     _skuList.push(obj);
@@ -78,13 +84,13 @@ class ProductsModal extends Component {
 
   handleDelete(id) {
     const { skuList } = this.state;
-    let skuData = skuList.filter(item => id !== item.id);
+    const skuData = skuList.filter(item => id !== item.id);
     this.setState({ skuList: skuData });
   }
 
   render() {
-    let p = this;
-    const { form, visible, close, brands = [], modalValues = {}, tree=[], } = this.props;
+    const p = this;
+    const { form, visible, brands = [], modalValues = {}, tree = [] } = this.props;
     const { previewVisible, previewImage } = this.state;
     const { getFieldDecorator } = form;
     const modalProps = {
@@ -98,7 +104,7 @@ class ProductsModal extends Component {
         p.handleSubmit();
       },
       onCancel() {
-        close(false);
+        p.closeModal();
       },
     };
     const uploadProps = {
@@ -107,7 +113,7 @@ class ProductsModal extends Component {
       data(file) {
         return {
           pic: file.name,
-        }
+        };
       },
       beforeUpload(file) {
         const isImg = file.type === 'image/jpeg' || file.type === 'image/bmp' || file.type === 'image/gif' || file.type === 'image/png';
@@ -119,7 +125,7 @@ class ProductsModal extends Component {
         p.setState({
           previewVisible: true,
           previewImage: file.url || file.thumbUrl,
-        })
+        });
       },
       onChange(info) {
         if (info.file.status === 'done') {
@@ -143,59 +149,76 @@ class ProductsModal extends Component {
     const modalTableProps = {
       columns: [
         {
-          title: '序号', key: 'order', width: '6%',
+          title: '序号',
+          key: 'order',
+          width: '6%',
           render(text, record, index) {
             return index + 1;
           },
         },
         {
-          title: '尺寸', dataIndex: 'scale', key: 'scale', width: '14%',
-          render(text, record, index) {
-            return <div>{getFieldDecorator('scale', {
-            })(<Input />)}</div>
+          title: '尺寸',
+          dataIndex: 'scale',
+          key: 'scale',
+          width: '14%',
+          render() {
+            return (<div>{getFieldDecorator('scale', {})(<Input />)}</div>);
           },
         },
         {
-          title: '颜色', dataIndex: 'color', key: 'color', width: '14%',
-          render(text, record, index) {
-            return <div>{getFieldDecorator('color', {
-            })(<Input />)}</div>
+          title: '颜色',
+          dataIndex: 'color',
+          key: 'color',
+          width: '14%',
+          render() {
+            return (<div>{getFieldDecorator('color', {})(<Input />)}</div>);
           },
         },
         {
-          title: '库存', dataIndex: 'inventory', key: 'inventory', width: '14%',
-          render(text, record, index) {
-            return <div>{getFieldDecorator('inventory', {
-            })(<Input />)}</div>
+          title: '库存',
+          dataIndex: 'inventory',
+          key: 'inventory',
+          width: '14%',
+          render() {
+            return (<div>{getFieldDecorator('inventory', {})(<Input />)}</div>);
           },
         },
         {
-          title: '虚拟库存', dataIndex: 'virtualInventory', key: 'virtualInventory', width: '14%',
-          render(text, record, index) {
-            return <div>{getFieldDecorator('virtualInventory', {
-            })(<Input />)}</div>
+          title: '虚拟库存',
+          dataIndex: 'virtualInventory',
+          key: 'virtualInventory',
+          width: '14%',
+          render() {
+            return (<div>{getFieldDecorator('virtualInventory', {})(<Input />)}</div>);
           },
         },
         {
-          title: 'barcode', dataIndex: 'skuCode', key: 'skuCode', width: '14%',
-          render(text, record, index) {
-            return <div>{getFieldDecorator('skuCode', {
-            })(<Input />)}</div>
+          title: 'barcode',
+          dataIndex: 'skuCode',
+          key: 'skuCode',
+          width: '14%',
+          render() {
+            return (<div>{getFieldDecorator('skuCode', {})(<Input />)}</div>);
           },
         },
         {
-          title: '重量(KG)', dataIndex: 'weight', key: 'weight', width: '14%',
-          render(text, record, index) {
-            return <div>{getFieldDecorator('weight', {
-            })(<Input />)}</div>
+          title: '重量(KG)',
+          dataIndex: 'weight',
+          key: 'weight',
+          width: '14%',
+          render() {
+            return (<div>{getFieldDecorator('weight', {})(<Input />)}</div>);
           },
         },
         {
-          title: '操作', key: 'operator',
-          render(text, record, index) {
-            return <Popconfirm title="确定删除?" onConfirm={p.handleDelete(record.id)}>
-                    <a href="javascript:void(0)">删除</a>
-                  </Popconfirm>
+          title: '操作',
+          key: 'operator',
+          render(text, record) {
+            return (
+              <Popconfirm title="确定删除?" onConfirm={p.handleDelete(record.id)}>
+                <a href="javascript:void(0)">删除</a>
+              </Popconfirm>
+            );
           },
         },
       ],
@@ -203,8 +226,16 @@ class ProductsModal extends Component {
       bordered: false,
       pagination: true,
     };
+
+    const treeData = tree ? tree.map((el) => {
+      const newEl = el;
+      newEl.title = el.name.toString();
+      newEl.value = el.id.toString();
+      return newEl;
+    }) : [];
+
     return (
-      <Modal 
+      <Modal
         {...modalProps}
         className={styles.modalStyle}
       >
@@ -216,10 +247,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemCode', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.itemCode,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.itemCode) || undefined,
                   rules: [{ message: '请输入商品编码' }],
                 })(
-                  <Input placeholder="请输入商品编码" />
+                  <Input placeholder="请输入商品编码" />,
                 )}
               </FormItem>
             </Col>
@@ -229,10 +260,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('name', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.name,
-                  rules: [{required: true, message: '请输入商品名称' }],
+                  initialValue: (modalValues && modalValues.data && modalValues.data.name) || undefined,
+                  rules: [{ required: true, message: '请输入商品名称' }],
                 })(
-                  <Input placeholder="请输入商品名称" />
+                  <Input placeholder="请输入商品名称" />,
                 )}
               </FormItem>
             </Col>
@@ -242,14 +273,14 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('enName', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.enName,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.enName) || undefined,
                   rules: [{ message: '请输入英文名称' }],
                 })(
-                  <Input placeholder="请输入英文名称" />
+                  <Input placeholder="请输入英文名称" />,
                 )}
               </FormItem>
             </Col>
-          </Row>          
+          </Row>
           <Row gutter={10}>
             <Col span={7}>
               <FormItem
@@ -257,10 +288,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemShort', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.itemShort,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.itemShort) || undefined,
                   rules: [{ message: '请输入商品简称' }],
                 })(
-                  <Input placeholder="请输入商品简称" />
+                  <Input placeholder="请输入商品简称" />,
                 )}
               </FormItem>
             </Col>
@@ -270,10 +301,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('categoryId', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.categoryId,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.categoryId.toString()) || undefined,
                   rules: [{ required: true, message: '请选择所属类目' }],
                 })(
-                  <TreeSelect placeholder="请选择所属类目" treeData={tree} />
+                  <TreeSelect placeholder="请选择所属类目" treeData={treeData} />,
                 )}
               </FormItem>
             </Col>
@@ -283,14 +314,12 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.brand,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.brand) || undefined,
                   rules: [{ required: true, message: '请选择品牌' }],
                 })(
                   <Select placeholder="请选择品牌" >
-                    {brands && brands.map(item => {
-                      return <Option key={item.id}>{item.name}</Option>
-                    })}
-                  </Select>
+                    {brands && brands.map(item => <Option key={item.id}>{item.name}</Option>)}
+                  </Select>,
                 )}
               </FormItem>
             </Col>
@@ -302,7 +331,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('country', {
-                  initialValue: modalValues && modalValues.data ? (modalValues.data.country === 1 ? '美国' : modalValues.data.country === 2 ? '德国' : modalValues.data.country === 3 ? '日本' : modalValues.data.country === 4 ? '澳洲' : '' ) : '',
+                  initialValue: modalValues && modalValues.data ? (modalValues.data.country === 1 ? '美国' : modalValues.data.country === 2 ? '德国' : modalValues.data.country === 3 ? '日本' : modalValues.data.country === 4 ? '澳洲' : undefined) : undefined,
                   rules: [{ message: '请选择国家' }],
                 })(
                   <Select placeholder="请选择国家">
@@ -310,7 +339,7 @@ class ProductsModal extends Component {
                     <Option value="2">德国</Option>
                     <Option value="3">日本</Option>
                     <Option value="4">澳洲</Option>
-                  </Select>
+                  </Select>,
                 )}
               </FormItem>
             </Col>
@@ -320,13 +349,13 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('currency', {
-                  initialValue: modalValues && modalValues.data ? modalValues.data.currency === 1 ? '人民币' : modalValues.data.currency === 2 ? '美元' : '' : '',
+                  initialValue: modalValues && modalValues.data ? modalValues.data.currency === 1 ? '人民币' : modalValues.data.currency === 2 ? '美元' : undefined : undefined,
                   rules: [{ message: '请选择币种' }],
                 })(
                   <Select placeholder="请选择币种">
                     <Option value="1">人民币</Option>
                     <Option value="2">美元</Option>
-                  </Select>
+                  </Select>,
                 )}
               </FormItem>
             </Col>
@@ -336,13 +365,13 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('idCard', {
-                  initialValue: modalValues && modalValues.data ? modalValues.data.idCard === 1 ? '是' : modalValues.data.idCard === 2 ? '否' : '' : '' ,
+                  initialValue: modalValues && modalValues.data ? modalValues.data.idCard === 1 ? '是' : modalValues.data.idCard === 2 ? '否' : undefined : undefined,
                   rules: [{ message: '请选择是否身份证' }],
                 })(
                   <Select placeholder="请选择是否身份证">
                     <Option value="1">是</Option>
                     <Option value="2">否</Option>
-                  </Select>
+                  </Select>,
                 )}
               </FormItem>
             </Col>
@@ -354,10 +383,9 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('startDate', {
-                  initialValue: modalValues.data ? modalValues.data.startDateStr : '',
-                  rules: [{ message: '请输入销售开始时间' }],
+                  initialValue: (modalValues.data && modalValues.data.startDateStr) ? moment(modalValues.data.startDateStr, 'YYYY-MM-DD') : undefined,
                 })(
-                  <DatePicker format='YYYY-MM-DD' />
+                  <DatePicker format="YYYY-MM-DD" />,
                 )}
               </FormItem>
             </Col>
@@ -367,10 +395,9 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('endDate', {
-                  initialValue: modalValues.data ? modalValues.data.endDateStr : '',
-                  rules: [{ message: '请输入销售结束时间' }],
+                  initialValue: (modalValues.data && modalValues.data.endDateStr) ? moment(modalValues.data.endDateStr, 'YYYY-MM-DD') : undefined,
                 })(
-                  <DatePicker format='YYYY-MM-DD' />
+                  <DatePicker format="YYYY-MM-DD" />,
                 )}
               </FormItem>
             </Col>
@@ -380,10 +407,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('buySite', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.buySite,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.buySite) || undefined,
                   rules: [{ message: '请输入采购站点' }],
                 })(
-                  <Input placeholder="请输入采购站点" />
+                  <Input placeholder="请输入采购站点" />,
                 )}
               </FormItem>
             </Col>
@@ -395,10 +422,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('spec', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.spec,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.spec) || undefined,
                   rules: [{ message: '请输入规格' }],
                 })(
-                  <Input placeholder="请输入规格" />
+                  <Input placeholder="请输入规格" />,
                 )}
               </FormItem>
             </Col>
@@ -408,10 +435,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('model', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.model,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.model) || undefined,
                   rules: [{ message: '请输入型号' }],
                 })(
-                  <Input placeholder="请输入型号" />
+                  <Input placeholder="请输入型号" />,
                 )}
               </FormItem>
             </Col>
@@ -421,10 +448,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('weight', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.weight,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.weight) || undefined,
                   rules: [{ message: '请输入重量' }],
                 })(
-                  <InputNumber step={0.01} min={0} style={{width: 133.5}} placeholder="请输入重量" />
+                  <InputNumber step={0.01} min={0} style={{ width: 133.5 }} placeholder="请输入重量" />,
                 )}
               </FormItem>
             </Col>
@@ -436,10 +463,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('unit', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.unit,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.unit) || undefined,
                   rules: [{ message: '请输入单位' }],
                 })(
-                  <Input placeholder="请输入单位" />
+                  <Input placeholder="请输入单位" />,
                 )}
               </FormItem>
             </Col>
@@ -449,10 +476,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('source', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.source,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.source) || undefined,
                   rules: [{ message: '请输入来源' }],
                 })(
-                  <Input placeholder="请输入来源" />
+                  <Input placeholder="请输入来源" />,
                 )}
               </FormItem>
             </Col>
@@ -462,10 +489,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('contactPerson', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.contactPerson,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.contactPerson) || undefined,
                   rules: [{ message: '请输入联系人' }],
                 })(
-                  <Input placeholder="请输入联系人" />
+                  <Input placeholder="请输入联系人" />,
                 )}
               </FormItem>
             </Col>
@@ -477,10 +504,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('origin', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.origin,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.origin) || undefined,
                   rules: [{ message: '请输入产地' }],
                 })(
-                  <Input placeholder="请输入产地" />
+                  <Input placeholder="请输入产地" />,
                 )}
               </FormItem>
             </Col>
@@ -490,10 +517,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('contactTel', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.contactTel,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.contactTel) || undefined,
                   rules: [{ message: '请输入联系电话' }],
                 })(
-                  <Input placeholder="请输入联系电话" />
+                  <Input placeholder="请输入联系电话" />,
                 )}
               </FormItem>
             </Col>
@@ -507,10 +534,10 @@ class ProductsModal extends Component {
                 style={{ marginRight: '-20px' }}
               >
                 {getFieldDecorator('remark', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.remark,
+                  initialValue: (modalValues && modalValues.data && modalValues.data.remark) || undefined,
                   rules: [{ message: '请输入备注' }],
                 })(
-                  <Input type="textarea" placeholder="请输入备注" />
+                  <Input type="textarea" placeholder="请输入备注" />,
                 )}
               </FormItem>
             </Col>
@@ -532,13 +559,13 @@ class ProductsModal extends Component {
                     <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
                       <img alt="example" style={{ width: '100%' }} src={previewImage} />
                     </Modal>
-                  </div>
+                  </div>,
                 )}
               </FormItem>
             </Col>
           </Row>
           <Row>
-            <Col>
+            <Col className={styles.productModalBtn}>
               <Button type="primary" onClick={this.addSKU.bind(this)}>新增SKU</Button>
             </Col>
           </Row>
@@ -551,13 +578,11 @@ class ProductsModal extends Component {
         </Form>
       </Modal>
     );
-    
   }
-
 }
 
 function mapStateToProps(state) {
-  const { brands } = state.products;
+  // const { brands } = state.products;
   return {
     loading: state.loading.models.products,
   };
@@ -567,6 +592,4 @@ ProductsModal.PropTypes = {
   brands: PropTypes.array.isRequired,
 };
 
-ProductsModal = Form.create()(ProductsModal);
-
-export default connect(mapStateToProps)(ProductsModal);
+export default connect(mapStateToProps)(Form.create()(ProductsModal));

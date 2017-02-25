@@ -164,8 +164,8 @@ class Sku extends Component {
     return (
       <div className={styles.normal}>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row className={styles.plus}>
-            <Col>
+          <Row>
+            <Col className={styles.operBtn}>
               <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button>
             </Col>
           </Row>

@@ -2,11 +2,15 @@ import dva from 'dva';
 import { hashHistory } from 'dva/router';
 import createLoading from 'dva-loading';
 import { message, Modal } from 'antd';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
 import models from './models';
 import fetch from './utils/request';
 import utilRegister from './utils';
 import './index.html';
 import './index.css';
+
+moment.locale('zh-cn');
 
 // 开启ajax格式验证
 fetch.onError((err) => {

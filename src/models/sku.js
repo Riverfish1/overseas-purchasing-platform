@@ -39,7 +39,9 @@ export default {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
         if (pathname === '/products/skuList') {
-          dispatch({ type: 'querySkuList', payload: query });
+          setTimeout(() => {
+            dispatch({ type: 'querySkuList', payload: query });
+          }, 0);
         }
       });
     },

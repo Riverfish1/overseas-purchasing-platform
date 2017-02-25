@@ -1,12 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
-import { Table, Pagination, Input, Button, message, Row, Col, Select, DatePicker, Form, Icon, TreeSelect } from 'antd';
+import { Table, Input, Button, message, Row, Col, Select, DatePicker, Form, TreeSelect } from 'antd';
 import ProductsModal from './ProductsModal';
 import styles from './Products.less';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -29,8 +25,8 @@ class Products extends Component {
       }
       const values = {
         ...filedsValue,
-        'startGmt': filedsValue['startGmt'] && filedsValue['startGmt'].format('YYYY-MM-DD'),
-        'endGmt': filedsValue['endGmt'] && filedsValue['endGmt'].format('YYYY-MM-DD'),
+        startGmt: filedsValue.startGmt && filedsValue.startGmt.format('YYYY-MM-DD'),
+        endGmt: filedsValue.endGmt && filedsValue.endGmt.format('YYYY-MM-DD'),
       };
       console.log(values);
       this.props.dispatch({
@@ -59,7 +55,7 @@ class Products extends Component {
   }
 
   updateModal(id) {
-    let p = this;
+    const p = this;
     console.log(id);
     if (id.length === 1) {
       this.setState({
@@ -79,8 +75,8 @@ class Products extends Component {
   }
 
   render() {
-    let p = this;
-    const { form, productsList = {}, brands = [], productsValues = {}, tree=[], } = this.props;
+    const p = this;
+    const { form, productsList = {}, brands = [], productsValues = {}, tree = [] } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -88,7 +84,9 @@ class Products extends Component {
     };
     const columns = [
       {
-        title: '序号', dataIndex: 'order', key: 'order',
+        title: '序号',
+        dataIndex: 'order',
+        key: 'order',
         render(text, record, index) {
           return index + 1;
         },
@@ -122,7 +120,8 @@ class Products extends Component {
       },
     ];
     const rowSelection = {
-      getCheckboxProps: record => ({}),
+      type: 'radio',
+      getCheckboxProps: () => ({}),
       onChange(selectedRowKeys) {
         p.setState({ updateId: selectedRowKeys });
       },
@@ -142,8 +141,8 @@ class Products extends Component {
     return (
       <div className={styles.normal}>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row gutter={40}>
-            <Col span={6}>
+          <Row gutter={20} style={{ width: 700 }}>
+            <Col span="8">
               <FormItem
                 label="商品编码"
 
@@ -152,11 +151,10 @@ class Products extends Component {
                 {getFieldDecorator('itemCode', {
                   rules: [{ message: '请输入商品编码' }],
                 })(
-                  <Input placeholder="请输入商品编码"/>
-                )}
+                  <Input placeholder="请输入商品编码" />)}
               </FormItem>
             </Col>
-            <Col span={6}>
+            <Col span="8">
               <FormItem
                 label="商品名称"
 
@@ -165,13 +163,10 @@ class Products extends Component {
                 {getFieldDecorator('name', {
                   rules: [{ message: '请输入商品名称' }],
                 })(
-                  <Input placeholder="请输入商品名称"/>
-                )}
+                  <Input placeholder="请输入商品名称" />)}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={40}>
-            <Col span={6}>
+            <Col span="8">
               <FormItem
                 label="类目"
                 {...formItemLayout}
@@ -179,11 +174,12 @@ class Products extends Component {
                 {getFieldDecorator('categoryId', {
                   rules: [{ message: '请选择类目' }],
                 })(
-                  <TreeSelect placeholder="请选择类目" treeData={tree} />
-                )}
+                  <TreeSelect placeholder="请选择类目" treeData={tree} />)}
               </FormItem>
             </Col>
-            <Col span={6}>
+          </Row>
+          <Row gutter={20} style={{ width: 700 }}>
+            <Col span={8}>
               <FormItem
                 label="品牌"
                 {...formItemLayout}
@@ -192,28 +188,21 @@ class Products extends Component {
                   rules: [{ message: '请选择品牌' }],
                 })(
                   <Select placeholder="请选择品牌">
-                    {brands && brands.map((item, index) => {
-                      return <Option key={item.name}>{item.name}</Option>
-                    } )}
-                  </Select>
-                )}
+                    {brands && brands.map(item => <Option key={item.name}>{item.name}</Option>)}
+                  </Select>)}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={40}>
-            <Col span={6}>
+            <Col span={8}>
               <FormItem
                 label="开始销售时间"
                 {...formItemLayout}
               >
                 {getFieldDecorator('startDate', {
                   rules: [{ message: '请选择开始销售时间' }],
-                })(
-                  <DatePicker placeholder="请选择开始销售时间" />
-                )}
+                })(<DatePicker placeholder="请选择开始时间" />)}
               </FormItem>
             </Col>
-            <Col span={6}>
+            <Col span={8}>
               <FormItem
                 label="结束销售时间"
                 {...formItemLayout}
@@ -221,25 +210,20 @@ class Products extends Component {
                 {getFieldDecorator('endDate', {
                   rules: [{ message: '请选择结束销售时间' }],
                 })(
-                  <DatePicker placeholder="请选择结束销售时间" />
-                )}
+                  <DatePicker placeholder="请选择结束时间" />)}
               </FormItem>
             </Col>
           </Row>
           <Row>
-            <Col span={5} push={3}>
+            <Col className={styles.listBtnGroup}>
               <Button htmlType="submit" size="large" type="primary">查询</Button>
-            </Col>
-            <Col span={4}>
               <Button size="large" type="ghost" onClick={this.handleEmpty.bind(this)}>清空</Button>
             </Col>
           </Row>
         </Form>
-        <Row className={styles.plus}>
-          <Col span={3}>
+        <Row>
+          <Col className={styles.productBtn}>
             <Button type="primary" size="large" onClick={this.addModal.bind(this)}>添加商品</Button>
-          </Col>
-          <Col span={3}>
             <Button size="large" onClick={this.updateModal.bind(this, p.state.updateId)}>修改商品</Button>
           </Col>
         </Row>
@@ -265,9 +249,7 @@ class Products extends Component {
         />
       </div>
     );
-
   }
-
 }
 
 function mapStateToProps(state) {
@@ -288,6 +270,4 @@ Products.PropTypes = {
   productsValues: PropTypes.object.isRequired,
 };
 
-Products = Form.create()(Products);
-
-export default connect(mapStateToProps)(Products);
+export default connect(mapStateToProps)(Form.create()(Products));

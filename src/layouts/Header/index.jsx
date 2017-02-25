@@ -10,7 +10,7 @@ function Header() {
       <span className={styles.logo} />
       <span className={styles.user}>
         <span className={styles.mr10}><Icon type="user" /> admin</span>
-        <span className={styles.mr10}><Icon type="lock" /> <Link to="/lock">修改密码</Link></span>
+        {/* <span className={styles.mr10}><Icon type="lock" /> <Link to="/lock">修改密码</Link></span> */}
         <span><Icon type="logout" /> <Link to={`/${routerCfg.LOGIN}`}>安全退出</Link></span>
       </span>
     </header>

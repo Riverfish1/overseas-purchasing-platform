@@ -27,7 +27,7 @@ export default {
     },
     savaProductsValue(state, { payload: data }) {
       return { ...state, productsValues: data };
-    }
+    },
   },
   effects: {
     * addProducts({ payload }, { call, put }) { // 新建商品
@@ -94,9 +94,11 @@ export default {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
         if (pathname === '/products/productsList') {
-          dispatch({ type: 'queryItemList', payload: query });
-          dispatch({ type: 'queryBrands', payload: query });
-          dispatch({ type: 'queryCatesTree', payload: query });
+          setTimeout(() => {
+            dispatch({ type: 'queryItemList', payload: query });
+            dispatch({ type: 'queryBrands', payload: query });
+            dispatch({ type: 'queryCatesTree', payload: query });
+          }, 0);
         }
       });
     },

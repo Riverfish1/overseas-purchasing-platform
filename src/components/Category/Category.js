@@ -77,7 +77,7 @@ class Category extends Component {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
-    const { cateList, form } = this.props;
+    const { cateList = {}, form } = this.props;
     return (
       <div className={styles.normal}>
         <Form onSubmit={this.handleSubmit.bind(this)}>

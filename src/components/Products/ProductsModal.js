@@ -1,13 +1,19 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Modal, Table, Pagination, message, Input, Upload, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Popconfirm } from 'antd';
+import { Modal, Table, Pagination, message, Input, Upload, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Popconfirm, TreeSelect } from 'antd';
 import styles from './Products.less';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 let uuid = 1;
+
+function getEmptyInput(str) {
+}
 
 class ProductsModal extends Component {
 
@@ -46,12 +52,13 @@ class ProductsModal extends Component {
   }
 
   addSKU() {
-    const { skuList } = this.state;
-    const obj = {
-      color: '', scale: '', inventory: '', virtualInventory: '', weight: '', skuCode: '', id: uuid, order: uuid,    
-    };
     uuid += 1;
-    skuList.push(obj);
+    const obj = {
+      color: 'EMPTY', scale: 'EMPTY', inventory: 'EMPTY', virtualInventory: 'EMPTY', weight: 'EMPTY', skuCode: 'EMPTY', id: uuid, order: uuid,    
+    };
+    const _skuList = [];
+    _skuList.push(obj);
+    this.setState({ skuList: _skuList });
   }
 
   handleCancel() {
@@ -62,6 +69,13 @@ class ProductsModal extends Component {
     callback();
   }
 
+  // queryItemSkus(param) {
+  //   const { modalValues = {} } = this.props;
+  //   modalValues.data && modalValues.data.itemSkus.map(item => {
+  //     return item[param];
+  //   });
+  // }
+
   handleDelete(id) {
     const { skuList } = this.state;
     let skuData = skuList.filter(item => id !== item.id);
@@ -70,7 +84,7 @@ class ProductsModal extends Component {
 
   render() {
     let p = this;
-    const { form, visible, close, brands = [], modalValues = {} } = this.props;
+    const { form, visible, close, brands = [], modalValues = {}, tree=[], } = this.props;
     const { previewVisible, previewImage } = this.state;
     const { getFieldDecorator } = form;
     const modalProps = {
@@ -137,49 +151,55 @@ class ProductsModal extends Component {
         {
           title: '尺寸', dataIndex: 'scale', key: 'scale', width: '14%',
           render(text, record, index) {
-            return <div>{getFieldDecorator('scale', {})(<Input />)}</div>
+            return <div>{getFieldDecorator('scale', {
+            })(<Input />)}</div>
           },
         },
         {
           title: '颜色', dataIndex: 'color', key: 'color', width: '14%',
           render(text, record, index) {
-            return <div>{getFieldDecorator('color', {})(<Input />)}</div>
+            return <div>{getFieldDecorator('color', {
+            })(<Input />)}</div>
           },
         },
         {
           title: '库存', dataIndex: 'inventory', key: 'inventory', width: '14%',
           render(text, record, index) {
-            return <div>{getFieldDecorator('inventory', {})(<Input />)}</div>
+            return <div>{getFieldDecorator('inventory', {
+            })(<Input />)}</div>
           },
         },
         {
           title: '虚拟库存', dataIndex: 'virtualInventory', key: 'virtualInventory', width: '14%',
           render(text, record, index) {
-            return <div>{getFieldDecorator('virtualInventory', {})(<Input />)}</div>
+            return <div>{getFieldDecorator('virtualInventory', {
+            })(<Input />)}</div>
           },
         },
         {
           title: 'barcode', dataIndex: 'skuCode', key: 'skuCode', width: '14%',
           render(text, record, index) {
-            return <div>{getFieldDecorator('skuCode', {})(<Input />)}</div>
+            return <div>{getFieldDecorator('skuCode', {
+            })(<Input />)}</div>
           },
         },
         {
           title: '重量(KG)', dataIndex: 'weight', key: 'weight', width: '14%',
           render(text, record, index) {
-            return <div>{getFieldDecorator('weight', {})(<Input />)}</div>
+            return <div>{getFieldDecorator('weight', {
+            })(<Input />)}</div>
           },
         },
         {
           title: '操作', key: 'operator',
           render(text, record, index) {
             return <Popconfirm title="确定删除?" onConfirm={p.handleDelete(record.id)}>
-            <a href="javascript:void(0)">删除</a>
-          </Popconfirm>
+                    <a href="javascript:void(0)">删除</a>
+                  </Popconfirm>
           },
         },
       ],
-      dataSource: (modalValues && modalValues.data && modalValues.data.itemSkus) || [],
+      dataSource: modalValues.data ? modalValues.data.itemSkus : p.state.skuList,
       bordered: false,
       pagination: true,
     };
@@ -253,9 +273,7 @@ class ProductsModal extends Component {
                   initialValue: modalValues && modalValues.data && modalValues.data.categoryId,
                   rules: [{ required: true, message: '请选择所属类目' }],
                 })(
-                  <Select placeholder="请选择所属类目" >
-                    <Option value="1">男人</Option>
-                  </Select>
+                  <TreeSelect placeholder="请选择所属类目" treeData={tree} />
                 )}
               </FormItem>
             </Col>
@@ -336,10 +354,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('startDate', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.startDateStr,
+                  initialValue: modalValues.data ? modalValues.data.startDateStr : '',
                   rules: [{ message: '请输入销售开始时间' }],
                 })(
-                  <DatePicker />
+                  <DatePicker format='YYYY-MM-DD' />
                 )}
               </FormItem>
             </Col>
@@ -349,10 +367,10 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('endDate', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.endDateStr,
+                  initialValue: modalValues.data ? modalValues.data.endDateStr : '',
                   rules: [{ message: '请输入销售结束时间' }],
                 })(
-                  <DatePicker />
+                  <DatePicker format='YYYY-MM-DD' />
                 )}
               </FormItem>
             </Col>
@@ -542,7 +560,6 @@ function mapStateToProps(state) {
   const { brands } = state.products;
   return {
     loading: state.loading.models.products,
-    brands: brands.data,
   };
 }
 

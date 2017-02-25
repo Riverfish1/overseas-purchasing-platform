@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Table, Pagination, Input, Button, message, Row, Col, Select, DatePicker, Form, Icon } from 'antd';
+import { Table, Pagination, Input, Button, message, Row, Col, Select, DatePicker, Form, Icon, TreeSelect } from 'antd';
 import ProductsModal from './ProductsModal';
 import styles from './Products.less';
 import moment from 'moment';
@@ -46,6 +46,18 @@ class Products extends Component {
     });
   }
 
+  handleEmpty() {
+    const { setFieldsValue } = this.props.form;
+    setFieldsValue({
+      itemCode: '',
+      name: '',
+      categoryId: [],
+      brand: [],
+      startDate: '',
+      endDate: '',
+    });
+  }
+
   updateModal(id) {
     let p = this;
     console.log(id);
@@ -68,7 +80,7 @@ class Products extends Component {
 
   render() {
     let p = this;
-    const { form, productsList = {}, brands = [], productsValues = {}, } = this.props;
+    const { form, productsList = {}, brands = [], productsValues = {}, tree=[], } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -120,7 +132,10 @@ class Products extends Component {
       total: productsList && productsList.total,
       pageSize: 10,
       onChange(page) {
-
+        p.props.dispatch({
+          type: 'products/queryItemList',
+          payload: { page },
+        });
       },
     };
 
@@ -164,9 +179,7 @@ class Products extends Component {
                 {getFieldDecorator('categoryId', {
                   rules: [{ message: '请选择类目' }],
                 })(
-                  <Select placeholder="请选择类目">
-                    <Option value="103">衣服</Option>
-                  </Select>
+                  <TreeSelect placeholder="请选择类目" treeData={tree} />
                 )}
               </FormItem>
             </Col>
@@ -193,7 +206,7 @@ class Products extends Component {
                 label="开始销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('startGmt', {
+                {getFieldDecorator('startDate', {
                   rules: [{ message: '请选择开始销售时间' }],
                 })(
                   <DatePicker placeholder="请选择开始销售时间" />
@@ -205,7 +218,7 @@ class Products extends Component {
                 label="结束销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('endGmt', {
+                {getFieldDecorator('endDate', {
                   rules: [{ message: '请选择结束销售时间' }],
                 })(
                   <DatePicker placeholder="请选择结束销售时间" />
@@ -218,7 +231,7 @@ class Products extends Component {
               <Button htmlType="submit" size="large" type="primary">查询</Button>
             </Col>
             <Col span={4}>
-              <Button size="large" type="ghost">清空</Button>
+              <Button size="large" type="ghost" onClick={this.handleEmpty.bind(this)}>清空</Button>
             </Col>
           </Row>
         </Form>
@@ -248,6 +261,7 @@ class Products extends Component {
           close={this.closeModal.bind(this)}
           modalValues={productsValues}
           brands={brands}
+          tree={tree}
         />
       </div>
     );
@@ -257,12 +271,13 @@ class Products extends Component {
 }
 
 function mapStateToProps(state) {
-  const { productsList, productsValues, brands } = state.products;
+  const { productsList, productsValues, brands, tree } = state.products;
   return {
     loading: state.loading.models.products,
     productsList,
     productsValues,
     brands: brands.data,
+    tree: tree.data,
   };
 }
 

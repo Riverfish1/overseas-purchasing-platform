@@ -1,7 +1,7 @@
-import { addCate, queryCateList } from '../services/category';
+import { addOrder, queryOrderList } from '../services/order';
 
 export default {
-  namespace: 'cate',
+  namespace: 'order',
   state: {
     cateList: [],
   },
@@ -14,7 +14,7 @@ export default {
     },
   },
   effects: {
-    * addCate({ payload }, { call, put }) { // 新建SKU
+    * addOrder({ payload }, { call, put }) { // 新建SKU
       const data = yield call(addSku, { payload });
       if (data.success) {
         yield put({
@@ -25,8 +25,8 @@ export default {
         });
       }
     },
-    * queryCateList({ payload }, { call, put }) { // 类目管理列表
-      const data = yield call(queryCateList, { payload });
+    * queryOrderList({ payload }, { call, put }) { // 类目管理列表
+      const data = yield call(queryOrderList, { payload });
       if (data.success) {
         yield put({
           type: 'saveCateList',
@@ -38,8 +38,10 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        if (pathname === '/products/cateList') {
-          dispatch({ type: 'querySkuList', payload: query });
+        if (pathname === '/sale/orderList') {
+          setTimeout(() => {
+            dispatch({ type: 'queryOrderList', payload: query });
+          }, 0);
         }
       });
     },

@@ -9,6 +9,7 @@ import Overview from './components/Overview';
 import Products from './components/Products/Products';
 import Sku from './components/Sku/Sku';
 import Category from './components/Category/Category';
+import Order from './components/Order/Order.jsx';
 
 function RouterConfig({ history }) {
   const routes = {
@@ -47,6 +48,10 @@ function RouterConfig({ history }) {
       {
         path: `/${routerCfg.PRODUCTS}/${routerCfg.CATE_LIST}`,
         component: Category,
+      },
+      {
+        path: `/${routerCfg.SALE}/${routerCfg.ORDER_LIST}`,
+        component: Order,
       },
     ],
   };

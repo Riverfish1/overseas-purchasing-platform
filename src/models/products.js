@@ -19,13 +19,13 @@ export default {
     saveCatesTree(state, { payload: data }) {
       return { ...state, tree: data };
     },
-    savaItemList(state, { payload: data }) {
+    saveItemList(state, { payload: data }) {
       return { ...state, productsList: data };
     },
     saveBrands(state, { payload: data }) { // 保存品牌
       return { ...state, brands: data };
     },
-    savaProductsValue(state, { payload: data }) {
+    saveProductsValue(state, { payload: data }) {
       return { ...state, productsValues: data };
     }
   },
@@ -44,7 +44,7 @@ export default {
       console.log('queryProduct success', data);
       if (data.success) {
         yield put({
-          type: 'savaProductsValue',
+          type: 'saveProductsValue',
           payload: data,
         });
       }
@@ -64,7 +64,7 @@ export default {
       console.log('queryItemList success', data);
       if (data.success) {
         yield put({
-          type: 'savaItemList',
+          type: 'saveItemList',
           payload: data,
         });
       }

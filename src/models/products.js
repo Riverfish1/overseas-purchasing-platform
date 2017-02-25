@@ -80,7 +80,6 @@ export default {
       }
     },
     * queryCatesTree({ payload }, { call, put }) {
-      console.log(payload);
       const { data } = yield call(queryCatesTree);
       console.log('queryCatesTree success', data);
       if (data.success) {

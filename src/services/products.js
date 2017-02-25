@@ -50,36 +50,7 @@ export function queryBrands() {
 
 export function queryCatesTree() {
   return request('/haierp1/category/tree', {
-    method: 'POST',
     credentials: true,
   });
 };
 
-export function addSku({ payload }) {
-  return request(`/haierp1/sku/add${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
-
-export function addCate({ payload }) {
-  return request(`/haierp1/category/add${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
-
-
-export function querySkuList({ payload }) {
-  return request(`/haierp1/sku/querySkuList${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
-
-export function queryCateList({ payload }) {
-  return request(`/haierp1/cate/queryCateList${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};

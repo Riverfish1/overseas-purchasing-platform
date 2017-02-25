@@ -1,4 +1,4 @@
-import { 
+import {
   queryItemList, // 获取商品列表
   updateProducts, // 修改商品
   queryProduct, // 查询单个商品，修改之前调用
@@ -31,7 +31,7 @@ export default {
   },
   effects: {
     * addProducts({ payload }, { call, put }) { // 新建商品
-      const { data } = yield call(addProducts, { payload });
+      const data = yield call(addProducts, { payload });
       if (data.success) {
         yield put({
           type: 'queryItemList',
@@ -40,7 +40,7 @@ export default {
       }
     },
     * queryProduct({ payload }, { call, put }) { // 修改商品
-      const { data } = yield call(queryProduct, { payload });
+      const data = yield call(queryProduct, { payload });
       console.log('queryProduct success', data);
       if (data.success) {
         yield put({
@@ -50,7 +50,7 @@ export default {
       }
     },
     * updateProducts({ payload }, { call, put }) { // 修改商品
-      const { data } = yield call(updateProducts, { payload });
+      const data = yield call(updateProducts, { payload });
       console.log('updateProducts success', data);
       if (data.success) {
         yield put({
@@ -60,7 +60,7 @@ export default {
       }
     },
     * queryItemList({ payload }, { call, put }) { // 商品管理列表
-      const { data } = yield call(queryItemList, { payload });
+      const data = yield call(queryItemList, { payload });
       console.log('queryItemList success', data);
       if (data.success) {
         yield put({
@@ -70,7 +70,7 @@ export default {
       }
     },
     * queryBrands({ payload }, { call, put }) { // 获取品牌
-      const { data } = yield call(queryBrands);
+      const data = yield call(queryBrands);
       console.log('queryBrands success', data);
       if (data.success) {
         yield put({
@@ -81,7 +81,7 @@ export default {
     },
     * queryCatesTree({ payload }, { call, put }) {
       console.log(payload);
-      const { data } = yield call(queryCatesTree);
+      const data = yield call(queryCatesTree);
       console.log('queryCatesTree success', data);
       if (data.success) {
         yield put({

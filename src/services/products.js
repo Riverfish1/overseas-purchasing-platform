@@ -1,8 +1,8 @@
-import request from '../utils/request';
+import fetch from '../utils/request';
 
 function toForm(data) {
   let str = '?';
-  Object.keys(data).forEach((el, index) => {
+  Object.keys(data).forEach((el) => {
     if (data[el]) {
       str += '&';
       str += `${el}=${data[el]}`;
@@ -12,74 +12,41 @@ function toForm(data) {
 }
 
 export function queryItemList({ payload }) {
-  return request(`/haierp1/item/queryItemList${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
-
+  return fetch.post(`/haierp1/item/queryItemList${toForm(payload)}`).catch(e => e);
+}
 
 export function queryProduct({ payload }) {
-  return request(`/haierp1/item/query${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
+  return fetch.post(`/haierp1/item/query${toForm(payload)}`).catch(e => e);
+}
 
 export function updateProducts({ payload }) {
-  return request(`/haierp1/item/update${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
+  return fetch.post(`/haierp1/item/update${toForm(payload)}`).catch(e => e);
+}
 
 export function addProducts({ payload }) {
-  return request(`/haierp1/item/add${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
-
+  return fetch.post(`/haierp1/item/add${toForm(payload)}`).catch(e => e);
+}
 
 export function queryBrands() {
-  return request('/haierp1/item/brand/queryBrands', {
-    method: 'POST',
-    credentials: true,
-  });
-};
+  return fetch.post('/haierp1/item/brand/queryBrands').catch(e => e);
+}
 
 export function queryCatesTree() {
-  return request('/haierp1/category/tree', {
-    method: 'POST',
-    credentials: true,
-  });
-};
+  return fetch.post('/haierp1/category/tree').catch(e => e);
+}
 
 export function addSku({ payload }) {
-  return request(`/haierp1/sku/add${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
+  return fetch.post(`/haierp1/sku/add${toForm(payload)}`).catch(e => e);
+}
 
 export function addCate({ payload }) {
-  return request(`/haierp1/category/add${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
-
+  return fetch.post(`/haierp1/category/add${toForm(payload)}`).catch(e => e);
+}
 
 export function querySkuList({ payload }) {
-  return request(`/haierp1/sku/querySkuList${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
+  return fetch.post(`/haierp1/sku/querySkuList${toForm(payload)}`).catch(e => e);
+}
 
 export function queryCateList({ payload }) {
-  return request(`/haierp1/cate/queryCateList${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
+  return fetch.post(`/haierp1/cate/queryCateList${toForm(payload)}`).catch(e => e);
+}

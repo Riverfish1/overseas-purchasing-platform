@@ -1,7 +1,4 @@
-import { 
-  addCate,
-  queryCateList,
-} from '../services/cate';
+import { addCate, queryCateList } from '../services/category';
 
 export default {
   namespace: 'cate',
@@ -18,7 +15,7 @@ export default {
   },
   effects: {
     * addCate({ payload }, { call, put }) { // 新建SKU
-      const { data } = yield call(addSku, { payload });
+      const data = yield call(addSku, { payload });
       if (data.success) {
         yield put({
           type: 'saveSku',
@@ -29,7 +26,7 @@ export default {
       }
     },
     * queryCateList({ payload }, { call, put }) { // 类目管理列表
-      const { data } = yield call(queryCateList, { payload });
+      const data = yield call(queryCateList, { payload });
       if (data.success) {
         yield put({
           type: 'savaCateList',

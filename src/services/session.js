@@ -1,5 +1,4 @@
-import request from '../utils/request';
-import { API_URL } from '../constants';
+import fetch from '../utils/request';
 
 function toForm(data) {
   let str = '?';
@@ -11,8 +10,5 @@ function toForm(data) {
 }
 
 export function login({ payload }) {
-  return request(`/haierp1/haiLogin/login${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
+  return fetch.post(`/haierp1/haiLogin/login${toForm(payload)}`).catch(e => e);
 }

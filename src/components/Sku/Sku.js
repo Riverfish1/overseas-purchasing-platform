@@ -1,11 +1,12 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
-import { Table, Pagination, Input, Button, Row, Col, Select, DatePicker, Form, Icon } from 'antd';
-import SkuModal from './SkuModal';
-import styles from './Sku.less';
+import { Table, Button, Row, Col, Select, Form } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+
+import SkuModal from './SkuModal';
+import styles from './Sku.less';
+
 moment.locale('zh-cn');
 
 const FormItem = Form.Item;
@@ -28,14 +29,14 @@ class Sku extends Component {
       }
       const values = {
         ...filedsValue,
-        'startDateStr': filedsValue['startDateStr'].format('YYYY-MM-DD'),
-        'endDateStr': filedsValue['endDateStr'].format('YYYY-MM-DD'),
+        startDateStr: filedsValue.startDateStr.format('YYYY-MM-DD'),
+        endDateStr: filedsValue.endDateStr.format('YYYY-MM-DD'),
       };
       console.log(values);
       this.props.dispatch({
         type: 'products/queryItemList',
         payload: {
-          ...values
+          ...values,
         },
       });
     });
@@ -44,7 +45,7 @@ class Sku extends Component {
   showModal() {
     this.setState({
       modalVisible: true,
-    })
+    });
   }
 
   closeModal(modalVisible) {
@@ -54,10 +55,11 @@ class Sku extends Component {
   }
 
   render() {
-
     const columns = [
       {
-        title: '序号', dataIndex: 'order', key: 'order',
+        title: '序号',
+        dataIndex: 'order',
+        key: 'order',
         render(text, record, index) {
           return index + 1;
         },
@@ -153,7 +155,6 @@ class Sku extends Component {
         title: '商品备注', dataIndex: 'endDateStr', key: '30',
       },
     ];
-
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -188,15 +189,13 @@ class Sku extends Component {
         />
       </div>
     );
-
   }
-
 }
 
-function mapStateToProps(state) {
-  const { skuList } = state.products;
+function mapStateToProps({ sku }) {
+  const { skuList } = sku;
   return {
-    loading: state.loading.models.products,
+    // loading: state.loading.models.products,
     skuList,
   };
 }
@@ -205,6 +204,4 @@ Sku.PropTypes = {
   dataSource: PropTypes.array.isRequired,
 };
 
-Sku = Form.create()(Sku);
-
-export default connect(mapStateToProps)(Sku);
+export default connect(mapStateToProps)(Form.create()(Sku));

@@ -10,17 +10,7 @@ import Products from './components/Products/Products';
 import Sku from './components/Sku/Sku';
 import Category from './components/Category/Category';
 
-const cached = {};
-function registerModel(app, model) {
-  if (!cached[model.namespace]) {
-    app.model(model);
-    cached[model.namespace] = 1;
-  }
-}
-
-function RouterConfig({ history, app }) {
-  registerModel(app, require('./models/session'));
-  registerModel(app, require('./models/products'));
+function RouterConfig({ history }) {
   const routes = {
     path: '/',
     component: MainLayout,
@@ -48,27 +38,15 @@ function RouterConfig({ history, app }) {
       },
       {
         path: `/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`,
-        getComponent(nextState, cb) {
-          require.ensure([], () => {
-            cb(null, Products);
-          });
-        },
+        component: Products,
       },
       {
         path: `/${routerCfg.PRODUCTS}/${routerCfg.SKU_LIST}`,
-        getComponent(nextState, cb) {
-          require.ensure([], () => {
-            cb(null, Sku);
-          });
-        },
+        component: Sku,
       },
       {
         path: `/${routerCfg.PRODUCTS}/${routerCfg.CATE_LIST}`,
-        getComponent(nextState, cb) {
-          require.ensure([], () => {
-            cb(null, Category);
-          });
-        },
+        component: Category,
       },
     ],
   };

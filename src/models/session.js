@@ -8,7 +8,7 @@ export default {
   },
   effects: {
     * login(payload, { call }) {
-      const { data } = yield call(login, payload);
+      const data = yield call(login, payload);
       if (data.success) {
         window.redirector(`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`);
       }

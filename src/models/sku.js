@@ -1,7 +1,4 @@
-import { 
-  addSku,
-  querySkuList,
-} from '../services/sku';
+import { addSku, querySkuList } from '../services/sku';
 
 export default {
   namespace: 'sku',
@@ -12,13 +9,13 @@ export default {
     saveSku(state, { payload: dataSource }) {
       return { ...state, ...dataSource };
     },
-    savaSkuList(state, { payload: data }) {
+    saveSkuList(state, { payload: data }) {
       return { ...state, skuList: data };
     },
   },
   effects: {
     * addSku({ payload }, { call, put }) { // 新建SKU
-      const { data } = yield call(addSku, { payload });
+      const data = yield call(addSku, { payload });
       if (data.success) {
         yield put({
           type: 'saveSku',
@@ -29,10 +26,10 @@ export default {
       }
     },
     * querySkuList({ payload }, { call, put }) { // SKU管理列表
-      const { data } = yield call(querySkuList, { payload });
+      const data = yield call(querySkuList, { payload });
       if (data.success) {
         yield put({
-          type: 'savaSkuList',
+          type: 'saveSkuList',
           payload: data,
         });
       }

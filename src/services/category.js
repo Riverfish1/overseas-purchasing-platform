@@ -1,8 +1,8 @@
-import request from '../utils/request';
+import fetch from '../utils/request';
 
 function toForm(data) {
   let str = '?';
-  Object.keys(data).forEach((el, index) => {
+  Object.keys(data).forEach((el) => {
     if (data[el]) {
       str += '&';
       str += `${el}=${data[el]}`;
@@ -12,15 +12,9 @@ function toForm(data) {
 }
 
 export function addCate({ payload }) {
-  return request(`/haierp1/category/add${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
+  return fetch.post(`/haierp1/category/add${toForm(payload)}`).catch(e => e);
+}
 
 export function queryCateList({ payload }) {
-  return request(`/haierp1/category/queryCateList${toForm(payload)}`, {
-    method: 'POST',
-    credentials: true,
-  });
-};
+  return fetch.post(`/haierp1/category/queryCateList${toForm(payload)}`).catch(e => e);
+}

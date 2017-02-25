@@ -9,7 +9,7 @@ export default {
     saveCate(state, { payload: dataSource }) {
       return { ...state, ...dataSource };
     },
-    savaCateList(state, { payload: data }) {
+    saveCateList(state, { payload: data }) {
       return { ...state, skuList: data };
     },
   },
@@ -29,7 +29,7 @@ export default {
       const data = yield call(queryCateList, { payload });
       if (data.success) {
         yield put({
-          type: 'savaCateList',
+          type: 'saveCateList',
           payload: data,
         });
       }

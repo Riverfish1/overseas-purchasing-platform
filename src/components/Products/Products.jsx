@@ -13,7 +13,6 @@ class Products extends Component {
     super();
     this.state = {
       modalVisible: false,
-      updateId: [], // 修改商品传的id
     };
   }
 
@@ -57,20 +56,23 @@ class Products extends Component {
   updateModal(id) {
     const p = this;
     console.log(id);
-    if (id.length === 1) {
-      this.setState({
-        modalVisible: true,
-      }, () => {
-        p.props.dispatch({ type: 'products/queryProduct', payload: { id: id[0] } });
-      });
-    } else {
-      message.error('至少选择一个，且只能选择一个进行修改');
-    }
+    this.setState({
+      modalVisible: true,
+    }, () => {
+      p.props.dispatch({ type: 'products/queryProduct', payload: { id } });
+    });
   }
 
   closeModal(modalVisible) {
+    const { dispatch } = this.props;
+
     this.setState({
       modalVisible,
+    });
+
+    dispatch({
+      type: 'products/saveProductsValue',
+      payload: {},
     });
   }
 
@@ -118,14 +120,18 @@ class Products extends Component {
       {
         title: '结束销售时间', dataIndex: 'endDate', key: 'endDate',
       },
-    ];
-    const rowSelection = {
-      type: 'radio',
-      getCheckboxProps: () => ({}),
-      onChange(selectedRowKeys) {
-        p.setState({ updateId: selectedRowKeys });
+      {
+        title: '操作',
+        dataIndex: 'oper',
+        key: 'oper',
+        width: 50,
+        render(text, record) {
+          return (
+            <a onClick={p.updateModal.bind(p, record.id)}>修改</a>
+          );
+        },
       },
-    };
+    ];
 
     const paginationProps = {
       total: productsList && productsList.total,
@@ -224,7 +230,6 @@ class Products extends Component {
         <Row>
           <Col className={styles.productBtn}>
             <Button type="primary" size="large" onClick={this.addModal.bind(this)}>添加商品</Button>
-            <Button size="large" onClick={this.updateModal.bind(this, p.state.updateId)}>修改商品</Button>
           </Col>
         </Row>
         <Row>
@@ -235,7 +240,6 @@ class Products extends Component {
               bordered
               size="large"
               rowKey={record => record.id}
-              rowSelection={rowSelection}
               pagination={paginationProps}
             />
           </Col>

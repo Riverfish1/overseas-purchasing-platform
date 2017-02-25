@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, IndexRoute, Route } from 'dva/router';
+import { Router, IndexRoute, Route, Redirect } from 'dva/router';
 import { routerCfg } from './constants';
 
 // 视图组件
@@ -31,6 +31,8 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} component={Products} />
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.SKU_LIST}`} component={Sku} />
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.CATE_LIST}`} component={Category} />
+        {/* 重定向 */}
+        <Redirect from={`/${routerCfg.PRODUCTS}`} to={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} />
       </Route>
     </Router>
   );

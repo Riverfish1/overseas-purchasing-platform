@@ -30,7 +30,7 @@ class CategoryModal extends Component {
   }
 
   chooseProps() {
-    
+
   }
 
   render() {
@@ -57,7 +57,7 @@ class CategoryModal extends Component {
     };
 
     return (
-      <Modal 
+      <Modal
         {...modalProps}
       >
         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -143,15 +143,15 @@ class CategoryModal extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          {/* <Row>
             <Col>
               <Button type="primary" onClick={() => {this.chooseProps.bind(this)}}>选择属性</Button>
             </Col>
-          </Row>
+          </Row> */}
         </Form>
       </Modal>
     );
-    
+
   }
 
 }

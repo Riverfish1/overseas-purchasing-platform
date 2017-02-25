@@ -27,7 +27,7 @@ fetch.onError((err) => {
 });
 
 message.config({
-  duration: 5,
+  duration: 3,
 });
 
 // 注册辅助方法

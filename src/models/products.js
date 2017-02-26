@@ -39,6 +39,7 @@ export default {
     * addProducts({ payload }, { call, put }) { // 新建商品
       const data = yield call(addProducts, { payload });
       if (data.success) {
+        message.success('新增商品成功');
         yield put({
           type: 'queryItemList',
           payload: {},
@@ -49,6 +50,18 @@ export default {
       const data = yield call(queryProduct, { payload });
       console.log('queryProduct success', data);
       if (data.success) {
+        // 处理图片缩略图
+        if (data.data.mainPic && data.data.mainPic !== '0') {
+          const picStr = data.data.mainPic.replace(/&quot;/g, '"');
+          console.log(picStr);
+          console.log(data.data.mainPic);
+          const picObj = JSON.parse(picStr);
+          picObj.picList.forEach((el) => {
+            el.thumbUrl = `${el.url}?x-oss-process=image/resize,w_200,limit_0`;
+          });
+          // 写回去
+          data.data.mainPic = JSON.stringify(picObj);
+        }
         yield put({
           type: 'saveProductsValue',
           payload: data,
@@ -59,7 +72,7 @@ export default {
       const data = yield call(updateProducts, { payload });
       console.log('updateProducts success', data);
       if (data.success) {
-        message.success('修改成功');
+        message.success('修改商品成功');
         yield put({
           type: 'queryItemList',
           payload: {},

@@ -26,7 +26,7 @@ class Order extends Component {
       console.log(filedsValue);
       this.props.dispatch({
         type: 'order/queryOrderList',
-        payload: { ...filedsValue },
+        payload: { ...filedsValue, pageIndex: 1 },
       });
     });
   }
@@ -59,7 +59,7 @@ class Order extends Component {
 
   render() {
     const p = this;
-    const { form, orderList = {} } = this.props;
+    const { form, orderList = {}, currentPage } = this.props;
     const { getFieldDecorator, getFieldsValue } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -126,6 +126,7 @@ class Order extends Component {
 
     const listPaginationProps = {
       total: orderList && orderList.totalCount,
+      current: currentPage,
       pageSize: 10,
       onChange(page) {
         const values = getFieldsValue();
@@ -404,9 +405,10 @@ class Order extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList } = state.order;
+  const { orderList, currentPage } = state.order;
   return {
     orderList,
+    currentPage,
   };
 }
 

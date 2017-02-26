@@ -5,6 +5,7 @@ export default {
   state: {
     orderList: [],
     orderSku: [],
+    currentPage: 1, // 默认页码
   },
   reducers: {
     saveOrderList(state, { payload }) {
@@ -12,6 +13,9 @@ export default {
     },
     saveOrderSku(state, { payload }) {
       return { ...state, orderSku: payload };
+    },
+    saveCurrentPage(state, { payload }) {
+      return { ...state, currentPage: payload.pageIndex };
     },
   },
   effects: {
@@ -33,8 +37,13 @@ export default {
         });
       }
     },
-    * queryOrderList({ payload }, { call, put }) { // 类目管理列表
-      const data = yield call(queryOrderList, { payload });
+    * queryOrderList({ payload }, { call, put, select }) { // 类目管理列表
+      let pageIndex = yield select(({ order }) => order.currentPage);
+      if (payload && payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({ type: 'saveCurrentPage', payload });
+      }
+      const data = yield call(queryOrderList, { payload: { ...payload, pageIndex } });
       if (data.success) {
         yield put({
           type: 'saveOrderList',

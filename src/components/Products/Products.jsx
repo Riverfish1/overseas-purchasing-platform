@@ -66,7 +66,7 @@ class Products extends Component {
 
   render() {
     const p = this;
-    const { form, productsList = {}, brands = [], productsValues = {}, tree = [] } = this.props;
+    const { form, currentPage, productsList = {}, brands = [], productsValues = {}, tree = [] } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -80,13 +80,26 @@ class Products extends Component {
         title: '商品代码', dataIndex: 'itemCode', key: 'itemCode',
       },
       {
-        title: '商品图片', dataIndex: 'mainPic', key: 'mainPic',
+        title: '商品图片',
+        dataIndex: 'mainPic',
+        key: 'mainPic',
+        width: 66,
+        render(text) {
+          let imgUrl = '';
+          try {
+            const imgObj = JSON.parse(text.replace(/&quot;/g, '"'));
+            imgUrl = imgObj.picList[0].url;
+          } catch (e) {
+            return '无';
+          }
+          return <img role="presentation" src={imgUrl} width="50" height="50" />;
+        },
       },
       {
         title: '商品品牌', dataIndex: 'brand', key: 'brand',
       },
       {
-        title: '销售类型', dataIndex: 'saleType', key: 'saleType', render(text) { return <span>{text === '0' ? '代购' : '现货' }</span> },
+        title: '销售类型', dataIndex: 'saleType', key: 'saleType', render(text) { return <span>{text === '0' ? '代购' : '现货' }</span>; },
       },
       {
         title: '商品类目', dataIndex: 'categoryName', key: 'categoryName',
@@ -116,6 +129,7 @@ class Products extends Component {
     const paginationProps = {
       total: productsList && productsList.total,
       pageSize: 10,
+      current: currentPage,
       onChange(pageIndex) {
         const values = p.props.form.getFieldsValue();
         const payload = {};
@@ -230,11 +244,12 @@ class Products extends Component {
 }
 
 function mapStateToProps(state) {
-  const { productsList, productsValues, brands, tree } = state.products;
+  const { productsList, productsValues, brands, tree, currentPage } = state.products;
   return {
     loading: state.loading.models.products,
     productsList,
     productsValues,
+    currentPage,
     brands: brands.data,
     tree: tree.data,
   };

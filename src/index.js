@@ -8,7 +8,7 @@ import models from './models';
 import fetch from './utils/request';
 import utilRegister from './utils';
 import './index.html';
-import './index.css';
+import './index.less';
 
 moment.locale('zh-cn');
 

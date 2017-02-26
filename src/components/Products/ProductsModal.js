@@ -42,6 +42,19 @@ class ProductsModal extends Component {
         startDate: fieldsValue.startDate && fieldsValue.startDate.format('YYYY-MM-DD'),
         endDate: fieldsValue.endDate && fieldsValue.endDate.format('YYYY-MM-DD'),
       };
+      // 处理图片
+      if (values.mainPic) {
+        const uploadMainPic = [];
+        const mainPicNum = values.mainPicNum;
+        values.mainPic.forEach((el) => {
+          uploadMainPic.push({
+            type: el.type,
+            uid: el.uid,
+            url: el.url,
+          });
+        });
+        values.mainPic = JSON.stringify({ picList: uploadMainPic, mainPicNum });
+      }
       console.log(values);
       if (modalValues && modalValues.data) {
         dispatch({
@@ -54,7 +67,6 @@ class ProductsModal extends Component {
           payload: { ...values },
         });
       }
-
       this.closeModal();
     });
   }
@@ -111,7 +123,7 @@ class ProductsModal extends Component {
     let picList = [];
     if (modalValues && modalValues.data && modalValues.data.mainPic) {
       const picObj = JSON.parse(modalValues.data.mainPic);
-      mainPicNum = toString(picObj.mainPic, 'SELECT');
+      mainPicNum = toString(picObj.mainPicNum, 'SELECT') || '1';
       picList = picObj.picList || [];
     }
 
@@ -240,7 +252,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('categoryId', {
-                  initialValue: toString(productData.categoryId),
+                  initialValue: toString(productData.categoryId, 'SELECT'),
                   rules: [{ required: true, message: '请选择所属类目' }],
                 })(
                   <TreeSelect placeholder="请选择所属类目" treeData={tree} />,
@@ -322,7 +334,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('startDate', {
-                  initialValue: productData.startDateStr && moment(productData.startDateStr, 'YYYY-MM-DD'),
+                  initialValue: (productData.startDateStr && moment(productData.startDateStr, 'YYYY-MM-DD')) || undefined,
                 })(
                   <DatePicker format="YYYY-MM-DD" />,
                 )}
@@ -334,7 +346,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('endDate', {
-                  initialValue: productData.endDateStr && moment(modalValues.data.endDateStr, 'YYYY-MM-DD'),
+                  initialValue: (productData.endDateStr && moment(modalValues.data.endDateStr, 'YYYY-MM-DD')) || undefined,
                 })(
                   <DatePicker format="YYYY-MM-DD" />,
                 )}
@@ -488,20 +500,27 @@ class ProductsModal extends Component {
                 wrapperCol={{ span: 18 }}
                 style={{ marginRight: '-20px' }}
               >
-                {getFieldDecorator('picUrl', {
+                {getFieldDecorator('mainPic', {
                   initialValue: picList,
+                  valuePropName: 'fileList',
+                  getValueFromEvent(e) {
+                    if (!e || !e.fileList) {
+                      return e;
+                    }
+                    const { fileList } = e;
+                    return fileList;
+                  },
                   rules: [{ validator: this.checkImg.bind(this) }],
                 })(
-                  <div>
-                    <Upload {...uploadProps}>
-                      <Icon type="plus" className={styles.uploadPlus} />
-                      <div className="ant-upload-text">上传图片</div>
-                    </Upload>
-                    <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
-                      <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                    </Modal>
-                  </div>,
+                  <Upload {...uploadProps}>
+                    <Icon type="plus" className={styles.uploadPlus} />
+                    <div className="ant-upload-text">上传图片</div>
+                  </Upload>,
                 )}
+
+                <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
               </FormItem>
             </Col>
           </Row>

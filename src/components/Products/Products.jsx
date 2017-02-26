@@ -89,7 +89,7 @@ class Products extends Component {
         title: '销售类型', dataIndex: 'saleType', key: 'saleType', render(text) { return <span>{text === '0' ? '代购' : '现货' }</span>; },
       },
       {
-        title: '商品类目', dataIndex: 'categoryId', key: 'categoryId',
+        title: '商品类目', dataIndex: 'categoryName', key: 'categoryName',
       },
       {
         title: '采购地点', dataIndex: 'buySite', key: 'buySite',

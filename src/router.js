@@ -19,6 +19,7 @@ function redirectHelper(...args) {
   const callback = args[len - 1];
   console.log('redirect');
   if (!localStorage.getItem('HAIERP_LAST_LOGIN') && location.pathname !== `/${routerCfg.LOGIN}`) replace(`/${routerCfg.LOGIN}`);
+  else if (location.pathname === '/') replace(`/${routerCfg.OVERVIEW}`);
   callback();
 }
 

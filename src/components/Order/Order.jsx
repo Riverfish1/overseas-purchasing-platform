@@ -1,12 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-// import { Link } from 'dva/router';
 import { Table, Popover, Input, DatePicker, Button, Row, Col, Select, Form } from 'antd';
 import OrderModal from './OrderModal';
 import styles from './Order.less';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -96,9 +92,6 @@ class Order extends Component {
       },
       {
         title: '联系电话', dataIndex: 'telephone', key: 'telephone',
-      },
-      {
-        title: '邮编', dataIndex: 'postcode', key: 'postcode',
       },
       {
         title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate',
@@ -273,8 +266,8 @@ class Order extends Component {
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row gutter={40}>
-            <Col span={6}>
+          <Row gutter={20} style={{ width: 700 }}>
+            <Col span="8">
               <FormItem
                 label="客户"
                 {...formItemLayout}
@@ -283,7 +276,7 @@ class Order extends Component {
                   <Input placeholder="请输入客户名称" />)}
               </FormItem>
             </Col>
-            <Col span={6}>
+            <Col span="8">
               <FormItem
                 label="外部订单号"
                 {...formItemLayout}
@@ -292,7 +285,7 @@ class Order extends Component {
                   <Input placeholder="请输入外部订单号" />)}
               </FormItem>
             </Col>
-            <Col span={6}>
+            <Col span="8">
               <FormItem
                 label="订单号"
                 {...formItemLayout}
@@ -302,8 +295,8 @@ class Order extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={40}>
-            <Col span={6}>
+          <Row gutter={20} style={{ width: 700 }}>
+            <Col span="8">
               <FormItem
                 label="订单状态"
                 {...formItemLayout}
@@ -321,7 +314,7 @@ class Order extends Component {
                   </Select>)}
               </FormItem>
             </Col>
-            <Col span={6}>
+            <Col span="8">
               <FormItem
                 label="订单备货状态"
                 {...formItemLayout}
@@ -342,8 +335,8 @@ class Order extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={40}>
-            <Col span={6}>
+          <Row gutter={20} style={{ width: 700 }}>
+            <Col span="8">
               <FormItem
                 label="订单时间开始"
                 {...formItemLayout}
@@ -352,7 +345,7 @@ class Order extends Component {
                   <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
               </FormItem>
             </Col>
-            <Col span={6}>
+            <Col span="8">
               <FormItem
                 label="订单时间结束"
                 {...formItemLayout}
@@ -363,20 +356,18 @@ class Order extends Component {
             </Col>
           </Row>
           <Row>
-            <Col span={5} push={3}>
+            <Col className={styles.listBtnGroup}>
               <Button htmlType="submit" size="large" type="primary">查询</Button>
-            </Col>
-            <Col span={4}>
               <Button size="large" type="ghost" onClick={this.handleEmpty.bind(this)}>清空</Button>
             </Col>
           </Row>
         </Form>
-        <Row className={styles.plus}>
-          <Col span={3}>
+        <Row>
+          <Col className={styles.orderBtn}>
             <Button type="primary" size="large" onClick={this.addModal.bind(this)}>新增订单</Button>
           </Col>
         </Row>
-        <Row style={{ minHeight: 300 }}>
+        <Row>
           <Col>
             <Table
               columns={columnsList}
@@ -389,8 +380,7 @@ class Order extends Component {
             />
           </Col>
         </Row>
-        <Row style={{ height: 30, borderTop: '1px solid #ccc' }} />
-        <Row style={{ minHeight: 300 }}>
+        {/* <Row style={{ minHeight: 300 }}>
           <Col>
             <Table
               columns={skuColumns}
@@ -402,7 +392,7 @@ class Order extends Component {
               scroll={{ x: 1200 }}
             />
           </Col>
-        </Row>
+        </Row> */}
         <OrderModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}

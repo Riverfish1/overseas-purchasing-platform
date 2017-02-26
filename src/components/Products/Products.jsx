@@ -18,19 +18,14 @@ class Products extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, filedsValue) => {
+    this.props.form.validateFieldsAndScroll((err, values) => {
       if (err) {
         return;
       }
-      const values = {
-        ...filedsValue,
-        startGmt: filedsValue.startGmt && filedsValue.startGmt.format('YYYY-MM-DD'),
-        endGmt: filedsValue.endGmt && filedsValue.endGmt.format('YYYY-MM-DD'),
-      };
       console.log(values);
       this.props.dispatch({
         type: 'products/queryItemList',
-        payload: { ...values },
+        payload: { ...values, pageIndex: 1 },
       });
     });
   }
@@ -79,14 +74,6 @@ class Products extends Component {
     };
     const columns = [
       {
-        title: '序号',
-        dataIndex: 'order',
-        key: 'order',
-        render(text, record, index) {
-          return index + 1;
-        },
-      },
-      {
         title: '商品名称', dataIndex: 'name', key: 'name',
       },
       {
@@ -108,10 +95,10 @@ class Products extends Component {
         title: '采购地点', dataIndex: 'buySite', key: 'buySite',
       },
       {
-        title: '开始销售时间', dataIndex: 'startDate', key: 'startDate',
+        title: '开始销售时间', dataIndex: 'startDate', key: 'startDate', render(text) { return text && text.split(' ')[0]; },
       },
       {
-        title: '结束销售时间', dataIndex: 'endDate', key: 'endDate',
+        title: '结束销售时间', dataIndex: 'endDate', key: 'endDate', render(text) { return text && text.split(' ')[0]; },
       },
       {
         title: '操作',
@@ -129,10 +116,15 @@ class Products extends Component {
     const paginationProps = {
       total: productsList && productsList.total,
       pageSize: 10,
-      onChange(page) {
+      onChange(pageIndex) {
+        const values = p.props.form.getFieldsValue();
+        const payload = {};
+        Object.keys(values).forEach((key) => {
+          if (values[key]) payload[key] = values[key];
+        });
         p.props.dispatch({
           type: 'products/queryItemList',
-          payload: { page },
+          payload: { ...payload, pageIndex },
         });
       },
     };
@@ -188,7 +180,7 @@ class Products extends Component {
                 label="开始销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('startDate', {})(<DatePicker placeholder="请选择开始时间" />)}
+                {getFieldDecorator('startGmt', {})(<DatePicker placeholder="请选择开始时间" />)}
               </FormItem>
             </Col>
             <Col span={8}>
@@ -196,7 +188,7 @@ class Products extends Component {
                 label="结束销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('endDate', {})(
+                {getFieldDecorator('endGmt', {})(
                   <DatePicker placeholder="请选择结束时间" />)}
               </FormItem>
             </Col>

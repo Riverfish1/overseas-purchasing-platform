@@ -110,6 +110,7 @@ class ProductsModal extends Component {
     const uploadProps = {
       action: '/haierp1/uploadFile/picUpload',
       listType: 'picture-card',
+      multiple: true,
       data(file) {
         return {
           pic: file.name,

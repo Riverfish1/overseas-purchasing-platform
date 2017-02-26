@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, Button, message, Row, Col, Select, DatePicker, Form, TreeSelect } from 'antd';
+import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect } from 'antd';
 import ProductsModal from './ProductsModal';
 import styles from './Products.less';
 
@@ -42,15 +42,8 @@ class Products extends Component {
   }
 
   handleEmpty() {
-    const { setFieldsValue } = this.props.form;
-    setFieldsValue({
-      itemCode: '',
-      name: '',
-      categoryId: [],
-      brand: [],
-      startDate: '',
-      endDate: '',
-    });
+    const { resetFields } = this.props.form;
+    resetFields();
   }
 
   updateModal(id) {
@@ -154,9 +147,7 @@ class Products extends Component {
 
                 {...formItemLayout}
               >
-                {getFieldDecorator('itemCode', {
-                  rules: [{ message: '请输入商品编码' }],
-                })(
+                {getFieldDecorator('itemCode', {})(
                   <Input placeholder="请输入商品编码" />)}
               </FormItem>
             </Col>
@@ -166,9 +157,7 @@ class Products extends Component {
 
                 {...formItemLayout}
               >
-                {getFieldDecorator('name', {
-                  rules: [{ message: '请输入商品名称' }],
-                })(
+                {getFieldDecorator('name', {})(
                   <Input placeholder="请输入商品名称" />)}
               </FormItem>
             </Col>
@@ -177,9 +166,7 @@ class Products extends Component {
                 label="类目"
                 {...formItemLayout}
               >
-                {getFieldDecorator('categoryId', {
-                  rules: [{ message: '请选择类目' }],
-                })(
+                {getFieldDecorator('categoryId', {})(
                   <TreeSelect placeholder="请选择类目" treeData={tree} />)}
               </FormItem>
             </Col>
@@ -190,9 +177,7 @@ class Products extends Component {
                 label="品牌"
                 {...formItemLayout}
               >
-                {getFieldDecorator('brand', {
-                  rules: [{ message: '请选择品牌' }],
-                })(
+                {getFieldDecorator('brand', {})(
                   <Select placeholder="请选择品牌">
                     {brands && brands.map(item => <Option key={item.name}>{item.name}</Option>)}
                   </Select>)}
@@ -203,9 +188,7 @@ class Products extends Component {
                 label="开始销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('startDate', {
-                  rules: [{ message: '请选择开始销售时间' }],
-                })(<DatePicker placeholder="请选择开始时间" />)}
+                {getFieldDecorator('startDate', {})(<DatePicker placeholder="请选择开始时间" />)}
               </FormItem>
             </Col>
             <Col span={8}>
@@ -213,9 +196,7 @@ class Products extends Component {
                 label="结束销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('endDate', {
-                  rules: [{ message: '请选择结束销售时间' }],
-                })(
+                {getFieldDecorator('endDate', {})(
                   <DatePicker placeholder="请选择结束时间" />)}
               </FormItem>
             </Col>

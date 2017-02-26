@@ -15,7 +15,7 @@ export default {
   },
   effects: {
     * addCate({ payload }, { call, put }) { // 新建SKU
-      const data = yield call(addSku, { payload });
+      const data = yield call(addCate, { payload });
       if (data.success) {
         yield put({
           type: 'saveSku',

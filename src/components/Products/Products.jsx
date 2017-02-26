@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, Button, message, Row, Col, Select, DatePicker, Form, TreeSelect } from 'antd';
+import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect } from 'antd';
 import ProductsModal from './ProductsModal';
 import styles from './Products.less';
 
@@ -89,7 +89,7 @@ class Products extends Component {
         title: '销售类型', dataIndex: 'saleType', key: 'saleType',
       },
       {
-        title: '商品类目', dataIndex: 'categoryId', key: 'categoryId',
+        title: '商品类目', dataIndex: 'categoryName', key: 'categoryName',
       },
       {
         title: '采购地点', dataIndex: 'buySite', key: 'buySite',

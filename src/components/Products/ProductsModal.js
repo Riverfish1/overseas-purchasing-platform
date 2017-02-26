@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Modal, Table, message, Input, Upload, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Popconfirm, TreeSelect } from 'antd';
+import { Modal, message, Input, Upload, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, TreeSelect } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import styles from './Products.less';
@@ -105,6 +105,19 @@ class ProductsModal extends Component {
     const { form, visible, brands = [], modalValues = {}, tree = [] } = this.props;
     const { previewVisible, previewImage } = this.state;
     const { getFieldDecorator } = form;
+
+    // 图片字符串解析
+    let mainPicNum;
+    let picList = [];
+    if (modalValues && modalValues.data && modalValues.data.mainPic) {
+      const picObj = JSON.parse(modalValues.data.mainPic);
+      mainPicNum = toString(picObj.mainPic, 'SELECT');
+      picList = picObj.picList || [];
+    }
+
+    // 详情数据
+    const productData = (modalValues && modalValues.data) || {};
+
     const modalProps = {
       visible,
       width: 900,
@@ -159,98 +172,6 @@ class ProductsModal extends Component {
       labelCol: { span: 11 },
       wrapperCol: { span: 13 },
     };
-    const modalTableProps = {
-      columns: [
-        {
-          title: '序号',
-          key: 'order',
-          width: '6%',
-          render(text, record, index) {
-            return index + 1;
-          },
-        },
-        {
-          title: '尺寸',
-          dataIndex: 'scale',
-          key: 'scale',
-          width: '14%',
-          render() {
-            return (<div>{getFieldDecorator('scale', {})(<Input />)}</div>);
-          },
-        },
-        {
-          title: '颜色',
-          dataIndex: 'color',
-          key: 'color',
-          width: '14%',
-          render() {
-            return (<div>{getFieldDecorator('color', {})(<Input />)}</div>);
-          },
-        },
-        {
-          title: '库存',
-          dataIndex: 'inventory',
-          key: 'inventory',
-          width: '14%',
-          render() {
-            return (<div>{getFieldDecorator('inventory', {})(<Input />)}</div>);
-          },
-        },
-        {
-          title: '虚拟库存',
-          dataIndex: 'virtualInventory',
-          key: 'virtualInventory',
-          width: '14%',
-          render() {
-            return (<div>{getFieldDecorator('virtualInventory', {})(<Input />)}</div>);
-          },
-        },
-        {
-          title: 'barcode',
-          dataIndex: 'skuCode',
-          key: 'skuCode',
-          width: '14%',
-          render() {
-            return (<div>{getFieldDecorator('skuCode', {})(<Input />)}</div>);
-          },
-        },
-        {
-          title: '重量(KG)',
-          dataIndex: 'weight',
-          key: 'weight',
-          width: '14%',
-          render() {
-            return (<div>{getFieldDecorator('weight', {})(<Input />)}</div>);
-          },
-        },
-        {
-          title: '操作',
-          key: 'operator',
-          render(text, record) {
-            return (
-              <Popconfirm title="确定删除?" onConfirm={p.handleDelete(record.id)}>
-                <a href="javascript:void(0)">删除</a>
-              </Popconfirm>
-            );
-          },
-        },
-      ],
-      dataSource: modalValues.data ? modalValues.data.itemSkus : p.state.skuList,
-      bordered: false,
-      pagination: true,
-    };
-
-    // 图片字符串解析
-    let mainPicNum;
-    let picList = [];
-    if (modalValues && modalValues.data && modalValues.data.mainPic) {
-      const picObj = JSON.parse(modalValues.data.mainPic);
-      mainPicNum = toString(picObj.mainPic);
-      picList = picObj.picList || [];
-    }
-
-    // 详情数据
-    const productData = (modalValues && modalValues.data) || {};
 
     return (
       <Modal
@@ -584,13 +505,11 @@ class ProductsModal extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
-            <Col>
+          <Row gutter={10}>
+            <Col span={7}>
               <FormItem
                 label="选择主图"
-                labelCol={{ span: 3 }}
-                wrapperCol={{ span: 11 }}
-                style={{ marginRight: '-20px' }}
+                {...formItemLayout}
               >
                 {getFieldDecorator('mainPicNum', {
                   initialValue: mainPicNum,
@@ -614,12 +533,6 @@ class ProductsModal extends Component {
             <Col className={styles.productModalBtn}>
               <Button type="primary" onClick={this.addSKU.bind(this)}>新增SKU</Button>
             </Col>
-          </Row>
-          <Row>
-            <Table
-              {...modalTableProps}
-              rowKey={record => record.id}
-            />
           </Row>
         </Form>
       </Modal>

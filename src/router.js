@@ -9,6 +9,7 @@ import Overview from './components/Overview';
 import Products from './components/Products/Products';
 import Sku from './components/Sku/Sku';
 import Category from './components/Category/Category';
+import Order from './components/Order/Order';
 
 const redirectHelper = ({ location }, replace, callback) => {
   console.log('redirect');
@@ -31,6 +32,7 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} component={Products} />
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.SKU_LIST}`} component={Sku} />
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.CATE_LIST}`} component={Category} />
+        <Route path={`/${routerCfg.SALE}/${routerCfg.ORDER_LIST}`} component={Order} />
         {/* 重定向 */}
         <Redirect from={`/${routerCfg.PRODUCTS}`} to={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} />
       </Route>

@@ -27,7 +27,6 @@ export default {
       return { ...state, brands: data };
     },
     saveProductsValue(state, { payload: data }) {
-      console.log(data);
       return { ...state, productsValues: data };
     },
     saveCurrentPage(state, { payload }) {

@@ -1,3 +1,5 @@
+import { message } from 'antd';
+
 import {
   queryItemList, // 获取商品列表
   updateProducts, // 修改商品
@@ -57,6 +59,7 @@ export default {
       const data = yield call(updateProducts, { payload });
       console.log('updateProducts success', data);
       if (data.success) {
+        message.success('修改成功');
         yield put({
           type: 'queryItemList',
           payload: {},

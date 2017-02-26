@@ -12,6 +12,14 @@ const Option = Select.Option;
 
 let uuid = 1;
 
+function toString(str, type) {
+  if (typeof str !== 'undefined' && str !== null) {
+    return str.toString();
+  }
+  if (type === 'SELECT') return undefined;
+  return '';
+}
+
 class ProductsModal extends Component {
 
   constructor(props) {
@@ -237,9 +245,12 @@ class ProductsModal extends Component {
     let picList = [];
     if (modalValues && modalValues.data && modalValues.data.mainPic) {
       const picObj = JSON.parse(modalValues.data.mainPic);
-      mainPicNum = picObj.mainPic && picObj.mainPic.toString();
+      mainPicNum = toString(picObj.mainPic);
       picList = picObj.picList || [];
     }
+
+    // 详情数据
+    const productData = (modalValues && modalValues.data) || {};
 
     return (
       <Modal
@@ -254,7 +265,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemCode', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.itemCode) || undefined,
+                  initialValue: toString(productData.itemCode),
                   rules: [{ message: '请输入商品编码' }],
                 })(
                   <Input placeholder="请输入商品编码" />,
@@ -267,7 +278,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('name', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.name) || undefined,
+                  initialValue: toString(productData.name),
                   rules: [{ required: true, message: '请输入商品名称' }],
                 })(
                   <Input placeholder="请输入商品名称" />,
@@ -280,7 +291,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('enName', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.enName) || undefined,
+                  initialValue: toString(productData.enName),
                   rules: [{ message: '请输入英文名称' }],
                 })(
                   <Input placeholder="请输入英文名称" />,
@@ -295,7 +306,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemShort', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.itemShort) || undefined,
+                  initialValue: toString(productData.itemShort),
                   rules: [{ message: '请输入商品简称' }],
                 })(
                   <Input placeholder="请输入商品简称" />,
@@ -308,7 +319,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('categoryId', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.categoryId.toString()) || undefined,
+                  initialValue: toString(productData.categoryId),
                   rules: [{ required: true, message: '请选择所属类目' }],
                 })(
                   <TreeSelect placeholder="请选择所属类目" treeData={tree} />,
@@ -321,11 +332,11 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.brand) || undefined,
+                  initialValue: toString(productData.brand, 'SELECT'),
                   rules: [{ required: true, message: '请选择品牌' }],
                 })(
                   <Select placeholder="请选择品牌" >
-                    {brands && brands.map(item => <Option key={item.id}>{item.name}</Option>)}
+                    {brands && brands.map(item => <Option key={item.id.toString()}>{item.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>
@@ -338,7 +349,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('country', {
-                  initialValue: modalValues && modalValues.data ? (modalValues.data.country === 1 ? '美国' : modalValues.data.country === 2 ? '德国' : modalValues.data.country === 3 ? '日本' : modalValues.data.country === 4 ? '澳洲' : undefined) : undefined,
+                  initialValue: toString(productData.country, 'SELECT'),
                   rules: [{ message: '请选择国家' }],
                 })(
                   <Select placeholder="请选择国家">
@@ -356,7 +367,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('currency', {
-                  initialValue: modalValues && modalValues.data ? modalValues.data.currency === 1 ? '人民币' : modalValues.data.currency === 2 ? '美元' : undefined : undefined,
+                  initialValue: toString(productData.currency, 'SELECT'),
                   rules: [{ message: '请选择币种' }],
                 })(
                   <Select placeholder="请选择币种">
@@ -372,7 +383,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('idCard', {
-                  initialValue: modalValues && modalValues.data ? modalValues.data.idCard === 1 ? '是' : modalValues.data.idCard === 2 ? '否' : undefined : undefined,
+                  initialValue: toString(productData.idCard, 'SELECT'),
                   rules: [{ message: '请选择是否身份证' }],
                 })(
                   <Select placeholder="请选择是否身份证">
@@ -390,7 +401,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('startDate', {
-                  initialValue: (modalValues.data && modalValues.data.startDateStr) ? moment(modalValues.data.startDateStr, 'YYYY-MM-DD') : undefined,
+                  initialValue: productData.startDateStr && moment(productData.startDateStr, 'YYYY-MM-DD'),
                 })(
                   <DatePicker format="YYYY-MM-DD" />,
                 )}
@@ -402,7 +413,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('endDate', {
-                  initialValue: (modalValues.data && modalValues.data.endDateStr) ? moment(modalValues.data.endDateStr, 'YYYY-MM-DD') : undefined,
+                  initialValue: productData.endDateStr && moment(modalValues.data.endDateStr, 'YYYY-MM-DD'),
                 })(
                   <DatePicker format="YYYY-MM-DD" />,
                 )}
@@ -414,7 +425,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('buySite', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.buySite) || undefined,
+                  initialValue: toString(productData.buySite),
                   rules: [{ message: '请输入采购站点' }],
                 })(
                   <Input placeholder="请输入采购站点" />,
@@ -429,7 +440,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('spec', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.spec) || undefined,
+                  initialValue: toString(productData.spec),
                   rules: [{ message: '请输入规格' }],
                 })(
                   <Input placeholder="请输入规格" />,
@@ -442,7 +453,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('model', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.model) || undefined,
+                  initialValue: toString(productData.model),
                   rules: [{ message: '请输入型号' }],
                 })(
                   <Input placeholder="请输入型号" />,
@@ -455,7 +466,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('weight', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.weight) || undefined,
+                  initialValue: toString(productData.weight),
                 })(
                   <InputNumber step={0.01} min={0} style={{ width: 133.5 }} placeholder="请输入重量" />,
                 )}
@@ -469,7 +480,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('unit', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.unit) || undefined,
+                  initialValue: toString(productData.unit),
                   rules: [{ message: '请输入单位' }],
                 })(
                   <Input placeholder="请输入单位" />,
@@ -482,7 +493,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('source', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.source) || undefined,
+                  initialValue: toString(productData.source),
                   rules: [{ message: '请输入来源' }],
                 })(
                   <Input placeholder="请输入来源" />,
@@ -495,7 +506,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('contactPerson', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.contactPerson) || undefined,
+                  initialValue: toString(productData.contactPerson),
                   rules: [{ message: '请输入联系人' }],
                 })(
                   <Input placeholder="请输入联系人" />,
@@ -510,7 +521,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('origin', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.origin) || undefined,
+                  initialValue: toString(productData.origin),
                   rules: [{ message: '请输入产地' }],
                 })(
                   <Input placeholder="请输入产地" />,
@@ -523,7 +534,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('contactTel', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.contactTel) || undefined,
+                  initialValue: toString(productData.contactTel),
                   rules: [{ message: '请输入联系电话' }],
                 })(
                   <Input placeholder="请输入联系电话" />,
@@ -540,7 +551,7 @@ class ProductsModal extends Component {
                 style={{ marginRight: '-20px' }}
               >
                 {getFieldDecorator('remark', {
-                  initialValue: (modalValues && modalValues.data && modalValues.data.remark) || undefined,
+                  initialValue: toString(productData.remark),
                   rules: [{ message: '请输入备注' }],
                 })(
                   <Input type="textarea" placeholder="请输入备注" />,

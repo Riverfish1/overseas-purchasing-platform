@@ -63,7 +63,7 @@ class Order extends Component {
 
   render() {
     const p = this;
-    const { form, orderList = { rows: [{ orderCode: '1', outOrder: '2', custom: '3', id: 4 }] } } = this.props;
+    const { form, orderList = {} } = this.props;
     const { getFieldDecorator, getFieldsValue } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -71,40 +71,40 @@ class Order extends Component {
     };
     const columnsList = [
       {
-        title: '订单编号', dataIndex: 'orderCode', key: 'orderCode',
+        title: '订单编号', dataIndex: 'orderNo', key: 'orderNo',
       },
       {
-        title: '外部订单号', dataIndex: 'outOrder', key: 'outOrder',
+        title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo',
       },
       {
-        title: '客户', dataIndex: 'custom', key: 'custom',
+        title: '客户', dataIndex: 'salesName', key: 'salesName',
       },
       {
         title: '订单时间', dataIndex: 'orderTime', key: 'orderTime',
       },
       {
-        title: '订单状态', dataIndex: 'orderStatus', key: 'orderStatus',
+        title: '订单状态', dataIndex: 'status', key: 'status',
       },
       {
-        title: '备货状态', dataIndex: 'stockingStatus', key: 'stockingStatus',
+        title: '备货状态', dataIndex: 'stockStatus', key: 'stockStatus',
       },
       {
-        title: '收件人', dataIndex: 'recipient', key: 'recipient',
+        title: '收件人', dataIndex: 'receiver', key: 'receiver',
       },
       {
-        title: '收件人地址', dataIndex: 'recipientAddr', key: 'recipientAddr',
+        title: '收件人地址', dataIndex: 'address', key: 'address',
       },
       {
-        title: '联系电话', dataIndex: 'contactTel', key: 'contactTel',
+        title: '联系电话', dataIndex: 'telephone', key: 'telephone',
       },
       {
-        title: '身份证', dataIndex: 'idCard', key: 'idCard',
+        title: '邮编', dataIndex: 'postcode', key: 'postcode',
       },
       {
-        title: '创建时间', dataIndex: 'timeGmt', key: 'timeGmt',
+        title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate',
       },
       {
-        title: '付款时间', dataIndex: 'payTime', key: 'payTime',
+        title: '备注', dataIndex: 'remarks', key: 'remarks',
       },
       {
         title: '操作',
@@ -132,12 +132,19 @@ class Order extends Component {
     };
 
     const listPaginationProps = {
-      total: orderList && orderList.total,
+      total: orderList && orderList.totalCount,
       pageSize: 10,
       onChange(page) {
+        const values = getFieldsValue();
+        const payload = {};
+        Object.keys(values).forEach((key) => {
+          if (values[key]) {
+            payload[key] = values[key];
+          }
+        });
         p.props.dispatch({
           type: 'order/queryOrderList',
-          payload: { pageIndex: page },
+          payload: { ...payload, pageIndex: page },
         });
       },
     };
@@ -301,11 +308,8 @@ class Order extends Component {
                 label="订单状态"
                 {...formItemLayout}
               >
-                {getFieldDecorator('status', {
-                  initialValue: '0',
-                  rules: [{ message: '请输入订单状态' }],
-                })(
-                  <Select>
+                {getFieldDecorator('status', {})(
+                  <Select placeholder="请选择订单状态">
                     <Option value="0">不限</Option>
                     <Option value="1">待支付</Option>
                     <Option value="2">待审核</Option>
@@ -322,11 +326,8 @@ class Order extends Component {
                 label="订单备货状态"
                 {...formItemLayout}
               >
-                {getFieldDecorator('stockStatus', {
-                  initialValue: '0',
-                  rules: [{ message: '请输入订单备货状态' }],
-                })(
-                  <Select>
+                {getFieldDecorator('stockStatus', {})(
+                  <Select placeholder="请选择订单备货状态">
                     <Option value="0">不限</Option>
                     <Option value="1">未备货</Option>
                     <Option value="2">备货中</Option>
@@ -348,7 +349,7 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('startOrderTime', {})(
-                  <DatePicker format="YYYY-MM-DD" />)}
+                  <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
               </FormItem>
             </Col>
             <Col span={6}>
@@ -357,7 +358,7 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('endOrderTime', {})(
-                  <DatePicker format="YYYY-MM-DD" />)}
+                  <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
               </FormItem>
             </Col>
           </Row>
@@ -379,7 +380,7 @@ class Order extends Component {
           <Col>
             <Table
               columns={columnsList}
-              dataSource={orderList && orderList.rows}
+              dataSource={orderList && orderList.data}
               bordered
               size="large"
               rowKey={record => record.id}
@@ -420,7 +421,7 @@ function mapStateToProps(state) {
 }
 
 Order.PropTypes = {
-  orderList: PropTypes.array.isRequired,
+  orderList: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
 };
 

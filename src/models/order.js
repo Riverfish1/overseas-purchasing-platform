@@ -3,12 +3,12 @@ import { addOrder, queryOrder, queryOrderList, queryOrderSku } from '../services
 export default {
   namespace: 'order',
   state: {
-    cateList: [],
+    orderList: [],
     orderSku: [],
   },
   reducers: {
     saveOrderList(state, { payload }) {
-      return { ...state, skuList: payload };
+      return { ...state, orderList: payload };
     },
     saveOrderSku(state, { payload }) {
       return { ...state, orderSku: payload };

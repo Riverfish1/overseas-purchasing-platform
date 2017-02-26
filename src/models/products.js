@@ -12,6 +12,7 @@ export default {
   state: {
     productsList: [],
     productsValues: {}, // 修改商品时的值
+    currentPage: 1, // 默认页码
     brands: [], // 品牌
     tree: [], // 类目树
   },
@@ -28,6 +29,9 @@ export default {
     saveProductsValue(state, { payload: data }) {
       console.log(data);
       return { ...state, productsValues: data };
+    },
+    saveCurrentPage(state, { payload }) {
+      return { ...state, currentPage: payload.pageIndex };
     },
   },
   effects: {
@@ -60,8 +64,15 @@ export default {
         });
       }
     },
-    * queryItemList({ payload }, { call, put }) { // 商品管理列表
-      const data = yield call(queryItemList, { payload });
+    * queryItemList({ payload = {} }, { call, put, select }) { // 商品管理列表
+      let pageIndex = yield select(({ products }) => products.currentPage);
+      if (payload && payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({ type: 'saveCurrentPage', payload });
+      }
+      if (payload.startGmt) payload.startGmt = payload.startGmt.format('YYYY-MM-DD');
+      if (payload.endGmt) payload.endGmt = payload.endGmt.format('YYYY-MM-DD');
+      const data = yield call(queryItemList, { payload: { ...payload, pageIndex } });
       console.log('queryItemList success', data);
       if (data.success) {
         yield put({
@@ -96,7 +107,7 @@ export default {
       return history.listen(({ pathname, query }) => {
         if (pathname === '/products/productsList') {
           setTimeout(() => {
-            dispatch({ type: 'queryItemList', payload: query });
+            dispatch({ type: 'queryItemList', payload: { pageIndex: 1 } });
             dispatch({ type: 'queryBrands', payload: query });
             dispatch({ type: 'queryCatesTree', payload: query });
           }, 0);

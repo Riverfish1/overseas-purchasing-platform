@@ -57,14 +57,6 @@ class Sku extends Component {
   render() {
     const columns = [
       {
-        title: '序号',
-        dataIndex: 'order',
-        key: 'order',
-        render(text, record, index) {
-          return index + 1;
-        },
-      },
-      {
         title: '是否推荐', dataIndex: 'name', key: '1',
       },
       {

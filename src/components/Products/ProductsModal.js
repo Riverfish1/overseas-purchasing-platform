@@ -75,6 +75,10 @@ class ProductsModal extends Component {
     callback();
   }
 
+  checkMainPicNum(rules, value, callback) {
+    callback();
+  }
+
   // queryItemSkus(param) {
   //   const { modalValues = {} } = this.props;
   //   modalValues.data && modalValues.data.itemSkus.map(item => {
@@ -110,6 +114,7 @@ class ProductsModal extends Component {
     const uploadProps = {
       action: '/haierp1/uploadFile/picUpload',
       listType: 'picture-card',
+      multiple: true,
       data(file) {
         return {
           pic: file.name,
@@ -227,12 +232,14 @@ class ProductsModal extends Component {
       pagination: true,
     };
 
-    const treeData = tree ? tree.map((el) => {
-      const newEl = el;
-      newEl.title = el.name.toString();
-      newEl.value = el.id.toString();
-      return newEl;
-    }) : [];
+    // 图片字符串解析
+    let mainPicNum;
+    let picList = [];
+    if (modalValues && modalValues.data && modalValues.data.mainPic) {
+      const picObj = JSON.parse(modalValues.data.mainPic);
+      mainPicNum = picObj.mainPic && picObj.mainPic.toString();
+      picList = picObj.picList || [];
+    }
 
     return (
       <Modal
@@ -304,7 +311,7 @@ class ProductsModal extends Component {
                   initialValue: (modalValues && modalValues.data && modalValues.data.categoryId.toString()) || undefined,
                   rules: [{ required: true, message: '请选择所属类目' }],
                 })(
-                  <TreeSelect placeholder="请选择所属类目" treeData={treeData} />,
+                  <TreeSelect placeholder="请选择所属类目" treeData={tree} />,
                 )}
               </FormItem>
             </Col>
@@ -449,7 +456,6 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('weight', {
                   initialValue: (modalValues && modalValues.data && modalValues.data.weight) || undefined,
-                  rules: [{ message: '请输入重量' }],
                 })(
                   <InputNumber step={0.01} min={0} style={{ width: 133.5 }} placeholder="请输入重量" />,
                 )}
@@ -550,7 +556,10 @@ class ProductsModal extends Component {
                 wrapperCol={{ span: 18 }}
                 style={{ marginRight: '-20px' }}
               >
-                {getFieldDecorator('picUrl', { rules: [{ validator: this.checkImg.bind(this) }] })(
+                {getFieldDecorator('picUrl', {
+                  initialValue: picList,
+                  rules: [{ validator: this.checkImg.bind(this) }],
+                })(
                   <div>
                     <Upload {...uploadProps}>
                       <Icon type="plus" className={styles.uploadPlus} />
@@ -560,6 +569,32 @@ class ProductsModal extends Component {
                       <img alt="example" style={{ width: '100%' }} src={previewImage} />
                     </Modal>
                   </div>,
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <FormItem
+                label="选择主图"
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 11 }}
+                style={{ marginRight: '-20px' }}
+              >
+                {getFieldDecorator('mainPicNum', {
+                  initialValue: mainPicNum,
+                  rules: [{ validator: this.checkMainPicNum.bind(this) }],
+                })(
+                  <Select placeholder="请选择主图">
+                    <Option value="1">图片1</Option>
+                    <Option value="2">图片2</Option>
+                    <Option value="3">图片3</Option>
+                    <Option value="4">图片4</Option>
+                    <Option value="5">图片5</Option>
+                    <Option value="6">图片6</Option>
+                    <Option value="7">图片7</Option>
+                    <Option value="8">图片8</Option>
+                  </Select>,
                 )}
               </FormItem>
             </Col>

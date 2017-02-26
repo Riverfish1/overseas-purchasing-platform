@@ -18,15 +18,10 @@ class Products extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, filedsValue) => {
+    this.props.form.validateFieldsAndScroll((err, values) => {
       if (err) {
         return;
       }
-      const values = {
-        ...filedsValue,
-        startGmt: filedsValue.startGmt && filedsValue.startGmt.format('YYYY-MM-DD'),
-        endGmt: filedsValue.endGmt && filedsValue.endGmt.format('YYYY-MM-DD'),
-      };
       console.log(values);
       this.props.dispatch({
         type: 'products/queryItemList',
@@ -42,15 +37,8 @@ class Products extends Component {
   }
 
   handleEmpty() {
-    const { setFieldsValue } = this.props.form;
-    setFieldsValue({
-      itemCode: '',
-      name: '',
-      categoryId: [],
-      brand: [],
-      startDate: '',
-      endDate: '',
-    });
+    const { resetFields } = this.props.form;
+    resetFields();
   }
 
   updateModal(id) {
@@ -86,14 +74,6 @@ class Products extends Component {
     };
     const columns = [
       {
-        title: '序号',
-        dataIndex: 'order',
-        key: 'order',
-        render(text, record, index) {
-          return index + 1;
-        },
-      },
-      {
         title: '商品名称', dataIndex: 'name', key: 'name',
       },
       {
@@ -115,10 +95,10 @@ class Products extends Component {
         title: '采购地点', dataIndex: 'buySite', key: 'buySite',
       },
       {
-        title: '开始销售时间', dataIndex: 'startDate', key: 'startDate',
+        title: '开始销售时间', dataIndex: 'startDate', key: 'startDate', render(text) { return text && text.split(' ')[0]; },
       },
       {
-        title: '结束销售时间', dataIndex: 'endDate', key: 'endDate',
+        title: '结束销售时间', dataIndex: 'endDate', key: 'endDate', render(text) { return text && text.split(' ')[0]; },
       },
       {
         title: '操作',
@@ -136,10 +116,15 @@ class Products extends Component {
     const paginationProps = {
       total: productsList && productsList.total,
       pageSize: 10,
-      onChange(page) {
+      onChange(pageIndex) {
+        const values = p.props.form.getFieldsValue();
+        const payload = {};
+        Object.keys(values).forEach((key) => {
+          if (values[key]) payload[key] = values[key];
+        });
         p.props.dispatch({
           type: 'products/queryItemList',
-          payload: { page },
+          payload: { ...payload, pageIndex },
         });
       },
     };
@@ -154,9 +139,7 @@ class Products extends Component {
 
                 {...formItemLayout}
               >
-                {getFieldDecorator('itemCode', {
-                  rules: [{ message: '请输入商品编码' }],
-                })(
+                {getFieldDecorator('itemCode', {})(
                   <Input placeholder="请输入商品编码" />)}
               </FormItem>
             </Col>
@@ -166,9 +149,7 @@ class Products extends Component {
 
                 {...formItemLayout}
               >
-                {getFieldDecorator('name', {
-                  rules: [{ message: '请输入商品名称' }],
-                })(
+                {getFieldDecorator('name', {})(
                   <Input placeholder="请输入商品名称" />)}
               </FormItem>
             </Col>
@@ -177,9 +158,7 @@ class Products extends Component {
                 label="类目"
                 {...formItemLayout}
               >
-                {getFieldDecorator('categoryId', {
-                  rules: [{ message: '请选择类目' }],
-                })(
+                {getFieldDecorator('categoryId', {})(
                   <TreeSelect placeholder="请选择类目" treeData={tree} />)}
               </FormItem>
             </Col>
@@ -190,9 +169,7 @@ class Products extends Component {
                 label="品牌"
                 {...formItemLayout}
               >
-                {getFieldDecorator('brand', {
-                  rules: [{ message: '请选择品牌' }],
-                })(
+                {getFieldDecorator('brand', {})(
                   <Select placeholder="请选择品牌">
                     {brands && brands.map(item => <Option key={item.name}>{item.name}</Option>)}
                   </Select>)}
@@ -203,9 +180,7 @@ class Products extends Component {
                 label="开始销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('startDate', {
-                  rules: [{ message: '请选择开始销售时间' }],
-                })(<DatePicker placeholder="请选择开始时间" />)}
+                {getFieldDecorator('startGmt', {})(<DatePicker placeholder="请选择开始时间" />)}
               </FormItem>
             </Col>
             <Col span={8}>
@@ -213,9 +188,7 @@ class Products extends Component {
                 label="结束销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('endDate', {
-                  rules: [{ message: '请选择结束销售时间' }],
-                })(
+                {getFieldDecorator('endGmt', {})(
                   <DatePicker placeholder="请选择结束时间" />)}
               </FormItem>
             </Col>

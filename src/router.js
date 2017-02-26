@@ -11,11 +11,16 @@ import Sku from './components/Sku/Sku';
 import Category from './components/Category/Category';
 import Order from './components/Order/Order';
 
-const redirectHelper = ({ location }, replace, callback) => {
+function redirectHelper(...args) {
+  // 传入参数3，为onEnter
+  const len = args.length;
+  const { location } = args[len - 3];
+  const replace = args[len - 2];
+  const callback = args[len - 1];
   console.log('redirect');
-  if (location.pathname === '/') replace(`/${routerCfg.LOGIN}`);
+  if (!localStorage.getItem('HAIERP_LAST_LOGIN') && location.pathname !== `/${routerCfg.LOGIN}`) replace(`/${routerCfg.LOGIN}`);
   callback();
-};
+}
 
 function RouterConfig({ history }) {
   return (

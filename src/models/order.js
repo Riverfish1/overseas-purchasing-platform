@@ -1,10 +1,12 @@
 import { addOrder, queryOrder, queryOrderList, queryOrderSku } from '../services/order';
+import { message } from 'antd';
 
 export default {
   namespace: 'order',
   state: {
     orderList: [],
     orderSku: [],
+    currentPage: 1,
   },
   reducers: {
     saveOrderList(state, { payload }) {
@@ -13,11 +15,15 @@ export default {
     saveOrderSku(state, { payload }) {
       return { ...state, orderSku: payload };
     },
+    saveCurrentPage(state, { payload }) {
+      return { ...state, currentPage: payload.pageIndex };
+    },
   },
   effects: {
     * addOrder({ payload }, { call, put }) { // 新建SKU
       const data = yield call(addOrder, { payload });
       if (data.success) {
+        message.success('增加订单成功');
         yield put({
           type: 'queryOrderList',
           payload: {},
@@ -27,15 +33,25 @@ export default {
     * queryOrder({ payload }, { call, put }) {
       const data = yield call(queryOrder, { payload });
       if (data.success) {
+        message.success('查询订单成功');
         yield put({
           type: 'queryOrderList',
           payload: {},
         });
       }
     },
-    * queryOrderList({ payload }, { call, put }) { // 类目管理列表
-      const data = yield call(queryOrderList, { payload });
+    * queryOrderList({ payload }, { call, put, select }) { // 订单管理列表
+      let pageIndex = yield select(({ order }) => order.currentPage);
+      if (payload && payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({ type: 'saveCurrentPage', payload });
+      }
+      if (payload.startGmt) payload.startGmt = payload.startGmt.format('YYYY-MM-DD');
+      if (payload.endGmt) payload.endGmt = payload.endGmt.format('YYYY-MM-DD');
+      const data = yield call(queryOrderList, { payload: { ...payload, pageIndex } });
+      console.log('queryOrderList success', data);
       if (data.success) {
+        message.success('获取订单列表成功');
         yield put({
           type: 'saveOrderList',
           payload: data,
@@ -45,6 +61,7 @@ export default {
     * queryOrderSku({ payload }, { call, put }) {
       const data = yield call(queryOrderSku, { payload });
       if (data.success) {
+        message.success('获取订单SKU成功');
         yield put({
           type: 'saveOrderSku',
           payload: data,

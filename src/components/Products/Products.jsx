@@ -86,7 +86,7 @@ class Products extends Component {
         title: '商品品牌', dataIndex: 'brand', key: 'brand',
       },
       {
-        title: '销售类型', dataIndex: 'saleType', key: 'saleType',
+        title: '销售类型', dataIndex: 'saleType', key: 'saleType', render(text) { return <span>{text === '0' ? '代购' : '现货' }</span> },
       },
       {
         title: '商品类目', dataIndex: 'categoryName', key: 'categoryName',

@@ -1,27 +1,35 @@
-import { addOrder, queryOrderList } from '../services/order';
+import { addOrder, queryOrder, queryOrderList, queryOrderSku } from '../services/order';
 
 export default {
   namespace: 'order',
   state: {
-    cateList: [],
+    orderList: [],
+    orderSku: [],
   },
   reducers: {
-    saveCate(state, { payload: dataSource }) {
-      return { ...state, ...dataSource };
+    saveOrderList(state, { payload }) {
+      return { ...state, orderList: payload };
     },
-    saveCateList(state, { payload: data }) {
-      return { ...state, skuList: data };
+    saveOrderSku(state, { payload }) {
+      return { ...state, orderSku: payload };
     },
   },
   effects: {
     * addOrder({ payload }, { call, put }) { // 新建SKU
-      const data = yield call(addSku, { payload });
+      const data = yield call(addOrder, { payload });
       if (data.success) {
         yield put({
-          type: 'saveSku',
-          payload: {
-            dataSource: data.dataSource,
-          },
+          type: 'queryOrderList',
+          payload: {},
+        });
+      }
+    },
+    * queryOrder({ payload }, { call, put }) {
+      const data = yield call(queryOrder, { payload });
+      if (data.success) {
+        yield put({
+          type: 'queryOrderList',
+          payload: {},
         });
       }
     },
@@ -29,7 +37,16 @@ export default {
       const data = yield call(queryOrderList, { payload });
       if (data.success) {
         yield put({
-          type: 'saveCateList',
+          type: 'saveOrderList',
+          payload: data,
+        });
+      }
+    },
+    * queryOrderSku({ payload }, { call, put }) {
+      const data = yield call(queryOrderSku, { payload });
+      if (data.success) {
+        yield put({
+          type: 'saveOrderSku',
           payload: data,
         });
       }

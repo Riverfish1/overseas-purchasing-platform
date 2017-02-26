@@ -18,3 +18,11 @@ export function addOrder({ payload }) {
 export function queryOrderList({ payload }) {
   return fetch.post(`/haierp1/order/queryOrderList${toForm(payload)}`).catch(e => e);
 }
+
+export function queryOrder({ payload }) {
+  return fetch.post(`/haierp1/order/queryOrder${toForm(payload)}`).catch(e => e);
+}
+
+export function queryOrderSku({ payload }) {
+  return fetch.post(`/haierp1/order/queryOrderSku${toForm(payload)}`).catch(e => e);
+}

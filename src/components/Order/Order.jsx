@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
-import { Table, Pagination, Input, Popover, Button, message, Row, Col, Select, DatePicker, Form, Icon, TreeSelect } from 'antd';
+// import { Link } from 'dva/router';
+import { Table, Popover, Input, DatePicker, Button, Row, Col, Select, Form } from 'antd';
 import OrderModal from './OrderModal';
 import styles from './Order.less';
 import moment from 'moment';
@@ -42,26 +42,17 @@ class Order extends Component {
   }
 
   handleEmpty() {
-    const { setFieldsValue } = this.props.form;
-    setFieldsValue({
-      orderStatus: '0',
-      stockingStatus: '0',
-      stockingAddr: '0',
-    });
+    const { resetFields } = this.props.form;
+    resetFields();
   }
 
   updateModal(id) {
-    let p = this;
-    console.log(id);
-    if (id.length === 1) {
-      this.setState({
-        modalVisible: true,
-      }, () => {
-        p.props.dispatch({ type: 'products/queryProduct', payload: { id: id[0] } });
-      });
-    } else {
-      message.error('至少选择一个，且只能选择一个进行修改');
-    }
+    const p = this;
+    p.setState({
+      modalVisible: true,
+    }, () => {
+      p.props.dispatch({ type: 'order/queryOrder', payload: { id } });
+    });
   }
 
   closeModal(modalVisible) {
@@ -71,77 +62,198 @@ class Order extends Component {
   }
 
   render() {
-    let p = this;
-    const { form, orderList = {}, } = this.props;
-    const { getFieldDecorator } = form;
+    const p = this;
+    const { form, orderList = {} } = this.props;
+    const { getFieldDecorator, getFieldsValue } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
-    const columns = [
+    const columnsList = [
       {
-        title: '序号', dataIndex: 'order', key: 'order',
-        render(text, record, index) {
-          return index + 1;
-        },
+        title: '订单编号', dataIndex: 'orderNo', key: 'orderNo',
       },
       {
-        title: '订单编号', dataIndex: 'orderCode', key: 'orderCode',
+        title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo',
       },
       {
-        title: '外部订单号', dataIndex: 'outOrder', key: 'outOrder',
-      },
-      {
-        title: '客户', dataIndex: 'custom', key: 'custom',
+        title: '客户', dataIndex: 'salesName', key: 'salesName',
       },
       {
         title: '订单时间', dataIndex: 'orderTime', key: 'orderTime',
       },
       {
-        title: '订单状态', dataIndex: 'orderStatus', key: 'orderStatus',
+        title: '订单状态', dataIndex: 'status', key: 'status',
       },
       {
-        title: '备货状态', dataIndex: 'stockingStatus', key: 'stockingStatus',
+        title: '备货状态', dataIndex: 'stockStatus', key: 'stockStatus',
       },
       {
-        title: '收件人', dataIndex: 'recipient', key: 'recipient',
+        title: '收件人', dataIndex: 'receiver', key: 'receiver',
       },
       {
-        title: '收件人地址', dataIndex: 'recipientAddr', key: 'recipientAddr',
+        title: '收件人地址', dataIndex: 'address', key: 'address',
       },
       {
-        title: '联系电话', dataIndex: 'contactTel', key: 'contactTel',
+        title: '联系电话', dataIndex: 'telephone', key: 'telephone',
       },
       {
-        title: '身份证', dataIndex: 'idCard', key: 'idCard',
+        title: '邮编', dataIndex: 'postcode', key: 'postcode',
       },
       {
-        title: '创建时间', dataIndex: 'timeGmt', key: 'timeGmt',
+        title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate',
       },
       {
-        title: '付款时间', dataIndex: 'payTime', key: 'payTime',
+        title: '备注', dataIndex: 'remarks', key: 'remarks',
       },
       {
-        title: '操作', dataIndex: 'operator', key: 'operator',
-        render(text, record, index) {
-          return <a href="javascript:void(0)" onClick={p.updateModal.bind(this, record.id)}>修改</a>
-        }
+        title: '操作',
+        dataIndex: 'operator',
+        key: 'operator',
+        render(text, record) {
+          return (
+            <div>
+              <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
+              <Popover title={null} content={orderStatusContent}>
+                <a href="javascript:void(0)" >状态操作</a>
+              </Popover>
+            </div>);
+        },
       },
     ];
+
     const rowSelection = {
-      getCheckboxProps: record => ({}),
-      onChange(selectedRowKeys) {
-        p.setState({ updateId: selectedRowKeys });
+      type: 'radio',
+      onChange(selectedRowKeys, selectedRows) {
+        console.log(selectedRowKeys, selectedRows);
+        const values = getFieldsValue();
+        console.log(values);
       },
     };
 
-    const paginationProps = {
-      total: orderList && orderList.total,
+    const listPaginationProps = {
+      total: orderList && orderList.totalCount,
+      pageSize: 10,
+      onChange(page) {
+        const values = getFieldsValue();
+        const payload = {};
+        Object.keys(values).forEach((key) => {
+          if (values[key]) {
+            payload[key] = values[key];
+          }
+        });
+        p.props.dispatch({
+          type: 'order/queryOrderList',
+          payload: { ...payload, pageIndex: page },
+        });
+      },
+    };
+
+    const skuColumns = [
+      {
+        title: '商品SKU',
+        dataIndex: 'productSKU',
+        key: '1',
+      },
+      {
+        title: '分配标记',
+        dataIndex: 'productSKU',
+        key: '2',
+      },
+      {
+        title: '商品主图',
+        dataIndex: 'productSKU',
+        key: '3',
+      },
+      {
+        title: '商品名称',
+        dataIndex: 'productSKU',
+        key: '4',
+      },
+      {
+        title: '颜色',
+        dataIndex: 'productSKU',
+        key: '5',
+      },
+      {
+        title: '尺码',
+        dataIndex: 'productSKU',
+        key: '6',
+      },
+      {
+        title: '品牌',
+        dataIndex: 'productSKU',
+        key: '7',
+      },
+      {
+        title: '条码',
+        dataIndex: 'productSKU',
+        key: '8',
+      },
+      {
+        title: '销售价',
+        dataIndex: 'productSKU',
+        key: '9',
+      },
+      {
+        title: '运费',
+        dataIndex: 'productSKU',
+        key: '10',
+      },
+      {
+        title: '数量',
+        dataIndex: 'productSKU',
+        key: '11',
+      },
+      {
+        title: '采购数量',
+        dataIndex: 'productSKU',
+        key: '12',
+      },
+      {
+        title: '入库数量',
+        dataIndex: 'productSKU',
+        key: '13',
+      },
+      {
+        title: '在途数量',
+        dataIndex: 'productSKU',
+        key: '14',
+      },
+      {
+        title: '总金额',
+        dataIndex: 'productSKU',
+        key: '15',
+      },
+      {
+        title: '线路',
+        dataIndex: 'productSKU',
+        key: '16',
+      },
+      {
+        title: '重量',
+        dataIndex: 'productSKU',
+        key: '17',
+      },
+      {
+        title: '重量单位',
+        dataIndex: 'productSKU',
+        key: '18',
+      },
+      {
+        title: '商品来源路径',
+        dataIndex: 'productSKU',
+        key: '19',
+      },
+    ];
+
+    const skuPaginationProps = {
+      total: orderList.data && orderList.data.total,
       pageSize: 10,
       onChange(page) {
         p.props.dispatch({
-          type: 'products/queryItemList',
-          payload: { page },
+          type: 'order/queryOrderSku',
+          payload: { pageIndex: page },
         });
       },
     };
@@ -164,14 +276,40 @@ class Order extends Component {
           <Row gutter={40}>
             <Col span={6}>
               <FormItem
+                label="客户"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('salesName', {})(
+                  <Input placeholder="请输入客户名称" />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem
+                label="外部订单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('targetNo', {})(
+                  <Input placeholder="请输入外部订单号" />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem
+                label="订单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('orderNo', {})(
+                  <Input placeholder="请输入订单号" />)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={40}>
+            <Col span={6}>
+              <FormItem
                 label="订单状态"
                 {...formItemLayout}
               >
-                {getFieldDecorator('orderStatus', {
-                  initialValue: "0",
-                  rules: [{ message: '请输入订单状态' }],
-                })(
-                  <Select>
+                {getFieldDecorator('status', {})(
+                  <Select placeholder="请选择订单状态">
                     <Option value="0">不限</Option>
                     <Option value="1">待支付</Option>
                     <Option value="2">待审核</Option>
@@ -180,20 +318,16 @@ class Order extends Component {
                     <Option value="5">已发货</Option>
                     <Option value="6">已完成</Option>
                     <Option value="7">已取消</Option>
-                  </Select>
-                )}
+                  </Select>)}
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem
-                label="备货状态"
+                label="订单备货状态"
                 {...formItemLayout}
               >
-                {getFieldDecorator('stockingStatus', {
-                  initialValue: "0",
-                  rules: [{ message: '请输入备货状态' }],
-                })(
-                  <Select>
+                {getFieldDecorator('stockStatus', {})(
+                  <Select placeholder="请选择订单备货状态">
                     <Option value="0">不限</Option>
                     <Option value="1">未备货</Option>
                     <Option value="2">备货中</Option>
@@ -204,26 +338,27 @@ class Order extends Component {
                     <Option value="7">备货完成</Option>
                     <Option value="8">备货完成，在途，可发</Option>
                     <Option value="9">备货完成，可发</Option>
-                  </Select>
-                )}
+                  </Select>)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={40}>
+            <Col span={6}>
+              <FormItem
+                label="订单时间开始"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('startOrderTime', {})(
+                  <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem
-                label="备货地点"
+                label="订单时间结束"
                 {...formItemLayout}
               >
-                {getFieldDecorator('stockingAddr', {
-                  initialValue: "0",
-                  rules: [{ message: '请输入备货地点' }],
-                })(
-                  <Select>
-                    <Option value="0">不限</Option>
-                    <Option value="1">国内</Option>
-                    <Option value="2">西雅图</Option>
-                    <Option value="3">波特兰</Option>
-                  </Select>
-                )}
+                {getFieldDecorator('endOrderTime', {})(
+                  <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
               </FormItem>
             </Col>
           </Row>
@@ -240,22 +375,31 @@ class Order extends Component {
           <Col span={3}>
             <Button type="primary" size="large" onClick={this.addModal.bind(this)}>新增订单</Button>
           </Col>
-          <Col span={3}>
-            <Popover content={orderStatusContent} title={null} trigger="hover">
-              <Button size="large">状态操作</Button>
-            </Popover>
-          </Col>
         </Row>
-        <Row>
+        <Row style={{ minHeight: 300 }}>
           <Col>
             <Table
-              columns={columns}
-              dataSource={orderList && orderList.rows}
+              columns={columnsList}
+              dataSource={orderList && orderList.data}
               bordered
               size="large"
               rowKey={record => record.id}
               rowSelection={rowSelection}
-              pagination={paginationProps}
+              pagination={listPaginationProps}
+            />
+          </Col>
+        </Row>
+        <Row style={{ height: 30, borderTop: '1px solid #ccc' }} />
+        <Row style={{ minHeight: 300 }}>
+          <Col>
+            <Table
+              columns={skuColumns}
+              dataSource={orderList && orderList.rows}
+              bordered
+              size="large"
+              rowKey={record => record.id}
+              pagination={skuPaginationProps}
+              scroll={{ x: 1200 }}
             />
           </Col>
         </Row>
@@ -277,10 +421,10 @@ function mapStateToProps(state) {
 }
 
 Order.PropTypes = {
-  orderList: PropTypes.array.isRequired,
+  orderList: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
 };
 
-Order = Form.create()(Order);
+const OrderList = Form.create()(Order);
 
-export default connect(mapStateToProps)(Order);
+export default connect(mapStateToProps)(OrderList);

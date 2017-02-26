@@ -20,9 +20,13 @@ export function queryOrderList({ payload }) {
 }
 
 export function queryOrder({ payload }) {
-  return fetch.post(`/haierp1/order/queryOrder${toForm(payload)}`).catch(e => e);
+  return fetch.post(`/haierp1/order/get${toForm(payload)}`).catch(e => e);
 }
 
 export function queryOrderSku({ payload }) {
   return fetch.post(`/haierp1/order/queryOrderSku${toForm(payload)}`).catch(e => e);
+}
+
+export function querySalesName({ payload }) {
+  return fetch.post(`/haierp1/order/querySalesName${toForm(payload)}`).catch(e => e);
 }

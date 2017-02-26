@@ -1,4 +1,4 @@
-import { addOrder, queryOrder, queryOrderList, queryOrderSku } from '../services/order';
+import { addOrder, queryOrder, queryOrderList, queryOrderSku, querySalesName } from '../services/order';
 import { message } from 'antd';
 
 export default {
@@ -7,6 +7,8 @@ export default {
     orderList: [],
     orderSku: [],
     currentPage: 1,
+    orderValues: {},
+    salesName: [],
   },
   reducers: {
     saveOrderList(state, { payload }) {
@@ -17,6 +19,12 @@ export default {
     },
     saveCurrentPage(state, { payload }) {
       return { ...state, currentPage: payload.pageIndex };
+    },
+    saveOrder(state, { payload }) {
+      return { ...state, orderValues: payload };
+    },
+    saveSalesName(state, { payload }) {
+      return { ...state, salesName: payload };
     },
   },
   effects: {
@@ -35,8 +43,8 @@ export default {
       if (data.success) {
         message.success('查询订单成功');
         yield put({
-          type: 'queryOrderList',
-          payload: {},
+          type: 'saveOrder',
+          payload: data,
         });
       }
     },
@@ -54,6 +62,15 @@ export default {
         message.success('获取订单列表成功');
         yield put({
           type: 'saveOrderList',
+          payload: data,
+        });
+      }
+    },
+    * querySalesName({ payload }, { call, put }) {
+      const data = yield call(querySalesName, { payload });
+      if (data.success) {
+        yield put({
+          type: 'saveSalesName',
           payload: data,
         });
       }

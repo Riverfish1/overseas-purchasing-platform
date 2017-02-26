@@ -59,7 +59,7 @@ class Order extends Component {
 
   render() {
     const p = this;
-    const { form, orderList = {} } = this.props;
+    const { form, orderList = {}, orderValues } = this.props;
     const { getFieldDecorator, getFieldsValue } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -142,114 +142,114 @@ class Order extends Component {
       },
     };
 
-    const skuColumns = [
-      {
-        title: '商品SKU',
-        dataIndex: 'productSKU',
-        key: '1',
-      },
-      {
-        title: '分配标记',
-        dataIndex: 'productSKU',
-        key: '2',
-      },
-      {
-        title: '商品主图',
-        dataIndex: 'productSKU',
-        key: '3',
-      },
-      {
-        title: '商品名称',
-        dataIndex: 'productSKU',
-        key: '4',
-      },
-      {
-        title: '颜色',
-        dataIndex: 'productSKU',
-        key: '5',
-      },
-      {
-        title: '尺码',
-        dataIndex: 'productSKU',
-        key: '6',
-      },
-      {
-        title: '品牌',
-        dataIndex: 'productSKU',
-        key: '7',
-      },
-      {
-        title: '条码',
-        dataIndex: 'productSKU',
-        key: '8',
-      },
-      {
-        title: '销售价',
-        dataIndex: 'productSKU',
-        key: '9',
-      },
-      {
-        title: '运费',
-        dataIndex: 'productSKU',
-        key: '10',
-      },
-      {
-        title: '数量',
-        dataIndex: 'productSKU',
-        key: '11',
-      },
-      {
-        title: '采购数量',
-        dataIndex: 'productSKU',
-        key: '12',
-      },
-      {
-        title: '入库数量',
-        dataIndex: 'productSKU',
-        key: '13',
-      },
-      {
-        title: '在途数量',
-        dataIndex: 'productSKU',
-        key: '14',
-      },
-      {
-        title: '总金额',
-        dataIndex: 'productSKU',
-        key: '15',
-      },
-      {
-        title: '线路',
-        dataIndex: 'productSKU',
-        key: '16',
-      },
-      {
-        title: '重量',
-        dataIndex: 'productSKU',
-        key: '17',
-      },
-      {
-        title: '重量单位',
-        dataIndex: 'productSKU',
-        key: '18',
-      },
-      {
-        title: '商品来源路径',
-        dataIndex: 'productSKU',
-        key: '19',
-      },
-    ];
+    // const skuColumns = [
+    //   {
+    //     title: '商品SKU',
+    //     dataIndex: 'productSKU',
+    //     key: '1',
+    //   },
+    //   {
+    //     title: '分配标记',
+    //     dataIndex: 'productSKU',
+    //     key: '2',
+    //   },
+    //   {
+    //     title: '商品主图',
+    //     dataIndex: 'productSKU',
+    //     key: '3',
+    //   },
+    //   {
+    //     title: '商品名称',
+    //     dataIndex: 'productSKU',
+    //     key: '4',
+    //   },
+    //   {
+    //     title: '颜色',
+    //     dataIndex: 'productSKU',
+    //     key: '5',
+    //   },
+    //   {
+    //     title: '尺码',
+    //     dataIndex: 'productSKU',
+    //     key: '6',
+    //   },
+    //   {
+    //     title: '品牌',
+    //     dataIndex: 'productSKU',
+    //     key: '7',
+    //   },
+    //   {
+    //     title: '条码',
+    //     dataIndex: 'productSKU',
+    //     key: '8',
+    //   },
+    //   {
+    //     title: '销售价',
+    //     dataIndex: 'productSKU',
+    //     key: '9',
+    //   },
+    //   {
+    //     title: '运费',
+    //     dataIndex: 'productSKU',
+    //     key: '10',
+    //   },
+    //   {
+    //     title: '数量',
+    //     dataIndex: 'productSKU',
+    //     key: '11',
+    //   },
+    //   {
+    //     title: '采购数量',
+    //     dataIndex: 'productSKU',
+    //     key: '12',
+    //   },
+    //   {
+    //     title: '入库数量',
+    //     dataIndex: 'productSKU',
+    //     key: '13',
+    //   },
+    //   {
+    //     title: '在途数量',
+    //     dataIndex: 'productSKU',
+    //     key: '14',
+    //   },
+    //   {
+    //     title: '总金额',
+    //     dataIndex: 'productSKU',
+    //     key: '15',
+    //   },
+    //   {
+    //     title: '线路',
+    //     dataIndex: 'productSKU',
+    //     key: '16',
+    //   },
+    //   {
+    //     title: '重量',
+    //     dataIndex: 'productSKU',
+    //     key: '17',
+    //   },
+    //   {
+    //     title: '重量单位',
+    //     dataIndex: 'productSKU',
+    //     key: '18',
+    //   },
+    //   {
+    //     title: '商品来源路径',
+    //     dataIndex: 'productSKU',
+    //     key: '19',
+    //   },
+    // ];
 
-    const skuPaginationProps = {
-      total: orderList.data && orderList.data.total,
-      pageSize: 10,
-      onChange(page) {
-        p.props.dispatch({
-          type: 'order/queryOrderSku',
-          payload: { pageIndex: page },
-        });
-      },
-    };
+    // const skuPaginationProps = {
+    //   total: orderList.data && orderList.data.total,
+    //   pageSize: 10,
+    //   onChange(page) {
+    //     p.props.dispatch({
+    //       type: 'order/queryOrderSku',
+    //       payload: { pageIndex: page },
+    //     });
+    //   },
+    // };
 
     const orderStatusContent = (
       <div className={styles.popoverContent}>
@@ -396,7 +396,7 @@ class Order extends Component {
         <OrderModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
-          modalValues={orderList}
+          modalValues={orderValues}
         />
       </div>
     );
@@ -404,9 +404,10 @@ class Order extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList } = state.order;
+  const { orderList, orderValues } = state.order;
   return {
     orderList,
+    orderValues,
   };
 }
 

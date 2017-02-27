@@ -29,6 +29,9 @@ export default {
   },
   effects: {
     * addOrder({ payload }, { call, put }) { // 新建SKU
+      if (payload.orderTime) {
+        payload.orderTime = payload.orderTime.format('YYYY-MM-DD');
+      }
       const data = yield call(addOrder, { payload });
       if (data.success) {
         message.success('增加订单成功');

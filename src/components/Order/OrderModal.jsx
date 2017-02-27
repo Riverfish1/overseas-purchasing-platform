@@ -6,6 +6,8 @@ import styles from './Order.less';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
+import divisions from '../../utils/divisions.json';
+import * as check from '../../utils/checkLib';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -27,17 +29,10 @@ class ProductsModal extends Component {
     const p = this;
     const { form, dispatch, close } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
-      if (err) {
-        return;
-      }
-      const values = {
-        ...fieldsValue,
-        orderTime: fieldsValue.orderTime && fieldsValue.orderTime.format('YYYY-MM-DD'),
-      };
-      console.log(values);
+      if (err) { return; }
       dispatch({
-        type: 'products/addProducts',
-        payload: { ...values },
+        type: 'order/addOrder',
+        payload: { ...fieldsValue },
       });
       close(false);
     });
@@ -55,6 +50,22 @@ class ProductsModal extends Component {
 
   handleCancel() {
     this.setState({ previewVisible: false });
+  }
+
+  checkPhone(rules, value, callback) {
+    if (check.phone(value)) {
+      callback();
+    } else {
+      callback(new Error('请填写正确的手机号'));
+    }
+  }
+
+  checkPostcode(rules, value, callback) {
+    if (check.postcode(value)) {
+      callback();
+    } else {
+      callback(new Error('请填写正确的邮政编码'));
+    }
   }
 
   checkImg(rules, values, callback) {
@@ -77,6 +88,7 @@ class ProductsModal extends Component {
   render() {
     const p = this;
     const { form, visible, close, modalValues = {} } = p.props;
+    const orderData = (modalValues && modalValues.data) || {};
     const { getFieldDecorator } = form;
     const modalProps = {
       visible,
@@ -101,58 +113,49 @@ class ProductsModal extends Component {
       columns: [
         {
           title: <font color="#00f">商品SKU</font>,
-          dataIndex: 'productSKU',
-          key: 'productSKU',
+          dataIndex: 'skuCode',
+          key: 'skuCode',
           render() {
-            return <div>{getFieldDecorator('productSKU', {})(<Input />)}</div>;
+            return <div>{getFieldDecorator('skuCode', {})(<Input />)}</div>;
           },
         },
         {
           title: '商品名称',
-          dataIndex: 'name',
-          key: 'name',
-          render(text) {
-            return <span>{text}</span>;
-          },
+          dataIndex: 'itemName',
+          key: 'itemName',
         },
         {
           title: '颜色',
           dataIndex: 'color',
           key: 'color',
-          render(text) {
-            return <span>{text}</span>;
-          },
         },
         {
           title: '尺寸',
           dataIndex: 'scale',
           key: 'scale',
-          render(text) {
-            return <span>{text}</span>;
-          },
         },
         {
           title: <font color="#00f">销售价</font>,
-          dataIndex: 'salePrice',
-          key: 'salePrice',
+          dataIndex: 'salePriceStr',
+          key: 'salePriceStr',
           render() {
-            return <div>{getFieldDecorator('salePrice', {})(<Input />)}</div>;
+            return <div>{getFieldDecorator('salePriceStr', {})(<Input />)}</div>;
           },
         },
         {
           title: <font color="#00f">运费</font>,
-          dataIndex: 'freight',
-          key: 'freight',
+          dataIndex: 'freightStr',
+          key: 'freightStr',
           render() {
-            return <div>{getFieldDecorator('freight', {})(<Input />)}</div>;
+            return <div>{getFieldDecorator('freightStr', {})(<Input />)}</div>;
           },
         },
         {
           title: <font color="#00f">数量</font>,
-          dataIndex: 'amount',
-          key: 'amount',
+          dataIndex: 'quantity',
+          key: 'quantity',
           render() {
-            return <div>{getFieldDecorator('amount', {})(<Input />)}</div>;
+            return <div>{getFieldDecorator('quantity', {})(<Input />)}</div>;
           },
         },
         {
@@ -165,35 +168,10 @@ class ProductsModal extends Component {
           },
         },
       ],
-      dataSource: modalValues.data ? modalValues.data.itemSkus : p.state.skuList,
+      dataSource: orderData.orderDetails,
       bordered: false,
       pagination: true,
     };
-    const orderData = (modalValues && modalValues.data) || {};
-
-    const options = [{
-      value: 'zhejiang',
-      label: 'Zhejiang',
-      children: [{
-        value: 'hangzhou',
-        label: 'Hangzhou',
-        children: [{
-          value: 'xihu',
-          label: 'West Lake',
-        }],
-      }],
-    }, {
-      value: 'jiangsu',
-      label: 'Jiangsu',
-      children: [{
-        value: 'nanjing',
-        label: 'Nanjing',
-        children: [{
-          value: 'zhonghuamen',
-          label: 'Zhong Hua Men',
-        }],
-      }],
-    }];
 
     return (
       <Modal {...modalProps} className={styles.modalStyle} >
@@ -257,7 +235,7 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('telephone', {
                   initialValue: orderData.telephone,
-                  rules: [{ required: true, message: '请输入电话号码' }],
+                  rules: [{ required: true, validator: this.checkPhone.bind(this) }],
                 })(
                   <Input placeholder="请输入电话号码" />)}
               </FormItem>
@@ -269,7 +247,7 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('postCode', {
                   initialValue: orderData.postCode,
-                  rules: [{ required: true, message: '请输入邮政编码' }],
+                  rules: [{ required: true, validator: this.checkPostcode.bind(this) }],
                 })(
                   <Input placeholder="请输入邮政编码" />)}
               </FormItem>
@@ -286,7 +264,7 @@ class ProductsModal extends Component {
                   initialValue: orderData.address,
                   rules: [{ required: true, message: '请选择' }],
                 })(
-                  <Cascader options={options} placeholder="请选择" style={{ marginLeft: 5 }} />)}
+                  <Cascader options={divisions} placeholder="请选择" style={{ marginLeft: 5 }} />)}
               </FormItem>
             </Col>
             <Col span={9}>
@@ -336,7 +314,7 @@ class ProductsModal extends Component {
           <Row>
             <Table
               {...modalTableProps}
-              rowKey={record => record.id}
+              rowKey={record => record.skuId}
             />
           </Row>
         </Form>

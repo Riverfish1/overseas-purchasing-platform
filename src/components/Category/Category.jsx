@@ -1,15 +1,9 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
-import { Table, Pagination, Input, Button, Row, Col, Select, DatePicker, Form, Icon } from 'antd';
+// import { Link } from 'dva/router';
+import { Table, Button, Row, Col } from 'antd';
 import CategoryModal from './CategoryModal';
 import styles from './Category.less';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-moment.locale('zh-cn');
-
-const FormItem = Form.Item;
-const Option = Select.Option;
 
 class Category extends Component {
 
@@ -26,16 +20,10 @@ class Category extends Component {
       if (err) {
         return;
       }
-      const values = {
-        ...filedsValue,
-        'startDateStr': filedsValue['startDateStr'].format('YYYY-MM-DD'),
-        'endDateStr': filedsValue['endDateStr'].format('YYYY-MM-DD'),
-      };
-      console.log(values);
       this.props.dispatch({
         type: 'products/queryItemList',
         payload: {
-          ...values
+          ...filedsValue,
         },
       });
     });
@@ -44,7 +32,7 @@ class Category extends Component {
   showModal() {
     this.setState({
       modalVisible: true,
-    })
+    });
   }
 
   closeModal(modalVisible) {
@@ -72,42 +60,33 @@ class Category extends Component {
       },
     ];
 
-    const formItemLayout = {
-      labelCol: { span: 10 },
-      wrapperCol: { span: 14 },
-    };
-    
-    const { cateList = {}, form } = this.props;
+    const { cateList = {} } = this.props;
     return (
       <div className={styles.normal}>
-        <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row>
-            <Col className={styles.operBtn}>
-              <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Table
-                columns={columns}
-                dataSource={cateList.data}
-                bordered
-                size="large"
-                rowKey={record => record.id}
-                pagination={{ total: cateList.totalCount, pageSize: 10 }}
-              />
-            </Col>
-          </Row>
-        </Form>
+        <Row>
+          <Col className={styles.operBtn}>
+            <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Table
+              columns={columns}
+              dataSource={cateList.data}
+              bordered
+              size="large"
+              rowKey={record => record.id}
+              pagination={{ total: cateList.totalCount, pageSize: 10 }}
+            />
+          </Col>
+        </Row>
         <CategoryModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
         />
       </div>
     );
-
   }
-
 }
 
 function mapStateToProps(state) {
@@ -121,7 +100,5 @@ function mapStateToProps(state) {
 Category.PropTypes = {
   cateList: PropTypes.array.isRequired,
 };
-
-Category = Form.create()(Category);
 
 export default connect(mapStateToProps)(Category);

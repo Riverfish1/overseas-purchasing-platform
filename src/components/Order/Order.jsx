@@ -17,6 +17,14 @@ class Order extends Component {
     };
   }
 
+  componentWillMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'order/querySalesName',
+      payload: {},
+    });
+  }
+
   handleSubmit(e) {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, filedsValue) => {
@@ -37,7 +45,7 @@ class Order extends Component {
     });
   }
 
-  handleEmpty() {
+  handleResetFields() {
     const { resetFields } = this.props.form;
     resetFields();
   }
@@ -49,6 +57,10 @@ class Order extends Component {
     }, () => {
       p.props.dispatch({ type: 'order/queryOrder', payload: { id } });
     });
+  }
+
+  handleRowClick(record) {
+    this.updateModal(record.id);
   }
 
   closeModal(modalVisible) {
@@ -63,7 +75,7 @@ class Order extends Component {
 
   render() {
     const p = this;
-    const { form, orderList = {}, orderValues } = this.props;
+    const { form, orderList = {}, orderValues = {}, salesName = [] } = this.props;
     const { getFieldDecorator, getFieldsValue } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -270,7 +282,7 @@ class Order extends Component {
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row gutter={20} style={{ width: 700 }}>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="客户"
@@ -299,7 +311,7 @@ class Order extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={20} style={{ width: 700 }}>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="订单状态"
@@ -339,7 +351,7 @@ class Order extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={20} style={{ width: 700 }}>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="订单时间开始"
@@ -362,7 +374,7 @@ class Order extends Component {
           <Row>
             <Col className={styles.listBtnGroup}>
               <Button htmlType="submit" size="large" type="primary">查询</Button>
-              <Button size="large" type="ghost" onClick={this.handleEmpty.bind(this)}>清空</Button>
+              <Button size="large" type="ghost" onClick={this.handleResetFields.bind(this)}>清空</Button>
             </Col>
           </Row>
         </Form>
@@ -381,6 +393,7 @@ class Order extends Component {
               rowKey={record => record.id}
               rowSelection={rowSelection}
               pagination={listPaginationProps}
+              onRowClick={this.handleRowClick.bind(this)}
             />
           </Col>
         </Row>
@@ -401,6 +414,7 @@ class Order extends Component {
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
           modalValues={orderValues}
+          salesName={salesName}
         />
       </div>
     );
@@ -408,10 +422,11 @@ class Order extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList, orderValues } = state.order;
+  const { orderList, orderValues, salesName } = state.order;
   return {
     orderList,
     orderValues,
+    salesName,
   };
 }
 

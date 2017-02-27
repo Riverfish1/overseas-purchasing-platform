@@ -27,14 +27,14 @@ class Order extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, filedsValue) => {
+    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }
-      console.log(filedsValue);
+      console.log(fieldsValue);
       this.props.dispatch({
         type: 'order/queryOrderList',
-        payload: { ...filedsValue },
+        payload: { ...fieldsValue },
       });
     });
   }
@@ -95,16 +95,66 @@ class Order extends Component {
         title: '订单时间', dataIndex: 'orderTime', key: 'orderTime',
       },
       {
-        title: '订单状态', dataIndex: 'status', key: 'status',
+        title: '订单状态',
+        dataIndex: 'status',
+        key: 'status',
+        render(text) {
+          if (text === 0) {
+            return <span>待支付</span>;
+          } else if (text === 1) {
+            return <span>待审核</span>;
+          } else if (text === 2) {
+            return <span>备货中</span>;
+          } else if (text === 3) {
+            return <span>部分发货</span>;
+          } else if (text === 4) {
+            return <span>已发货</span>;
+          } else if (text === 5) {
+            return <span>已完成</span>;
+          } else if (text === 6) {
+            return <span>已取消</span>;
+          }
+        },
       },
       {
-        title: '备货状态', dataIndex: 'stockStatus', key: 'stockStatus',
+        title: '备货状态',
+        dataIndex: 'stockStatus',
+        key: 'stockStatus',
+        render(text) {
+          if (text === 0) {
+            return <span>未备货</span>;
+          } else if (text === 1) {
+            return <span>备货中</span>;
+          } else if (text === 2) {
+            return <span>部分备货</span>;
+          } else if (text === 3) {
+            return <span>部分备货，在途</span>;
+          } else if (text === 4) {
+            return <span>部分备货，在途，可发</span>;
+          } else if (text === 5) {
+            return <span>部分备货，可发</span>;
+          } else if (text === 6) {
+            return <span>备货完成</span>;
+          } else if (text === 7) {
+            return <span>备货完成</span>;
+          } else if (text === 8) {
+            return <span>备货完成，在途，可发</span>;
+          } else if (text === 9) {
+            return <span>备货完成，可发</span>;
+          }
+        },
       },
       {
         title: '收件人', dataIndex: 'receiver', key: 'receiver',
       },
       {
-        title: '收件人地址', dataIndex: 'address', key: 'address',
+        title: '收件人地址',
+        dataIndex: 'address',
+        key: 'address',
+        render(text, record, index) {
+          console.log(text, record, index);
+          return <span>{text + record.addressDetail}</span>;
+        },
       },
       {
         title: '联系电话', dataIndex: 'telephone', key: 'telephone',

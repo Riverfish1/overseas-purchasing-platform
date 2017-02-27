@@ -1,4 +1,4 @@
-import { addOrder, queryOrder, queryOrderList, queryOrderSku, querySalesName } from '../services/order';
+import { addOrder, queryOrder, queryOrderList, queryOrderSku, querySalesName, updateOrder } from '../services/order';
 import { message } from 'antd';
 
 export default {
@@ -35,6 +35,17 @@ export default {
       const data = yield call(addOrder, { payload });
       if (data.success) {
         message.success('增加订单成功');
+        yield put({
+          type: 'queryOrderList',
+          payload: {},
+        });
+      }
+    },
+    * updateOrder({ payload }, { call, put }) {
+      if (payload.orderTime) { payload.orderTime = payload.orderTime.format('YYYY-MM-DD'); }
+      const data = yield call(updateOrder, { payload });
+      if (data.success) {
+        message.success('更新订单成功');
         yield put({
           type: 'queryOrderList',
           payload: {},

@@ -3,11 +3,12 @@ import { connect } from 'dva';
 // import { Link } from 'dva/router';
 import { Modal, Table, Cascader, Input, Button, Select, Row, Col, DatePicker, Form, Popconfirm } from 'antd';
 import styles from './Order.less';
+import divisions from '../../utils/divisions.json';
+import * as check from '../../utils/checkLib';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
-import divisions from '../../utils/divisions.json';
-import * as check from '../../utils/checkLib';
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -27,13 +28,20 @@ class ProductsModal extends Component {
 
   handleSubmit() {
     const p = this;
-    const { form, dispatch, close } = p.props;
+    const { form, dispatch, modalValues, close } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
-      dispatch({
-        type: 'order/addOrder',
-        payload: { ...fieldsValue },
-      });
+      if (modalValues && modalValues.data) {
+        dispatch({
+          type: 'order/updateOrder',
+          payload: { ...fieldsValue },
+        });
+      } else {
+        dispatch({
+          type: 'order/addOrder',
+          payload: { ...fieldsValue },
+        });
+      }
       close(false);
     });
   }
@@ -115,8 +123,8 @@ class ProductsModal extends Component {
           title: <font color="#00f">商品SKU</font>,
           dataIndex: 'skuCode',
           key: 'skuCode',
-          render() {
-            return <div>{getFieldDecorator('skuCode', {})(<Input />)}</div>;
+          render(text) {
+            return <div>{text}</div>;
           },
         },
         {
@@ -136,26 +144,26 @@ class ProductsModal extends Component {
         },
         {
           title: <font color="#00f">销售价</font>,
-          dataIndex: 'salePriceStr',
-          key: 'salePriceStr',
-          render() {
-            return <div>{getFieldDecorator('salePriceStr', {})(<Input />)}</div>;
+          dataIndex: 'salePrice',
+          key: 'salePrice',
+          render(text) {
+            return <div>{text.toString()}</div>;
           },
         },
         {
           title: <font color="#00f">运费</font>,
-          dataIndex: 'freightStr',
-          key: 'freightStr',
-          render() {
-            return <div>{getFieldDecorator('freightStr', {})(<Input />)}</div>;
+          dataIndex: 'freight',
+          key: 'freight',
+          render(text) {
+            return <div>{text.toString()}</div>;
           },
         },
         {
           title: <font color="#00f">数量</font>,
           dataIndex: 'quantity',
           key: 'quantity',
-          render() {
-            return <div>{getFieldDecorator('quantity', {})(<Input />)}</div>;
+          render(text) {
+            return <div>{text.toString()}</div>;
           },
         },
         {
@@ -245,8 +253,8 @@ class ProductsModal extends Component {
                 label="邮政编码"
                 {...formItemLayout}
               >
-                {getFieldDecorator('postCode', {
-                  initialValue: orderData.postCode,
+                {getFieldDecorator('postcode', {
+                  initialValue: orderData.postcode,
                   rules: [{ required: true, validator: this.checkPostcode.bind(this) }],
                 })(
                   <Input placeholder="请输入邮政编码" />)}
@@ -261,15 +269,15 @@ class ProductsModal extends Component {
                 wrapperCol={{ span: 17 }}
               >
                 {getFieldDecorator('address', {
-                  initialValue: orderData.address,
+                  initialValue: orderData.address && orderData.address.split(','),
                   rules: [{ required: true, message: '请选择' }],
                 })(
                   <Cascader options={divisions} placeholder="请选择" style={{ marginLeft: 5 }} />)}
               </FormItem>
             </Col>
             <Col span={9}>
-              {getFieldDecorator('address_detail', {
-                initialValue: orderData.address_detail,
+              {getFieldDecorator('addressDetail', {
+                initialValue: orderData.addressDetail,
                 rules: [{ required: true, message: '请输入详细地址' }],
               })(
                 <Input placeholder="请输入详细地址" size="large" />)}
@@ -314,7 +322,7 @@ class ProductsModal extends Component {
           <Row>
             <Table
               {...modalTableProps}
-              rowKey={record => record.skuId}
+              rowKey={record => record.id}
             />
           </Row>
         </Form>

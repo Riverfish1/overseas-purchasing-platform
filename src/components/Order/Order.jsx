@@ -55,6 +55,10 @@ class Order extends Component {
     this.setState({
       modalVisible,
     });
+    this.props.dispatch({
+      type: 'order/saveOrder',
+      payload: {},
+    });
   }
 
   render() {

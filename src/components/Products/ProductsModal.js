@@ -1,16 +1,16 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Modal, message, Input, Upload, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, TreeSelect } from 'antd';
+import { Modal, message, Input, Upload, InputNumber, Row, Col, Select, DatePicker, Form, Icon, TreeSelect } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+
+import SkuTable from './SkuTable';
 import styles from './Products.less';
 
 moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-
-let uuid = 1;
 
 function toString(str, type) {
   if (typeof str !== 'undefined' && str !== null) {
@@ -25,23 +25,35 @@ class ProductsModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      skuList: [], // sku数据
       previewVisible: false,
       previewImage: '',
     };
   }
 
   handleSubmit() {
+    const p = this;
     const { form, dispatch, modalValues } = this.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }
+
+      // 检验sku是否填写
+      const skuData = p.skuTable.getValue();
+      if (skuData.length < 1) {
+        message.error('请至少填写一项sku信息');
+        return;
+      } else {
+        // TODO: 过滤全空行
+      }
+
       const values = {
         ...fieldsValue,
         startDate: fieldsValue.startDate && fieldsValue.startDate.format('YYYY-MM-DD'),
         endDate: fieldsValue.endDate && fieldsValue.endDate.format('YYYY-MM-DD'),
+        skuList: encodeURIComponent(JSON.stringify(skuData)),
       };
+
       // 处理图片
       if (values.mainPic) {
         const uploadMainPic = [];
@@ -77,16 +89,6 @@ class ProductsModal extends Component {
     close(false);
   }
 
-  addSKU() {
-    uuid += 1;
-    const obj = {
-      color: 'EMPTY', scale: 'EMPTY', inventory: 'EMPTY', virtualInventory: 'EMPTY', weight: 'EMPTY', skuCode: 'EMPTY', id: uuid, order: uuid,
-    };
-    const _skuList = [];
-    _skuList.push(obj);
-    this.setState({ skuList: _skuList });
-  }
-
   handleCancel() {
     this.setState({ previewVisible: false });
   }
@@ -105,12 +107,6 @@ class ProductsModal extends Component {
   //     return item[param];
   //   });
   // }
-
-  handleDelete(id) {
-    const { skuList } = this.state;
-    const skuData = skuList.filter(item => id !== item.id);
-    this.setState({ skuList: skuData });
-  }
 
   render() {
     const p = this;
@@ -549,9 +545,7 @@ class ProductsModal extends Component {
             </Col>
           </Row>
           <Row>
-            <Col className={styles.productModalBtn}>
-              <Button type="primary" onClick={this.addSKU.bind(this)}>新增SKU</Button>
-            </Col>
+            <SkuTable data={[]} ref={(c) => { this.skuTable = c; }} />
           </Row>
         </Form>
       </Modal>

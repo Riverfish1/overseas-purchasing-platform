@@ -53,7 +53,7 @@ class ProductsModal extends Component {
             url: el.url,
           });
         });
-        values.mainPic = JSON.stringify({ picList: uploadMainPic, mainPicNum });
+        values.mainPic = encodeURIComponent(JSON.stringify({ picList: uploadMainPic, mainPicNum }));
       }
       console.log(values);
       if (modalValues && modalValues.data) {
@@ -283,7 +283,7 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('country', {
                   initialValue: toString(productData.country, 'SELECT'),
-                  rules: [{ message: '请选择国家' }],
+                  rules: [{ required: true, message: '请选择国家' }],
                 })(
                   <Select placeholder="请选择国家">
                     <Option value="1">美国</Option>
@@ -301,7 +301,7 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('currency', {
                   initialValue: toString(productData.currency, 'SELECT'),
-                  rules: [{ message: '请选择币种' }],
+                  rules: [{ required: true, message: '请选择币种' }],
                 })(
                   <Select placeholder="请选择币种">
                     <Option value="1">人民币</Option>
@@ -317,7 +317,7 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('idCard', {
                   initialValue: toString(productData.idCard, 'SELECT'),
-                  rules: [{ message: '请选择是否身份证' }],
+                  rules: [{ required: true, message: '请选择是否身份证' }],
                 })(
                   <Select placeholder="请选择是否身份证">
                     <Option value="1">是</Option>

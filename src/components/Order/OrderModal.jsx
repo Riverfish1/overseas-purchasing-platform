@@ -1,11 +1,14 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 // import { Link } from 'dva/router';
-import { Modal, Table, Cascader, Input, Button, Row, Col, Select, DatePicker, Form, Popconfirm } from 'antd';
+import { Modal, Table, Cascader, Input, Button, Select, Row, Col, DatePicker, Form, Popconfirm } from 'antd';
 import styles from './Order.less';
-// import moment from 'moment';
-// import 'moment/locale/zh-cn';
-// moment.locale('zh-cn');
+import divisions from '../../utils/divisions.json';
+import * as check from '../../utils/checkLib';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -25,20 +28,20 @@ class ProductsModal extends Component {
 
   handleSubmit() {
     const p = this;
-    const { form, dispatch, close } = p.props;
+    const { form, dispatch, modalValues, close } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
-      if (err) {
-        return;
+      if (err) { return; }
+      if (modalValues && modalValues.data) {
+        dispatch({
+          type: 'order/updateOrder',
+          payload: { ...fieldsValue },
+        });
+      } else {
+        dispatch({
+          type: 'order/addOrder',
+          payload: { ...fieldsValue },
+        });
       }
-      const values = {
-        ...fieldsValue,
-        orderTime: fieldsValue.orderTime && fieldsValue.orderTime.format('YYYY-MM-DD'),
-      };
-      console.log(values);
-      dispatch({
-        type: 'products/addProducts',
-        payload: { ...values },
-      });
       close(false);
     });
   }
@@ -55,6 +58,22 @@ class ProductsModal extends Component {
 
   handleCancel() {
     this.setState({ previewVisible: false });
+  }
+
+  checkPhone(rules, value, callback) {
+    if (check.phone(value)) {
+      callback();
+    } else {
+      callback(new Error('请填写正确的手机号'));
+    }
+  }
+
+  checkPostcode(rules, value, callback) {
+    if (check.postcode(value)) {
+      callback();
+    } else {
+      callback(new Error('请填写正确的邮政编码'));
+    }
   }
 
   checkImg(rules, values, callback) {
@@ -77,11 +96,13 @@ class ProductsModal extends Component {
   render() {
     const p = this;
     const { form, visible, close, modalValues = {} } = p.props;
+    const orderData = (modalValues && modalValues.data) || {};
     const { getFieldDecorator } = form;
     const modalProps = {
       visible,
       width: 900,
       wrapClassName: 'modalStyle',
+      okText: '保存',
       title: '添加',
       maskClosable: false,
       closable: true,
@@ -100,58 +121,49 @@ class ProductsModal extends Component {
       columns: [
         {
           title: <font color="#00f">商品SKU</font>,
-          dataIndex: 'productSKU',
-          key: 'productSKU',
-          render() {
-            return <div>{getFieldDecorator('productSKU', {})(<Input />)}</div>;
+          dataIndex: 'skuCode',
+          key: 'skuCode',
+          render(text) {
+            return <div>{text}</div>;
           },
         },
         {
           title: '商品名称',
-          dataIndex: 'name',
-          key: 'name',
-          render(text) {
-            return <span>{text}</span>;
-          },
+          dataIndex: 'itemName',
+          key: 'itemName',
         },
         {
           title: '颜色',
           dataIndex: 'color',
           key: 'color',
-          render(text) {
-            return <span>{text}</span>;
-          },
         },
         {
           title: '尺寸',
           dataIndex: 'scale',
           key: 'scale',
-          render(text) {
-            return <span>{text}</span>;
-          },
         },
         {
           title: <font color="#00f">销售价</font>,
           dataIndex: 'salePrice',
           key: 'salePrice',
-          render() {
-            return <div>{getFieldDecorator('salePrice', {})(<Input />)}</div>;
+          render(text) {
+            return <div>{text.toString()}</div>;
           },
         },
         {
           title: <font color="#00f">运费</font>,
           dataIndex: 'freight',
           key: 'freight',
-          render() {
-            return <div>{getFieldDecorator('freight', {})(<Input />)}</div>;
+          render(text) {
+            return <div>{text.toString()}</div>;
           },
         },
         {
           title: <font color="#00f">数量</font>,
-          dataIndex: 'amount',
-          key: 'amount',
-          render() {
-            return <div>{getFieldDecorator('amount', {})(<Input />)}</div>;
+          dataIndex: 'quantity',
+          key: 'quantity',
+          render(text) {
+            return <div>{text.toString()}</div>;
           },
         },
         {
@@ -164,10 +176,11 @@ class ProductsModal extends Component {
           },
         },
       ],
-      dataSource: modalValues.data ? modalValues.data.itemSkus : p.state.skuList,
+      dataSource: orderData.orderDetails,
       bordered: false,
       pagination: true,
     };
+
     return (
       <Modal {...modalProps} className={styles.modalStyle} >
         <Form onSubmit={p.handleSubmit.bind(p)}>
@@ -177,9 +190,8 @@ class ProductsModal extends Component {
                 label="订单编号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('orderCode', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.itemCode,
-                  rules: [{ message: '请输入订单编号' }],
+                {getFieldDecorator('orderNo', {
+                  initialValue: orderData.orderNo,
                 })(
                   <Input placeholder="请输入订单编号" />)}
               </FormItem>
@@ -189,11 +201,13 @@ class ProductsModal extends Component {
                 label="客户"
                 {...formItemLayout}
               >
-                {getFieldDecorator('custom', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.name,
+                {getFieldDecorator('salesName', {
+                  initialValue: orderData.salesName,
                   rules: [{ required: true, message: '请选择客户' }],
                 })(
-                  <Input placeholder="请选择客户" />)}
+                  <Select placeholder="请选择客户" >
+                    <Option value="0">张三</Option>
+                  </Select>)}
               </FormItem>
             </Col>
             <Col span={7}>
@@ -202,7 +216,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('orderTime', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.enName,
+                  initialValue: orderData.orderTime && moment(orderData.orderTime, 'YYYY-MM-DD'),
                   rules: [{ required: true, message: '请输入订单时间' }],
                 })(
                   <DatePicker format="YYYY-MM-DD" placeholder="请输入订单时间" />)}
@@ -215,8 +229,8 @@ class ProductsModal extends Component {
                 label="收件人"
                 {...formItemLayout}
               >
-                {getFieldDecorator('recipient', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.itemShort,
+                {getFieldDecorator('receiver', {
+                  initialValue: orderData.receiver,
                   rules: [{ required: true, message: '请输入收件人' }],
                 })(
                   <Input placeholder="请输入收件人" />)}
@@ -227,9 +241,9 @@ class ProductsModal extends Component {
                 label="电话号码"
                 {...formItemLayout}
               >
-                {getFieldDecorator('tel', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.categoryId,
-                  rules: [{ required: true, message: '请输入电话号码' }],
+                {getFieldDecorator('telephone', {
+                  initialValue: orderData.telephone,
+                  rules: [{ required: true, validator: this.checkPhone.bind(this) }],
                 })(
                   <Input placeholder="请输入电话号码" />)}
               </FormItem>
@@ -239,9 +253,9 @@ class ProductsModal extends Component {
                 label="邮政编码"
                 {...formItemLayout}
               >
-                {getFieldDecorator('postalCode', {
-                  initialValue: modalValues && modalValues.data && modalValues.data.brand,
-                  rules: [{ required: true, message: '请输入邮政编码' }],
+                {getFieldDecorator('postcode', {
+                  initialValue: orderData.postcode,
+                  rules: [{ required: true, validator: this.checkPostcode.bind(this) }],
                 })(
                   <Input placeholder="请输入邮政编码" />)}
               </FormItem>
@@ -254,16 +268,16 @@ class ProductsModal extends Component {
                 labelCol={{ span: 6 }}
                 wrapperCol={{ span: 17 }}
               >
-                {getFieldDecorator('recipientAddr', {
-                  initialValue: modalValues && modalValues.data ? modalValues.data.country === 1 ? '美国' : modalValues.data.country === 2 ? '德国' : modalValues.data.country === 3 ? '日本' : modalValues.data.country === 4 ? '澳洲' : '' : '',
+                {getFieldDecorator('address', {
+                  initialValue: orderData.address && orderData.address.split(','),
                   rules: [{ required: true, message: '请选择' }],
                 })(
-                  <Cascader placeholder="请选择" style={{ marginLeft: 5 }} />)}
+                  <Cascader options={divisions} placeholder="请选择" style={{ marginLeft: 5 }} />)}
               </FormItem>
             </Col>
             <Col span={9}>
-              {getFieldDecorator('detailAddr', {
-                initialValue: modalValues && modalValues.data ? modalValues.data.detailAddr : '',
+              {getFieldDecorator('addressDetail', {
+                initialValue: orderData.addressDetail,
                 rules: [{ required: true, message: '请输入详细地址' }],
               })(
                 <Input placeholder="请输入详细地址" size="large" />)}
@@ -276,9 +290,8 @@ class ProductsModal extends Component {
                 labelCol={{ span: 3 }}
                 wrapperCol={{ span: 18 }}
               >
-                {getFieldDecorator('outOrder', {
-                  initialValue: modalValues && modalValues.data ? modalValues.data.country === 1 ? '美国' : modalValues.data.country === 2 ? '德国' : modalValues.data.country === 3 ? '日本' : modalValues.data.country === 4 ? '澳洲' : '' : '',
-                  rules: [{ message: '请输入外部订单号，如有赞订单号' }],
+                {getFieldDecorator('targetNo', {
+                  initialValue: orderData.targetNo,
                 })(
                   <Input placeholder="请输入外部订单号，如有赞订单号" size="large" style={{ marginLeft: 5 }} />)}
               </FormItem>
@@ -291,9 +304,8 @@ class ProductsModal extends Component {
                 labelCol={{ span: 3 }}
                 wrapperCol={{ span: 18 }}
               >
-                {getFieldDecorator('outOrder', {
-                  initialValue: modalValues && modalValues.data ? modalValues.data.country === 1 ? '美国' : modalValues.data.country === 2 ? '德国' : modalValues.data.country === 3 ? '日本' : modalValues.data.country === 4 ? '澳洲' : '' : '',
-                  rules: [{ message: '请输入备注信息' }],
+                {getFieldDecorator('remarks', {
+                  initialValue: orderData.remarks,
                 })(
                   <Input placeholder="请输入备注信息" size="large" style={{ marginLeft: 5 }} />)}
               </FormItem>
@@ -320,15 +332,15 @@ class ProductsModal extends Component {
 }
 
 function mapStateToProps(state) {
-  const { brands } = state.order;
+  const { salesName } = state.order;
   return {
     loading: state.loading.models.products,
-    brands,
+    salesName,
   };
 }
 
 ProductsModal.PropTypes = {
-  brands: PropTypes.array.isRequired,
+  salesName: PropTypes.array.isRequired,
 };
 
 export default connect(mapStateToProps)(Form.create()(ProductsModal));

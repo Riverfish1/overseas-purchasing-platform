@@ -52,7 +52,7 @@ export default {
       if (data.success) {
         // 处理图片缩略图
         if (data.data.mainPic && data.data.mainPic !== '0') {
-          const picStr = data.data.mainPic.replace(/&quot;/g, '"');
+          const picStr = decodeURIComponent(data.data.mainPic).replace(/&quot;/g, '"');
           console.log(picStr);
           console.log(data.data.mainPic);
           const picObj = JSON.parse(picStr);

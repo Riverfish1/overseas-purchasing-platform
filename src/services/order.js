@@ -15,14 +15,22 @@ export function addOrder({ payload }) {
   return fetch.post(`/haierp1/order/add${toForm(payload)}`).catch(e => e);
 }
 
+export function updateOrder({ payload }) {
+  return fetch.post(`/haierp1/order/update${toForm(payload)}`).catch(e => e);
+}
+
 export function queryOrderList({ payload }) {
   return fetch.post(`/haierp1/order/queryOrderList${toForm(payload)}`).catch(e => e);
 }
 
 export function queryOrder({ payload }) {
-  return fetch.post(`/haierp1/order/queryOrder${toForm(payload)}`).catch(e => e);
+  return fetch.post(`/haierp1/order/query${toForm(payload)}`).catch(e => e);
 }
 
 export function queryOrderSku({ payload }) {
   return fetch.post(`/haierp1/order/queryOrderSku${toForm(payload)}`).catch(e => e);
+}
+
+export function querySalesName({ payload }) {
+  return fetch.post(`/haierp1/order/querySalesName${toForm(payload)}`).catch(e => e);
 }

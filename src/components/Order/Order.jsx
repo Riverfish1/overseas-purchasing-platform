@@ -151,8 +151,7 @@ class Order extends Component {
         title: '收件人地址',
         dataIndex: 'address',
         key: 'address',
-        render(text, record, index) {
-          console.log(text, record, index);
+        render(text, record) {
           return <span>{text + record.addressDetail}</span>;
         },
       },

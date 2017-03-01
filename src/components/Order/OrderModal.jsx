@@ -20,7 +20,6 @@ class ProductsModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      skuList: [], // sku数据
       previewVisible: false,
       previewImage: '',
     };
@@ -28,7 +27,7 @@ class ProductsModal extends Component {
 
   handleSubmit() {
     const p = this;
-    const { form, dispatch, modalValues, close } = p.props;
+    const { form, dispatch, modalValues } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
       if (modalValues && modalValues.data) {
@@ -42,8 +41,14 @@ class ProductsModal extends Component {
           payload: { ...fieldsValue },
         });
       }
-      close(false);
+      p.closeModal();
     });
+  }
+
+  closeModal() {
+    const { form, close } = this.props;
+    form.resetFields();
+    close(false);
   }
 
   addProduct() {
@@ -95,7 +100,7 @@ class ProductsModal extends Component {
 
   render() {
     const p = this;
-    const { form, visible, close, modalValues = {} } = p.props;
+    const { form, visible, modalValues = {} } = p.props;
     const orderData = (modalValues && modalValues.data) || {};
     const { getFieldDecorator } = form;
     const modalProps = {
@@ -110,7 +115,7 @@ class ProductsModal extends Component {
         p.handleSubmit();
       },
       onCancel() {
-        close(false);
+        p.closeModal();
       },
     };
     const formItemLayout = {

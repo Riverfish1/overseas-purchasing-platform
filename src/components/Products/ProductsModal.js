@@ -28,6 +28,9 @@ class ProductsModal extends Component {
       previewVisible: false,
       previewImage: '',
     };
+    // skuTable改写父级方法
+    this.getSkuValue = null;
+    this.clearSkuValue = null;
   }
 
   handleSubmit() {
@@ -39,47 +42,42 @@ class ProductsModal extends Component {
       }
 
       // 检验sku是否填写
-      const skuData = p.skuTable.getValue();
-      if (skuData.length < 1) {
-        message.error('请至少填写一项sku信息');
-        return;
-      } else {
-        // TODO: 过滤全空行
-      }
+      p.getSkuValue((skuList) => {
+        console.log(skuList);
+        const values = {
+          ...fieldsValue,
+          startDate: fieldsValue.startDate && fieldsValue.startDate.format('YYYY-MM-DD'),
+          endDate: fieldsValue.endDate && fieldsValue.endDate.format('YYYY-MM-DD'),
+          skuList: encodeURIComponent(JSON.stringify(skuList)),
+        };
 
-      const values = {
-        ...fieldsValue,
-        startDate: fieldsValue.startDate && fieldsValue.startDate.format('YYYY-MM-DD'),
-        endDate: fieldsValue.endDate && fieldsValue.endDate.format('YYYY-MM-DD'),
-        skuList: encodeURIComponent(JSON.stringify(skuData)),
-      };
-
-      // 处理图片
-      if (values.mainPic) {
-        const uploadMainPic = [];
-        const mainPicNum = values.mainPicNum;
-        values.mainPic.forEach((el) => {
-          uploadMainPic.push({
-            type: el.type,
-            uid: el.uid,
-            url: el.url,
+        // 处理图片
+        if (values.mainPic) {
+          const uploadMainPic = [];
+          const mainPicNum = values.mainPicNum;
+          values.mainPic.forEach((el) => {
+            uploadMainPic.push({
+              type: el.type,
+              uid: el.uid,
+              url: el.url,
+            });
           });
-        });
-        values.mainPic = encodeURIComponent(JSON.stringify({ picList: uploadMainPic, mainPicNum }));
-      }
-      console.log(values);
-      if (modalValues && modalValues.data) {
-        dispatch({
-          type: 'products/updateProducts',
-          payload: { ...values, id: modalValues.data.id },
-        });
-      } else {
-        dispatch({
-          type: 'products/addProducts',
-          payload: { ...values },
-        });
-      }
-      this.closeModal();
+          values.mainPic = encodeURIComponent(JSON.stringify({ picList: uploadMainPic, mainPicNum }));
+        }
+        console.log(values);
+        if (modalValues && modalValues.data) {
+          dispatch({
+            type: 'products/updateProducts',
+            payload: { ...values, id: modalValues.data.id },
+          });
+        } else {
+          dispatch({
+            type: 'products/addProducts',
+            payload: { ...values },
+          });
+        }
+        this.closeModal();
+      });
     });
   }
 
@@ -87,6 +85,10 @@ class ProductsModal extends Component {
     const { form, close } = this.props;
     form.resetFields();
     close(false);
+    // 清理skuTable
+    setTimeout(() => {
+      this.clearSkuValue();
+    }, 100);
   }
 
   handleCancel() {
@@ -545,7 +547,7 @@ class ProductsModal extends Component {
             </Col>
           </Row>
           <Row>
-            <SkuTable data={[]} ref={(c) => { this.skuTable = c; }} />
+            <SkuTable data={productData.itemSkus} parent={p} />
           </Row>
         </Form>
       </Modal>

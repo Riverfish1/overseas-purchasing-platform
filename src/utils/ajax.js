@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { message } from 'antd';
 const ajaxLib = require('./lib/ajaxLib');
 
 const _blank = () => {};
@@ -96,6 +97,9 @@ AjaxClass.prototype.init = function init() {
             p.handler('ERROR_PARSE');
           } finally {
             // json解析无错误，进行响应
+            if (result.msg) {
+              message.error(result.msg);
+            }
             if (!p._failed) {
               // 返回数据
               let shouldFormat = false; // 默认不按接口规范

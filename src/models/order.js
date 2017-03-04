@@ -55,7 +55,6 @@ export default {
     * queryOrder({ payload }, { call, put }) {
       const data = yield call(queryOrder, { payload });
       if (data.success) {
-        message.success('查询订单成功');
         yield put({
           type: 'saveOrder',
           payload: data,
@@ -73,7 +72,6 @@ export default {
       const data = yield call(queryOrderList, { payload: { ...payload, pageIndex } });
       console.log('queryOrderList success', data);
       if (data.success) {
-        message.success('获取订单列表成功');
         yield put({
           type: 'saveOrderList',
           payload: data,
@@ -92,7 +90,6 @@ export default {
     * queryOrderSku({ payload }, { call, put }) {
       const data = yield call(queryOrderSku, { payload });
       if (data.success) {
-        message.success('获取订单SKU成功');
         yield put({
           type: 'saveOrderSku',
           payload: data,

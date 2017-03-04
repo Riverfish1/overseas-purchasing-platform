@@ -1,11 +1,16 @@
 import React, { PropTypes, Component } from 'react';
-import { connect } from 'dva';
-import { Link } from 'dva/router';
-import { Modal, Table, Pagination, Input, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon } from 'antd';
-import styles from './Category.less';
+import { Modal, Input, Row, Col, Select, Form, TreeSelect } from 'antd';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+function toString(str, type) {
+  if (typeof str !== 'undefined' && str !== null) {
+    return str.toString();
+  }
+  if (type === 'SELECT') return undefined;
+  return '';
+}
 
 class CategoryModal extends Component {
 
@@ -16,31 +21,41 @@ class CategoryModal extends Component {
   }
 
   handleSubmit() {
-    const { form, dispatch } = this.props;
+    const p = this;
+    const { form, dispatch, cateData } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }
-      console.log(fieldsValue);
-      dispatch({
-        type: 'products/addCate',
-        payload: { ...fieldsValue },
-      });
+      if (cateData.data) {
+        fieldsValue.id = cateData.data.id;
+        dispatch({ type: 'cate/updateCate', payload: { ...fieldsValue } });
+      } else {
+        dispatch({
+          type: 'cate/addCate',
+          payload: { ...fieldsValue },
+        });
+      }
+      p.closeModal();
     });
   }
 
-  chooseProps() {
-
+  closeModal() {
+    const { close, form } = this.props;
+    form.resetFields();
+    close(false);
   }
 
   render() {
-    let p = this;
-    const { form, visible, close } = this.props;
+    const p = this;
+    const { form, visible, tree = [], cateData, title } = this.props;
     const { getFieldDecorator } = form;
+    const cateModalData = cateData.data || {};
+    const pid = cateModalData.pid && cateModalData.pid !== 0 ? toString(cateModalData.pid, 'SELECT') : undefined;
     const modalProps = {
       visible,
       wrapClassName: 'modalStyle',
-      title: '添加',
+      title,
       width: 700,
       maskClosable: false,
       closable: true,
@@ -48,7 +63,7 @@ class CategoryModal extends Component {
         p.handleSubmit();
       },
       onCancel() {
-        close(false);
+        p.closeModal();
       },
     };
     const formItemLayout = {
@@ -64,106 +79,63 @@ class CategoryModal extends Component {
           <Row>
             <Col span={12}>
               <FormItem
-                label="类别名称"
+                label="类目名称"
                 {...formItemLayout}
               >
-                {getFieldDecorator('cateName', {
+                {getFieldDecorator('name', {
+                  initialValue: cateModalData.name,
                   rules: [{ required: true, message: '请输入类别名称' }],
                 })(
-                  <Input placeholder="请输入类别名称" />
-                )}
+                  <Input placeholder="请输入类别名称" />)}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem
-                label="类别代码"
+                label="父类目ID"
                 {...formItemLayout}
               >
-                {getFieldDecorator('cateCode', {
-                  rules: [{ message: '请输入类别代码' }],
+                {getFieldDecorator('pid', {
+                  initialValue: pid,
                 })(
-                  <Input placeholder="请输入类别代码" />
-                )}
+                  <TreeSelect placeholder="请选择类目" treeData={tree} />)}
               </FormItem>
             </Col>
           </Row>
           <Row>
             <Col span={12}>
               <FormItem
-                label="服务费率"
+                label="排序号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('servicesRate', {
-                  rules: [{ required: true, message: '请输入服务费率' }],
+                {getFieldDecorator('seq', {
+                  initialValue: cateModalData.seq,
                 })(
-                  <InputNumber style={{ width: '100%' }} step={0.01} min={0} placeholder="请输入服务费率" />
-                )}
+                  <Input placeholder="请输入排序号" />)}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem
-                label="有赞类别"
+                label="状态"
                 {...formItemLayout}
               >
-                {getFieldDecorator('youzanCate', {
-                  rules: [{ message: '请输入有赞类别' }],
+                {getFieldDecorator('status', {
+                  initialValue: toString(cateModalData.status, 'SELECT'),
                 })(
-                  <Select placeholder="请输入有赞类别" >
-                    <Option value="1">男人</Option>
-                  </Select>
-                )}
+                  <Select placeholder="请输入状态" >
+                    <Option value="0">失效</Option>
+                    <Option value="1">生效</Option>
+                  </Select>)}
               </FormItem>
             </Col>
           </Row>
-          <Row>
-            <Col span={12}>
-              <FormItem
-                label="淘宝类别"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('taobaoCate', {
-                  rules: [{ message: '请输入淘宝类别' }],
-                })(
-                  <Select placeholder="请输入淘宝类别" >
-                    <Option value="1">男人</Option>
-                  </Select>
-                )}
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem
-                label="说明"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('itemCode', {
-                  rules: [{ message: '请输入说明' }],
-                })(
-                  <Input placeholder="请输入说明" />
-                )}
-              </FormItem>
-            </Col>
-          </Row>
-          {/* <Row>
-            <Col>
-              <Button type="primary" onClick={() => {this.chooseProps.bind(this)}}>选择属性</Button>
-            </Col>
-          </Row> */}
         </Form>
       </Modal>
     );
-
   }
-
 }
 
-function mapStateToProps(state) {
-  const { dataSource } = state.products;
-  return {
-    loading: state.loading.models.products,
-    dataSource,
-  };
-}
+CategoryModal.PropTypes = {
+  tree: PropTypes.array.isRequired,
+};
 
-CategoryModal = Form.create()(CategoryModal);
-
-export default connect(mapStateToProps)(CategoryModal);
+export default Form.create()(CategoryModal);

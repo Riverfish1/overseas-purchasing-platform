@@ -1,19 +1,19 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 // import { Link } from 'dva/router';
-import { Modal, Table, Cascader, Input, Button, Select, Row, Col, DatePicker, Form, Popconfirm } from 'antd';
+import { Modal, Cascader, Input, Button, Select, Row, Col, DatePicker, Form, Popconfirm } from 'antd';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+import ProductTable from './ProductTable';
 import styles from './Order.less';
 import divisions from '../../utils/divisions.json';
 import * as check from '../../utils/checkLib';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
+
 moment.locale('zh-cn');
 
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-
-let uuid = 1;
 
 class ProductsModal extends Component {
 
@@ -45,20 +45,14 @@ class ProductsModal extends Component {
     });
   }
 
+  addProduct() {
+    
+  }
+
   closeModal() {
     const { form, close } = this.props;
     form.resetFields();
     close(false);
-  }
-
-  addProduct() {
-    uuid += 1;
-    const obj = {
-      color: 'EMPTY', scale: 'EMPTY', inventory: 'EMPTY', virtualInventory: 'EMPTY', weight: 'EMPTY', skuCode: 'EMPTY', id: uuid, order: uuid,
-    };
-    const _skuList = [];
-    _skuList.push(obj);
-    this.setState({ skuList: _skuList });
   }
 
   handleCancel() {
@@ -325,10 +319,7 @@ class ProductsModal extends Component {
             </Col>
           </Row>
           <Row>
-            <Table
-              {...modalTableProps}
-              rowKey={record => record.id}
-            />
+            <ProductTable />
           </Row>
         </Form>
       </Modal>

@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 // import { Link } from 'dva/router';
-import { Table, Button, Row, Col } from 'antd';
+import { Table, Button, Row, Col, Popconfirm } from 'antd';
 import CategoryModal from './CategoryModal';
 import styles from './Category.less';
 
@@ -11,56 +11,94 @@ class Category extends Component {
     super();
     this.state = {
       modalVisible: false,
+      title: '',
     };
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, filedsValue) => {
-      if (err) {
-        return;
-      }
-      this.props.dispatch({
-        type: 'products/queryItemList',
-        payload: {
-          ...filedsValue,
-        },
-      });
-    });
-  }
-
   showModal() {
-    this.setState({
+    const p = this;
+    p.setState({
       modalVisible: true,
+      title: '新增',
+    }, () => {
+      p.props.dispatch({
+        type: 'products/queryCatesTree',
+        payload: {},
+      });
     });
   }
 
   closeModal(modalVisible) {
     this.setState({
       modalVisible,
+    }, () => {
+      this.props.dispatch({
+        type: 'cate/saveCate',
+        payload: {},
+      });
+    });
+  }
+
+  updateModal(id) {
+    const p = this;
+    p.setState({
+      modalVisible: true,
+      title: '修改',
+    }, () => {
+      p.props.dispatch({ type: 'products/queryCatesTree', payload: {} });
+      p.props.dispatch({
+        type: 'cate/queryCate',
+        payload: { id },
+      });
+    });
+  }
+
+  handleDelete(id) {
+    this.props.dispatch({
+      type: 'cate/deleteCate',
+      payload: { id },
     });
   }
 
   render() {
+    const p = this;
+    const { cateList = {}, cate = {}, tree = [], dispatch } = p.props;
+    const { title } = this.state;
+    cateList.data && cateList.data.forEach((item) => {
+      if (item.children && item.children.length < 1) {
+        delete item.children;
+      }
+    });
     const columns = [
       {
-        title: '类别名称', dataIndex: 'name', key: 'name',
+        title: '类目名称',
+        dataIndex: 'name',
+        key: 'name',
       },
       {
-        title: '类别代码', dataIndex: 'cateCode', key: 'cateCode',
+        title: '类目级别',
+        dataIndex: 'level',
+        key: 'level',
       },
       {
-        title: '服务费率', dataIndex: 'servicesRate', key: 'servicesRate',
+        title: '全路径', dataIndex: 'allPath', key: 'allPath',
       },
       {
-        title: '最近修改', dataIndex: 'gmtModify', key: 'gmtModify',
-      },
-      {
-        title: '备注', dataIndex: 'remark', key: 'remark',
+        title: '操作',
+        dataIndex: 'operator',
+        key: 'operator',
+        render(text, record) {
+          return (
+            <div>
+              <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
+              <Popconfirm title="确定删除此类目？" onConfirm={p.handleDelete.bind(p, record.id)}>
+                <a href="javascript:void(0)" >删除</a>
+              </Popconfirm>
+            </div>);
+        },
       },
     ];
 
-    const { cateList = {} } = this.props;
     return (
       <div className={styles.normal}>
         <Row>
@@ -76,13 +114,17 @@ class Category extends Component {
               bordered
               size="large"
               rowKey={record => record.id}
-              pagination={{ total: cateList.totalCount, pageSize: 10 }}
+              pagination={false}
             />
           </Col>
         </Row>
         <CategoryModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
+          tree={tree}
+          cateData={cate}
+          dispatch={dispatch}
+          title={title}
         />
       </div>
     );
@@ -90,15 +132,19 @@ class Category extends Component {
 }
 
 function mapStateToProps(state) {
-  const { cateList } = state.products;
+  const { cateList, cate } = state.cate;
+  const { tree } = state.products;
   return {
     loading: state.loading.models.products,
     cateList,
+    cate,
+    tree: tree.data,
   };
 }
 
 Category.PropTypes = {
   cateList: PropTypes.array.isRequired,
+  tree: PropTypes.array.isRequired,
 };
 
 export default connect(mapStateToProps)(Category);

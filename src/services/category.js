@@ -16,5 +16,17 @@ export function addCate({ payload }) {
 }
 
 export function queryCateList({ payload }) {
-  return fetch.post(`/haierp1/category/queryCateList${toForm(payload)}`).catch(e => e);
+  return fetch.post(`/haierp1/category/queryList${toForm(payload)}`).catch(e => e);
+}
+
+export function queryCate({ payload }) {
+  return fetch.post(`/haierp1/category/query${toForm(payload)}`).catch(e => e);
+}
+
+export function updateCate({ payload }) {
+  return fetch.post(`/haierp1/category/update${toForm(payload)}`).catch(e => e);
+}
+
+export function deleteCate({ payload }) {
+  return fetch.post(`/haierp1/category/delete${toForm(payload)}`).catch(e => e);
 }

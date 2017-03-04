@@ -4,6 +4,7 @@ export default {
   namespace: 'sku',
   state: {
     skuList: [],
+    currentPage: 1,
   },
   reducers: {
     saveSku(state, { payload: dataSource }) {
@@ -11,6 +12,9 @@ export default {
     },
     saveSkuList(state, { payload: data }) {
       return { ...state, skuList: data };
+    },
+    saveCurrentPage(state, { payload }) {
+      return { ...state, currentPage: payload.pageIndex };
     },
   },
   effects: {
@@ -25,8 +29,14 @@ export default {
         });
       }
     },
-    * querySkuList({ payload }, { call, put }) { // SKU管理列表
-      const data = yield call(querySkuList, { payload });
+    * querySkuList({ payload = {} }, { call, put, select }) { // SKU管理列表
+      let pageIndex = yield select(({ sku }) => sku.currentPage);
+      if (payload && payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({ type: 'saveCurrentPage', payload });
+      }
+      const data = yield call(querySkuList, { payload: { ...payload, pageIndex } });
+      console.log('querySkuList success', data);
       if (data.success) {
         yield put({
           type: 'saveSkuList',

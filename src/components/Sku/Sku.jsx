@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Table, Button, Row, Col, Select, Form } from 'antd';
+import { Table, Button, Row, Col, Form } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
@@ -8,9 +8,6 @@ import SkuModal from './SkuModal';
 import styles from './Sku.less';
 
 moment.locale('zh-cn');
-
-const FormItem = Form.Item;
-const Option = Select.Option;
 
 class Sku extends Component {
 
@@ -55,104 +52,34 @@ class Sku extends Component {
   }
 
   render() {
+    const p = this;
     const columns = [
-      {
-        title: '是否推荐', dataIndex: 'name', key: '1',
-      },
-      {
-        title: '是否促销', dataIndex: 'itemCode', key: '2',
-      },
-      {
-        title: '销售类别', dataIndex: 'productsImage', key: '3',
-      },
-      {
-        title: 'SKU编号', dataIndex: 'brand', key: '4',
-      },
-      {
-        title: '商品类型', dataIndex: 'saleType', key: '5',
-      },
-      {
-        title: 'SKU主图', dataIndex: 'categoryId', key: '6',
-      },
-      {
-        title: '简称', dataIndex: 'purchaseDest', key: '7',
-      },
-      {
-        title: '全称', dataIndex: 'startDateStr', key: '8',
-      },
-      {
-        title: '英文名称', dataIndex: 'endDateStr', key: '9',
-      },
-      {
-        title: '商品颜色', dataIndex: 'name', key: '10',
-      },
-      {
-        title: '商品尺寸', dataIndex: 'itemCode', key: '11',
-      },
-      {
-        title: '品牌', dataIndex: 'productsImage', key: '12',
-      },
-      {
-        title: '条码', dataIndex: 'brand', key: '13',
-      },
-      {
-        title: '允许销售', dataIndex: 'saleType', key: '14',
-      },
-      {
-        title: '可售库存', dataIndex: 'categoryId', key: '15',
-      },
-      {
-        title: 'ERP锁定库存', dataIndex: 'purchaseDest', key: '16',
-      },
-      {
-        title: '第三方平台锁定', dataIndex: 'startDateStr', key: '17',
-      },
-      {
-        title: '实际库存（包含在途库存）', dataIndex: 'endDateStr', key: '18',
-      },
-      {
-        title: '成本价', dataIndex: 'startDateStr', key: '19',
-      },
-      {
-        title: '预估运费（人民币）', dataIndex: 'endDateStr', key: '20',
-      },
-      {
-        title: '销售价（人民币）', dataIndex: 'name', key: '21',
-      },
-      {
-        title: '商品重量', dataIndex: 'itemCode', key: '22',
-      },
-      {
-        title: '单位', dataIndex: 'productsImage', key: '23',
-      },
-      {
-        title: '产地', dataIndex: 'brand', key: '24',
-      },
-      {
-        title: '商品来源', dataIndex: 'saleType', key: '25',
-      },
-      {
-        title: '联系人', dataIndex: 'categoryId', key: '26',
-      },
-      {
-        title: '联系人电话', dataIndex: 'purchaseDest', key: '27',
-      },
-      {
-        title: '商品代码', dataIndex: 'startDateStr', key: '28',
-      },
-      {
-        title: '联系人备注', dataIndex: 'endDateStr', key: '29',
-      },
-      {
-        title: '商品备注', dataIndex: 'endDateStr', key: '30',
-      },
+      { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode' },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
+      { title: '品牌', dataIndex: 'brand', key: 'brand' },
+      { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName' },
+      { title: '尺寸', dataIndex: 'scale', key: 'scale' },
+      { title: '颜色', dataIndex: 'color', key: 'color' },
+      { title: '虚拟库存', dataIndex: 'virtualInventory', key: 'virtualInventory' },
+      { title: '重量', dataIndex: 'weight', key: 'weight' },
+      { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify' },
+      { title: '操作', dataIndex: 'oper', key: 'oper' },
     ];
-    const formItemLayout = {
-      labelCol: { span: 10 },
-      wrapperCol: { span: 14 },
+
+    const { skuList, currentPage } = this.props;
+
+    const paginationProps = {
+      total: skuList && skuList.totalCount,
+      pageSize: 10,
+      current: currentPage,
+      onChange(pageIndex) {
+        p.props.dispatch({
+          type: 'sku/querySkuList',
+          payload: { pageIndex },
+        });
+      },
     };
-    const { skuList, form } = this.props;
-    const { getFieldDecorator } = form;
+
     return (
       <div className={styles.normal}>
         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -167,10 +94,8 @@ class Sku extends Component {
                 columns={columns}
                 dataSource={skuList.data}
                 bordered
-                size="large"
-                scroll={{ x: 2400 }}
                 rowKey={record => record.id}
-                pagination={{ total: skuList.totalCount, pageSize: 10 }}
+                pagination={paginationProps}
               />
             </Col>
           </Row>
@@ -185,10 +110,11 @@ class Sku extends Component {
 }
 
 function mapStateToProps({ sku }) {
-  const { skuList } = sku;
+  const { skuList, currentPage } = sku;
   return {
     // loading: state.loading.models.products,
     skuList,
+    currentPage,
   };
 }
 

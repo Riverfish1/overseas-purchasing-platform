@@ -12,9 +12,9 @@ function toForm(data) {
 }
 
 export function addSku({ payload }) {
-  return fetch.post(`/haierp1/sku/add${toForm(payload)}`).catch(e => e);
+  return fetch.post(`/haierp1/itemSku/add${toForm(payload)}`).catch(e => e);
 }
 
 export function querySkuList({ payload }) {
-  return fetch.post(`/haierp1/sku/querySkuList${toForm(payload)}`).catch(e => e);
+  return fetch.post(`/haierp1/itemSku/queryItemSkuList${toForm(payload)}`).catch(e => e);
 }

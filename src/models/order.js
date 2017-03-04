@@ -70,7 +70,6 @@ export default {
       if (payload.startGmt) payload.startGmt = payload.startGmt.format('YYYY-MM-DD');
       if (payload.endGmt) payload.endGmt = payload.endGmt.format('YYYY-MM-DD');
       const data = yield call(queryOrderList, { payload: { ...payload, pageIndex } });
-      console.log('queryOrderList success', data);
       if (data.success) {
         yield put({
           type: 'saveOrderList',

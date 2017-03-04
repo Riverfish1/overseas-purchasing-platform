@@ -13,6 +13,8 @@ class Order extends Component {
     super();
     this.state = {
       modalVisible: false,
+      visible: 'none',
+      title: '', // modal的title
       updateId: [], // 修改商品传的id
     };
   }
@@ -39,28 +41,21 @@ class Order extends Component {
     });
   }
 
-  addModal() {
+  showModal() {
     this.setState({
       modalVisible: true,
+      title: '新增',
     });
-  }
-
-  handleResetFields() {
-    const { resetFields } = this.props.form;
-    resetFields();
   }
 
   updateModal(id) {
     const p = this;
     p.setState({
       modalVisible: true,
+      title: '修改',
     }, () => {
       p.props.dispatch({ type: 'order/queryOrder', payload: { id } });
     });
-  }
-
-  handleRowClick(record) {
-    this.updateModal(record.id);
   }
 
   closeModal(modalVisible) {
@@ -73,10 +68,15 @@ class Order extends Component {
     });
   }
 
+  handleTableClick(record) {
+    this.updateModal(record.id);
+  }
+
   render() {
     const p = this;
-    const { form, orderList = {}, currentPage, orderValues = {}, salesName = [] } = this.props;
-    const { getFieldDecorator, getFieldsValue } = form;
+    const { form, orderList = {}, currentPage, orderValues = {}, salesName = [] } = p.props;
+    const { getFieldDecorator, getFieldsValue, resetFields } = form;
+    const { title, visible } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -184,8 +184,14 @@ class Order extends Component {
       type: 'radio',
       onChange(selectedRowKeys, selectedRows) {
         console.log(selectedRowKeys, selectedRows);
-        const values = getFieldsValue();
-        console.log(values);
+        p.setState({
+          visible: 'block',
+        }, () => {
+          p.props.dispatch({
+            type: 'order/queryOrder',
+            payload: { id: selectedRowKeys.id },
+          });
+        });
       },
     };
 
@@ -208,114 +214,114 @@ class Order extends Component {
       },
     };
 
-    // const skuColumns = [
-    //   {
-    //     title: '商品SKU',
-    //     dataIndex: 'productSKU',
-    //     key: '1',
-    //   },
-    //   {
-    //     title: '分配标记',
-    //     dataIndex: 'productSKU',
-    //     key: '2',
-    //   },
-    //   {
-    //     title: '商品主图',
-    //     dataIndex: 'productSKU',
-    //     key: '3',
-    //   },
-    //   {
-    //     title: '商品名称',
-    //     dataIndex: 'productSKU',
-    //     key: '4',
-    //   },
-    //   {
-    //     title: '颜色',
-    //     dataIndex: 'productSKU',
-    //     key: '5',
-    //   },
-    //   {
-    //     title: '尺码',
-    //     dataIndex: 'productSKU',
-    //     key: '6',
-    //   },
-    //   {
-    //     title: '品牌',
-    //     dataIndex: 'productSKU',
-    //     key: '7',
-    //   },
-    //   {
-    //     title: '条码',
-    //     dataIndex: 'productSKU',
-    //     key: '8',
-    //   },
-    //   {
-    //     title: '销售价',
-    //     dataIndex: 'productSKU',
-    //     key: '9',
-    //   },
-    //   {
-    //     title: '运费',
-    //     dataIndex: 'productSKU',
-    //     key: '10',
-    //   },
-    //   {
-    //     title: '数量',
-    //     dataIndex: 'productSKU',
-    //     key: '11',
-    //   },
-    //   {
-    //     title: '采购数量',
-    //     dataIndex: 'productSKU',
-    //     key: '12',
-    //   },
-    //   {
-    //     title: '入库数量',
-    //     dataIndex: 'productSKU',
-    //     key: '13',
-    //   },
-    //   {
-    //     title: '在途数量',
-    //     dataIndex: 'productSKU',
-    //     key: '14',
-    //   },
-    //   {
-    //     title: '总金额',
-    //     dataIndex: 'productSKU',
-    //     key: '15',
-    //   },
-    //   {
-    //     title: '线路',
-    //     dataIndex: 'productSKU',
-    //     key: '16',
-    //   },
-    //   {
-    //     title: '重量',
-    //     dataIndex: 'productSKU',
-    //     key: '17',
-    //   },
-    //   {
-    //     title: '重量单位',
-    //     dataIndex: 'productSKU',
-    //     key: '18',
-    //   },
-    //   {
-    //     title: '商品来源路径',
-    //     dataIndex: 'productSKU',
-    //     key: '19',
-    //   },
-    // ];
+    const skuColumns = [
+      {
+        title: '商品SKU',
+        dataIndex: 'productSKU',
+        key: '1',
+      },
+      {
+        title: '分配标记',
+        dataIndex: 'productSKU',
+        key: '2',
+      },
+      {
+        title: '商品主图',
+        dataIndex: 'productSKU',
+        key: '3',
+      },
+      {
+        title: '商品名称',
+        dataIndex: 'productSKU',
+        key: '4',
+      },
+      {
+        title: '颜色',
+        dataIndex: 'productSKU',
+        key: '5',
+      },
+      {
+        title: '尺码',
+        dataIndex: 'productSKU',
+        key: '6',
+      },
+      {
+        title: '品牌',
+        dataIndex: 'productSKU',
+        key: '7',
+      },
+      {
+        title: '条码',
+        dataIndex: 'productSKU',
+        key: '8',
+      },
+      {
+        title: '销售价',
+        dataIndex: 'productSKU',
+        key: '9',
+      },
+      {
+        title: '运费',
+        dataIndex: 'productSKU',
+        key: '10',
+      },
+      {
+        title: '数量',
+        dataIndex: 'productSKU',
+        key: '11',
+      },
+      {
+        title: '采购数量',
+        dataIndex: 'productSKU',
+        key: '12',
+      },
+      {
+        title: '入库数量',
+        dataIndex: 'productSKU',
+        key: '13',
+      },
+      {
+        title: '在途数量',
+        dataIndex: 'productSKU',
+        key: '14',
+      },
+      {
+        title: '总金额',
+        dataIndex: 'productSKU',
+        key: '15',
+      },
+      {
+        title: '线路',
+        dataIndex: 'productSKU',
+        key: '16',
+      },
+      {
+        title: '重量',
+        dataIndex: 'productSKU',
+        key: '17',
+      },
+      {
+        title: '重量单位',
+        dataIndex: 'productSKU',
+        key: '18',
+      },
+      {
+        title: '商品来源路径',
+        dataIndex: 'productSKU',
+        key: '19',
+      },
+    ];
 
-    // const skuPaginationProps = {
-    //   total: orderList.data && orderList.data.total,
-    //   pageSize: 10,
-    //   onChange(page) {
-    //     p.props.dispatch({
-    //       type: 'order/queryOrderSku',
-    //       payload: { pageIndex: page },
-    //     });
-    //   },
-    // };
+    const skuPaginationProps = {
+      total: orderList.data && orderList.data.total,
+      pageSize: 10,
+      onChange(page) {
+        p.props.dispatch({
+          type: 'order/queryOrderSku',
+          payload: { pageIndex: page },
+        });
+      },
+    };
 
     const orderStatusContent = (
       <div className={styles.popoverContent}>
@@ -424,13 +430,13 @@ class Order extends Component {
           <Row>
             <Col className={styles.listBtnGroup}>
               <Button htmlType="submit" size="large" type="primary">查询</Button>
-              <Button size="large" type="ghost" onClick={this.handleResetFields.bind(this)}>清空</Button>
+              <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>
             </Col>
           </Row>
         </Form>
         <Row>
           <Col className={styles.orderBtn}>
-            <Button type="primary" size="large" onClick={this.addModal.bind(this)}>新增订单</Button>
+            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增订单</Button>
           </Col>
         </Row>
         <Row>
@@ -443,15 +449,15 @@ class Order extends Component {
               rowKey={record => record.id}
               rowSelection={rowSelection}
               pagination={listPaginationProps}
-              onRowClick={this.handleRowClick.bind(this)}
+              onRowClick={p.handleTableClick.bind(p)}
             />
           </Col>
         </Row>
-        {/* <Row style={{ minHeight: 300 }}>
+        <Row style={{ minHeight: 300, display: visible }}>
           <Col>
             <Table
               columns={skuColumns}
-              dataSource={orderList && orderList.rows}
+              dataSource={orderValues.data}
               bordered
               size="large"
               rowKey={record => record.id}
@@ -459,12 +465,13 @@ class Order extends Component {
               scroll={{ x: 1200 }}
             />
           </Col>
-        </Row> */}
+        </Row>
         <OrderModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
           modalValues={orderValues}
           salesName={salesName}
+          title={title}
         />
       </div>
     );

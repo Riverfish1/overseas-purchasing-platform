@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 // import { Link } from 'dva/router';
-import { Modal, Cascader, Input, Button, Select, Row, Col, DatePicker, Form, Popconfirm } from 'antd';
+import { Modal, Cascader, Input, Select, Row, Col, DatePicker, Form } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import ProductTable from './ProductTable';
@@ -43,10 +43,6 @@ class ProductsModal extends Component {
       }
       p.closeModal();
     });
-  }
-
-  addProduct() {
-    
   }
 
   closeModal() {
@@ -94,7 +90,7 @@ class ProductsModal extends Component {
 
   render() {
     const p = this;
-    const { form, visible, modalValues = {} } = p.props;
+    const { form, title, visible, modalValues = {} } = p.props;
     const orderData = (modalValues && modalValues.data) || {};
     const { getFieldDecorator } = form;
     const modalProps = {
@@ -102,7 +98,7 @@ class ProductsModal extends Component {
       width: 900,
       wrapClassName: 'modalStyle',
       okText: '保存',
-      title: '添加',
+      title,
       maskClosable: false,
       closable: true,
       onOk() {
@@ -115,69 +111,6 @@ class ProductsModal extends Component {
     const formItemLayout = {
       labelCol: { span: 11 },
       wrapperCol: { span: 13 },
-    };
-    const modalTableProps = {
-      columns: [
-        {
-          title: <font color="#00f">商品SKU</font>,
-          dataIndex: 'skuCode',
-          key: 'skuCode',
-          render(text) {
-            return <div>{text}</div>;
-          },
-        },
-        {
-          title: '商品名称',
-          dataIndex: 'itemName',
-          key: 'itemName',
-        },
-        {
-          title: '颜色',
-          dataIndex: 'color',
-          key: 'color',
-        },
-        {
-          title: '尺寸',
-          dataIndex: 'scale',
-          key: 'scale',
-        },
-        {
-          title: <font color="#00f">销售价</font>,
-          dataIndex: 'salePrice',
-          key: 'salePrice',
-          render(text) {
-            return <div>{text.toString()}</div>;
-          },
-        },
-        {
-          title: <font color="#00f">运费</font>,
-          dataIndex: 'freight',
-          key: 'freight',
-          render(text) {
-            return <div>{text.toString()}</div>;
-          },
-        },
-        {
-          title: <font color="#00f">数量</font>,
-          dataIndex: 'quantity',
-          key: 'quantity',
-          render(text) {
-            return <div>{text.toString()}</div>;
-          },
-        },
-        {
-          title: '操作',
-          key: 'operator',
-          render(text, record) {
-            return (<Popconfirm title="确定删除?" onConfirm={p.handleDelete(record.id)}>
-              <a href="javascript:void(0)">删除</a>
-            </Popconfirm>);
-          },
-        },
-      ],
-      dataSource: orderData.orderDetails,
-      bordered: false,
-      pagination: true,
     };
 
     return (
@@ -311,15 +244,7 @@ class ProductsModal extends Component {
             </Col>
           </Row>
           <Row>
-            <Col style={{ float: 'left', marginLeft: 20 }}>
-              <span>订单明细信息（<font color="#00f">蓝色列可编辑</font>）</span>
-            </Col>
-            <Col style={{ float: 'right', marginRight: 20 }}>
-              <Button type="primary" onClick={p.addProduct.bind(p)}>添加商品</Button>
-            </Col>
-          </Row>
-          <Row>
-            <ProductTable />
+            <ProductTable data={orderData.orderDetails} />
           </Row>
         </Form>
       </Modal>

@@ -3,14 +3,14 @@ import { addSku, querySkuList } from '../services/sku';
 export default {
   namespace: 'sku',
   state: {
-    skuList: [],
+    skuList: {},
   },
   reducers: {
     saveSku(state, { payload: dataSource }) {
       return { ...state, ...dataSource };
     },
-    saveSkuList(state, { payload: data }) {
-      return { ...state, skuList: data };
+    saveItemSkuList(state, { payload }) {
+      return { ...state, skuList: payload };
     },
   },
   effects: {
@@ -29,7 +29,7 @@ export default {
       const data = yield call(querySkuList, { payload });
       if (data.success) {
         yield put({
-          type: 'saveSkuList',
+          type: 'saveItemSkuList',
           payload: data,
         });
       }

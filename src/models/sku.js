@@ -3,7 +3,7 @@ import { addSku, querySkuList } from '../services/sku';
 export default {
   namespace: 'sku',
   state: {
-    skuList: [],
+    skuList: {},
     currentPage: 1,
   },
   reducers: {

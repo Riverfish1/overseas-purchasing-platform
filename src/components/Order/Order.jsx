@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Table, Popover, Input, DatePicker, Button, Row, Col, Select, Form } from 'antd';
+import { Table, Popover, Input, DatePicker, Button, Row, Col, Select, Form, Modal } from 'antd';
 import OrderModal from './OrderModal';
 import styles from './Order.less';
 
@@ -13,7 +13,7 @@ class Order extends Component {
     super();
     this.state = {
       modalVisible: false,
-      visible: 'none',
+      visible: false,
       title: '', // modal的title
       updateId: [], // 修改商品传的id
     };
@@ -33,7 +33,6 @@ class Order extends Component {
       if (err) {
         return;
       }
-      console.log(fieldsValue);
       this.props.dispatch({
         type: 'order/queryOrderList',
         payload: { ...fieldsValue, pageIndex: 1 },
@@ -68,8 +67,16 @@ class Order extends Component {
     });
   }
 
-  handleTableClick(record) {
-    this.updateModal(record.id);
+  handleProDetail(record) {
+    const p = this;
+    p.setState({
+      visible: true,
+    }, () => {
+      p.props.dispatch({
+        type: 'order/queryOrder',
+        payload: { id: record.id },
+      });
+    });
   }
 
   render() {
@@ -183,15 +190,7 @@ class Order extends Component {
     const rowSelection = {
       type: 'radio',
       onChange(selectedRowKeys, selectedRows) {
-        console.log(selectedRowKeys, selectedRows);
-        p.setState({
-          visible: 'block',
-        }, () => {
-          p.props.dispatch({
-            type: 'order/queryOrder',
-            payload: { id: selectedRowKeys.id },
-          });
-        });
+        p.handleProDetail(selectedRows[0]);
       },
     };
 
@@ -217,111 +216,45 @@ class Order extends Component {
     const skuColumns = [
       {
         title: '商品SKU',
-        dataIndex: 'productSKU',
-        key: '1',
-      },
-      {
-        title: '分配标记',
-        dataIndex: 'productSKU',
-        key: '2',
-      },
-      {
-        title: '商品主图',
-        dataIndex: 'productSKU',
-        key: '3',
-      },
-      {
-        title: '商品名称',
-        dataIndex: 'productSKU',
-        key: '4',
+        dataIndex: 'skuCode',
+        key: 'skuCode',
       },
       {
         title: '颜色',
-        dataIndex: 'productSKU',
-        key: '5',
+        dataIndex: 'color',
+        key: 'color',
       },
       {
         title: '尺码',
-        dataIndex: 'productSKU',
-        key: '6',
+        dataIndex: 'scale',
+        key: 'scale',
       },
       {
         title: '品牌',
-        dataIndex: 'productSKU',
-        key: '7',
-      },
-      {
-        title: '条码',
-        dataIndex: 'productSKU',
-        key: '8',
+        dataIndex: 'brand',
+        key: 'brand',
       },
       {
         title: '销售价',
-        dataIndex: 'productSKU',
-        key: '9',
+        dataIndex: 'salePrice',
+        key: 'salePrice',
       },
       {
         title: '运费',
-        dataIndex: 'productSKU',
+        dataIndex: 'freight',
         key: '10',
       },
       {
         title: '数量',
-        dataIndex: 'productSKU',
+        dataIndex: 'quantity',
         key: '11',
       },
       {
-        title: '采购数量',
-        dataIndex: 'productSKU',
-        key: '12',
-      },
-      {
-        title: '入库数量',
-        dataIndex: 'productSKU',
-        key: '13',
-      },
-      {
-        title: '在途数量',
-        dataIndex: 'productSKU',
-        key: '14',
-      },
-      {
-        title: '总金额',
-        dataIndex: 'productSKU',
-        key: '15',
-      },
-      {
-        title: '线路',
-        dataIndex: 'productSKU',
-        key: '16',
-      },
-      {
-        title: '重量',
-        dataIndex: 'productSKU',
-        key: '17',
-      },
-      {
-        title: '重量单位',
-        dataIndex: 'productSKU',
-        key: '18',
-      },
-      {
-        title: '商品来源路径',
-        dataIndex: 'productSKU',
-        key: '19',
+        title: '商品名称',
+        dataIndex: 'itemName',
+        key: 'itemName',
       },
     ];
-
-    const skuPaginationProps = {
-      total: orderList.data && orderList.data.total,
-      pageSize: 10,
-      onChange(page) {
-        p.props.dispatch({
-          type: 'order/queryOrderSku',
-          payload: { pageIndex: page },
-        });
-      },
-    };
 
     const orderStatusContent = (
       <div className={styles.popoverContent}>
@@ -334,6 +267,17 @@ class Order extends Component {
         <p><a href="javascript:void(0)">拆分订单</a></p>
       </div>
     );
+
+    const modalProps = {
+      title: '外部订单号：',
+      footer: null,
+      visible,
+      width: 1200,
+      closable: true,
+      onCancel() {
+        p.setState({ visible: false });
+      },
+    };
 
     return (
       <div>
@@ -449,23 +393,21 @@ class Order extends Component {
               rowKey={record => record.id}
               rowSelection={rowSelection}
               pagination={listPaginationProps}
-              onRowClick={p.handleTableClick.bind(p)}
+              onRowClick={p.handleProDetail.bind(p)}
             />
           </Col>
         </Row>
-        <Row style={{ minHeight: 300, display: visible }}>
-          <Col>
-            <Table
-              columns={skuColumns}
-              dataSource={orderValues.data}
-              bordered
-              size="large"
-              rowKey={record => record.id}
-              pagination={skuPaginationProps}
-              scroll={{ x: 1200 }}
-            />
-          </Col>
-        </Row>
+        <Modal {...modalProps}>
+          <Table
+            columns={skuColumns}
+            dataSource={orderValues.data && orderValues.data.orderDetails}
+            bordered
+            size="large"
+            rowKey={record => record.id}
+            pagination={false}
+            scroll={{ x: 1200 }}
+          />
+        </Modal>
         <OrderModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}

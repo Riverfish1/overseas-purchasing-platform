@@ -33,10 +33,10 @@ class ProductTable extends Component {
       }
       let count = 1;
       const keys = Object.keys(fieldsSku);
-      while (Object.prototype.hasOwnProperty.call(fieldsSku, `r_${count}_virtualInventory`)) {
+      while (Object.prototype.hasOwnProperty.call(fieldsSku, `r_${count}_skuCode`)) {
         const skuSingle = {};
         keys.forEach((key) => {
-          if (key.match(`r_${count}_`) && fieldsSku[key]) {
+          if (key.match(`r_${count}_`)) {
             skuSingle[key.split(`r_${count}_`)[1]] = fieldsSku[key];
           }
         });
@@ -44,7 +44,7 @@ class ProductTable extends Component {
         count += 1;
       }
       if (skuList.length < 1) {
-        message.error('请至少填写一项sku信息');
+        message.error('请至少填写一项商品信息');
         return;
       }
       if (callback) callback(skuList);
@@ -57,7 +57,8 @@ class ProductTable extends Component {
     const lastId = skuLen < 1 ? 0 : skuData[skuData.length - 1].key;
     const newId = parseInt(lastId, 10) + 1;
     const newItem = {
-      id: newId,
+      id: '',
+      key: newId,
       skuCode: '',
       itemName: '',
       color: '',
@@ -70,21 +71,31 @@ class ProductTable extends Component {
     this.setState({ skuData });
   }
 
-  handleDelete(id) {
-
+  handleDelete(key) {
+    const newData = this.state.skuData.filter(el => el.key !== key);
+    this.setState({ skuData: newData });
   }
 
-  handleSelect(value) {
-    console.log(value);
-    const { form } = this.props;
-    form.setFieldsValue({
-      [`r_${value.id}_skuCode`]: value.skuCode,
-      [`r_${value.id}_salePrice`]: value.salePrice || 0,
-      [`r_${value.id}_quantity`]: value.quantity || 0,
+  handleSelect(key, skuCode) {
+    console.log('selected');
+
+    const { form, skuList } = this.props;
+    const { skuSearchList } = this.state;
+
+    const source = skuSearchList[key] || skuList;
+
+    source.forEach((value) => {
+      if (value.skuCode.toString() === skuCode.toString()) {
+        form.setFieldsValue({
+          [`r_${key}_skuCode`]: value.skuCode,
+          [`r_${key}_salePrice`]: value.salePrice || 0,
+          [`r_${key}_quantity`]: value.quantity || 0,
+        });
+      }
     });
   }
 
-  handleSearch(id, value) {
+  handleSearch(key, value) {
     const p = this;
     if (searchQueue.length > 0) {
       searchQueue.push(value);
@@ -97,14 +108,14 @@ class ProductTable extends Component {
         callback(status) {
           if (status !== 'ERROR') {
             const { skuSearchList } = p.state;
-            skuSearchList[id] = status.data || [];
+            skuSearchList[key] = status.data || [];
             p.setState({ skuSearchList });
           }
           // 搜索始终进行
           if (searchQueue.length > 0) {
             const keyword = searchQueue[searchQueue.length - 1];
             searchQueue = [];
-            p.handleSearch(id, keyword);
+            p.handleSearch(key, keyword);
           }
         },
       },
@@ -136,20 +147,29 @@ class ProductTable extends Component {
           key: 'skuCode',
           width: '12%',
           render(text, r) {
-            const list = skuSearchList[r.id] || [];
-            console.log(skuSearchList[r.id]);
+            const list = skuSearchList[r.key] || skuList;
+            console.log(skuSearchList[r.key]);
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.id}_skuCode`, {
+                {getFieldDecorator(`r_${r.key}_skuCode`, {
                   initialValue: text || undefined,
                 })(
-                  <Select placeholder="请选择" onSelect={p.handleSelect.bind(p, r)} onSearch={p.handleSearch.bind(p, r.id)} showSearch>
+                  <Select
+                    combobox
+                    placeholder="请选择"
+                    onSelect={p.handleSelect.bind(p, r.key)}
+                    onChange={p.handleSearch.bind(p, r.key)}
+                    defaultActiveFirstOption={false}
+                    showArrow={false}
+                    filterOption={false}
+                  >
                     {list.map((item, index) => {
                       return <Option key={`r_${index}`} value={item.skuCode}>{item.skuCode}</Option>;
                     })}
                   </Select>,
                 )}
-              </FormItem>);
+              </FormItem>
+            );
           },
         },
         {
@@ -180,7 +200,7 @@ class ProductTable extends Component {
           render(text, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.id}_salePrice`, {
+                {getFieldDecorator(`r_${r.key}_salePrice`, {
                   initialValue: text,
                 })(
                   <InputNumber step={0.01} min={0} placeholder="请输入" />,
@@ -203,7 +223,7 @@ class ProductTable extends Component {
           render(text, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.id}_quantity`, {
+                {getFieldDecorator(`r_${r.key}_quantity`, {
                   initialValue: text,
                 })(
                   <InputNumber step={1} min={1} placeholder="请输入" />,
@@ -215,7 +235,7 @@ class ProductTable extends Component {
           title: '操作',
           key: 'operator',
           render(text, record) {
-            return (<Popconfirm title="确定删除?" onConfirm={p.handleDelete.bind(p, record.id)}>
+            return (<Popconfirm title="确定删除?" onConfirm={p.handleDelete.bind(p, record.key)}>
               <a href="javascript:void(0)">删除</a>
             </Popconfirm>);
           },
@@ -235,7 +255,7 @@ class ProductTable extends Component {
             <Button type="primary" onClick={p.addProduct.bind(p)}>添加商品</Button>
           </Col>
         </Row>
-        <Table {...modalTableProps} rowKey={record => record.id} />
+        <Table {...modalTableProps} rowKey={record => record.key} />
       </div>);
   }
 }

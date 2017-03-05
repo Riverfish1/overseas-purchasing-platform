@@ -34,18 +34,20 @@ class ProductsModal extends Component {
     const { form, dispatch, modalValues } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
-      if (modalValues && modalValues.data) {
-        dispatch({
-          type: 'order/updateOrder',
-          payload: { ...fieldsValue },
-        });
-      } else {
-        dispatch({
-          type: 'order/addOrder',
-          payload: { ...fieldsValue },
-        });
-      }
-      p.closeModal();
+      p.getSkuValue((orderDetailList) => {
+        if (modalValues && modalValues.data) {
+          dispatch({
+            type: 'order/updateOrder',
+            payload: { ...fieldsValue, orderNo: modalValues.data.orderNo, orderDetailList: JSON.stringify(orderDetailList) },
+          });
+        } else {
+          dispatch({
+            type: 'order/addOrder',
+            payload: { ...fieldsValue, orderDetailList: JSON.stringify(orderDetailList) },
+          });
+        }
+        p.closeModal();
+      });
     });
   }
 
@@ -127,13 +129,13 @@ class ProductsModal extends Component {
           <Row gutter={10}>
             <Col span={7}>
               <FormItem
-                label="订单编号"
+                label="外部订单编号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('orderNo', {
-                  initialValue: orderData.orderNo,
+                {getFieldDecorator('targetNo', {
+                  initialValue: orderData.targetNo,
                 })(
-                  <Input placeholder="请输入订单编号" />)}
+                  <Input placeholder="请输入外部订单编号" />)}
               </FormItem>
             </Col>
             <Col span={7}>
@@ -216,11 +218,13 @@ class ProductsModal extends Component {
               </FormItem>
             </Col>
             <Col span={9}>
-              {getFieldDecorator('addressDetail', {
-                initialValue: orderData.addressDetail,
-                rules: [{ required: true, message: '请输入详细地址' }],
-              })(
-                <Input placeholder="请输入详细地址" size="large" />)}
+              <FormItem>
+                {getFieldDecorator('addressDetail', {
+                  initialValue: orderData.addressDetail,
+                  rules: [{ required: true, message: '请输入详细地址' }],
+                })(
+                  <Input placeholder="请输入详细地址" size="large" />)}
+              </FormItem>
             </Col>
           </Row>
           <Row>

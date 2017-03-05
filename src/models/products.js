@@ -26,7 +26,7 @@ export default {
       return { ...state, productsList: data };
     },
     saveBrands(state, { payload: data }) { // 保存品牌
-      return { ...state, brands: data };
+      return { ...state, brands: data.data };
     },
     saveProductsValue(state, { payload: data }) {
       return { ...state, productsValues: data };

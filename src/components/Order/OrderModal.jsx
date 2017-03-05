@@ -129,13 +129,13 @@ class ProductsModal extends Component {
           <Row gutter={10}>
             <Col span={7}>
               <FormItem
-                label="外部订单编号"
+                label="订单编号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('targetNo', {
-                  initialValue: orderData.targetNo,
+                {getFieldDecorator('orderNo', {
+                  initialValue: orderData.orderNo,
                 })(
-                  <Input placeholder="请输入外部订单编号" />)}
+                  <Input placeholder="请输入订单编号" />)}
               </FormItem>
             </Col>
             <Col span={7}>

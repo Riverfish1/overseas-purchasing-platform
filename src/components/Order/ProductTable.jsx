@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
-import { InputNumber, Select, Button, Form, Table, Row, Col, Popconfirm, message } from 'antd';
+import { Input, InputNumber, Select, Button, Form, Table, Row, Col, Popconfirm, message } from 'antd';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -60,6 +60,7 @@ class ProductTable extends Component {
       id: '',
       key: newId,
       skuCode: '',
+      skuId: '',
       itemName: '',
       color: '',
       scale: '',
@@ -88,6 +89,7 @@ class ProductTable extends Component {
       if (value.skuCode.toString() === skuCode.toString()) {
         form.setFieldsValue({
           [`r_${key}_skuCode`]: value.skuCode,
+          [`r_${key}_skuId`]: value.skuId,
           [`r_${key}_salePrice`]: value.salePrice || 0,
           [`r_${key}_quantity`]: value.quantity || 0,
         });
@@ -204,6 +206,11 @@ class ProductTable extends Component {
                   initialValue: text,
                 })(
                   <InputNumber step={0.01} min={0} placeholder="请输入" />,
+                )}
+                {getFieldDecorator(`r_${r.key}_skuId`, {
+                  initialValue: r.skuId,
+                })(
+                  <Input style={{ display: 'none' }} />,
                 )}
               </FormItem>);
           },

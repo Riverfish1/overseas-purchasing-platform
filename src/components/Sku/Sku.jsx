@@ -17,6 +17,14 @@ class Sku extends Component {
     };
   }
 
+  componentWillMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'products/queryBrands',
+      payload: {},
+    });
+  }
+
   handleSubmit(e) {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, filedsValue) => {
@@ -69,11 +77,23 @@ class Sku extends Component {
 
   render() {
     const p = this;
-    const { skuList = {}, currentPage, skuData } = this.props;
+    const { skuList = {}, currentPage, skuData, brands = [] } = this.props;
     const columns = [
       { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode' },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
-      { title: '品牌', dataIndex: 'brand', key: 'brand' },
+      { title: '品牌',
+        dataIndex: 'brand',
+        key: 'brand',
+        render(text) {
+          let brand = '';
+          brands.forEach((item) => {
+            if (item.id.toString() === text) {
+              brand = item.name;
+            }
+          });
+          return <span>{brand}</span>;
+        },
+      },
       { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName' },
       { title: '尺寸', dataIndex: 'scale', key: 'scale' },
       { title: '颜色', dataIndex: 'color', key: 'color' },
@@ -132,6 +152,7 @@ class Sku extends Component {
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
           modalValues={skuData}
+          brands={brands}
         />
       </div>
     );
@@ -140,11 +161,13 @@ class Sku extends Component {
 
 function mapStateToProps(state) {
   const { skuList, skuData, currentPage } = state.sku;
+  const { brands } = state.products;
   return {
     // loading: state.loading.models.sku,
     skuList,
     skuData,
     currentPage,
+    brands: brands.data,
   };
 }
 
@@ -152,6 +175,7 @@ Sku.PropTypes = {
   skuList: PropTypes.object.isRequired,
   skuData: PropTypes.object.isRequired,
   current: PropTypes.number.isRequired,
+  brands: PropTypes.array.isRequired,
 };
 
 export default connect(mapStateToProps)(Form.create()(Sku));

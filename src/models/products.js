@@ -15,7 +15,7 @@ export default {
     productsList: [],
     productsValues: {}, // 修改商品时的值
     currentPage: 1, // 默认页码
-    brands: [], // 品牌
+    brands: {}, // 品牌
     tree: [], // 类目树
   },
   reducers: {

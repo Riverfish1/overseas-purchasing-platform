@@ -1,11 +1,12 @@
 import { message } from 'antd';
-import { addOrder, queryOrder, queryOrderList, queryOrderSku, querySalesName, updateOrder } from '../services/order';
+import { addOrder, queryOrder, queryOrderList, querySalesName, updateOrder } from '../services/order';
+import { querySkuList } from '../services/sku';
 
 export default {
   namespace: 'order',
   state: {
     orderList: [],
-    orderSku: [],
+    orderSkuSnip: {},
     currentPage: 1,
     orderValues: {},
     salesName: [],
@@ -14,14 +15,14 @@ export default {
     saveOrderList(state, { payload }) {
       return { ...state, orderList: payload };
     },
-    saveOrderSku(state, { payload }) {
-      return { ...state, orderSku: payload };
-    },
     saveCurrentPage(state, { payload }) {
       return { ...state, currentPage: payload.pageIndex };
     },
     saveOrder(state, { payload }) {
       return { ...state, orderValues: payload };
+    },
+    saveOrderSkuSnip(state, { payload }) {
+      return { ...state, orderSkuSnip: payload };
     },
     saveSalesName(state, { payload }) {
       return { ...state, salesName: payload };
@@ -53,12 +54,21 @@ export default {
       }
     },
     * queryOrder({ payload }, { call, put }) {
-      const data = yield call(queryOrder, { payload });
+      const newPayload = { ...payload };
+      delete newPayload.type;
+      const data = yield call(queryOrder, { payload: newPayload });
       if (data.success) {
-        yield put({
-          type: 'saveOrder',
-          payload: data,
-        });
+        if (payload.type === 'snip') {
+          yield put({
+            type: 'saveOrderSkuSnip',
+            payload: data,
+          });
+        } else {
+          yield put({
+            type: 'saveOrder',
+            payload: data,
+          });
+        }
       }
     },
     * queryOrderList({ payload }, { call, put, select }) { // 订单管理列表
@@ -86,14 +96,9 @@ export default {
         });
       }
     },
-    * queryOrderSku({ payload }, { call, put }) {
-      const data = yield call(queryOrderSku, { payload });
-      if (data.success) {
-        yield put({
-          type: 'saveOrderSku',
-          payload: data,
-        });
-      }
+    * searchSku({ payload }, { call }) {
+      const data = yield call(querySkuList, { payload: { skuCode: payload.keyword } });
+      payload.callback(data.success ? data : 'ERROR');
     },
   },
   subscriptions: {

@@ -23,6 +23,10 @@ class ProductsModal extends Component {
       previewVisible: false,
       previewImage: '',
     };
+
+    // skuTable改写父级方法
+    this.getSkuValue = null;
+    this.clearSkuValue = null;
   }
 
   handleSubmit() {
@@ -49,6 +53,10 @@ class ProductsModal extends Component {
     const { form, close } = this.props;
     form.resetFields();
     close(false);
+    // 清理skuTable
+    setTimeout(() => {
+      this.clearSkuValue();
+    }, 100);
   }
 
   handleCancel() {
@@ -244,7 +252,7 @@ class ProductsModal extends Component {
             </Col>
           </Row>
           <Row>
-            <ProductTable data={orderData.orderDetails} />
+            <ProductTable data={orderData.orderDetails} parent={this} />
           </Row>
         </Form>
       </Modal>

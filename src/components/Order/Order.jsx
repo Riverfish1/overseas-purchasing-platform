@@ -1,3 +1,4 @@
+
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import { Table, Popover, Input, DatePicker, Button, Row, Col, Select, Form, Modal } from 'antd';
@@ -20,11 +21,11 @@ class Order extends Component {
   }
 
   componentWillMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'order/querySalesName',
-      payload: {},
-    });
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'order/querySalesName',
+    //   payload: {},
+    // });
   }
 
   handleSubmit(e) {
@@ -44,6 +45,10 @@ class Order extends Component {
     this.setState({
       modalVisible: true,
       title: '新增',
+    });
+    this.props.dispatch({
+      type: 'sku/querySkuList',
+      payload: {},
     });
   }
 
@@ -75,14 +80,14 @@ class Order extends Component {
     }, () => {
       p.props.dispatch({
         type: 'order/queryOrder',
-        payload: { id: record.id },
+        payload: { id: record.id, type: 'snip' },
       });
     });
   }
 
   render() {
     const p = this;
-    const { form, orderList = {}, currentPage, orderValues = {}, salesName = [] } = p.props;
+    const { form, orderList = {}, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [] } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
     const { title, visible } = p.state;
     const formItemLayout = {
@@ -176,10 +181,12 @@ class Order extends Component {
         title: '操作',
         dataIndex: 'operator',
         key: 'operator',
+        width: 160,
         render(text, record) {
           return (
             <div>
-              <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
+              <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>查看SKU</a>
+              <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
               <Popover title={null} content={orderStatusContent}>
                 <a href="javascript:void(0)" >状态操作</a>
               </Popover>
@@ -187,13 +194,6 @@ class Order extends Component {
         },
       },
     ];
-
-    const rowSelection = {
-      type: 'radio',
-      onChange(selectedRowKeys, selectedRows) {
-        p.handleProDetail(selectedRows[0]);
-      },
-    };
 
     const listPaginationProps = {
       total: orderList && orderList.totalCount,
@@ -219,41 +219,49 @@ class Order extends Component {
         title: '商品SKU',
         dataIndex: 'skuCode',
         key: 'skuCode',
+        render(text) { return text || '-'; },
       },
       {
         title: '颜色',
         dataIndex: 'color',
         key: 'color',
+        render(text) { return text || '-'; },
       },
       {
         title: '尺码',
         dataIndex: 'scale',
         key: 'scale',
+        render(text) { return text || '-'; },
       },
       {
         title: '品牌',
         dataIndex: 'brand',
         key: 'brand',
+        render(text) { return text || '-'; },
       },
       {
         title: '销售价',
         dataIndex: 'salePrice',
         key: 'salePrice',
+        render(text) { return text || '-'; },
       },
       {
         title: '运费',
         dataIndex: 'freight',
         key: '10',
+        render(text) { return text || '-'; },
       },
       {
         title: '数量',
         dataIndex: 'quantity',
         key: '11',
+        render(text) { return text || '-'; },
       },
       {
         title: '商品名称',
         dataIndex: 'itemName',
         key: 'itemName',
+        render(text) { return text || '-'; },
       },
     ];
 
@@ -264,19 +272,20 @@ class Order extends Component {
         <p><a href="javascript:void(0)">完成确认</a></p>
         <p><a href="javascript:void(0)">重新分配库存</a></p>
         <p><a href="javascript:void(0)">所有订单重新分配库存</a></p>
-        <p><a href="javascript:void(0)">清楚分配数据</a></p>
+        <p><a href="javascript:void(0)">清除分配数据</a></p>
         <p><a href="javascript:void(0)">拆分订单</a></p>
       </div>
     );
 
     const modalProps = {
-      title: '外部订单号：',
+      title: `订单编号：${(orderSkuSnip.data && orderSkuSnip.data.orderNo) || '加载中'}`,
       footer: null,
       visible,
       width: 1200,
       closable: true,
       onCancel() {
         p.setState({ visible: false });
+        p.props.dispatch({ type: 'order/saveOrderSkuSnip', payload: {} });
       },
     };
 
@@ -392,16 +401,14 @@ class Order extends Component {
               bordered
               size="large"
               rowKey={record => record.id}
-              rowSelection={rowSelection}
               pagination={listPaginationProps}
-              onRowClick={p.handleProDetail.bind(p)}
             />
           </Col>
         </Row>
         <Modal {...modalProps}>
           <Table
             columns={skuColumns}
-            dataSource={orderValues.data && orderValues.data.orderDetails}
+            dataSource={orderSkuSnip.data && orderSkuSnip.data.orderDetails}
             bordered
             size="large"
             rowKey={record => record.id}
@@ -422,11 +429,12 @@ class Order extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList, currentPage, orderValues, salesName } = state.order;
+  const { orderList, currentPage, orderValues, orderSkuSnip, salesName } = state.order;
   return {
     orderList,
     currentPage,
     orderValues,
+    orderSkuSnip,
     salesName,
   };
 }

@@ -96,13 +96,23 @@ class Products extends Component {
         },
       },
       {
-        title: '商品品牌', dataIndex: 'brand', key: 'brand',
+        title: '商品品牌',
+        dataIndex: 'brand',
+        key: 'brand',
+        render(text) {
+          let res = '无';
+          if (text && brands) {
+            const arr = brands.filter(el => el.id.toString() === text.toString());
+            if (arr && arr.length > 0) res = arr[0].name;
+          }
+          return res;
+        },
       },
       {
         title: '销售类型', dataIndex: 'saleType', key: 'saleType', render(text) { return <span>{text === '0' ? '代购' : '现货' }</span>; },
       },
       {
-        title: '商品类目', dataIndex: 'categoryName', key: 'categoryName',
+        title: '商品类目', dataIndex: 'categoryName', key: 'categoryName', render(text) { return text === '0' ? '一级类目' : text; },
       },
       {
         title: '采购地点', dataIndex: 'buySite', key: 'buySite',

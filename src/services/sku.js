@@ -15,6 +15,18 @@ export function addSku({ payload }) {
   return fetch.post(`/haierp1/itemSku/add${toForm(payload)}`).catch(e => e);
 }
 
+export function updateSku({ payload }) {
+  return fetch.post(`/haierp1/itemSku/update${toForm(payload)}`).catch(e => e);
+}
+
+export function querySku({ payload }) {
+  return fetch.post(`/haierp1/itemSku/query${toForm(payload)}`).catch(e => e);
+}
+
 export function querySkuList({ payload }) {
   return fetch.post(`/haierp1/itemSku/queryItemSkuList${toForm(payload)}`).catch(e => e);
+}
+
+export function deleteSku({ payload }) {
+  return fetch.post(`/haierp1/itemSku/delete${toForm(payload)}`).catch(e => e);
 }

@@ -97,7 +97,7 @@ class CategoryModal extends Component {
                 {getFieldDecorator('pid', {
                   initialValue: pid,
                 })(
-                  <TreeSelect placeholder="请选择类目" treeData={tree} />)}
+                  <TreeSelect placeholder="请选择类目" treeData={tree} allowClear={true} />)}
               </FormItem>
             </Col>
           </Row>

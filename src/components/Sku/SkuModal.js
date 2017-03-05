@@ -1,11 +1,9 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
-import { Modal, Table, Pagination, Input, InputNumber, Button, Row, Col, Select, DatePicker, Form, Icon, Upload } from 'antd';
+import { Modal, Input, InputNumber, Row, Col, Form, Icon, Upload } from 'antd';
 import styles from './Sku.less';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
 
 class SkuModal extends Component {
 
@@ -20,30 +18,46 @@ class SkuModal extends Component {
   handleSubmit() {
     const { form, dispatch } = this.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
+      console.log(fieldsValue);
       if (err) {
         return;
       }
-      console.log(fieldsValue);
       dispatch({
-        type: 'products/addSku',
+        type: 'sku/addSku',
         payload: { ...fieldsValue },
       });
     });
   }
 
   handleCancel() {
-
+    this.setState({
+      previewVisible: false,
+    });
   }
 
   checkImg(rules, value, callback) {
 
   }
 
+  closeModal() {
+    const { close, form } = this.props;
+    form.resetFields();
+    close(false);
+  }
+
   render() {
-    let p = this;
-    const { previewVisible, previewImage, skuList } = this.state;
-    const { form, visible, close } = this.props;
+    const p = this;
+    const { previewVisible, previewImage } = p.state;
+    const { form, visible, modalValues = {} } = p.props;
     const { getFieldDecorator } = form;
+    const skuModalData = modalValues.data || {};
+
+    let picList = [];
+    if (skuModalData.mainPic) {
+      const picObj = JSON.parse(skuModalData.mainPic);
+      picList = picObj.picList || [];
+    }
+
     const modalProps = {
       visible,
       width: 900,
@@ -55,7 +69,7 @@ class SkuModal extends Component {
         p.handleSubmit();
       },
       onCancel() {
-        close(false);
+        p.closeModal();
       },
     };
     const formItemLayout = {
@@ -63,8 +77,8 @@ class SkuModal extends Component {
       wrapperCol: { span: 13 },
     };
     const uploadProps = {
-      action: "/uploadFile/picUpload",
-      listType: "picture-card",
+      action: '/uploadFile/picUpload',
+      listType: 'picture-card',
       fileList: [{
         uid: -1,
         name: 'xxx.png',
@@ -75,98 +89,52 @@ class SkuModal extends Component {
         p.setState({
           previewVisible: true,
           previewImage: file.url || file.thumbUrl,
-        })
+        });
       },
       onChange({ fileList }) {
-        p.setState({ fileList, })
+        p.setState({ fileList });
       },
     };
     return (
-      <Modal 
+      <Modal
         {...modalProps}
         className={styles.modalStyle}
       >
-        <Form onSubmit={this.handleSubmit.bind(this)}>
+        <Form>
           <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="SKU"
                 {...formItemLayout}
               >
-                {getFieldDecorator('itemCode', {
-                  rules: [{ message: '请输入SKU' }],
+                {getFieldDecorator('skuCode', {
+                  initialValue: skuModalData.skuCode,
                 })(
-                  <Input placeholder="请输入SKU" />
+                  <Input placeholder="请输入SKU" />,
                 )}
               </FormItem>
             </Col>
             <Col span={7}>
               <FormItem
-                label="货品"
+                label="颜色"
                 {...formItemLayout}
               >
-                {getFieldDecorator('name', {
-                  rules: [{ required: true, message: '请选择货品' }],
+                {getFieldDecorator('color', {
+                  initialValue: skuModalData.color,
                 })(
-                  <Select placeholder="请选择货品" >
-                    <Option value="1">好</Option>
-                    <Option value="2">中等</Option>
-                  </Select>
+                  <Input placeholder="请输入颜色" />,
                 )}
               </FormItem>
             </Col>
             <Col span={7}>
               <FormItem
-                label="条码"
+                label="尺寸"
                 {...formItemLayout}
               >
-                {getFieldDecorator('enName', {
-                  rules: [{ message: '请输入条码' }],
+                {getFieldDecorator('scale', {
+                  initialValue: skuModalData.scale,
                 })(
-                  <Input placeholder="请输入条码" />
-                )}
-              </FormItem>
-            </Col>
-          </Row>          
-          <Row gutter={10}>
-            <Col span={7}>
-              <FormItem
-                label="允许销售"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('itemShort', {
-                  rules: [{ message: '请输入允许销售' }],
-                })(
-                  <Select placeholder="请输入允许销售" >
-                    <Option value="1">是</Option>
-                    <Option value="0">否</Option>
-                  </Select>
-                )}
-              </FormItem>
-            </Col>
-            <Col span={7}>
-              <FormItem
-                label="商品颜色"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('categoryId', {
-                  rules: [{ message: '请输入商品颜色' }],
-                })(
-                  <Input placeholder="请输入商品颜色" />
-                )}
-              </FormItem>
-            </Col>
-            <Col span={7}>
-              <FormItem
-                label="商品尺寸"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('brand', {
-                  rules: [{ message: '请输入商品尺寸' }],
-                })(
-                  <Select placeholder="请输入商品尺寸" >
-                    <Option value="100">优衣库</Option>
-                  </Select>
+                  <Input placeholder="请输入尺寸" />,
                 )}
               </FormItem>
             </Col>
@@ -174,67 +142,37 @@ class SkuModal extends Component {
           <Row gutter={10}>
             <Col span={7}>
               <FormItem
-                label="成本价"
+                label="upc"
                 {...formItemLayout}
               >
-                {getFieldDecorator('spec', {
-                  rules: [{ required: true, message: '请输入成本价' }],
+                {getFieldDecorator('upc', {
+                  initialValue: skuModalData.upc,
                 })(
-                  <InputNumber style={{ width: '100%' }} step={0.01} min={0} placeholder="请输入成本价" />
+                  <Input placeholder="请输入upc" />,
                 )}
               </FormItem>
             </Col>
             <Col span={7}>
               <FormItem
-                label="预估运费(rmb)"
+                label="虚拟库存"
                 {...formItemLayout}
               >
-                {getFieldDecorator('model', {
-                  rules: [{ required: true, message: '请输入预估运费(rmb)' }],
+                {getFieldDecorator('virtualInventory', {
+                  initialValue: skuModalData.virtualInventory,
                 })(
-                  <InputNumber style={{ width: '100%' }} step={0.01} min={0} placeholder="请输入预估运费(rmb)" />
+                  <Input placeholder="请输入虚拟库存" />,
                 )}
               </FormItem>
             </Col>
             <Col span={7}>
               <FormItem
-                label="销售价(rmb)"
+                label="重量(kg)"
                 {...formItemLayout}
               >
                 {getFieldDecorator('weight', {
-                  rules: [{ required: true, message: '请输入销售价(rmb)' }],
+                  initialValue: skuModalData.weight,
                 })(
-                  <InputNumber style={{ width: '100%' }} step={0.01} min={0} placeholder="请输入销售价(rmb)" />
-                )}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={10}>
-            <Col span={7}>
-              <FormItem
-                label="可售库存"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('unit', {
-                  rules: [{ required: true, message: '请输入可售库存' }],
-                })(
-                  <InputNumber style={{ width: '100%' }} step={1} min={0} placeholder="请输入可售库存" />
-                )}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <FormItem
-                label="备注"
-                labelCol={{ span: 3 }}
-                wrapperCol={{ span: 9 }}
-                style={{ marginRight: '-20px' }}
-              >
-                {getFieldDecorator('origin', {
-                  rules: [{ message: '请输入备注' }],
-                })(
-                  <Input type="textarea" placeholder="请输入备注" />
+                  <InputNumber skep={0.01} placeholder="请输入重量" />,
                 )}
               </FormItem>
             </Col>
@@ -247,7 +185,10 @@ class SkuModal extends Component {
                 wrapperCol={{ span: 9 }}
                 style={{ marginRight: '-20px' }}
               >
-                {getFieldDecorator('picUrl', { rules: [{ validator: this.checkImg.bind(this) }] })(
+                {getFieldDecorator('mainPic', {
+                  initialValue: picList,
+                  rules: [{ validator: this.checkImg.bind(this) }],
+                })(
                   <div>
                     <Upload {...uploadProps}>
                       <Icon type="plus" className={styles.uploadPlus} />
@@ -256,7 +197,7 @@ class SkuModal extends Component {
                     <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
                       <img alt="example" style={{ width: '100%' }} />
                     </Modal>
-                  </div>
+                  </div>,
                 )}
               </FormItem>
             </Col>
@@ -264,9 +205,7 @@ class SkuModal extends Component {
         </Form>
       </Modal>
     );
-    
   }
-
 }
 
 function mapStateToProps(state) {
@@ -277,6 +216,8 @@ function mapStateToProps(state) {
   };
 }
 
-SkuModal = Form.create()(SkuModal);
+SkuModal.PropTypes = {
+  skuList: PropTypes.object.isRequired,
+};
 
-export default connect(mapStateToProps)(SkuModal);
+export default connect(mapStateToProps)(Form.create()(SkuModal));

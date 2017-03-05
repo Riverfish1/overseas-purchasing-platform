@@ -1,14 +1,16 @@
-import { addSku, querySkuList } from '../services/sku';
+import { message } from 'antd';
+import { addSku, querySkuList, updateSku, querySku, deleteSku } from '../services/sku';
 
 export default {
   namespace: 'sku',
   state: {
     skuList: {},
+    skuData: {},
     currentPage: 1,
   },
   reducers: {
-    saveSku(state, { payload: dataSource }) {
-      return { ...state, ...dataSource };
+    saveSku(state, { payload }) {
+      return { ...state, skuData: payload };
     },
     saveItemSkuList(state, { payload }) {
       return { ...state, skuList: payload };
@@ -21,11 +23,29 @@ export default {
     * addSku({ payload }, { call, put }) { // 新建SKU
       const data = yield call(addSku, { payload });
       if (data.success) {
+        message.success('新增订单成功');
+        yield put({
+          type: 'querySkuList',
+          payload: {},
+        });
+      }
+    },
+    * updateSku({ payload }, { call, put }) {
+      const data = yield call(updateSku, { payload });
+      if (data.success) {
+        message.success('更新订单成功');
+        yield put({
+          type: 'querySkuList',
+          payload: {},
+        });
+      }
+    },
+    * querySku({ payload }, { call, put }) {
+      const data = yield call(querySku, { payload });
+      if (data.success) {
         yield put({
           type: 'saveSku',
-          payload: {
-            dataSource: data.dataSource,
-          },
+          payload: data,
         });
       }
     },
@@ -41,6 +61,16 @@ export default {
         yield put({
           type: 'saveItemSkuList',
           payload: data,
+        });
+      }
+    },
+    * deleteSku({ payload }, { call, put }) {
+      const data = yield call(deleteSku, { payload });
+      if (data.success) {
+        message.success('删除SKU成功');
+        yield put({
+          type: 'querySkuList',
+          payload: {},
         });
       }
     },

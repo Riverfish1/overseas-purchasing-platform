@@ -48,6 +48,7 @@ class Order extends Component {
   }
 
   updateModal(id) {
+    window.event.stopPropagation();
     const p = this;
     p.setState({
       modalVisible: true,

@@ -167,7 +167,7 @@ function mapStateToProps(state) {
     skuList,
     skuData,
     currentPage,
-    brands,
+    brands: brands.data,
   };
 }
 

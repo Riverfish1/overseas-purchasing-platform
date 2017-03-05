@@ -15,7 +15,7 @@ export default {
     productsList: [],
     productsValues: {}, // 修改商品时的值
     currentPage: 1, // 默认页码
-    brands: [], // 品牌
+    brands: {}, // 品牌
     tree: [], // 类目树
   },
   reducers: {
@@ -26,7 +26,7 @@ export default {
       return { ...state, productsList: data };
     },
     saveBrands(state, { payload: data }) { // 保存品牌
-      return { ...state, brands: data.data };
+      return { ...state, brands: data };
     },
     saveProductsValue(state, { payload: data }) {
       return { ...state, productsValues: data };

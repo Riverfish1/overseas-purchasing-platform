@@ -124,7 +124,7 @@ class SkuModal extends Component {
     let picList = [];
     if (skuModalData.mainPic) {
       const picObj = JSON.parse(skuModalData.mainPic);
-      picList = picObj.picList || [];
+      picList = picObj.url || [];
     }
 
     const modalProps = {
@@ -218,7 +218,7 @@ class SkuModal extends Component {
                     filterOption={false}
                   >
                     {list.map((item, index) => {
-                      return <Option key={index} value={item.name}>{item.name}</Option>;
+                      return <Option key={index} value={item.id.toString()}>{item.name}</Option>;
                     })}
                   </Select>,
                 )}

@@ -34,6 +34,8 @@ class Order extends Component {
       if (err) {
         return;
       }
+      if (fieldsValue.startOrderTime) fieldsValue.startOrderTime = new Date(fieldsValue.startOrderTime).format('yyyy-MM-dd');
+      if (fieldsValue.endOrderTime) fieldsValue.endOrderTime = new Date(fieldsValue.endOrderTime).format('yyyy-MM-dd');
       this.props.dispatch({
         type: 'order/queryOrderList',
         payload: { ...fieldsValue, pageIndex: 1 },
@@ -134,26 +136,24 @@ class Order extends Component {
         dataIndex: 'stockStatus',
         key: 'stockStatus',
         render(text) {
-          if (text === 0) {
+          if (text === 1) {
             return <span>未备货</span>;
-          } else if (text === 1) {
-            return <span>备货中</span>;
           } else if (text === 2) {
-            return <span>部分备货</span>;
+            return <span>备货中</span>;
           } else if (text === 3) {
-            return <span>部分备货，在途</span>;
+            return <span>部分备货</span>;
           } else if (text === 4) {
-            return <span>部分备货，在途，可发</span>;
+            return <span>部分备货，在途</span>;
           } else if (text === 5) {
-            return <span>部分备货，可发</span>;
+            return <span>部分备货，在途，可发</span>;
           } else if (text === 6) {
-            return <span>备货完成</span>;
+            return <span>部分备货，可发</span>;
           } else if (text === 7) {
             return <span>备货完成</span>;
           } else if (text === 8) {
-            return <span>备货完成，在途，可发</span>;
+            return <span>备货完成、在途</span>;
           } else if (text === 9) {
-            return <span>备货完成，可发</span>;
+            return <span>备货完成、在途、可发</span>;
           }
         },
       },
@@ -165,7 +165,7 @@ class Order extends Component {
         dataIndex: 'address',
         key: 'address',
         render(text, record) {
-          return <span>{text + record.addressDetail}</span>;
+          return <span>{text ? `${text} ${record.addressDetail}` : '-'}</span>;
         },
       },
       {
@@ -329,14 +329,13 @@ class Order extends Component {
               >
                 {getFieldDecorator('status', {})(
                   <Select placeholder="请选择订单状态">
-                    <Option value="0">不限</Option>
-                    <Option value="1">待支付</Option>
-                    <Option value="2">待审核</Option>
-                    <Option value="3">备货中</Option>
-                    <Option value="4">部分发货</Option>
-                    <Option value="5">已发货</Option>
-                    <Option value="6">已完成</Option>
-                    <Option value="7">已取消</Option>
+                    <Option value="0">待支付</Option>
+                    <Option value="1">待审核</Option>
+                    <Option value="2">备货中</Option>
+                    <Option value="3">部分发货</Option>
+                    <Option value="4">已发货</Option>
+                    <Option value="5">已完成</Option>
+                    <Option value="6">已取消</Option>
                   </Select>)}
               </FormItem>
             </Col>
@@ -347,7 +346,6 @@ class Order extends Component {
               >
                 {getFieldDecorator('stockStatus', {})(
                   <Select placeholder="请选择订单备货状态">
-                    <Option value="0">不限</Option>
                     <Option value="1">未备货</Option>
                     <Option value="2">备货中</Option>
                     <Option value="3">部分备货</Option>
@@ -355,8 +353,8 @@ class Order extends Component {
                     <Option value="5">部分备货，在途，可发</Option>
                     <Option value="6">部分备货，可发</Option>
                     <Option value="7">备货完成</Option>
-                    <Option value="8">备货完成，在途，可发</Option>
-                    <Option value="9">备货完成，可发</Option>
+                    <Option value="8">备货完成、在途</Option>
+                    <Option value="9">备货完成、在途、可发</Option>
                   </Select>)}
               </FormItem>
             </Col>

@@ -1,10 +1,11 @@
 import React, { PropTypes, Component } from 'react';
-import { connect } from 'dva';
 import { Modal, Input, InputNumber, Row, Col, Form, Icon, Upload, Select, message } from 'antd';
 import styles from './Sku.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+let searchQueue = [];
 
 function toString(str, type) {
   if (typeof str !== 'undefined' && str !== null) {
@@ -21,11 +22,14 @@ class SkuModal extends Component {
     this.state = {
       previewVisible: false, // 上传图片的modal是否显示
       previewImage: '', // 上传图片的url
+      proSearchList: {},
     };
   }
 
   handleSubmit() {
-    const { form, dispatch, modalValues } = this.props;
+    const p = this;
+    const { form, dispatch, modalValues, brands } = this.props;
+    const { proSearchList } = this.state;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       console.log(fieldsValue);
       if (err) {
@@ -42,18 +46,53 @@ class SkuModal extends Component {
         });
         fieldsValue.mainPic = encodeURIComponent(JSON.stringify({ picList: uploadMainPic }));
       }
+      if (fieldsValue.brand) {
+        brands.forEach((item) => {
+          if (item.id.toString() === fieldsValue.brand) {
+            fieldsValue.brand = item.name;
+          }
+        });
+      }
       if (modalValues.data) {
         fieldsValue.id = modalValues.data.id;
         dispatch({
           type: 'sku/updateSku',
-          payload: { ...fieldsValue },
+          payload: { ...fieldsValue, id: modalValues.data.id, itemId: proSearchList.data[0].id },
         });
       } else {
         dispatch({
           type: 'sku/addSku',
-          payload: { ...fieldsValue },
+          payload: { ...fieldsValue, itemId: proSearchList.data[0].id },
         });
       }
+      p.closeModal();
+    });
+  }
+
+  handleSearch(value) {
+    const p = this;
+    if (searchQueue.length > 0) {
+      searchQueue.push(value);
+      return;
+    }
+    this.props.dispatch({
+      type: 'sku/searchProducts',
+      payload: {
+        keyword: value,
+        callback(status) {
+          if (status !== 'ERROR') {
+            const { proSearchList } = p.state;
+            proSearchList.data = status.rows || [];
+            p.setState({ proSearchList });
+          }
+          // 搜索始终进行
+          if (searchQueue.length > 0) {
+            const keyword = searchQueue[searchQueue.length - 1];
+            searchQueue = [];
+            p.handleSearch(keyword);
+          }
+        },
+      },
     });
   }
 
@@ -69,16 +108,18 @@ class SkuModal extends Component {
 
   closeModal() {
     const { close, form } = this.props;
+    this.setState({ proSearchList: {} });
     form.resetFields();
     close(false);
   }
 
   render() {
     const p = this;
-    const { previewVisible, previewImage } = p.state;
-    const { form, visible, modalValues = {}, brands = [] } = p.props;
+    const { previewVisible, previewImage, proSearchList } = p.state;
+    const { form, visible, modalValues = {}, brands = [], productsList = [] } = p.props;
     const { getFieldDecorator } = form;
     const skuModalData = modalValues.data || {};
+    const list = proSearchList.data || productsList;
 
     let picList = [];
     if (skuModalData.mainPic) {
@@ -149,25 +190,37 @@ class SkuModal extends Component {
           <Row gutter={10}>
             <Col span={7}>
               <FormItem
-                label="SKU"
+                label="SKU代码"
                 {...formItemLayout}
               >
                 {getFieldDecorator('skuCode', {
                   initialValue: toString(skuModalData.skuCode),
                 })(
-                  <Input placeholder="请输入SKU" />,
+                  <Input placeholder="请输入SKU代码" />,
                 )}
               </FormItem>
             </Col>
             <Col span={7}>
               <FormItem
-                label="颜色"
+                label="所属商品"
                 {...formItemLayout}
               >
-                {getFieldDecorator('color', {
-                  initialValue: toString(skuModalData.color),
+                {getFieldDecorator('itemId', {
+                  initialValue: toString(skuModalData.itemName, 'SELECT'),
+                  rules: [{ required: true, message: '请选择' }],
                 })(
-                  <Input placeholder="请输入颜色" />,
+                  <Select
+                    combobox
+                    placeholder="请选择"
+                    onChange={p.handleSearch.bind(p)}
+                    defaultActiveFirstOption={false}
+                    showArrow={false}
+                    filterOption={false}
+                  >
+                    {list.map((item, index) => {
+                      return <Option key={index} value={item.name}>{item.name}</Option>;
+                    })}
+                  </Select>,
                 )}
               </FormItem>
             </Col>
@@ -225,13 +278,13 @@ class SkuModal extends Component {
           <Row gutter={10}>
             <Col span={7}>
               <FormItem
-                label="sku名称"
+                label="颜色"
                 {...formItemLayout}
               >
-                {getFieldDecorator('itemName', {
-                  initialValue: toString(skuModalData.itemName),
+                {getFieldDecorator('color', {
+                  initialValue: toString(skuModalData.color),
                 })(
-                  <Input placeholder="请输入sku名称" />,
+                  <Input placeholder="请输入颜色" />,
                 )}
               </FormItem>
             </Col>
@@ -288,16 +341,8 @@ class SkuModal extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { skuList } = state.products;
-  return {
-    loading: state.loading.models.products,
-    skuList,
-  };
-}
-
 SkuModal.PropTypes = {
-  skuList: PropTypes.object.isRequired,
+  productsList: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps)(Form.create()(SkuModal));
+export default Form.create()(SkuModal);

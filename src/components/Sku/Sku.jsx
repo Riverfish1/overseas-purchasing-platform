@@ -23,6 +23,10 @@ class Sku extends Component {
       type: 'products/queryBrands',
       payload: {},
     });
+    dispatch({
+      type: 'products/queryItemList',
+      payload: {},
+    });
   }
 
   handleSubmit(e) {
@@ -77,7 +81,7 @@ class Sku extends Component {
 
   render() {
     const p = this;
-    const { skuList = {}, currentPage, skuData, brands = [] } = this.props;
+    const { skuList = {}, currentPage, skuData, brands = [], productsList = [] } = this.props;
     const columns = [
       { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode' },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
@@ -153,6 +157,8 @@ class Sku extends Component {
           close={this.closeModal.bind(this)}
           modalValues={skuData}
           brands={brands}
+          productsList={productsList}
+          dispatch={this.props.dispatch}
         />
       </div>
     );
@@ -161,13 +167,14 @@ class Sku extends Component {
 
 function mapStateToProps(state) {
   const { skuList, skuData, currentPage } = state.sku;
-  const { brands } = state.products;
+  const { brands, productsList } = state.products;
   return {
     // loading: state.loading.models.sku,
     skuList,
     skuData,
     currentPage,
     brands: brands.data,
+    productsList: productsList.rows,
   };
 }
 
@@ -176,6 +183,7 @@ Sku.PropTypes = {
   skuData: PropTypes.object.isRequired,
   current: PropTypes.number.isRequired,
   brands: PropTypes.array.isRequired,
+  productsList: PropTypes.array.isRequired,
 };
 
 export default connect(mapStateToProps)(Form.create()(Sku));

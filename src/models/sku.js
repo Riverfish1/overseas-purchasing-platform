@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import { addSku, querySkuList, updateSku, querySku, deleteSku } from '../services/sku';
+import { queryItemList } from '../services/products';
 
 export default {
   namespace: 'sku',
@@ -73,6 +74,10 @@ export default {
           payload: {},
         });
       }
+    },
+    * searchProducts({ payload }, { call }) {
+      const data = yield call(queryItemList, { payload: { name: payload.keyword } });
+      payload.callback(data.success ? data : 'ERROR');
     },
   },
   subscriptions: {

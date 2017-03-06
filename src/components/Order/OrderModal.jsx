@@ -38,7 +38,7 @@ class ProductsModal extends Component {
         if (modalValues && modalValues.data) {
           dispatch({
             type: 'order/updateOrder',
-            payload: { ...fieldsValue, orderNo: modalValues.data.orderNo, orderDetailList: JSON.stringify(orderDetailList) },
+            payload: { ...fieldsValue, id: modalValues.data.id, orderDetailList: JSON.stringify(orderDetailList) },
           });
         } else {
           dispatch({

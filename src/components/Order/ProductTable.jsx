@@ -19,7 +19,10 @@ class ProductTable extends Component {
   componentWillReceiveProps(...args) {
     if (args[0].data && args[0].data.length > 0 && this.state.skuData.length === 0) {
       this.setState({
-        skuData: args[0].data,
+        skuData: args[0].data.map((el, index) => {
+          el.key = index + 1;
+          return el;
+        }),
       });
     }
   }
@@ -89,7 +92,7 @@ class ProductTable extends Component {
       if (value.skuCode.toString() === skuCode.toString()) {
         form.setFieldsValue({
           [`r_${key}_skuCode`]: value.skuCode,
-          [`r_${key}_skuId`]: value.skuId,
+          [`r_${key}_skuId`]: value.id,
           [`r_${key}_salePrice`]: value.salePrice || 0,
           [`r_${key}_quantity`]: value.quantity || 0,
         });
@@ -208,7 +211,7 @@ class ProductTable extends Component {
                   <InputNumber step={0.01} min={0} placeholder="请输入" />,
                 )}
                 {getFieldDecorator(`r_${r.key}_skuId`, {
-                  initialValue: r.skuId,
+                  initialValue: r.skuId || r.id,
                 })(
                   <Input style={{ display: 'none' }} />,
                 )}

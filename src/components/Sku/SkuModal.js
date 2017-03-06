@@ -55,6 +55,7 @@ class SkuModal extends Component {
       }
       if (modalValues.data) {
         fieldsValue.id = modalValues.data.id;
+        console.log(fieldsValue);
         dispatch({
           type: 'sku/updateSku',
           payload: { ...fieldsValue, id: modalValues.data.id, itemId: proSearchList.data[0].id },
@@ -123,7 +124,8 @@ class SkuModal extends Component {
 
     let picList = [];
     if (skuModalData.mainPic) {
-      const picObj = JSON.parse(skuModalData.mainPic);
+      const picObj = JSON.parse(decodeURIComponent(skuModalData.mainPic).replace(/&quot;/g, '"'));
+      console.log(picObj);
       picList = picObj.picList || [];
     }
 
@@ -215,7 +217,6 @@ class SkuModal extends Component {
                     onChange={p.handleSearch.bind(p)}
                     defaultActiveFirstOption={false}
                     showArrow={false}
-                    filterOption={false}
                   >
                     {list.map((item, index) => {
                       return <Option key={index} value={item.name}>{item.name}</Option>;

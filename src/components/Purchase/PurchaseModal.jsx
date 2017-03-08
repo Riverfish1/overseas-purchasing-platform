@@ -5,7 +5,7 @@ import { Modal, Cascader, Input, Select, Row, Col, DatePicker, Form } from 'antd
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import ProductTable from './ProductTable';
-import styles from './Order.less';
+import styles from './Purchase.less';
 import divisions from '../../utils/divisions.json';
 import * as check from '../../utils/checkLib';
 

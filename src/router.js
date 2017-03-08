@@ -10,6 +10,7 @@ import Products from './components/Products/Products';
 import Sku from './components/Sku/Sku';
 import Category from './components/Category/Category';
 import Order from './components/Order/Order';
+import Purchase from './components/Purchase/Purchase';
 
 function redirectHelper(...args) {
   // 传入参数3，为onEnter
@@ -39,6 +40,7 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.SKU_LIST}`} component={Sku} />
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.CATE_LIST}`} component={Category} />
         <Route path={`/${routerCfg.SALE}/${routerCfg.ORDER_LIST}`} component={Order} />
+        <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} component={Purchase} />
         {/* 重定向 */}
         <Redirect from={`/${routerCfg.PRODUCTS}`} to={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} />
       </Route>

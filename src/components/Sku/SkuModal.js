@@ -58,7 +58,7 @@ class SkuModal extends Component {
         console.log(fieldsValue);
         dispatch({
           type: 'sku/updateSku',
-          payload: { ...fieldsValue, id: modalValues.data.id, itemId: proSearchList.data[0].id },
+          payload: { ...fieldsValue, id: modalValues.data.id, itemId: proSearchList.data ? proSearchList.data[0].id : modalValues.data.itemId },
         });
       } else {
         dispatch({
@@ -124,8 +124,7 @@ class SkuModal extends Component {
 
     let picList = [];
     if (skuModalData.mainPic) {
-      const picObj = JSON.parse(decodeURIComponent(skuModalData.mainPic).replace(/&quot;/g, '"'));
-      console.log(picObj);
+      const picObj = skuModalData.mainPic;
       picList = picObj.picList || [];
     }
 
@@ -133,7 +132,6 @@ class SkuModal extends Component {
       visible,
       width: 900,
       title: '添加',
-      wrapClassName: 'modalStyle',
       maskClosable: false,
       closable: true,
       onOk() {
@@ -186,7 +184,6 @@ class SkuModal extends Component {
     return (
       <Modal
         {...modalProps}
-        className={styles.modalStyle}
       >
         <Form>
           <Row gutter={10}>
@@ -219,7 +216,7 @@ class SkuModal extends Component {
                     showArrow={false}
                   >
                     {list.map((item, index) => {
-                      return <Option key={index} value={item.id.toString()}>{item.name}</Option>;
+                      return <Option key={index} value={item.name}>{item.name}</Option>;
                     })}
                   </Select>,
                 )}

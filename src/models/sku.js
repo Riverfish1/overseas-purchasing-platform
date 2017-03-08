@@ -44,6 +44,7 @@ export default {
     * querySku({ payload }, { call, put }) {
       const data = yield call(querySku, { payload });
       if (data.success) {
+        data.data.mainPic = JSON.parse(decodeURIComponent(data.data.mainPic).replace(/&quot;/g, '"'));
         yield put({
           type: 'saveSku',
           payload: data,

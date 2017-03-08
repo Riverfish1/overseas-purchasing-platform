@@ -15,6 +15,9 @@ export const routerCfg = {
   // 销售管理
   SALE: 'sale',
   ORDER_LIST: 'orderList',
+  // 采购管理
+  PURCHASE: 'purchase',
+  PURCHASE_LIST: 'purchaseList',
 };
 
 export const navigation = [
@@ -29,6 +32,12 @@ export const navigation = [
   { key: routerCfg.SALE, name: '销售管理', icon: 'book',
     child: [
       { key: routerCfg.ORDER_LIST, name: '订单管理' },
+    ],
+  },
+  {
+    key: routerCfg.PURCHASE, name: '采购管理', icon: 'appstore-o',
+    child: [
+      { key: routerCfg.PURCHASE_LIST, name: '采购管理' },
     ],
   },
 ];

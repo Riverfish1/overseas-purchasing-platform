@@ -6,7 +6,8 @@ import PurchaseModal from './PurchaseModal';
 import styles from './Purchase.less';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 class Purchase extends Component {
 
@@ -17,15 +18,8 @@ class Purchase extends Component {
       visible: false,
       title: '', // modal的title
       updateId: [], // 修改商品传的id
+      range: false,
     };
-  }
-
-  componentWillMount() {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'order/querySalesName',
-    //   payload: {},
-    // });
   }
 
   handleSubmit(e) {
@@ -70,7 +64,7 @@ class Purchase extends Component {
       modalVisible,
     });
     this.props.dispatch({
-      type: 'order/saveOrder',
+      type: 'purchase/updatePurchase',
       payload: {},
     });
   }
@@ -87,92 +81,35 @@ class Purchase extends Component {
     });
   }
 
+  selectDate(value) {
+    if (value === 'range') this.setState({ range: true });
+    else this.setState({ range: false });
+  }
+
   render() {
     const p = this;
-    const { form, orderList = {}, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [] } = p.props;
+    const { form, list = {}, purchaseValues = {}, orderSkuSnip = {} } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
-    const { title, visible } = p.state;
+    const { title, visible, range } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
     const columnsList = [
       {
-        title: '订单编号', dataIndex: 'orderNo', key: 'orderNo',
+        title: '采购单号', dataIndex: 'purchaseNo', key: 'purchaseNo',
       },
       {
-        title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo',
+        title: '采购类型', dataIndex: 'type', key: 'type',
       },
       {
-        title: '客户', dataIndex: 'salesName', key: 'salesName',
+        title: '计划完成时间', dataIndex: 'time', key: 'time',
       },
       {
-        title: '订单时间', dataIndex: 'orderTime', key: 'orderTime',
+        title: '采购状态', dataIndex: 'status', key: 'status',
       },
       {
-        title: '订单状态',
-        dataIndex: 'status',
-        key: 'status',
-        render(text) {
-          if (text === 0) {
-            return <span>待支付</span>;
-          } else if (text === 1) {
-            return <span>待审核</span>;
-          } else if (text === 2) {
-            return <span>备货中</span>;
-          } else if (text === 3) {
-            return <span>部分发货</span>;
-          } else if (text === 4) {
-            return <span>已发货</span>;
-          } else if (text === 5) {
-            return <span>已完成</span>;
-          } else if (text === 6) {
-            return <span>已取消</span>;
-          }
-        },
-      },
-      {
-        title: '备货状态',
-        dataIndex: 'stockStatus',
-        key: 'stockStatus',
-        render(text) {
-          if (text === 1) {
-            return <span>未备货</span>;
-          } else if (text === 2) {
-            return <span>备货中</span>;
-          } else if (text === 3) {
-            return <span>部分备货</span>;
-          } else if (text === 4) {
-            return <span>部分备货，在途</span>;
-          } else if (text === 5) {
-            return <span>部分备货，在途，可发</span>;
-          } else if (text === 6) {
-            return <span>部分备货，可发</span>;
-          } else if (text === 7) {
-            return <span>备货完成</span>;
-          } else if (text === 8) {
-            return <span>备货完成、在途</span>;
-          } else if (text === 9) {
-            return <span>备货完成、在途、可发</span>;
-          }
-        },
-      },
-      {
-        title: '收件人', dataIndex: 'receiver', key: 'receiver',
-      },
-      {
-        title: '收件人地址',
-        dataIndex: 'address',
-        key: 'address',
-        render(text, record) {
-          return <span>{text ? `${text} ${record.addressDetail}` : '-'}</span>;
-        },
-      },
-      {
-        title: '联系电话', dataIndex: 'telephone', key: 'telephone',
-      },
-      {
-        title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate',
+        title: '支付方式', dataIndex: 'style', key: 'style',
       },
       {
         title: '备注', dataIndex: 'remarks', key: 'remarks',
@@ -196,8 +133,7 @@ class Purchase extends Component {
     ];
 
     const listPaginationProps = {
-      total: orderList && orderList.totalCount,
-      current: currentPage,
+      total: list && list.totalCount,
       pageSize: 10,
       onChange(page) {
         const values = getFieldsValue();
@@ -295,87 +231,86 @@ class Purchase extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
-                label="客户"
+                label="采购单号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('salesName', {})(
-                  <Input placeholder="请输入客户名称" />)}
+                {getFieldDecorator('purchaseNo', {})(
+                  <Input placeholder="请输入采购单号" />)}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
-                label="外部订单号"
+                label="采购类型"
                 {...formItemLayout}
               >
-                {getFieldDecorator('targetNo', {})(
-                  <Input placeholder="请输入外部订单号" />)}
+                {getFieldDecorator('purchaseType', {})(
+                  <Select placeholder="请选择采购类型" >
+                    <Option value="all">所有</Option>
+                    <Option value="2">订单采购</Option>
+                    <Option value="3">囤货采购</Option>
+                  </Select>,
+                )}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
-                label="订单号"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('orderNo', {})(
-                  <Input placeholder="请输入订单号" />)}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={20} style={{ width: 800 }}>
-            <Col span="8">
-              <FormItem
-                label="订单状态"
+                label="采购单状态"
                 {...formItemLayout}
               >
                 {getFieldDecorator('status', {})(
-                  <Select placeholder="请选择订单状态">
-                    <Option value="0">待支付</Option>
-                    <Option value="1">待审核</Option>
-                    <Option value="2">备货中</Option>
-                    <Option value="3">部分发货</Option>
-                    <Option value="4">已发货</Option>
-                    <Option value="5">已完成</Option>
-                    <Option value="6">已取消</Option>
-                  </Select>)}
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem
-                label="订单备货状态"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('stockStatus', {})(
-                  <Select placeholder="请选择订单备货状态">
-                    <Option value="1">未备货</Option>
-                    <Option value="2">备货中</Option>
-                    <Option value="3">部分备货</Option>
-                    <Option value="4">部分备货，在途</Option>
-                    <Option value="5">部分备货，在途，可发</Option>
-                    <Option value="6">部分备货，可发</Option>
-                    <Option value="7">备货完成</Option>
-                    <Option value="8">备货完成、在途</Option>
-                    <Option value="9">备货完成、在途、可发</Option>
-                  </Select>)}
+                  <Select placeholder="请选择采购单状态" >
+                    <Option value="all">不限</Option>
+                    <Option value="2">采购中</Option>
+                    <Option value="3">采购完成</Option>
+                  </Select>,
+                )}
               </FormItem>
             </Col>
           </Row>
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
-                label="订单时间开始"
+                label="支付方式"
                 {...formItemLayout}
               >
-                {getFieldDecorator('startOrderTime', {})(
-                  <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
+                {getFieldDecorator('style', {})(
+                  <Select placeholder="请选择支付方式">
+                    <Option value="all">不限</Option>
+                  </Select>,
+                )}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
-                label="订单时间结束"
+                label="买手"
                 {...formItemLayout}
               >
-                {getFieldDecorator('endOrderTime', {})(
-                  <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
+                {getFieldDecorator('customer', {})(
+                  <Select placeholder="请选择用户">
+                    <Option value="1">所有</Option>
+                  </Select>)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="计划完成日期"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('date', {})(
+                  <Select placeholder="请选择日期" onChange={this.selectDate.bind(this)}>
+                    <Option value="all">任意时间</Option>
+                    <Option value="lw">上周</Option>
+                    <Option value="tw">本周</Option>
+                    <Option value="lm">上月</Option>
+                    <Option value="tm">本月</Option>
+                    <Option value="ly">去年</Option>
+                    <Option value="ty">今年</Option>
+                    <Option value="range">时间段</Option>
+                  </Select>,
+                )}
+                {range && getFieldDecorator('datePicker', {})(
+                  <RangePicker style={{ width: 180 }} />,
+                )}
               </FormItem>
             </Col>
           </Row>
@@ -388,14 +323,14 @@ class Purchase extends Component {
         </Form>
         <Row>
           <Col className={styles.orderBtn}>
-            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增订单</Button>
+            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增采购</Button>
           </Col>
         </Row>
         <Row>
           <Col>
             <Table
               columns={columnsList}
-              dataSource={orderList && orderList.data}
+              dataSource={list && list.data}
               bordered
               size="large"
               rowKey={record => record.id}
@@ -417,8 +352,7 @@ class Purchase extends Component {
         <PurchaseModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
-          modalValues={orderValues}
-          salesName={salesName}
+          modalValues={purchaseValues}
           title={title}
         />
       </div>
@@ -427,21 +361,16 @@ class Purchase extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList, currentPage, orderValues, orderSkuSnip, salesName } = state.order;
+  const { list, purchaseValues } = state.purchase;
   return {
-    orderList,
-    currentPage,
-    orderValues,
-    orderSkuSnip,
-    salesName,
+    list,
+    purchaseValues,
   };
 }
 
 Purchase.PropTypes = {
-  orderList: PropTypes.object.isRequired,
+  list: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
 };
 
-const PurchaseList = Form.create()(Purchase);
-
-export default connect(mapStateToProps)(PurchaseList);
+export default connect(mapStateToProps)(Form.create()(Purchase));

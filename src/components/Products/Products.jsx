@@ -90,7 +90,7 @@ class Products extends Component {
             const imgObj = JSON.parse(text.replace(/&quot;/g, '"'));
             imgUrl = imgObj.picList[0].url;
           } catch (e) {
-            return '无';
+            return '-';
           }
           return <img role="presentation" src={imgUrl} width="50" height="50" />;
         },
@@ -100,7 +100,7 @@ class Products extends Component {
         dataIndex: 'brand',
         key: 'brand',
         render(text) {
-          let res = '无';
+          let res = '-';
           if (text && brands) {
             const arr = brands.filter(el => el.id.toString() === text.toString());
             if (arr && arr.length > 0) res = arr[0].name;
@@ -116,7 +116,7 @@ class Products extends Component {
         dataIndex: 'categoryId',
         key: 'categoryId',
         render(text) {
-          let cate = '';
+          let cate = '-';
           tree.forEach((item) => {
             if (item.id === text) {
               cate = item.name;
@@ -133,13 +133,13 @@ class Products extends Component {
         },
       },
       {
-        title: '采购地点', dataIndex: 'buySite', key: 'buySite',
+        title: '采购地点', dataIndex: 'buySite', key: 'buySite', render(text) { return text || '-'; },
       },
       {
-        title: '开始销售时间', dataIndex: 'startDate', key: 'startDate', render(text) { return text && text.split(' ')[0]; },
+        title: '开始销售时间', dataIndex: 'startDate', key: 'startDate', render(text) { return text ? text.split(' ')[0] : '-'; },
       },
       {
-        title: '结束销售时间', dataIndex: 'endDate', key: 'endDate', render(text) { return text && text.split(' ')[0]; },
+        title: '结束销售时间', dataIndex: 'endDate', key: 'endDate', render(text) { return text ? text.split(' ')[0] : '-'; },
       },
       {
         title: '操作',
@@ -197,7 +197,7 @@ class Products extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="类目"
+                label="商品类目"
                 {...formItemLayout}
               >
                 {getFieldDecorator('categoryId', {})(
@@ -236,14 +236,14 @@ class Products extends Component {
             </Col>
           </Row>
           <Row>
-            <Col className={styles.listBtnGroup}>
+            <Col className="listBtnGroup">
               <Button htmlType="submit" size="large" type="primary">查询</Button>
               <Button size="large" type="ghost" onClick={this.handleEmpty.bind(this)}>清空</Button>
             </Col>
           </Row>
         </Form>
         <Row>
-          <Col className={styles.productBtn}>
+          <Col className="operBtn">
             <Button type="primary" size="large" onClick={this.addModal.bind(this)}>添加商品</Button>
           </Col>
         </Row>

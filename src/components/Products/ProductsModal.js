@@ -112,7 +112,7 @@ class ProductsModal extends Component {
 
   render() {
     const p = this;
-    const { form, visible, brands = [], modalValues = {}, tree = [] } = this.props;
+    const { form, visible, brands = [], modalValues = {}, tree = [], packageScales, scaleTypes } = this.props;
     const { previewVisible, previewImage } = this.state;
     const { getFieldDecorator } = form;
 
@@ -547,7 +547,12 @@ class ProductsModal extends Component {
             </Col>
           </Row>
           <Row>
-            <SkuTable data={productData.itemSkus} parent={p} />
+            <SkuTable
+              data={productData.itemSkus}
+              packageScales={packageScales}
+              scaleTypes={scaleTypes}
+              parent={p}
+            />
           </Row>
         </Form>
       </Modal>
@@ -556,8 +561,11 @@ class ProductsModal extends Component {
 }
 
 function mapStateToProps(state) {
+  const { packageScales, scaleTypes } = state.sku;
   // const { brands } = state.products;
   return {
+    packageScales,
+    scaleTypes,
     loading: state.loading.models.products,
   };
 }

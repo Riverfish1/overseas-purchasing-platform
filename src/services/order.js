@@ -19,6 +19,10 @@ export function updateOrder({ payload }) {
   return fetch.post(`/haierp1/order/update${toForm(payload)}`).catch(e => e);
 }
 
+export function deleteOrder({ payload }) {
+  return fetch.post(`/haierp1/order/delete${toForm(payload)}`).catch(e => e);
+}
+
 export function queryOrderList({ payload }) {
   return fetch.post(`/haierp1/order/queryOrderList${toForm(payload)}`).catch(e => e);
 }

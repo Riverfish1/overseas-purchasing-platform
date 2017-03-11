@@ -30,3 +30,11 @@ export function querySkuList({ payload }) {
 export function deleteSku({ payload }) {
   return fetch.post(`/haierp1/itemSku/delete${toForm(payload)}`).catch(e => e);
 }
+
+export function queryPackageScales() {
+  return fetch.post('/haierp1/freight/getPackageScaleList').catch(e => e);
+}
+
+export function queryScaleTypes() {
+  return fetch.post('/haierp1/itemSku/scaleTypeList').catch(e => e);
+}

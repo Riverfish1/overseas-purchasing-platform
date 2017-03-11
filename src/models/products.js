@@ -127,6 +127,12 @@ export default {
             dispatch({ type: 'queryCatesTree', payload: query });
           }, 0);
         }
+        if (pathname === '/products/productsList' || pathname === '/products/skuList') {
+          setTimeout(() => {
+            dispatch({ type: 'sku/queryPackageScales', payload: query });
+            dispatch({ type: 'sku/queryScaleTypes', payload: query });
+          }, 0);
+        }
       });
     },
   },

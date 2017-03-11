@@ -1,12 +1,11 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Table, Button, Row, Col, Form, Popconfirm } from 'antd';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
+import { Table, Button, Row, Col, Form, Input, Popconfirm, Select, TreeSelect } from 'antd';
 import SkuModal from './SkuModal';
 import styles from './Sku.less';
 
-moment.locale('zh-cn');
+const FormItem = Form.Item;
+const Option = Select.Option;
 
 class Sku extends Component {
 
@@ -17,31 +16,24 @@ class Sku extends Component {
     };
   }
 
-  componentWillMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'products/queryBrands',
-      payload: {},
-    });
-    dispatch({
-      type: 'products/queryItemList',
-      payload: {},
-    });
-  }
-
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, filedsValue) => {
+    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }
       this.props.dispatch({
-        type: 'products/querySkuList',
+        type: 'sku/querySkuList',
         payload: {
-          ...filedsValue,
+          ...fieldsValue,
         },
       });
     });
+  }
+
+  handleEmpty() {
+    const { resetFields } = this.props.form;
+    resetFields();
   }
 
   handleDelete(id) {
@@ -81,7 +73,12 @@ class Sku extends Component {
 
   render() {
     const p = this;
-    const { skuList = {}, currentPage, skuData, brands = [], productsList = [] } = this.props;
+    const { skuList = {}, currentPage, skuData, brands = [], productsList = [], form, tree = [] } = this.props;
+    const { getFieldDecorator } = form;
+    const formItemLayout = {
+      labelCol: { span: 10 },
+      wrapperCol: { span: 14 },
+    };
     const columns = [
       { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode' },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
@@ -89,7 +86,7 @@ class Sku extends Component {
         dataIndex: 'brand',
         key: 'brand',
         render(text) {
-          let brand = '';
+          let brand = '-';
           brands.forEach((item) => {
             if (item.id.toString() === text) {
               brand = item.name;
@@ -98,12 +95,12 @@ class Sku extends Component {
           return <span>{brand}</span>;
         },
       },
-      { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName' },
-      { title: '尺寸', dataIndex: 'scale', key: 'scale' },
-      { title: '颜色', dataIndex: 'color', key: 'color' },
-      { title: '虚拟库存', dataIndex: 'virtualInventory', key: 'virtualInventory' },
-      { title: '重量', dataIndex: 'weight', key: 'weight' },
-      { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify' },
+      { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', render(text) { return text || '-'; } },
+      { title: '尺寸', dataIndex: 'scale', key: 'scale', render(text) { return text || '-'; } },
+      { title: '颜色', dataIndex: 'color', key: 'color', render(text) { return text || '-'; } },
+      { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', render(text) { return text || '-'; } },
+      { title: '重量', dataIndex: 'weight', key: 'weight', render(text) { return text || '-'; } },
+      { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; } },
       {
         title: '操作',
         dataIndex: 'oper',
@@ -135,23 +132,79 @@ class Sku extends Component {
     return (
       <div className={styles.normal}>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row>
-            <Col className={styles.operBtn}>
-              <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button>
+          <Row gutter={20} style={{ width: 700 }}>
+            <Col span="8">
+              <FormItem
+                label="商品编码"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('itemCode', {})(
+                  <Input placeholder="请输入商品编码" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="SKU编码"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('skuCode', {})(
+                  <Input placeholder="请输入sku编码" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="商品名称"
+
+                {...formItemLayout}
+              >
+                {getFieldDecorator('name', {})(
+                  <Input placeholder="请输入商品名称" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="商品类目"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('categoryId', {})(
+                  <TreeSelect placeholder="请选择类目" treeData={tree} />)}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem
+                label="品牌"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('brand', {})(
+                  <Select placeholder="请选择品牌">
+                    {brands && brands.map(item => <Option key={item.name}>{item.name}</Option>)}
+                  </Select>)}
+              </FormItem>
             </Col>
           </Row>
           <Row>
-            <Col>
-              <Table
-                columns={columns}
-                dataSource={skuList.data}
-                bordered
-                rowKey={record => record.id}
-                pagination={paginationProps}
-              />
+            <Col className="listBtnGroup">
+              <Button htmlType="submit" size="large" type="primary">查询</Button>
+              <Button size="large" type="ghost" onClick={this.handleEmpty.bind(this)}>清空</Button>
             </Col>
           </Row>
         </Form>
+        <Row>
+          <Col className="operBtn">
+            <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Table
+              columns={columns}
+              dataSource={skuList.data}
+              bordered
+              rowKey={record => record.id}
+              pagination={paginationProps}
+            />
+          </Col>
+        </Row>
         <SkuModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
@@ -167,7 +220,7 @@ class Sku extends Component {
 
 function mapStateToProps(state) {
   const { skuList, skuData, currentPage } = state.sku;
-  const { brands, productsList } = state.products;
+  const { brands, productsList, tree } = state.products;
   return {
     // loading: state.loading.models.sku,
     skuList,
@@ -175,6 +228,7 @@ function mapStateToProps(state) {
     currentPage,
     brands: brands.data,
     productsList: productsList.rows,
+    tree: tree.data,
   };
 }
 

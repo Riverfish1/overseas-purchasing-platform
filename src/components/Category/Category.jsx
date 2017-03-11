@@ -64,11 +64,11 @@ class Category extends Component {
     const p = this;
     const { cateList = {}, cate = {}, tree = [], dispatch } = p.props;
     const { title } = this.state;
-    cateList.data && cateList.data.forEach((item) => {
-      if (item.children && item.children.length < 1) {
-        delete item.children;
-      }
-    });
+    if (cateList.data) {
+      cateList.data.forEach((item) => {
+        if (item.children && item.children.length < 1) delete item.children;
+      });
+    }
     const columns = [
       {
         title: '类目名称',
@@ -81,7 +81,7 @@ class Category extends Component {
         key: 'level',
       },
       {
-        title: '全路径', dataIndex: 'allPath', key: 'allPath',
+        title: '全路径', dataIndex: 'allPath', key: 'allPath', render(text) { return text || '-'; },
       },
       {
         title: '操作',

@@ -1,4 +1,3 @@
-
 html, body, :global(#root) {
   height: 100%;
 }
@@ -22,4 +21,41 @@ html, body, :global(#root) {
 
 :global(td .ant-form-item) {
   margin-bottom: 0 !important;
+}
+
+:global(.ant-input-number-input::-webkit-input-placeholder) {
+  color: #ccc;
+}
+
+:global(.ant-input-number-input::-moz-input-placeholder) {
+  color: #ccc;
+}
+
+:global(.ant-input-number-input::-ms-input-placeholder) {
+  color: #ccc;
+}
+
+:global(.ant-input-number-input::input-placeholder) {
+  color: #ccc;
+}
+
+:global(.listBtnGroup),
+:global(.productBtn) {
+  overflow: hidden;
+  button {
+    float: left;
+    &:first-child {
+      margin-right: 15px;
+    }
+  }
+}
+
+:global(.listBtnGroup) {
+  padding-left: 89px;
+}
+
+:global(.operBtn) {
+  margin-top: 15px;
+	padding: 15px 0;
+	border-top: 1px solid #ddd;
 }

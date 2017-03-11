@@ -253,8 +253,8 @@ class SkuModal extends Component {
                 label="虚拟库存"
                 {...formItemLayout}
               >
-                {getFieldDecorator('virtualInventory', {
-                  initialValue: toString(skuModalData.virtualInventory),
+                {getFieldDecorator('virtualInv', {
+                  initialValue: toString(skuModalData.virtualInv),
                 })(
                   <Input placeholder="请输入虚拟库存" />,
                 )}

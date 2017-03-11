@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { addOrder, queryOrder, queryOrderList, querySalesName, updateOrder } from '../services/order';
+import { addOrder, queryOrder, queryOrderList, querySalesName, updateOrder, deleteOrder } from '../services/order';
 import { querySkuList } from '../services/sku';
 
 export default {
@@ -47,6 +47,16 @@ export default {
       const data = yield call(updateOrder, { payload });
       if (data.success) {
         message.success('更新订单成功');
+        yield put({
+          type: 'queryOrderList',
+          payload: {},
+        });
+      }
+    },
+    * deleteOrder({ payload }, { call, put }) {
+      const data = yield call(deleteOrder, { payload });
+      if (data.success) {
+        message.success('删除订单成功');
         yield put({
           type: 'queryOrderList',
           payload: {},

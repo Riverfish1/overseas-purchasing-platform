@@ -1,7 +1,7 @@
 
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Table, Popover, Input, DatePicker, Button, Row, Col, Select, Form, Modal } from 'antd';
+import { Table, Popover, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
 import OrderModal from './OrderModal';
 import styles from './Order.less';
 
@@ -87,6 +87,13 @@ class Order extends Component {
     });
   }
 
+  handleDelete(id) {
+    this.props.dispatch({
+      type: 'order/deleteOrder',
+      payload: { id },
+    });
+  }
+
   render() {
     const p = this;
     const { form, orderList = {}, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [] } = p.props;
@@ -101,13 +108,13 @@ class Order extends Component {
         title: '订单编号', dataIndex: 'orderNo', key: 'orderNo',
       },
       {
-        title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo',
+        title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', render(text) { return text || '-'; },
       },
       {
-        title: '客户', dataIndex: 'salesName', key: 'salesName',
+        title: '客户', dataIndex: 'salesName', key: 'salesName', render(text) { return text || '-'; },
       },
       {
-        title: '订单时间', dataIndex: 'orderTime', key: 'orderTime',
+        title: '订单时间', dataIndex: 'orderTime', key: 'orderTime', render(text) { return text || '-'; },
       },
       {
         title: '订单状态',
@@ -129,6 +136,7 @@ class Order extends Component {
           } else if (text === 6) {
             return <span>已取消</span>;
           }
+          return '-';
         },
       },
       {
@@ -155,6 +163,7 @@ class Order extends Component {
           } else if (text === 9) {
             return <span>备货完成、在途、可发</span>;
           }
+          return '-';
         },
       },
       {
@@ -175,18 +184,21 @@ class Order extends Component {
         title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate',
       },
       {
-        title: '备注', dataIndex: 'remarks', key: 'remarks',
+        title: '备注', dataIndex: 'remarks', key: 'remarks', render(text) { return text || '-'; },
       },
       {
         title: '操作',
         dataIndex: 'operator',
         key: 'operator',
-        width: 160,
+        width: 200,
         render(text, record) {
           return (
             <div>
               <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>查看SKU</a>
               <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
+              <Popconfirm title="确定删除此订单？" onConfirm={p.handleDelete.bind(p, record.id)}>
+                <a href="javascript:void(0)" style={{ marginRight: '10px' }}>删除</a>
+              </Popconfirm>
               <Popover title={null} content={orderStatusContent}>
                 <a href="javascript:void(0)" >状态操作</a>
               </Popover>
@@ -278,7 +290,7 @@ class Order extends Component {
     );
 
     const modalProps = {
-      title: `订单编号：${(orderSkuSnip.data && orderSkuSnip.data.orderNo) || '加载中'}`,
+      title: `订单编号：${(orderSkuSnip.data && orderSkuSnip.data.orderNo) || '-'}`,
       footer: null,
       visible,
       width: 1200,
@@ -411,7 +423,6 @@ class Order extends Component {
             size="large"
             rowKey={record => record.id}
             pagination={false}
-            scroll={{ x: 1200 }}
           />
         </Modal>
         <OrderModal

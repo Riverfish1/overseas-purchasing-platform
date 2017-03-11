@@ -184,33 +184,11 @@ class ProductTable extends Component {
           render(text) { return text || '-'; },
         },
         {
-          title: '商品英文名称',
-          dataIndex: 'itemEn',
-          key: 'itemEn',
-          render(text) { return text || '-'; },
-        },
-        {
-          title: '采购方式',
-          dataIndex: 'mode',
-          key: 'mode',
+          title: '颜色',
+          dataIndex: 'color',
+          key: 'color',
           width: '12%',
           render(text) { return text || '-'; },
-        },
-        {
-          title: <font color="#00f">数量</font>,
-          dataIndex: 'quantity',
-          key: 'quantity',
-          width: '12%',
-          render(text, r) {
-            return (
-              <FormItem>
-                {getFieldDecorator(`r_${r.key}_quantity`, {
-                  initialValue: text,
-                })(
-                  <InputNumber step={1} min={1} placeholder="请输入" />,
-                )}
-              </FormItem>);
-          },
         },
         {
           title: '尺寸',
@@ -248,6 +226,22 @@ class ProductTable extends Component {
           render(text) { return text || '-'; },
         },
         {
+          title: <font color="#00f">数量</font>,
+          dataIndex: 'quantity',
+          key: 'quantity',
+          width: '12%',
+          render(text, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_quantity`, {
+                  initialValue: text,
+                })(
+                  <InputNumber step={1} min={1} placeholder="请输入" />,
+                )}
+              </FormItem>);
+          },
+        },
+        {
           title: '操作',
           key: 'operator',
           render(text, record) {
@@ -265,7 +259,7 @@ class ProductTable extends Component {
       <div>
         <Row style={{ paddingBottom: 10 }}>
           <Col style={{ float: 'left' }}>
-            <span>采购明细信息（<font color="#00f">蓝色列可编辑</font>）</span>
+            <span>订单明细信息（<font color="#00f">蓝色列可编辑</font>）</span>
           </Col>
           <Col style={{ float: 'right' }}>
             <Button type="primary" onClick={p.addProduct.bind(p)}>添加商品</Button>

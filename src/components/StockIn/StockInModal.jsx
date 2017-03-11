@@ -1,21 +1,19 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 // import { Link } from 'dva/router';
-import { Modal, Cascader, Input, Select, Row, Col, DatePicker, Form } from 'antd';
+import { Modal, Input, Select, Row, Col, Form } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import ProductTable from './ProductTable';
-import styles from './Purchase.less';
-import divisions from '../../utils/divisions.json';
+import styles from './StockIn.less';
 import * as check from '../../utils/checkLib';
 
 moment.locale('zh-cn');
 
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class PurchaseModal extends Component {
+class StockInModal extends Component {
 
   constructor(props) {
     super(props);
@@ -101,7 +99,7 @@ class PurchaseModal extends Component {
   render() {
     const p = this;
     const { form, title, visible, modalValues = {}, buyer = [] } = p.props;
-    const purchaseData = (modalValues && modalValues.data) || {};
+    const orderData = (modalValues && modalValues.data) || {};
     const { getFieldDecorator } = form;
     const modalProps = {
       visible,
@@ -129,30 +127,11 @@ class PurchaseModal extends Component {
           <Row gutter={10}>
             <Col span={7}>
               <FormItem
-                label="采购单号"
+                label="入库单号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('purOrderNo', {
-                  initialValue: purchaseData.purOrderNo,
-                  rules: [{ required: true, message: '请输入采购单号' }],
-                })(
-                  <Input placeholder="请输入采购单号" />)}
-              </FormItem>
-            </Col>
-            <Col span={7}>
-              <FormItem
-                label="采购类型"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('purType', {
-                  initialValue: purchaseData.purType,
-                  rules: [{ required: true, message: '请选择采购类型' }],
-                })(
-                  <Select placeholder="请选择采购类型" allowClear>
-                    <Option value="0">订单采购</Option>
-                    <Option value="1">囤货采购</Option>
-                  </Select>,
-                )}
+                {getFieldDecorator('stoOrderNo', {})(
+                  <Input placeholder="请输入入库单号" />)}
               </FormItem>
             </Col>
             <Col span={7}>
@@ -160,27 +139,11 @@ class PurchaseModal extends Component {
                 label="买手"
                 {...formItemLayout}
               >
-                {getFieldDecorator('buyer', {
-                  initialValue: purchaseData.buyer,
-                })(
+                {getFieldDecorator('buyer', {})(
                   <Select placeholder="请选择用户">
                     <Option value="1">所有</Option>
                     {buyer.map(el => <Option key={el.id} value={el.name}>{el.name}</Option>)}
                   </Select>,
-                )}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={10}>
-            <Col span={7}>
-              <FormItem
-                label="采购结束日期"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('endDate', {
-                  initialValue: purchaseData.endDate,
-                })(
-                  <DatePicker />,
                 )}
               </FormItem>
             </Col>
@@ -192,15 +155,15 @@ class PurchaseModal extends Component {
                 labelCol={{ span: 3 }}
                 wrapperCol={{ span: 18 }}
               >
-                {getFieldDecorator('remark', {
-                  initialValue: purchaseData.remark,
+                {getFieldDecorator('remarks', {
+                  initialValue: orderData.remarks,
                 })(
                   <Input placeholder="请输入备注信息" size="large" style={{ marginLeft: 5 }} />)}
               </FormItem>
             </Col>
           </Row>
           <Row>
-            <ProductTable data={purchaseData.orderDetails} parent={this} />
+            <ProductTable data={orderData.orderDetails} parent={this} />
           </Row>
         </Form>
       </Modal>
@@ -216,8 +179,8 @@ function mapStateToProps(state) {
   };
 }
 
-PurchaseModal.PropTypes = {
+StockInModal.PropTypes = {
   salesName: PropTypes.array.isRequired,
 };
 
-export default connect(mapStateToProps)(Form.create()(PurchaseModal));
+export default connect(mapStateToProps)(Form.create()(StockInModal));

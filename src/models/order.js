@@ -107,7 +107,10 @@ export default {
       }
     },
     * searchSku({ payload }, { call }) {
-      const data = yield call(querySkuList, { payload: { skuCode: payload.keyword } });
+      const param = {};
+      if (payload.keyword.skuCode) { param.skuCode = payload.keyword.skuCode; }
+      if (payload.keyword.name) { param.name = payload.keyword.name; }
+      const data = yield call(querySkuList, { payload: param });
       payload.callback(data.success ? data : 'ERROR');
     },
   },

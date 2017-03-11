@@ -84,17 +84,27 @@ class ProductTable extends Component {
     console.log('selected');
 
     const { form, skuList } = this.props;
-    const { skuSearchList } = this.state;
+    const { skuSearchList, skuData } = this.state;
 
     const source = skuSearchList[key] || skuList;
 
     source.forEach((value) => {
       if (value.skuCode.toString() === skuCode.toString()) {
-        form.setFieldsValue({
-          [`r_${key}_skuCode`]: value.skuCode,
-          [`r_${key}_skuId`]: value.id,
-          [`r_${key}_salePrice`]: value.salePrice || 0,
-          [`r_${key}_quantity`]: value.quantity || 0,
+        skuData.forEach((el) => {
+          if (el.key.toString() === key.toString()) {
+            el.skuCode = value.skuCode;
+            el.skuId = value.skuId;
+            el.salePrice = value.salePrice || 0;
+            el.quantity = value.quantity || 0;
+          }
+        });
+        this.setState({ skuData }, () => {
+          form.setFieldsValue({
+            [`r_${key}_skuCode`]: value.skuCode,
+            [`r_${key}_skuId`]: value.id,
+            [`r_${key}_salePrice`]: value.salePrice || 0,
+            [`r_${key}_quantity`]: value.quantity || 0,
+          });
         });
       }
     });
@@ -149,7 +159,7 @@ class ProductTable extends Component {
     if (!parent.clearSkuValue) parent.clearSkuValue = this.clearValue.bind(this);
     if (!parent.getSkuValue) parent.getSkuValue = this.getValue.bind(this);
 
-    function renderSkuPopover(list) {
+    function renderSkuPopover(list, key) {
       let skuCode = null;
       let name = null;
 
@@ -158,13 +168,25 @@ class ProductTable extends Component {
         name.refs.input.value = '';
       }
 
+      function doSearch() {
+        p.handleSearch(key, { skuCode: skuCode.refs.input.value, name: name.refs.input.value });
+      }
+
+      function updateValue(selectedSkuCode) {
+        p.handleSelect(key, selectedSkuCode);
+        setTimeout(() => {
+          p[`r_${key}_skuCode_dom`].refs.input.click();
+        }, 0);
+      }
+
       const columns = [
-        { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode' },
-        { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
-        { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', render(text) { return text || '-'; } },
-        { title: '尺寸', dataIndex: 'scale', key: 'scale', render(text) { return text || '-'; } },
-        { title: '颜色', dataIndex: 'color', key: 'color', render(text) { return text || '-'; } },
-        { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', render(text) { return text || '-'; } },
+        { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode', width: 90 },
+        { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 120 },
+        { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 90, render(text) { return text || '-'; } },
+        { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 60, render(text) { return text || '-'; } },
+        { title: '颜色', dataIndex: 'color', key: 'color', width: 80, render(text) { return text || '-'; } },
+        { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', width: 70, render(text) { return text || '-'; } },
+        { title: '操作', dataIndex: 'oper', key: 'oper', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
       ];
 
       return (
@@ -195,7 +217,7 @@ class ProductTable extends Component {
               </FormItem>
             </Col>
             <Col className="listBtnGroup" span="7" style={{ paddingTop: 2 }}>
-              <Button htmlType="submit" type="primary">查询</Button>
+              <Button type="primary" onClick={doSearch}>查询</Button>
               <Button type="ghost" onClick={handleEmpty}>清空</Button>
             </Col>
           </Row>
@@ -203,6 +225,7 @@ class ProductTable extends Component {
             <Table
               columns={columns}
               dataSource={list}
+              size="small"
               bordered
               rowKey={record => record.id}
               pagination={false}
@@ -222,17 +245,18 @@ class ProductTable extends Component {
           render(text, r) {
             const list = skuSearchList[r.key] || skuList;
             console.log(skuSearchList[r.key]);
+            console.log('r: ', r);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuCode`, {
-                  initialValue: text || undefined,
+                  value: text || undefined,
                 })(
                   <Popover
                     content={renderSkuPopover(list, r.key)}
                     title="搜索SKU"
                     trigger="click"
                   >
-                    <Input placeholder="选择SKU" />
+                    <Input placeholder="选择SKU" value={text || undefined} ref={(c) => { p[`r_${r.key}_skuCode_dom`] = c; }} />
                     {/* <Select
                       combobox
                       placeholder="请选择"

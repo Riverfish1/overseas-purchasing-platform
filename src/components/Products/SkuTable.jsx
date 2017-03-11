@@ -80,7 +80,7 @@ class SkuTable extends Component {
     const newItem = {
       // id: newId,
       key: newId,
-      scale: scale || '',
+      scale: typeof scale === 'string' ? scale : '',
       color: '',
       virtualInv: '',
       packageLevelId: '',

@@ -1,9 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
-import { Input, InputNumber, Select, Button, Form, Table, Row, Col, Popconfirm, message } from 'antd';
+import { Input, InputNumber, Button, Form, Table, Row, Col, Popover, Popconfirm, message } from 'antd';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
 
 let searchQueue = [];
 
@@ -14,6 +13,7 @@ class ProductTable extends Component {
       skuData: [],
       skuSearchList: {},
     };
+    this.skuSearchInputs = {};
   }
 
   componentWillReceiveProps(...args) {
@@ -140,9 +140,77 @@ class ProductTable extends Component {
     const { skuData, skuSearchList } = p.state;
     const { getFieldDecorator } = form;
 
+    const formItemLayout = {
+      labelCol: { span: 8 },
+      wrapperCol: { span: 16 },
+    };
+
     // 注册props
     if (!parent.clearSkuValue) parent.clearSkuValue = this.clearValue.bind(this);
     if (!parent.getSkuValue) parent.getSkuValue = this.getValue.bind(this);
+
+    function renderSkuPopover(list) {
+      let skuCode = null;
+      let name = null;
+
+      function handleEmpty() {
+        skuCode.refs.input.value = '';
+        name.refs.input.value = '';
+      }
+
+      const columns = [
+        { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode' },
+        { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
+        { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', render(text) { return text || '-'; } },
+        { title: '尺寸', dataIndex: 'scale', key: 'scale', render(text) { return text || '-'; } },
+        { title: '颜色', dataIndex: 'color', key: 'color', render(text) { return text || '-'; } },
+        { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', render(text) { return text || '-'; } },
+      ];
+
+      return (
+        <div style={{ width: 560 }}>
+          <Row gutter={20} style={{ width: 720 }}>
+            <Col span="7">
+              <FormItem
+                label="SKU编码"
+                {...formItemLayout}
+              >
+                <Input
+                  size="default"
+                  placeholder="请输入SKU编码"
+                  ref={(c) => { skuCode = c; }}
+                />
+              </FormItem>
+            </Col>
+            <Col span="7">
+              <FormItem
+                label="商品名称"
+                {...formItemLayout}
+              >
+                <Input
+                  size="default"
+                  placeholder="请输入商品名称"
+                  ref={(c) => { name = c; }}
+                />
+              </FormItem>
+            </Col>
+            <Col className="listBtnGroup" span="7" style={{ paddingTop: 2 }}>
+              <Button htmlType="submit" type="primary">查询</Button>
+              <Button type="ghost" onClick={handleEmpty}>清空</Button>
+            </Col>
+          </Row>
+          <Row>
+            <Table
+              columns={columns}
+              dataSource={list}
+              bordered
+              rowKey={record => record.id}
+              pagination={false}
+            />
+          </Row>
+        </div>
+      );
+    }
 
     const modalTableProps = {
       columns: [
@@ -159,19 +227,26 @@ class ProductTable extends Component {
                 {getFieldDecorator(`r_${r.key}_skuCode`, {
                   initialValue: text || undefined,
                 })(
-                  <Select
-                    combobox
-                    placeholder="请选择"
-                    onSelect={p.handleSelect.bind(p, r.key)}
-                    onChange={p.handleSearch.bind(p, r.key)}
-                    defaultActiveFirstOption={false}
-                    showArrow={false}
-                    filterOption={false}
+                  <Popover
+                    content={renderSkuPopover(list, r.key)}
+                    title="搜索SKU"
+                    trigger="click"
                   >
-                    {list.map((item, index) => {
-                      return <Option key={`r_${index}`} value={item.skuCode}>{item.skuCode}</Option>;
-                    })}
-                  </Select>,
+                    <Input placeholder="选择SKU" />
+                    {/* <Select
+                      combobox
+                      placeholder="请选择"
+                      onSelect={p.handleSelect.bind(p, r.key)}
+                      onChange={p.handleSearch.bind(p, r.key)}
+                      defaultActiveFirstOption={false}
+                      showArrow={false}
+                      filterOption={false}
+                    >
+                      {list.map((item, index) => {
+                        return <Option key={`r_${index}`} value={item.skuCode}>{item.skuCode}</Option>;
+                      })}
+                    </Select> */}
+                  </Popover>,
                 )}
               </FormItem>
             );

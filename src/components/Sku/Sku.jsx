@@ -73,7 +73,7 @@ class Sku extends Component {
 
   render() {
     const p = this;
-    const { skuList = {}, currentPage, skuData, brands = [], productsList = [], form, tree = [] } = this.props;
+    const { skuList = {}, currentPage, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -211,6 +211,7 @@ class Sku extends Component {
           modalValues={skuData}
           brands={brands}
           productsList={productsList}
+          packageScales={packageScales}
           dispatch={this.props.dispatch}
         />
       </div>
@@ -219,13 +220,14 @@ class Sku extends Component {
 }
 
 function mapStateToProps(state) {
-  const { skuList, skuData, currentPage } = state.sku;
+  const { skuList, skuData, currentPage, packageScales } = state.sku;
   const { brands, productsList, tree } = state.products;
   return {
     // loading: state.loading.models.sku,
     skuList,
     skuData,
     currentPage,
+    packageScales,
     brands: brands.data,
     productsList: productsList.rows,
     tree: tree.data,

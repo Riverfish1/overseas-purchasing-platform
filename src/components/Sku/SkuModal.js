@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { Modal, Input, InputNumber, Row, Col, Form, Icon, Upload, Select, message } from 'antd';
+import { Modal, Input, InputNumber, Row, Col, Form, Icon, Upload, Select, Cascader, message } from 'antd';
 import styles from './Sku.less';
 
 const FormItem = Form.Item;
@@ -117,7 +117,7 @@ class SkuModal extends Component {
   render() {
     const p = this;
     const { previewVisible, previewImage, proSearchList } = p.state;
-    const { form, visible, modalValues = {}, brands = [], productsList = [] } = p.props;
+    const { form, visible, modalValues = {}, brands = [], productsList = [], packageScales } = p.props;
     const { getFieldDecorator } = form;
     const skuModalData = modalValues.data || {};
     const list = proSearchList.data || productsList;
@@ -298,6 +298,17 @@ class SkuModal extends Component {
                     {brands.map(item => <Option key={item.id.toString()}>{item.name}</Option>)}
                   </Select>,
                 )}
+              </FormItem>
+            </Col>
+            <Col span={7}>
+              <FormItem
+                label="包装规格"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('packageLevelId', {
+                  initialValue: toString(skuModalData.packageLevelId, 'SELECT'),
+                })(
+                  <Cascader options={packageScales} placeholder="请选择包装规格" />)}
               </FormItem>
             </Col>
           </Row>

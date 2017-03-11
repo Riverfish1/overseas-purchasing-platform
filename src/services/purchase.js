@@ -26,3 +26,7 @@ export function queryPurchaseList({ payload }) {
 export function queryPurchase({ payload }) {
   return fetch.post(`/haierp1/purchase/query${toForm(payload)}`).catch(e => e);
 }
+
+export function queryBuyer({ payload }) {
+  return fetch.post(`/haierp1/purchase/queryBuyer${toForm(payload)}`).catch(e => e);
+}

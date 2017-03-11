@@ -1,18 +1,20 @@
 import { message } from 'antd';
-import { queryPurchaseList, queryPurchase, addPurchase, updatePurchase } from '../services/purchase';
+import { queryPurchaseList, queryPurchase, addPurchase, updatePurchase, queryBuyer } from '../services/purchase';
 
 export default {
   namespace: 'purchase',
   state: {
     list: {},
     purchaseValues: {},
+    buyer: [],
   },
   subscriptions: {
     setup({ dispatch, history }) {
-      return history.listen(({ pathname, query }) => {
+      return history.listen(({ pathname }) => {
         if (pathname === '/purchase/purchaseList') {
           setTimeout(() => {
-            dispatch({ type: 'queryPurchaseList', payload: query });
+            dispatch({ type: 'queryPurchaseList', payload: {} });
+            dispatch({ type: 'queryBuyer', payload: {} });
           }, 0);
         }
       });
@@ -20,12 +22,9 @@ export default {
   },
   effects: {
     * queryPurchaseList({ payload }, { call, put }) {
-      const data = yield call(queryPurchaseList, payload);
+      const data = yield call(queryPurchaseList, { payload });
       if (data.success) {
-        yield put({
-          type: 'updatePurchaseList',
-          payload: data,
-        });
+        yield put({ type: 'updatePurchaseList', payload: data });
       }
     },
     * addPurchase({ payload }, { call, put }) {
@@ -62,6 +61,12 @@ export default {
         });
       }
     },
+    * queryBuyer({ payload }, { call, put }) {
+      const data = yield call(queryBuyer, { payload });
+      if (data.success) {
+        yield put({ type: 'updateBuyer', payload: data });
+      }
+    },
   },
   reduces: {
     updatePurchaseList(state, payload) {
@@ -69,6 +74,9 @@ export default {
     },
     updatePurchase(state, payload) {
       return { ...state, purchaseValues: payload };
+    },
+    updateBuyer(state, payload) {
+      return { ...state, buyer: payload };
     },
   },
 };

@@ -18,6 +18,7 @@ export const routerCfg = {
   // 采购管理
   PURCHASE: 'purchase',
   PURCHASE_LIST: 'purchaseList',
+  PURCHASE_STOCK_IN: 'purchaseStockIn',
 };
 
 export const navigation = [
@@ -38,6 +39,7 @@ export const navigation = [
     key: routerCfg.PURCHASE, name: '采购管理', icon: 'appstore-o',
     child: [
       { key: routerCfg.PURCHASE_LIST, name: '采购管理' },
+      { key: routerCfg.PURCHASE_STOCK_IN, name: '采购入库管理' },
     ],
   },
 ];

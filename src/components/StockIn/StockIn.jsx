@@ -1,14 +1,13 @@
-
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Table, Popconfirm, Input, DatePicker, Button, Row, Col, Select, Form, Modal } from 'antd';
-import PurchaseModal from './PurchaseModal';
-import styles from './Purchase.less';
+import { Table, Popover, Input, Button, Row, Col, Select, Form, Modal } from 'antd';
+import StockInModal from './StockInModal';
+import styles from './StockIn.less';
 
 const FormItem = Form.Item;
-const { Option } = Select;
+const Option = Select.Option;
 
-class Purchase extends Component {
+class StockIn extends Component {
 
   constructor() {
     super();
@@ -26,7 +25,6 @@ class Purchase extends Component {
       if (err) {
         return;
       }
-      if (fieldsValue.endDate) fieldsValue.endDate = new Date(fieldsValue.endDate).format('yyyy-MM-dd');
       this.props.dispatch({
         type: 'purchase/queryPurchaseList',
         payload: { ...fieldsValue, pageIndex: 1 },
@@ -38,6 +36,10 @@ class Purchase extends Component {
     this.setState({
       modalVisible: true,
       title: '新增',
+    });
+    this.props.dispatch({
+      type: 'sku/querySkuList',
+      payload: {},
     });
   }
 
@@ -57,7 +59,7 @@ class Purchase extends Component {
       modalVisible,
     });
     this.props.dispatch({
-      type: 'purchase/updatePurchase',
+      type: 'order/saveOrder',
       payload: {},
     });
   }
@@ -76,7 +78,7 @@ class Purchase extends Component {
 
   render() {
     const p = this;
-    const { form, list = {}, purchaseValues = {}, orderSkuSnip = {}, buyer = [] } = p.props;
+    const { form, buyer, stockList = {}, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [] } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
     const { title, visible } = p.state;
     const formItemLayout = {
@@ -85,19 +87,84 @@ class Purchase extends Component {
     };
     const columnsList = [
       {
-        title: '采购单号', dataIndex: 'purOrderNo', key: 'purOrderNo',
+        title: '订单编号', dataIndex: 'orderNo', key: 'orderNo',
       },
       {
-        title: '采购类型', dataIndex: 'purType', key: 'purType',
+        title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo',
       },
       {
-        title: '计划完成时间', dataIndex: 'endDate', key: 'endDate',
+        title: '客户', dataIndex: 'salesName', key: 'salesName',
       },
       {
-        title: '采购状态', dataIndex: 'status', key: 'status',
+        title: '订单时间', dataIndex: 'orderTime', key: 'orderTime',
       },
       {
-        title: '备注', dataIndex: 'remark', key: 'remark',
+        title: '订单状态',
+        dataIndex: 'status',
+        key: 'status',
+        render(text) {
+          if (text === 0) {
+            return <span>待支付</span>;
+          } else if (text === 1) {
+            return <span>待审核</span>;
+          } else if (text === 2) {
+            return <span>备货中</span>;
+          } else if (text === 3) {
+            return <span>部分发货</span>;
+          } else if (text === 4) {
+            return <span>已发货</span>;
+          } else if (text === 5) {
+            return <span>已完成</span>;
+          } else if (text === 6) {
+            return <span>已取消</span>;
+          }
+        },
+      },
+      {
+        title: '备货状态',
+        dataIndex: 'stockStatus',
+        key: 'stockStatus',
+        render(text) {
+          if (text === 1) {
+            return <span>未备货</span>;
+          } else if (text === 2) {
+            return <span>备货中</span>;
+          } else if (text === 3) {
+            return <span>部分备货</span>;
+          } else if (text === 4) {
+            return <span>部分备货，在途</span>;
+          } else if (text === 5) {
+            return <span>部分备货，在途，可发</span>;
+          } else if (text === 6) {
+            return <span>部分备货，可发</span>;
+          } else if (text === 7) {
+            return <span>备货完成</span>;
+          } else if (text === 8) {
+            return <span>备货完成、在途</span>;
+          } else if (text === 9) {
+            return <span>备货完成、在途、可发</span>;
+          }
+        },
+      },
+      {
+        title: '收件人', dataIndex: 'receiver', key: 'receiver',
+      },
+      {
+        title: '收件人地址',
+        dataIndex: 'address',
+        key: 'address',
+        render(text, record) {
+          return <span>{text ? `${text} ${record.addressDetail}` : '-'}</span>;
+        },
+      },
+      {
+        title: '联系电话', dataIndex: 'telephone', key: 'telephone',
+      },
+      {
+        title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate',
+      },
+      {
+        title: '备注', dataIndex: 'remarks', key: 'remarks',
       },
       {
         title: '操作',
@@ -109,16 +176,17 @@ class Purchase extends Component {
             <div>
               <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>查看SKU</a>
               <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
-              <Popconfirm title="确认删除？">
-                <a href="javascript:void(0)" >删除</a>
-              </Popconfirm>
+              <Popover title={null} content={orderStatusContent}>
+                <a href="javascript:void(0)" >状态操作</a>
+              </Popover>
             </div>);
         },
       },
     ];
 
     const listPaginationProps = {
-      total: list && list.totalCount,
+      total: stockList && stockList.totalCount,
+      current: currentPage,
       pageSize: 10,
       onChange(page) {
         const values = getFieldsValue();
@@ -129,7 +197,7 @@ class Purchase extends Component {
           }
         });
         p.props.dispatch({
-          type: 'purchase/queryPurchaseList',
+          type: 'order/queryOrderList',
           payload: { ...payload, pageIndex: page },
         });
       },
@@ -186,6 +254,18 @@ class Purchase extends Component {
       },
     ];
 
+    const orderStatusContent = (
+      <div className={styles.popoverContent}>
+        <p><a href="javascript:void(0)">取消订单</a></p>
+        <p><a href="javascript:void(0)">支付确认</a></p>
+        <p><a href="javascript:void(0)">完成确认</a></p>
+        <p><a href="javascript:void(0)">重新分配库存</a></p>
+        <p><a href="javascript:void(0)">所有订单重新分配库存</a></p>
+        <p><a href="javascript:void(0)">清除分配数据</a></p>
+        <p><a href="javascript:void(0)">拆分订单</a></p>
+      </div>
+    );
+
     const modalProps = {
       title: `订单编号：${(orderSkuSnip.data && orderSkuSnip.data.orderNo) || '加载中'}`,
       footer: null,
@@ -204,30 +284,6 @@ class Purchase extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
-                label="采购单号"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('purOrderNo', {})(
-                  <Input placeholder="请输入采购单号" />)}
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem
-                label="采购类型"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('purType', {})(
-                  <Select placeholder="请选择采购类型" allowClear>
-                    <Option value="0">订单采购</Option>
-                    <Option value="1">囤货采购</Option>
-                  </Select>,
-                )}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={20} style={{ width: 800 }}>
-            <Col span="8">
-              <FormItem
                 label="买手"
                 {...formItemLayout}
               >
@@ -241,12 +297,11 @@ class Purchase extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="采购结束日期"
+                label="入库单号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('endDate', {})(
-                  <DatePicker />,
-                )}
+                {getFieldDecorator('stoOrderNo', {})(
+                  <Input placeholder="请输入入库单号" />)}
               </FormItem>
             </Col>
           </Row>
@@ -259,14 +314,14 @@ class Purchase extends Component {
         </Form>
         <Row>
           <Col className={styles.orderBtn}>
-            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增采购</Button>
+            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增订单</Button>
           </Col>
         </Row>
         <Row>
           <Col>
             <Table
               columns={columnsList}
-              dataSource={list && list.data}
+              dataSource={stockList && stockList.data}
               bordered
               size="large"
               rowKey={record => record.id}
@@ -285,12 +340,12 @@ class Purchase extends Component {
             scroll={{ x: 1200 }}
           />
         </Modal>
-        <PurchaseModal
+        <StockInModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
-          modalValues={purchaseValues}
+          modalValues={orderValues}
+          salesName={salesName}
           title={title}
-          buyer={buyer}
         />
       </div>
     );
@@ -298,18 +353,23 @@ class Purchase extends Component {
 }
 
 function mapStateToProps(state) {
-  const { list, purchaseValues, buyer } = state.purchase;
+  const { orderList, currentPage, orderValues, orderSkuSnip, salesName } = state.order;
+  const { buyer } = state.purchase;
+  const { stockList } = state.stock;
   return {
-    list,
-    purchaseValues,
+    orderList,
+    currentPage,
+    orderValues,
+    orderSkuSnip,
+    salesName,
     buyer,
+    stockList,
   };
 }
 
-Purchase.PropTypes = {
-  list: PropTypes.object.isRequired,
+StockIn.PropTypes = {
+  orderList: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
-  buyer: PropTypes.array.isRequired,
 };
 
-export default connect(mapStateToProps)(Form.create()(Purchase));
+export default connect(mapStateToProps)(Form.create()(StockIn));

@@ -364,7 +364,7 @@ class ProductsModal extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={10}>
+          {/* <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="规格"
@@ -403,8 +403,8 @@ class ProductsModal extends Component {
                 )}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={10}>
+          </Row> */}
+          {/* <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="单位"
@@ -431,6 +431,8 @@ class ProductsModal extends Component {
                 )}
               </FormItem>
             </Col>
+          </Row> */}
+          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="联系人"
@@ -444,8 +446,6 @@ class ProductsModal extends Component {
                 )}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="产地"

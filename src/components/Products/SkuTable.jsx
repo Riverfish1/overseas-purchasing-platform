@@ -84,7 +84,7 @@ class SkuTable extends Component {
       scale: typeof scale === 'string' ? scale : '',
       color: '',
       virtualInv: '',
-      packageLevelId: '',
+      packageLevelId: [],
       skuCode: '',
       weight: '',
     };

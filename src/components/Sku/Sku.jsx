@@ -100,6 +100,7 @@ class Sku extends Component {
       { title: '颜色', dataIndex: 'color', key: 'color', render(text) { return text || '-'; } },
       { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', render(text) { return text || '-'; } },
       { title: '重量', dataIndex: 'weight', key: 'weight', render(text) { return text || '-'; } },
+      { title: '运费', dataIndex: 'freight', key: 'freight', render(text) { return text || '-'; } },
       { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; } },
       {
         title: '操作',

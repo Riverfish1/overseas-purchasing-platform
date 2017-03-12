@@ -1,5 +1,4 @@
-
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Table, Popconfirm, Input, DatePicker, Button, Row, Col, Select, Form, Modal } from 'antd';
 import PurchaseModal from './PurchaseModal';
@@ -48,7 +47,7 @@ class Purchase extends Component {
       modalVisible: true,
       title: '修改',
     }, () => {
-      p.props.dispatch({ type: 'order/queryOrder', payload: { id } });
+      p.props.dispatch({ type: 'purchase/queryPurchase', payload: { id } });
     });
   }
 
@@ -68,8 +67,8 @@ class Purchase extends Component {
       visible: true,
     }, () => {
       p.props.dispatch({
-        type: 'order/queryOrder',
-        payload: { id: record.id, type: 'snip' },
+        type: 'purchase/queryPurchase',
+        payload: { id: record.id },
       });
     });
   }
@@ -305,11 +304,5 @@ function mapStateToProps(state) {
     buyer,
   };
 }
-
-Purchase.PropTypes = {
-  list: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired,
-  buyer: PropTypes.array.isRequired,
-};
 
 export default connect(mapStateToProps)(Form.create()(Purchase));

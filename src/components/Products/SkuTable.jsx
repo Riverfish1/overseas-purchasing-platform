@@ -50,6 +50,7 @@ class SkuTable extends Component {
             skuSingle[key.split(`r_${count}_`)[1]] = fieldsSku[key];
           }
         });
+        skuSingle.packageLevelId = JSON.stringify(skuSingle.packageLevelId); // 数组转字符串
         skuList.push(skuSingle);
         count += 1;
       }
@@ -80,10 +81,10 @@ class SkuTable extends Component {
     const newItem = {
       // id: newId,
       key: newId,
-      scale: scale || '',
+      scale: typeof scale === 'string' ? scale : '',
       color: '',
       virtualInv: '',
-      packageLevelId: '',
+      packageLevelId: [],
       skuCode: '',
       weight: '',
     };
@@ -211,7 +212,7 @@ class SkuTable extends Component {
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_packageLevelId`, { initialValue: t || '' })(
+                {getFieldDecorator(`r_${r.key}_packageLevelId`, { initialValue: typeof t === 'string' ? JSON.parse(t) : '' })(
                   <Cascader options={packageScales} placeholder="请选择包装规格" />)}
               </FormItem>
             );

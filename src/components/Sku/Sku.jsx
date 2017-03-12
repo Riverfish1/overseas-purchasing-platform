@@ -73,7 +73,7 @@ class Sku extends Component {
 
   render() {
     const p = this;
-    const { skuList = {}, currentPage, skuData, brands = [], productsList = [], form, tree = [] } = this.props;
+    const { skuList = {}, currentPage, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -100,6 +100,7 @@ class Sku extends Component {
       { title: '颜色', dataIndex: 'color', key: 'color', render(text) { return text || '-'; } },
       { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', render(text) { return text || '-'; } },
       { title: '重量', dataIndex: 'weight', key: 'weight', render(text) { return text || '-'; } },
+      { title: '运费', dataIndex: 'freight', key: 'freight', render(text) { return text || '-'; } },
       { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; } },
       {
         title: '操作',
@@ -211,6 +212,7 @@ class Sku extends Component {
           modalValues={skuData}
           brands={brands}
           productsList={productsList}
+          packageScales={packageScales}
           dispatch={this.props.dispatch}
         />
       </div>
@@ -219,13 +221,14 @@ class Sku extends Component {
 }
 
 function mapStateToProps(state) {
-  const { skuList, skuData, currentPage } = state.sku;
+  const { skuList, skuData, currentPage, packageScales } = state.sku;
   const { brands, productsList, tree } = state.products;
   return {
     // loading: state.loading.models.sku,
     skuList,
     skuData,
     currentPage,
+    packageScales,
     brands: brands.data,
     productsList: productsList.rows,
     tree: tree.data,

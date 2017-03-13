@@ -91,13 +91,13 @@ class CategoryModal extends Component {
             </Col>
             <Col span={12}>
               <FormItem
-                label="父类目ID"
+                label="选择父类目"
                 {...formItemLayout}
               >
                 {getFieldDecorator('pid', {
                   initialValue: pid,
                 })(
-                  <TreeSelect placeholder="请选择类目" treeData={tree} allowClear />)}
+                  <TreeSelect placeholder="留空则默认为顶级目录" treeData={tree} allowClear />)}
               </FormItem>
             </Col>
           </Row>

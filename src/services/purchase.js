@@ -20,7 +20,7 @@ export function updatePurchase({ payload }) {
 }
 
 export function queryPurchaseList({ payload }) {
-  return fetch.post(`/haierp1/purchase/queryPurchaseList${toForm(payload)}`).catch(e => e);
+  return fetch.post(`/haierp1/purchase/queryTaskDailyList${toForm(payload)}`).catch(e => e);
 }
 
 export function queryPurchase({ payload }) {

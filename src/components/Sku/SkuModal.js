@@ -294,7 +294,7 @@ class SkuModal extends Component {
                 {getFieldDecorator('brand', {
                   initialValue: toString(skuModalData.brand, 'SELECT'),
                 })(
-                  <Select placeholder="请选择品牌" >
+                  <Select placeholder="请选择品牌" combobox>
                     {brands.map(item => <Option key={item.id.toString()}>{item.name}</Option>)}
                   </Select>,
                 )}

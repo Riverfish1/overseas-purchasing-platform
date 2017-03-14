@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Table, Popover, Input, Button, Row, Col, Select, Form, Modal } from 'antd';
+import { Table, Popconfirm, Input, Button, Row, Col, Select, Form, Modal } from 'antd';
 import StockInModal from './StockInModal';
 import styles from './StockIn.less';
 
@@ -54,6 +54,10 @@ class StockIn extends Component {
     });
   }
 
+  handleDelete(id) {
+    console.log(id);
+  }
+
   closeModal(modalVisible) {
     this.setState({
       modalVisible,
@@ -102,49 +106,11 @@ class StockIn extends Component {
         title: '订单状态',
         dataIndex: 'status',
         key: 'status',
-        render(text) {
-          if (text === 0) {
-            return <span>待支付</span>;
-          } else if (text === 1) {
-            return <span>待审核</span>;
-          } else if (text === 2) {
-            return <span>备货中</span>;
-          } else if (text === 3) {
-            return <span>部分发货</span>;
-          } else if (text === 4) {
-            return <span>已发货</span>;
-          } else if (text === 5) {
-            return <span>已完成</span>;
-          } else if (text === 6) {
-            return <span>已取消</span>;
-          }
-        },
       },
       {
         title: '备货状态',
         dataIndex: 'stockStatus',
         key: 'stockStatus',
-        render(text) {
-          if (text === 1) {
-            return <span>未备货</span>;
-          } else if (text === 2) {
-            return <span>备货中</span>;
-          } else if (text === 3) {
-            return <span>部分备货</span>;
-          } else if (text === 4) {
-            return <span>部分备货，在途</span>;
-          } else if (text === 5) {
-            return <span>部分备货，在途，可发</span>;
-          } else if (text === 6) {
-            return <span>部分备货，可发</span>;
-          } else if (text === 7) {
-            return <span>备货完成</span>;
-          } else if (text === 8) {
-            return <span>备货完成、在途</span>;
-          } else if (text === 9) {
-            return <span>备货完成、在途、可发</span>;
-          }
-        },
       },
       {
         title: '收件人', dataIndex: 'receiver', key: 'receiver',
@@ -176,9 +142,9 @@ class StockIn extends Component {
             <div>
               <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>查看SKU</a>
               <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
-              <Popover title={null} content={orderStatusContent}>
-                <a href="javascript:void(0)" >状态操作</a>
-              </Popover>
+              <Popconfirm title="确定删除？" onClick={p.handleDelete.bind(this, record.id)}>
+                <a href="javascript:void(0)" >删除</a>
+              </Popconfirm>
             </div>);
         },
       },
@@ -253,18 +219,6 @@ class StockIn extends Component {
         render(text) { return text || '-'; },
       },
     ];
-
-    const orderStatusContent = (
-      <div className={styles.popoverContent}>
-        <p><a href="javascript:void(0)">取消订单</a></p>
-        <p><a href="javascript:void(0)">支付确认</a></p>
-        <p><a href="javascript:void(0)">完成确认</a></p>
-        <p><a href="javascript:void(0)">重新分配库存</a></p>
-        <p><a href="javascript:void(0)">所有订单重新分配库存</a></p>
-        <p><a href="javascript:void(0)">清除分配数据</a></p>
-        <p><a href="javascript:void(0)">拆分订单</a></p>
-      </div>
-    );
 
     const modalProps = {
       title: `订单编号：${(orderSkuSnip.data && orderSkuSnip.data.orderNo) || '加载中'}`,

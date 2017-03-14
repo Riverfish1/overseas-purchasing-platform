@@ -264,9 +264,9 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('brand', {
                   initialValue: toString(productData.brand, 'SELECT'),
-                  rules: [{ required: true, message: '请选择品牌' }],
+                  rules: [{ required: true, message: '请输入品牌' }],
                 })(
-                  <Select placeholder="请选择品牌" >
+                  <Select placeholder="请输入品牌" combobox>
                     {brands && brands.map(item => <Option key={item.id.toString()}>{item.name}</Option>)}
                   </Select>,
                 )}

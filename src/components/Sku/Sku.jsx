@@ -100,12 +100,13 @@ class Sku extends Component {
       { title: '颜色', dataIndex: 'color', key: 'color', render(text) { return text || '-'; } },
       { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', render(text) { return text || '-'; } },
       { title: '重量', dataIndex: 'weight', key: 'weight', render(text) { return text || '-'; } },
-      { title: '运费', dataIndex: 'freight', key: 'freight', render(text) { return text || '-'; } },
+      { title: '运费', dataIndex: 'freightStr', key: 'freightStr', render(text) { return text || '-'; } },
       { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; } },
       {
         title: '操作',
         dataIndex: 'oper',
         key: 'oper',
+        width: 80,
         render(text, record) {
           return (
             <div>
@@ -158,7 +159,7 @@ class Sku extends Component {
 
                 {...formItemLayout}
               >
-                {getFieldDecorator('name', {})(
+                {getFieldDecorator('itemName', {})(
                   <Input placeholder="请输入商品名称" />)}
               </FormItem>
             </Col>
@@ -178,7 +179,7 @@ class Sku extends Component {
               >
                 {getFieldDecorator('brand', {})(
                   <Select placeholder="请选择品牌">
-                    {brands && brands.map(item => <Option key={item.name}>{item.name}</Option>)}
+                    {brands && brands.map(item => <Option key={item.name} value={item.name}>{item.name}</Option>)}
                   </Select>)}
               </FormItem>
             </Col>

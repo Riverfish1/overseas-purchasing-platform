@@ -216,7 +216,7 @@ class Purchase extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('purType', {})(
-                  <Select placeholder="请选择采购类型" allowClear>
+                  <Select placeholder="请选择采购类型" >
                     <Option value="0">订单采购</Option>
                     <Option value="1">囤货采购</Option>
                   </Select>,

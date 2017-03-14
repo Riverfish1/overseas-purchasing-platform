@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect } from 'antd';
+import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect, Modal } from 'antd';
 import ProductsModal from './ProductsModal';
 import styles from './Products.less';
 
@@ -13,6 +13,8 @@ class Products extends Component {
     super();
     this.state = {
       modalVisible: false,
+      previewVisible: false,
+      previewImage: '',
     };
   }
 
@@ -64,10 +66,22 @@ class Products extends Component {
     });
   }
 
+  handleBigPic(value) {
+    this.setState({
+      previewVisible: true,
+      previewImage: value,
+    });
+  }
+
+  handleCancel() {
+    this.setState({ previewVisible: false });
+  }
+
   render() {
     const p = this;
     const { form, currentPage, productsList = {}, brands = [], productsValues = {}, tree = [] } = this.props;
     const { getFieldDecorator } = form;
+    const { previewImage, previewVisible } = this.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -92,7 +106,7 @@ class Products extends Component {
           } catch (e) {
             return '-';
           }
-          return <img role="presentation" src={imgUrl} width="50" height="50" />;
+          return <img role="presentation" onClick={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" style={{ cursor: 'pointer' }} />;
         },
       },
       {
@@ -266,6 +280,9 @@ class Products extends Component {
           brands={brands}
           tree={tree}
         />
+        <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
+          <img alt="example" style={{ width: '100%' }} src={previewImage} />
+        </Modal>
       </div>
     );
   }

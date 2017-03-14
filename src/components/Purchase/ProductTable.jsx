@@ -46,10 +46,10 @@ class ProductTable extends Component {
         skuList.push(skuSingle);
         count += 1;
       }
-      if (skuList.length < 1) {
-        message.error('请至少填写一项商品信息');
-        return;
-      }
+      // if (skuList.length < 1) {
+      //   message.error('请至少填写一项商品信息');
+      //   return;
+      // }
       if (callback) callback(skuList);
     });
   }

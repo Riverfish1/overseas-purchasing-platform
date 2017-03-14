@@ -191,12 +191,12 @@ class Products extends Component {
           <Row gutter={20} style={{ width: 700 }}>
             <Col span="8">
               <FormItem
-                label="商品编码"
+                label="商品代码"
 
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemCode', {})(
-                  <Input placeholder="请输入商品编码" />)}
+                  <Input placeholder="请输入商品代码" />)}
               </FormItem>
             </Col>
             <Col span="8">

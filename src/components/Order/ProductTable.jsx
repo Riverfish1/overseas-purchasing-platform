@@ -28,6 +28,7 @@ class ProductTable extends Component {
   }
 
   getValue(callback) {
+    const p = this;
     const { form } = this.props;
     const skuList = [];
     form.validateFieldsAndScroll((err, fieldsSku) => {
@@ -43,6 +44,10 @@ class ProductTable extends Component {
             skuSingle[key.split(`r_${count}_`)[1]] = fieldsSku[key];
           }
         });
+        // 补一下skuCode
+        if (!skuSingle.skuCode) {
+          skuSingle.skuCode = p[`r_${count}_skuCode_dom`].refs.input.value;
+        }
         skuList.push(skuSingle);
         count += 1;
       }
@@ -94,16 +99,25 @@ class ProductTable extends Component {
           if (el.key.toString() === key.toString()) {
             el.skuCode = value.skuCode;
             el.skuId = value.skuId;
+            el.itemName = value.itemName;
+            el.color = value.color;
+            el.scale = value.scale;
+            el.freight = value.freightStr;
             el.salePrice = value.salePrice || 0;
             el.quantity = value.quantity || 0;
           }
         });
         this.setState({ skuData }, () => {
+          console.log('selected value: ', value);
           form.setFieldsValue({
             [`r_${key}_skuCode`]: value.skuCode,
             [`r_${key}_skuId`]: value.id,
+            [`r_${key}_itemName`]: value.itemName,
+            [`r_${key}_color`]: value.color,
+            [`r_${key}_scale`]: value.scale,
+            [`r_${key}_freight`]: value.freightStr,
             [`r_${key}_salePrice`]: value.salePrice || 0,
-            [`r_${key}_quantity`]: value.quantity || 0,
+            [`r_${key}_quantity`]: value.quantity || 1,
           });
         });
       }
@@ -343,6 +357,7 @@ class ProductTable extends Component {
         {
           title: '操作',
           key: 'operator',
+          width: 60,
           render(text, record) {
             return (<Popconfirm title="确定删除?" onConfirm={p.handleDelete.bind(p, record.key)}>
               <a href="javascript:void(0)">删除</a>

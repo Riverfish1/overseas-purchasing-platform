@@ -30,6 +30,9 @@ export default {
   },
   effects: {
     * addOrder({ payload }, { call, put }) { // 新建SKU
+      Object.keys(payload).forEach((key) => {
+        if (typeof payload[key] === 'undefined' || payload[key] === null) delete payload[key];
+      });
       if (payload.orderTime) {
         payload.orderTime = payload.orderTime.format('YYYY-MM-DD');
       }
@@ -43,6 +46,9 @@ export default {
       }
     },
     * updateOrder({ payload }, { call, put }) {
+      Object.keys(payload).forEach((key) => {
+        if (typeof payload[key] === 'undefined' || payload[key] === null) delete payload[key];
+      });
       if (payload.orderTime) { payload.orderTime = payload.orderTime.format('YYYY-MM-DD'); }
       const data = yield call(updateOrder, { payload });
       if (data.success) {

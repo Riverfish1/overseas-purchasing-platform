@@ -5,6 +5,9 @@ function wrapper(method, url, options, getInst) {
   else options = { timeout: 10000 };
   return new Promise((resolve, reject) => {
     const request = ajax[method.toLowerCase()](url, options).then((res, pointer) => {
+      if (request._request.status.toString() === '302') {
+        // location.href = '#/login';
+      }
       resolve(res, pointer);
     }, (err, pointer) => {
       reject(err, pointer);
@@ -12,6 +15,7 @@ function wrapper(method, url, options, getInst) {
     if (typeof getInst === 'function') {
       getInst(request);
     }
+    console.log(request);
   });
 }
 

@@ -74,7 +74,8 @@ class ProductsModal extends Component {
   }
 
   checkPostcode(rules, value, callback) {
-    if (check.postcode(value)) {
+    if (!value) callback();
+    else if (check.postcode(value)) {
       callback();
     } else {
       callback(new Error('请填写正确的邮政编码'));
@@ -127,7 +128,7 @@ class ProductsModal extends Component {
       <Modal {...modalProps} className={styles.modalStyle} >
         <Form onSubmit={p.handleSubmit.bind(p)}>
           <Row gutter={10}>
-            <Col span={7}>
+            {/* <Col span={7}>
               <FormItem
                 label="订单编号"
                 {...formItemLayout}
@@ -137,7 +138,7 @@ class ProductsModal extends Component {
                 })(
                   <Input placeholder="请输入订单编号" />)}
               </FormItem>
-            </Col>
+            </Col> */}
             <Col span={7}>
               <FormItem
                 label="客户"
@@ -164,8 +165,6 @@ class ProductsModal extends Component {
                   <DatePicker format="YYYY-MM-DD" placeholder="请输入订单时间" />)}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="收件人"
@@ -178,6 +177,8 @@ class ProductsModal extends Component {
                   <Input placeholder="请输入收件人" />)}
               </FormItem>
             </Col>
+          </Row>
+          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="电话号码"
@@ -197,9 +198,20 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('postcode', {
                   initialValue: orderData.postcode,
-                  rules: [{ required: true, validator: this.checkPostcode.bind(this) }],
+                  rules: [{ required: false, validator: this.checkPostcode.bind(this) }],
                 })(
                   <Input placeholder="请输入邮政编码" />)}
+              </FormItem>
+            </Col>
+            <Col span={7}>
+              <FormItem
+                label="外部订单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('targetNo', {
+                  initialValue: orderData.targetNo,
+                })(
+                  <Input placeholder="如有赞订单号" />)}
               </FormItem>
             </Col>
           </Row>
@@ -224,20 +236,6 @@ class ProductsModal extends Component {
                   rules: [{ required: true, message: '请输入详细地址' }],
                 })(
                   <Input placeholder="请输入详细地址" size="large" />)}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <FormItem
-                label="外部订单号"
-                labelCol={{ span: 3 }}
-                wrapperCol={{ span: 18 }}
-              >
-                {getFieldDecorator('targetNo', {
-                  initialValue: orderData.targetNo,
-                })(
-                  <Input placeholder="请输入外部订单号，如有赞订单号" size="large" style={{ marginLeft: 5 }} />)}
               </FormItem>
             </Col>
           </Row>

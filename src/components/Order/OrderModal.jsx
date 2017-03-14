@@ -147,7 +147,7 @@ class ProductsModal extends Component {
                   initialValue: orderData.salesName,
                   rules: [{ required: true, message: '请选择客户' }],
                 })(
-                  <Select placeholder="请选择客户" >
+                  <Select placeholder="请选择客户" combobox>
                     <Option value="0">张三</Option>
                   </Select>)}
               </FormItem>

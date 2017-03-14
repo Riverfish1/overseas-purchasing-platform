@@ -189,7 +189,7 @@ class PurchaseModal extends Component {
                   initialValue: purchaseData.userId,
                   rules: [{ required: true, message: '请选择用户' }],
                 })(
-                  <Select placeholder="请选择用户">
+                  <Select placeholder="请选择用户" combobox>
                     <Option value="1">所有</Option>
                     {buyer.map(el => <Option key={el.id} value={el.name}>{el.name}</Option>)}
                   </Select>,

@@ -68,14 +68,14 @@ export default {
       }
     },
   },
-  reduces: {
-    updatePurchaseList(state, payload) {
+  reducers: {
+    updatePurchaseList(state, { payload }) {
       return { ...state, list: payload };
     },
-    updatePurchase(state, payload) {
+    updatePurchase(state, { payload }) {
       return { ...state, purchaseValues: payload };
     },
-    updateBuyer(state, payload) {
+    updateBuyer(state, { payload }) {
       return { ...state, buyer: payload };
     },
   },

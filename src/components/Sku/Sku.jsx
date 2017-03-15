@@ -86,13 +86,7 @@ class Sku extends Component {
         dataIndex: 'brand',
         key: 'brand',
         render(text) {
-          let brand = '-';
-          brands.forEach((item) => {
-            if (item.id.toString() === text) {
-              brand = item.name;
-            }
-          });
-          return <span>{brand}</span>;
+          return text || '-';
         },
       },
       { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', render(text) { return text || '-'; } },

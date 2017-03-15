@@ -114,12 +114,7 @@ class Products extends Component {
         dataIndex: 'brand',
         key: 'brand',
         render(text) {
-          let res = '-';
-          if (text && brands) {
-            const arr = brands.filter(el => el.id.toString() === text.toString());
-            if (arr && arr.length > 0) res = arr[0].name;
-          }
-          return res;
+          return text || '-';
         },
       },
       {

@@ -306,7 +306,7 @@ class SkuModal extends Component {
                   initialValue: toString(skuModalData.brand, 'SELECT'),
                 })(
                   <Select placeholder="请选择品牌" combobox>
-                    {brands.map(item => <Option key={item.id.toString()}>{item.name}</Option>)}
+                    {brands.map(item => <Option key={item.id.toString()} value={item.name}>{item.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>

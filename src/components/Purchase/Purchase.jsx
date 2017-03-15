@@ -16,6 +16,8 @@ class Purchase extends Component {
       visible: false,
       title: '', // modal的title
       updateId: [], // 修改商品传的id
+      previewImage: '',
+      previewVisible: false,
     };
   }
 
@@ -73,27 +75,68 @@ class Purchase extends Component {
     });
   }
 
+  handleCancel() {
+    this.setState({ previewVisible: false });
+  }
+
+  handleBigPic(value) {
+    this.setState({
+      previewVisible: true,
+      previewImage: value,
+    });
+  }
+
   render() {
     const p = this;
     const { form, list = {}, purchaseValues = {}, orderSkuSnip = {}, buyer = [] } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
-    const { title, visible } = p.state;
+    const { title, visible, previewImage, previewVisible } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
     const columnsList = [
       {
-        title: '采购单号', dataIndex: 'purOrderNo', key: 'purOrderNo',
+        title: '任务单号', dataIndex: 'taskOrderNo', key: 'taskOrderNo',
       },
       {
-        title: '采购类型', dataIndex: 'purType', key: 'purType',
+        title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle',
       },
       {
-        title: '计划完成时间', dataIndex: 'endDate', key: 'endDate',
+        title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc',
       },
       {
-        title: '采购状态', dataIndex: 'status', key: 'status',
+        title: '任务分配人', dataIndex: 'taskOwner', key: 'taskOwner',
+      },
+      {
+        title: '买手', dataIndex: 'userId', key: 'userId',
+      },
+      {
+        title: '图片',
+        dataIndex: 'imageUrl',
+        key: 'imageUrl',
+        render(t) {
+          return <img role="presentation" onClick={p.handleBigPic.bind(p, t)} src={t} width="50" height="50" style={{ cursor: 'pointer' }} />;
+        },
+      },
+      {
+        title: '采购类型',
+        dataIndex: 'purType',
+        key: 'purType',
+        render(t) {
+          if (t === 0) {
+            return <span>订单采购</span>;
+          } else if (t === 1) {
+            return <span>囤货采购</span>;
+          }
+          return <span>-</span>;
+        },
+      },
+      {
+        title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime',
+      },
+      {
+        title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime',
       },
       {
         title: '备注', dataIndex: 'remark', key: 'remark',
@@ -106,7 +149,7 @@ class Purchase extends Component {
         render(text, record) {
           return (
             <div>
-              <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>查看SKU</a>
+              <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>查看</a>
               <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
               <Popconfirm title="确认删除？">
                 <a href="javascript:void(0)" >删除</a>
@@ -136,51 +179,51 @@ class Purchase extends Component {
 
     const skuColumns = [
       {
-        title: '商品SKU',
-        dataIndex: 'skuCode',
-        key: 'skuCode',
+        title: '任务名称',
+        dataIndex: 'taskTitle',
+        key: 'taskTitle',
         render(text) { return text || '-'; },
       },
       {
-        title: '颜色',
-        dataIndex: 'color',
-        key: 'color',
+        title: '任务描述',
+        dataIndex: 'taskDesc',
+        key: 'taskDesc',
         render(text) { return text || '-'; },
       },
       {
-        title: '尺码',
-        dataIndex: 'scale',
-        key: 'scale',
+        title: '任务分配人',
+        dataIndex: 'taskOwner',
+        key: 'taskOwner',
         render(text) { return text || '-'; },
       },
       {
-        title: '品牌',
-        dataIndex: 'brand',
-        key: 'brand',
+        title: '买手',
+        dataIndex: 'userId',
+        key: 'userId',
         render(text) { return text || '-'; },
       },
       {
-        title: '销售价',
-        dataIndex: 'salePrice',
-        key: 'salePrice',
+        title: '任务开始时间',
+        dataIndex: 'taskStartTime',
+        key: 'taskStartTime',
         render(text) { return text || '-'; },
       },
       {
-        title: '运费',
-        dataIndex: 'freight',
-        key: '10',
+        title: '任务结束时间',
+        dataIndex: 'taskEndTime',
+        key: 'taskEndTime',
         render(text) { return text || '-'; },
       },
       {
-        title: '数量',
-        dataIndex: 'quantity',
-        key: '11',
+        title: '采购单号',
+        dataIndex: 'taskOrderNo',
+        key: 'taskOrderNo',
         render(text) { return text || '-'; },
       },
       {
-        title: '商品名称',
-        dataIndex: 'itemName',
-        key: 'itemName',
+        title: '采购类型',
+        dataIndex: 'purType',
+        key: 'purType',
         render(text) { return text || '-'; },
       },
     ];
@@ -203,11 +246,20 @@ class Purchase extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
-                label="采购单号"
+                label="任务单号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('purOrderNo', {})(
-                  <Input placeholder="请输入采购单号" />)}
+                {getFieldDecorator('taskOrderNo', {})(
+                  <Input placeholder="请输入任务单号" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="任务名称"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('taskTitle', {})(
+                  <Input placeholder="请输入任务名称" />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -230,8 +282,8 @@ class Purchase extends Component {
                 label="买手"
                 {...formItemLayout}
               >
-                {getFieldDecorator('buyer', {})(
-                  <Select placeholder="请选择用户">
+                {getFieldDecorator('userId', {})(
+                  <Select placeholder="请选择用户" combobox>
                     <Option value="1">所有</Option>
                     {buyer.map(el => <Option key={el.id} value={el.name}>{el.name}</Option>)}
                   </Select>,
@@ -243,7 +295,7 @@ class Purchase extends Component {
                 label="采购结束日期"
                 {...formItemLayout}
               >
-                {getFieldDecorator('endDate', {})(
+                {getFieldDecorator('taskEndTime', {})(
                   <DatePicker />,
                 )}
               </FormItem>
@@ -283,6 +335,9 @@ class Purchase extends Component {
             pagination={false}
             scroll={{ x: 1200 }}
           />
+        </Modal>
+        <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
+          <img alt="example" style={{ width: '100%' }} src={previewImage} />
         </Modal>
         <PurchaseModal
           visible={this.state.modalVisible}

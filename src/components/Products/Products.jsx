@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect, Modal } from 'antd';
 import ProductsModal from './ProductsModal';
@@ -299,12 +299,5 @@ function mapStateToProps(state) {
     tree: tree.data,
   };
 }
-
-Products.PropTypes = {
-  productsList: PropTypes.array.isRequired,
-  form: PropTypes.object.isRequired,
-  brands: PropTypes.array.isRequired,
-  productsValues: PropTypes.object.isRequired,
-};
 
 export default connect(mapStateToProps)(Form.create()(Products));

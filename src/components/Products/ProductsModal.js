@@ -267,7 +267,7 @@ class ProductsModal extends Component {
                   rules: [{ required: true, message: '请输入品牌' }],
                 })(
                   <Select placeholder="请输入品牌" combobox>
-                    {brands && brands.map(item => <Option key={item.id.toString()}>{item.name}</Option>)}
+                    {brands && brands.map(item => <Option key={item.id.toString()} value={item.name}>{item.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>

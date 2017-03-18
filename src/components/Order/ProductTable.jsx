@@ -331,13 +331,13 @@ class ProductTable extends Component {
               </FormItem>);
           },
         },
-        {
-          title: '运费',
-          dataIndex: 'freight',
-          key: 'freight',
-          width: '12%',
-          render(text) { return text || '-'; },
-        },
+        // {
+        //   title: '运费',
+        //   dataIndex: 'freight',
+        //   key: 'freight',
+        //   width: '12%',
+        //   render(text) { return text || '-'; },
+        // },
         {
           title: <font color="#00f">数量</font>,
           dataIndex: 'quantity',

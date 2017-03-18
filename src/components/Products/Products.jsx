@@ -79,7 +79,7 @@ class Products extends Component {
 
   render() {
     const p = this;
-    const { form, currentPage, productsList = {}, brands = [], productsValues = {}, tree = [] } = this.props;
+    const { form, currentPage, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
     const { getFieldDecorator } = form;
     const { previewImage, previewVisible } = this.state;
     const formItemLayout = {
@@ -164,7 +164,7 @@ class Products extends Component {
     ];
 
     const paginationProps = {
-      total: productsList && productsList.total,
+      total: productsTotal,
       pageSize: 10,
       current: currentPage,
       onChange(pageIndex) {
@@ -260,7 +260,7 @@ class Products extends Component {
           <Col>
             <Table
               columns={columns}
-              dataSource={productsList && productsList.rows}
+              dataSource={productsList}
               bordered
               size="large"
               rowKey={record => record.id}
@@ -284,14 +284,15 @@ class Products extends Component {
 }
 
 function mapStateToProps(state) {
-  const { productsList, productsValues, brands, tree, currentPage } = state.products;
+  const { productsList, productsTotal, productsValues, brands, tree, currentPage } = state.products;
   return {
     loading: state.loading.models.products,
     productsList,
+    productsTotal,
     productsValues,
     currentPage,
-    brands: brands.data,
-    tree: tree.data,
+    brands,
+    tree,
   };
 }
 

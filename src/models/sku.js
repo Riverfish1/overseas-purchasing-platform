@@ -5,7 +5,8 @@ import { queryItemList } from '../services/products';
 export default {
   namespace: 'sku',
   state: {
-    skuList: {},
+    skuList: [],
+    skuTotal: 0,
     skuData: {},
     currentPage: 1,
     packageScales: [],
@@ -16,7 +17,7 @@ export default {
       return { ...state, skuData: payload };
     },
     saveItemSkuList(state, { payload }) {
-      return { ...state, skuList: payload };
+      return { ...state, skuList: payload.data, skuTotal: payload.totalCount };
     },
     saveCurrentPage(state, { payload }) {
       return { ...state, currentPage: payload.pageIndex };
@@ -91,10 +92,18 @@ export default {
         });
       }
     },
-    * deleteSku({ payload }, { call, put }) {
+    * deleteSku({ payload }, { call, put, select }) {
       const data = yield call(deleteSku, { payload });
       if (data.success) {
         message.success('删除SKU成功');
+        const sku = yield select(model => model.sku);
+        if (sku.skuList.length < 2 && sku.currentPage > 1) {
+          yield put({
+            type: 'querySkuList',
+            payload: { pageIndex: sku.currentPage - 1 },
+          });
+          return;
+        }
         yield put({
           type: 'querySkuList',
           payload: {},

@@ -6,6 +6,7 @@ export default {
   namespace: 'order',
   state: {
     orderList: [],
+    orderTotal: 0,
     orderSkuSnip: {},
     currentPage: 1,
     orderValues: {},
@@ -13,7 +14,7 @@ export default {
   },
   reducers: {
     saveOrderList(state, { payload }) {
-      return { ...state, orderList: payload };
+      return { ...state, orderList: payload.data, orderTotal: payload.totalCount };
     },
     saveCurrentPage(state, { payload }) {
       return { ...state, currentPage: payload.pageIndex };
@@ -53,10 +54,18 @@ export default {
         });
       }
     },
-    * deleteOrder({ payload }, { call, put }) {
+    * deleteOrder({ payload }, { call, put, select }) {
       const data = yield call(deleteOrder, { payload });
       if (data.success) {
         message.success('删除订单成功');
+        const order = yield select(model => model.order);
+        if (order.orderList.length < 2 && order.currentPage > 1) {
+          yield put({
+            type: 'queryOrderList',
+            payload: { pageIndex: order.currentPage - 1 },
+          });
+          return;
+        }
         yield put({
           type: 'queryOrderList',
           payload: {},

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
-import { Input, InputNumber, Select, Button, Form, Table, Row, Col, Popconfirm, message } from 'antd';
+import { Input, InputNumber, Select, Button, Form, Table, Row, Col, Popconfirm } from 'antd';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -150,7 +150,7 @@ class ProductTable extends Component {
           title: <font color="#00f">商品SKU</font>,
           dataIndex: 'skuCode',
           key: 'skuCode',
-          width: '12%',
+          width: '8.5%',
           render(text, r) {
             const list = skuSearchList[r.key] || skuList;
             console.log(skuSearchList[r.key]);
@@ -178,33 +178,49 @@ class ProductTable extends Component {
           },
         },
         {
-          title: '商品名称',
-          dataIndex: 'itemName',
-          key: 'itemName',
+          title: '买手',
+          dataIndex: 'userId',
+          key: 'userId',
+          width: '8.5%',
           render(text) { return text || '-'; },
         },
         {
-          title: '商品英文名称',
-          dataIndex: 'itemEn',
-          key: 'itemEn',
+          title: '币种',
+          dataIndex: 'currency',
+          key: 'currency',
+          width: '8.5%',
+          render(text) { return text || '-'; },
+        },
+        {
+          title: '参考采购价',
+          dataIndex: 'taskPrice',
+          key: 'taskPrice',
+          width: '8.5%',
+          render(text) { return text || '-'; },
+        },
+        {
+          title: '参考最大采购价',
+          dataIndex: 'taskMaxPrice',
+          key: 'taskMaxPrice',
+          width: '8.5%',
           render(text) { return text || '-'; },
         },
         {
           title: '采购方式',
           dataIndex: 'mode',
           key: 'mode',
-          width: '12%',
+          width: '8.5%',
           render(text) { return text || '-'; },
         },
         {
-          title: <font color="#00f">数量</font>,
-          dataIndex: 'quantity',
-          key: 'quantity',
-          width: '12%',
+          title: <font color="#00f">采购数量</font>,
+          dataIndex: 'count',
+          key: 'count',
+          width: '8.5%',
           render(text, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_quantity`, {
+                {getFieldDecorator(`r_${r.key}_count`, {
                   initialValue: text,
                 })(
                   <InputNumber step={1} min={1} placeholder="请输入" />,
@@ -216,35 +232,28 @@ class ProductTable extends Component {
           title: '尺寸',
           dataIndex: 'scale',
           key: 'scale',
-          width: '12%',
+          width: '8.5%',
           render(text) { return text || '-'; },
         },
         {
-          title: <font color="#00f">销售价</font>,
-          dataIndex: 'salePrice',
-          key: 'salePrice',
-          width: '12%',
-          render(text, r) {
-            return (
-              <FormItem>
-                {getFieldDecorator(`r_${r.key}_salePrice`, {
-                  initialValue: text,
-                })(
-                  <InputNumber step={0.01} min={0} placeholder="请输入" />,
-                )}
-                {getFieldDecorator(`r_${r.key}_skuId`, {
-                  initialValue: r.skuId || r.id,
-                })(
-                  <Input style={{ display: 'none' }} />,
-                )}
-              </FormItem>);
-          },
+          title: '任务开始时间',
+          dataIndex: 'taskStartTime',
+          key: 'taskStartTime',
+          width: '8.5%',
+          render(text) { return text || '-'; },
         },
         {
-          title: '运费',
-          dataIndex: 'freight',
-          key: 'freight',
-          width: '12%',
+          title: '任务结束时间',
+          dataIndex: 'taskEndTime',
+          key: 'taskEndTime',
+          width: '8.5%',
+          render(text) { return text || '-'; },
+        },
+        {
+          title: '说明',
+          dataIndex: 'remark',
+          key: 'remark',
+          width: '8.5%',
           render(text) { return text || '-'; },
         },
         {

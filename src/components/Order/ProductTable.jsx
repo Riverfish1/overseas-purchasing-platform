@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Input, InputNumber, Button, Form, Table, Row, Col, Popover, Popconfirm, message } from 'antd';
 
@@ -383,11 +383,6 @@ class ProductTable extends Component {
       </div>);
   }
 }
-
-ProductTable.PropTypes = {
-  data: PropTypes.array.isRequired,
-  skuList: PropTypes.object.isRequired,
-};
 
 function mapStateToProps(state) {
   const { skuList } = state.sku;

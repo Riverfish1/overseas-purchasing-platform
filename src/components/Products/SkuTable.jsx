@@ -86,6 +86,7 @@ class SkuTable extends Component {
       virtualInv: '',
       packageLevelId: [],
       skuCode: '',
+      salePrice: '',
       weight: '',
     };
     skuData.push(newItem);
@@ -133,15 +134,30 @@ class SkuTable extends Component {
     const modalTableProps = {
       columns: [
         {
+          title: 'SKU条码',
+          dataIndex: 'skuCode',
+          key: 'skuCode',
+          width: '12%',
+          render(t, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_skuCode`, { initialValue: t || '' })(
+                  r.skuCode ? <Input placeholder="请填写SKU条码" disabled /> : <span style={{ color: '#ccc' }}>自动生成</span>,
+                )}
+              </FormItem>
+            );
+          },
+        },
+        {
           title: '尺寸',
           dataIndex: 'scale',
           key: 'scale',
-          width: '14%',
+          width: '12%',
           render(t, r) {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_scale`, { initialValue: t || '' })(
-                  <Input placeholder="请填写尺寸" />)}
+                  <Input placeholder="请填写" />)}
                 {getFieldDecorator(`r_${r.key}_id`, { initialValue: r.id || null })(
                   <Input style={{ display: 'none' }} />)}
               </FormItem>
@@ -152,12 +168,26 @@ class SkuTable extends Component {
           title: '颜色',
           dataIndex: 'color',
           key: 'color',
-          width: '14%',
+          width: '12%',
           render(t, r) {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_color`, { initialValue: t || '' })(
-                  <Input placeholder="请填写颜色" />)}
+                  <Input placeholder="请填写" />)}
+              </FormItem>
+            );
+          },
+        },
+        {
+          title: '销售价格',
+          dataIndex: 'salePrice',
+          key: 'salePrice',
+          width: '12%',
+          render(t, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_salePrice`, { initialValue: t || '', rules: [{ required: true, message: '请填写销售价格' }] })(
+                  <InputNumber step={0.01} min={0} placeholder="请填写" />)}
               </FormItem>
             );
           },
@@ -166,26 +196,12 @@ class SkuTable extends Component {
           title: '虚拟库存',
           dataIndex: 'virtualInv',
           key: 'virtualInv',
-          width: '16%',
+          width: '12%',
           render(t, r) {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_virtualInv`, { initialValue: t || '' })(
-                  <InputNumber step={1} min={0} placeholder="请填写虚拟库存" />)}
-              </FormItem>
-            );
-          },
-        },
-        {
-          title: 'SKU条码',
-          dataIndex: 'skuCode',
-          key: 'skuCode',
-          width: '14%',
-          render(t, r) {
-            return (
-              <FormItem>
-                {getFieldDecorator(`r_${r.key}_skuCode`, { initialValue: t || '' })(
-                  <Input placeholder="请填写SKU条码" />)}
+                  <InputNumber step={1} min={0} placeholder="请填写" />)}
               </FormItem>
             );
           },
@@ -194,12 +210,12 @@ class SkuTable extends Component {
           title: '重量(KG)',
           dataIndex: 'weight',
           key: 'weight',
-          width: '14%',
+          width: '12%',
           render(t, r) {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_weight`, { initialValue: t || '' })(
-                  <InputNumber step={0.01} min={0} placeholder="请填写重量" />)}
+                  <InputNumber step={0.01} min={0} placeholder="请填写" />)}
               </FormItem>
             );
           },
@@ -213,7 +229,7 @@ class SkuTable extends Component {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_packageLevelId`, { initialValue: typeof t === 'string' ? JSON.parse(t) : '' })(
-                  <Cascader options={packageScales} placeholder="请选择包装规格" />)}
+                  <Cascader options={packageScales} placeholder="请选择" />)}
               </FormItem>
             );
           },

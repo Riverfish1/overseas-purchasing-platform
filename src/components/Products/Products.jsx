@@ -101,8 +101,8 @@ class Products extends Component {
         render(text) {
           let imgUrl = '';
           try {
-            const imgObj = JSON.parse(text.replace(/&quot;/g, '"'));
-            imgUrl = imgObj.picList[0].url;
+            const imgObj = JSON.parse(decodeURIComponent(text).replace(/&quot;/g, '"'));
+            imgUrl = imgObj.picList[parseInt(imgObj.mainPicNum, 10) - 1].url;
           } catch (e) {
             return '-';
           }

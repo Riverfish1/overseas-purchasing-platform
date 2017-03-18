@@ -136,7 +136,8 @@ class ProductsModal extends Component {
                 {getFieldDecorator('orderNo', {
                   initialValue: orderData.orderNo,
                 })(
-                  <Input placeholder="请输入订单编号" />)}
+                  <Input placeholder={!orderData.orderNo && '自动生成'} disabled />,
+                )}
               </FormItem>
             </Col>
             <Col span={7}>
@@ -159,7 +160,7 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('orderTime', {
-                  initialValue: orderData.orderTime && moment(orderData.orderTime, 'YYYY-MM-DD'),
+                  initialValue: (orderData.orderTime && moment(orderData.orderTime, 'YYYY-MM-DD')) || moment(new Date(), 'YYYY-MM-DD'),
                   rules: [{ required: true, message: '请输入订单时间' }],
                 })(
                   <DatePicker format="YYYY-MM-DD" placeholder="请输入订单时间" />)}

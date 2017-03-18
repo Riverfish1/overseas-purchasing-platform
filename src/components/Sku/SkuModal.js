@@ -44,7 +44,7 @@ class SkuModal extends Component {
             url: item.url,
           });
         });
-        fieldsValue.mainPic = encodeURIComponent(JSON.stringify({ picList: uploadMainPic }));
+        fieldsValue.mainPic = JSON.stringify({ picList: uploadMainPic });
       }
       if (fieldsValue.brand) {
         brands.forEach((item) => {
@@ -131,7 +131,7 @@ class SkuModal extends Component {
     const modalProps = {
       visible,
       width: 900,
-      title: '添加',
+      title: skuModalData.skuCode ? '修改' : '添加',
       maskClosable: false,
       closable: true,
       onOk() {
@@ -224,6 +224,18 @@ class SkuModal extends Component {
             </Col>
             <Col span={7}>
               <FormItem
+                label="销售价格"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('salePrice', {
+                  initialValue: skuModalData.salePrice || 0,
+                })(
+                  <InputNumber step={0.01} min={0} placeholder="请输入销售价格" />,
+                )}
+              </FormItem>
+            </Col>
+            <Col span={7}>
+              <FormItem
                 label="尺寸"
                 {...formItemLayout}
               >
@@ -234,19 +246,19 @@ class SkuModal extends Component {
                 )}
               </FormItem>
             </Col>
+          </Row>
+          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="包装规格"
                 {...formItemLayout}
               >
                 {getFieldDecorator('packageLevelId', {
-                  initialValue: toString(skuModalData.packageLevelId, 'SELECT'),
+                  initialValue: skuModalData.packageLevelId ? JSON.parse(skuModalData.packageLevelId) : undefined,
                 })(
                   <Cascader options={packageScales} placeholder="请选择包装规格" />)}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="upc"
@@ -271,6 +283,8 @@ class SkuModal extends Component {
                 )}
               </FormItem>
             </Col>
+          </Row>
+          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="重量(kg)"
@@ -283,8 +297,6 @@ class SkuModal extends Component {
                 )}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="颜色"

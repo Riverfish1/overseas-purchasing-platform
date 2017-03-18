@@ -82,6 +82,7 @@ class Sku extends Component {
     const columns = [
       { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode' },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
+      { title: '商品代码', dataIndex: 'itemCode', key: 'itemCode' },
       { title: '品牌',
         dataIndex: 'brand',
         key: 'brand',
@@ -92,6 +93,7 @@ class Sku extends Component {
       { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', render(text) { return text || '-'; } },
       { title: '尺寸', dataIndex: 'scale', key: 'scale', render(text) { return text || '-'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', render(text) { return text || '-'; } },
+      { title: '销售价格', dataIndex: 'salePrice', key: 'salePrice', render(text) { return text || '-'; } },
       { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', render(text) { return text || '-'; } },
       { title: '重量', dataIndex: 'weight', key: 'weight', render(text) { return text || '-'; } },
       { title: '运费', dataIndex: 'freightStr', key: 'freightStr', render(text) { return text || '-'; } },
@@ -131,20 +133,20 @@ class Sku extends Component {
           <Row gutter={20} style={{ width: 700 }}>
             <Col span="8">
               <FormItem
-                label="商品编码"
+                label="商品代码"
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemCode', {})(
-                  <Input placeholder="请输入商品编码" />)}
+                  <Input placeholder="请输入商品代码" />)}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
-                label="SKU编码"
+                label="SKU条码"
                 {...formItemLayout}
               >
                 {getFieldDecorator('skuCode', {})(
-                  <Input placeholder="请输入sku编码" />)}
+                  <Input placeholder="请输入SKU条码" />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -186,8 +188,8 @@ class Sku extends Component {
           </Row>
         </Form>
         <Row>
-          <Col className="operBtn">
-            <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button>
+          <Col className="operBtn" style={{ paddingTop: 0, paddingBottom: 5, border: 'none' }}>
+            {/* <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button> */}
           </Col>
         </Row>
         <Row>

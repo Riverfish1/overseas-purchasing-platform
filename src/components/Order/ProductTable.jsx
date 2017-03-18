@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
-import { Input, InputNumber, Button, Form, Table, Row, Col, Popover, Popconfirm, message } from 'antd';
+import { Input, InputNumber, Button, Form, Table, Row, Col, Popover, Popconfirm, Modal, message } from 'antd';
 
 const FormItem = Form.Item;
 
@@ -93,6 +93,29 @@ class ProductTable extends Component {
 
     const source = skuSearchList[key] || skuList;
 
+    // 先判断当前列表是否有相同的skuCode，有的话数量+1
+    let isDuplicate = false;
+    let quantity = 0;
+    skuData.forEach((el, index) => {
+      if (el.skuCode === skuCode) {
+        isDuplicate = index + 1;
+        quantity = el.quantity += 1;
+      }
+    });
+    if (isDuplicate) {
+      this.setState({ skuData }, () => {
+        form.setFieldsValue({
+          [`r_${isDuplicate}_quantity`]: quantity,
+        });
+      });
+      Modal.info({
+        title: '选择了列表已有的SKU',
+        content: '已为您增加销售数量',
+      });
+      return;
+    }
+
+    // 否则新建一条记录
     source.forEach((value) => {
       if (value.skuCode.toString() === skuCode.toString()) {
         skuData.forEach((el) => {
@@ -104,7 +127,7 @@ class ProductTable extends Component {
             el.scale = value.scale;
             el.freight = value.freightStr;
             el.salePrice = value.salePrice || 0;
-            el.quantity = value.quantity || 0;
+            el.quantity = value.quantity || 1;
           }
         });
         this.setState({ skuData }, () => {
@@ -264,6 +287,7 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuCode`, {
                   value: text || undefined,
+                  rules: [{ required: true, message: '请选择SKU' }],
                 })(
                   <Popover
                     content={renderSkuPopover(list, r.key)}
@@ -392,7 +416,7 @@ ProductTable.PropTypes = {
 function mapStateToProps(state) {
   const { skuList } = state.sku;
   return {
-    skuList: skuList.data,
+    skuList,
   };
 }
 

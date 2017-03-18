@@ -336,6 +336,24 @@ class Order extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
+                label="收件人"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('receiver', {})(
+                  <Input placeholder="请输入收件人" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="联系电话"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('telephone', {})(
+                  <Input placeholder="请输入联系电话" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
                 label="订单状态"
                 {...formItemLayout}
               >
@@ -351,6 +369,8 @@ class Order extends Component {
                   </Select>)}
               </FormItem>
             </Col>
+          </Row>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="订单备货状态"
@@ -370,8 +390,6 @@ class Order extends Component {
                   </Select>)}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="订单时间开始"

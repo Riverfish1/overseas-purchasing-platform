@@ -27,6 +27,7 @@ class ProductsModal extends Component {
     this.state = {
       previewVisible: false,
       previewImage: '',
+      picList: null,
     };
     // skuTable改写父级方法
     this.getSkuValue = null;
@@ -48,7 +49,7 @@ class ProductsModal extends Component {
           ...fieldsValue,
           startDate: fieldsValue.startDate && fieldsValue.startDate.format('YYYY-MM-DD'),
           endDate: fieldsValue.endDate && fieldsValue.endDate.format('YYYY-MM-DD'),
-          skuList: encodeURIComponent(JSON.stringify(skuList)),
+          skuList: JSON.stringify(skuList),
         };
 
         // 处理图片
@@ -62,7 +63,7 @@ class ProductsModal extends Component {
               url: el.url,
             });
           });
-          values.mainPic = encodeURIComponent(JSON.stringify({ picList: uploadMainPic, mainPicNum }));
+          values.mainPic = JSON.stringify({ picList: uploadMainPic, mainPicNum });
         }
         console.log(values);
         if (modalValues && modalValues.data) {
@@ -100,7 +101,9 @@ class ProductsModal extends Component {
   }
 
   checkMainPicNum(rules, value, callback) {
-    callback();
+    if (this.props.form.getFieldValue('mainPic').length > 0 && !value) {
+      callback(new Error('请选择主图'));
+    } else callback();
   }
 
   // queryItemSkus(param) {
@@ -132,7 +135,7 @@ class ProductsModal extends Component {
       visible,
       width: 900,
       wrapClassName: 'modalStyle',
-      title: '添加',
+      title: productData.itemCode ? '修改' : '添加',
       maskClosable: false,
       closable: true,
       onOk() {
@@ -174,14 +177,25 @@ class ProductsModal extends Component {
           } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
         } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
         // 限制一个图片
-        const fileLength = info.fileList.length;
-        p.setState({ certFileList: fileLength > 1 ? [info.fileList[fileLength - 1]] : info.fileList });
+        // const fileLength = info.fileList.length;
+        // p.setState({ certFileList: fileLength > 1 ? [info.fileList[fileLength - 1]] : info.fileList });
+
+        // 主图选项增删联动
+        const fileList = p.state.picList || [];
+        const newFileList = info.fileList;
+        const selectedMainPicNum = p.props.form.getFieldValue('mainPicNum');
+        if (newFileList.length === 1 || (newFileList.length < fileList.length && selectedMainPicNum > newFileList.length)) {
+          p.props.form.setFieldsValue({ mainPicNum: '1' });
+        }
+        p.setState({ picList: info.fileList });
       },
     };
     const formItemLayout = {
       labelCol: { span: 11 },
       wrapperCol: { span: 13 },
     };
+    const fileListSource = this.state.picList || picList;
+    console.log(fileListSource);
 
     return (
       <Modal
@@ -523,7 +537,7 @@ class ProductsModal extends Component {
             </Col>
           </Row>
           <Row gutter={10}>
-            <Col span={7}>
+            {fileListSource.length > 0 && <Col span={7}>
               <FormItem
                 label="选择主图"
                 {...formItemLayout}
@@ -533,18 +547,13 @@ class ProductsModal extends Component {
                   rules: [{ validator: this.checkMainPicNum.bind(this) }],
                 })(
                   <Select placeholder="请选择主图">
-                    <Option value="1">图片1</Option>
-                    <Option value="2">图片2</Option>
-                    <Option value="3">图片3</Option>
-                    <Option value="4">图片4</Option>
-                    <Option value="5">图片5</Option>
-                    <Option value="6">图片6</Option>
-                    <Option value="7">图片7</Option>
-                    <Option value="8">图片8</Option>
+                    {fileListSource.map((el, index) => (
+                      <Option key={index} value={(index + 1).toString()}>{`图片${index + 1}`}</Option>
+                    ))}
                   </Select>,
                 )}
               </FormItem>
-            </Col>
+            </Col>}
           </Row>
           <Row>
             <SkuTable

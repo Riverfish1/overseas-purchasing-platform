@@ -70,12 +70,21 @@ function AjaxClass(method, apiName, options) {
 
 AjaxClass.prototype.init = function init() {
   const p = this;
+  // 非空处理
+  let d = {};
+  if (typeof p.options.data === 'object') {
+    Object.keys(p.options.data).forEach((key) => {
+      if (typeof p.options.data[key] !== 'undefined' && p.options.data[key] !== null) {
+        d[key] = p.options.data[key];
+      }
+    });
+  } else d = p.options.data;
   // 异步请求主体
   this._request = ajaxLib({
     type: p.options.type,
     url: (_domain && p.options.useDomain !== false ? _domain : '') + p.options.apiName + p.options.params,
     dataType: p.options.dataType,
-    data: p.options.data,
+    data: d,
     timeout: p.options.timeout,
     crossDomain: p.options.crossDomain,
     contentType: p.options.useJSON ? 'application/json; charset=utf-8' : '',

@@ -43,9 +43,6 @@ export default {
   },
   effects: {
     * addSku({ payload }, { call, put }) { // 新建SKU
-      Object.keys(payload).forEach((key) => {
-        if (typeof payload[key] === 'undefined' || payload[key] === null) delete payload[key];
-      });
       const data = yield call(addSku, { payload });
       if (data.success) {
         message.success('新增订单成功');
@@ -56,9 +53,6 @@ export default {
       }
     },
     * updateSku({ payload }, { call, put }) {
-      Object.keys(payload).forEach((key) => {
-        if (typeof payload[key] === 'undefined' || payload[key] === null) delete payload[key];
-      });
       const data = yield call(updateSku, { payload });
       if (data.success) {
         message.success('更新订单成功');

@@ -37,9 +37,6 @@ export default {
   },
   effects: {
     * addProducts({ payload }, { call, put }) { // 新建商品
-      Object.keys(payload).forEach((key) => {
-        if (typeof payload[key] === 'undefined' || payload[key] === null) delete payload[key];
-      });
       const data = yield call(addProducts, { payload });
       if (data.success) {
         message.success('新增商品成功');
@@ -72,9 +69,6 @@ export default {
       }
     },
     * updateProducts({ payload }, { call, put }) { // 修改商品
-      Object.keys(payload).forEach((key) => {
-        if (typeof payload[key] === 'undefined' || payload[key] === null) delete payload[key];
-      });
       const data = yield call(updateProducts, { payload });
       console.log('updateProducts success', data);
       if (data.success) {

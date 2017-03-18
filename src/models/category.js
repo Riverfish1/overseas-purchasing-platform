@@ -23,9 +23,6 @@ export default {
   },
   effects: {
     * addCate({ payload }, { call, put }) { // 新建SKU
-      Object.keys(payload).forEach((key) => {
-        if (typeof payload[key] === 'undefined' || payload[key] === null) delete payload[key];
-      });
       const data = yield call(addCate, { payload });
       if (data.success) {
         message.success('新增类目成功');
@@ -45,9 +42,6 @@ export default {
       }
     },
     * updateCate({ payload }, { call, put }) {
-      Object.keys(payload).forEach((key) => {
-        if (typeof payload[key] === 'undefined' || payload[key] === null) delete payload[key];
-      });
       const data = yield call(updateCate, { payload });
       if (data.success) {
         message.success('修改类目成功');

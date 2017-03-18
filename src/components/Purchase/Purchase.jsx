@@ -13,9 +13,7 @@ class Purchase extends Component {
     super();
     this.state = {
       modalVisible: false,
-      visible: false,
       title: '', // modal的title
-      updateId: [], // 修改商品传的id
       previewImage: '',
       previewVisible: false,
     };
@@ -27,7 +25,7 @@ class Purchase extends Component {
       if (err) {
         return;
       }
-      if (fieldsValue.endDate) fieldsValue.endDate = new Date(fieldsValue.endDate).format('yyyy-MM-dd');
+      if (fieldsValue.taskEndTime) fieldsValue.taskEndTime = new Date(fieldsValue.taskEndTime).format('yyyy-MM-dd');
       this.props.dispatch({
         type: 'purchase/queryPurchaseList',
         payload: { ...fieldsValue, pageIndex: 1 },
@@ -39,6 +37,11 @@ class Purchase extends Component {
     this.setState({
       modalVisible: true,
       title: '新增',
+    }, () => {
+      this.props.dispatch({
+        type: 'sku/querySkuList',
+        payload: {},
+      });
     });
   }
 
@@ -50,6 +53,7 @@ class Purchase extends Component {
       title: '修改',
     }, () => {
       p.props.dispatch({ type: 'purchase/queryPurchase', payload: { id } });
+      p.props.dispatch({ type: 'sku/querySkuList', payload: {} });
     });
   }
 
@@ -58,20 +62,15 @@ class Purchase extends Component {
       modalVisible,
     });
     this.props.dispatch({
-      type: 'purchase/updatePurchase',
+      type: 'purchase/savePurchase',
       payload: {},
     });
   }
 
-  handleProDetail(record) {
-    const p = this;
-    p.setState({
-      visible: true,
-    }, () => {
-      p.props.dispatch({
-        type: 'purchase/queryPurchase',
-        payload: { id: record.id },
-      });
+  handleDelete(record) {
+    this.props.dispatch({
+      type: 'purchase/deletePurchase',
+      payload: { id: record.id },
     });
   }
 
@@ -80,17 +79,19 @@ class Purchase extends Component {
   }
 
   handleBigPic(value) {
-    this.setState({
-      previewVisible: true,
-      previewImage: value,
-    });
+    if (value) {
+      this.setState({
+        previewVisible: true,
+        previewImage: value,
+      });
+    }
   }
 
   render() {
     const p = this;
-    const { form, list = {}, purchaseValues = {}, orderSkuSnip = {}, buyer = [] } = p.props;
+    const { form, list = [], total, purchaseValues = {}, buyer = [], skuList = [] } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
-    const { title, visible, previewImage, previewVisible } = p.state;
+    const { title, previewImage, previewVisible } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -106,17 +107,17 @@ class Purchase extends Component {
         title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc',
       },
       {
-        title: '任务分配人', dataIndex: 'taskOwner', key: 'taskOwner',
+        title: '任务分配人', dataIndex: 'taskOwnerName', key: 'taskOwnerName',
       },
       {
-        title: '买手', dataIndex: 'userId', key: 'userId',
+        title: '买手', dataIndex: 'taskUserName', key: 'taskUserName',
       },
       {
         title: '图片',
         dataIndex: 'imageUrl',
         key: 'imageUrl',
         render(t) {
-          return <img role="presentation" onClick={p.handleBigPic.bind(p, t)} src={t} width="50" height="50" style={{ cursor: 'pointer' }} />;
+          return t ? <img role="presentation" onClick={p.handleBigPic.bind(p, t)} src={t} width="50" height="50" style={{ cursor: 'pointer' }} /> : '-';
         },
       },
       {
@@ -129,7 +130,7 @@ class Purchase extends Component {
           } else if (t === 1) {
             return <span>囤货采购</span>;
           }
-          return <span>-</span>;
+          return '-';
         },
       },
       {
@@ -149,9 +150,8 @@ class Purchase extends Component {
         render(text, record) {
           return (
             <div>
-              <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>查看</a>
               <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
-              <Popconfirm title="确认删除？">
+              <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, record)} >
                 <a href="javascript:void(0)" >删除</a>
               </Popconfirm>
             </div>);
@@ -159,8 +159,8 @@ class Purchase extends Component {
       },
     ];
 
-    const listPaginationProps = {
-      total: list && list.totalCount,
+    const paginationProps = {
+      total,
       pageSize: 10,
       onChange(page) {
         const values = getFieldsValue();
@@ -176,70 +176,6 @@ class Purchase extends Component {
         });
       },
     };
-
-    const skuColumns = [
-      {
-        title: '任务名称',
-        dataIndex: 'taskTitle',
-        key: 'taskTitle',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '任务描述',
-        dataIndex: 'taskDesc',
-        key: 'taskDesc',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '任务分配人',
-        dataIndex: 'taskOwner',
-        key: 'taskOwner',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '买手',
-        dataIndex: 'userId',
-        key: 'userId',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '任务开始时间',
-        dataIndex: 'taskStartTime',
-        key: 'taskStartTime',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '任务结束时间',
-        dataIndex: 'taskEndTime',
-        key: 'taskEndTime',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '采购单号',
-        dataIndex: 'taskOrderNo',
-        key: 'taskOrderNo',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '采购类型',
-        dataIndex: 'purType',
-        key: 'purType',
-        render(text) { return text || '-'; },
-      },
-    ];
-
-    const modalProps = {
-      title: `订单编号：${(orderSkuSnip.data && orderSkuSnip.data.orderNo) || '加载中'}`,
-      footer: null,
-      visible,
-      width: 1200,
-      closable: true,
-      onCancel() {
-        p.setState({ visible: false });
-        p.props.dispatch({ type: 'order/saveOrderSkuSnip', payload: {} });
-      },
-    };
-
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -284,8 +220,7 @@ class Purchase extends Component {
               >
                 {getFieldDecorator('userId', {})(
                   <Select placeholder="请选择用户" combobox>
-                    <Option value="1">所有</Option>
-                    {buyer.map(el => <Option key={el.id} value={el.name}>{el.name}</Option>)}
+                    {buyer.map(el => <Option key={el.id} value={el.id.toString()}>{el.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>
@@ -317,25 +252,14 @@ class Purchase extends Component {
           <Col>
             <Table
               columns={columnsList}
-              dataSource={list && list.data}
+              dataSource={list}
               bordered
               size="large"
               rowKey={record => record.id}
-              pagination={listPaginationProps}
+              pagination={paginationProps}
             />
           </Col>
         </Row>
-        <Modal {...modalProps}>
-          <Table
-            columns={skuColumns}
-            dataSource={orderSkuSnip.data && orderSkuSnip.data.orderDetails}
-            bordered
-            size="large"
-            rowKey={record => record.id}
-            pagination={false}
-            scroll={{ x: 1200 }}
-          />
-        </Modal>
         <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
         </Modal>
@@ -345,6 +269,7 @@ class Purchase extends Component {
           modalValues={purchaseValues}
           title={title}
           buyer={buyer}
+          skuList={skuList}
         />
       </div>
     );
@@ -352,11 +277,13 @@ class Purchase extends Component {
 }
 
 function mapStateToProps(state) {
-  const { list, purchaseValues, buyer } = state.purchase;
+  const { list, total, purchaseValues, buyer, skuList } = state.purchase;
   return {
     list,
+    total,
     purchaseValues,
     buyer,
+    skuList,
   };
 }
 

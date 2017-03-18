@@ -1,6 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
-import { Input, InputNumber, Select, Button, Form, Table, Row, Col, Popconfirm, message } from 'antd';
+import { Input, DatePicker, InputNumber, Select, Button, Form, Table, Row, Col, Popconfirm, Popover } from 'antd';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+
+moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -136,41 +140,152 @@ class ProductTable extends Component {
 
   render() {
     const p = this;
-    const { form, skuList = [], parent } = p.props;
+    const { form, skuList = [], parent, buyer = [] } = p.props;
     const { skuData, skuSearchList } = p.state;
     const { getFieldDecorator } = form;
+    const formItemLayout = {
+      labelCol: { span: 8 },
+      wrapperCol: { span: 16 },
+    };
 
     // 注册props
     if (!parent.clearSkuValue) parent.clearSkuValue = this.clearValue.bind(this);
     if (!parent.getSkuValue) parent.getSkuValue = this.getValue.bind(this);
 
+    function renderSkuPopover(list, key) {
+      let skuCode = null;
+      let name = null;
+
+      function handleEmpty() {
+        skuCode.refs.input.value = '';
+        name.refs.input.value = '';
+      }
+
+      function doSearch() {
+        p.handleSearch(key, { skuCode: skuCode.refs.input.value, name: name.refs.input.value });
+      }
+
+      function updateValue(selectedSkuCode) {
+        p.handleSelect(key, selectedSkuCode);
+        setTimeout(() => {
+          p[`r_${key}_skuId`].refs.input.click();
+        }, 0);
+      }
+
+      const columns = [
+        { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode', width: 90 },
+        { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 120 },
+        { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 90, render(text) { return text || '-'; } },
+        { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 60, render(text) { return text || '-'; } },
+        { title: '颜色', dataIndex: 'color', key: 'color', width: 80, render(text) { return text || '-'; } },
+        { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', width: 70, render(text) { return text || '-'; } },
+        { title: '操作', dataIndex: 'oper', key: 'oper', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
+      ];
+
+      return (
+        <div style={{ width: 560 }}>
+          <Row gutter={20} style={{ width: 720 }}>
+            <Col span="7">
+              <FormItem
+                label="SKU编码"
+                {...formItemLayout}
+              >
+                <Input
+                  size="default"
+                  placeholder="请输入SKU编码"
+                  ref={(c) => { skuCode = c; }}
+                />
+              </FormItem>
+            </Col>
+            <Col span="7">
+              <FormItem
+                label="商品名称"
+                {...formItemLayout}
+              >
+                <Input
+                  size="default"
+                  placeholder="请输入商品名称"
+                  ref={(c) => { name = c; }}
+                />
+              </FormItem>
+            </Col>
+            <Col className="listBtnGroup" span="7" style={{ paddingTop: 2 }}>
+              <Button type="primary" onClick={doSearch}>查询</Button>
+              <Button type="ghost" onClick={handleEmpty}>清空</Button>
+            </Col>
+          </Row>
+          <Row>
+            <Table
+              columns={columns}
+              dataSource={list}
+              size="small"
+              bordered
+              rowKey={record => record.id}
+              pagination={false}
+            />
+          </Row>
+        </div>
+      );
+    }
+
     const modalTableProps = {
       columns: [
         {
           title: <font color="#00f">商品SKU</font>,
-          dataIndex: 'skuCode',
-          key: 'skuCode',
-          width: '12%',
-          render(text, r) {
+          dataIndex: 'skuId',
+          key: 'skuId',
+          width: '8.5%',
+          render(t, r) {
             const list = skuSearchList[r.key] || skuList;
             console.log(skuSearchList[r.key]);
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_skuCode`, {
-                  initialValue: text || undefined,
+                {getFieldDecorator(`r_${r.key}_skuId`, {
+                  initialValue: t || undefined,
                 })(
-                  <Select
-                    combobox
-                    placeholder="请选择"
-                    onSelect={p.handleSelect.bind(p, r.key)}
-                    onChange={p.handleSearch.bind(p, r.key)}
-                    defaultActiveFirstOption={false}
-                    showArrow={false}
-                    filterOption={false}
+                  <Popover
+                    content={renderSkuPopover(list, r.key)}
+                    title="搜索SKU"
+                    trigger="click"
                   >
-                    {list.map((item, index) => {
-                      return <Option key={`r_${index}`} value={item.skuCode}>{item.skuCode}</Option>;
-                    })}
+                    <Input placeholder="请搜索" ref={(c) => { p[`r_${r.key}_skuId`] = c; }} value={t || undefined} />
+                  </Popover>,
+                )}
+              </FormItem>
+            );
+          },
+        },
+        {
+          title: <font color="#00f">买手</font>,
+          dataIndex: 'userId',
+          key: 'userId',
+          width: '8.5%',
+          render(t, r) {
+            return (<FormItem>
+              {getFieldDecorator(`r_${r.key}_userId`, {
+                initialValue: t || undefined,
+              })(
+                <Select placeholder="请选择">
+                  {buyer.map(el => <Option key={el.id}>{el.name}</Option>)}
+                </Select>,
+              )}
+            </FormItem>);
+          },
+        },
+        {
+          title: <font color="#00f">币种</font>,
+          dataIndex: 'currency',
+          key: 'currency',
+          width: '8.5%',
+          render(t, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_currency`, {
+                  initialValue: t || undefined,
+                })(
+                  <Select placeholder="请选择" >
+                    <Option value="1">人民币</Option>
+                    <Option value="2">美元</Option>
                   </Select>,
                 )}
               </FormItem>
@@ -178,34 +293,69 @@ class ProductTable extends Component {
           },
         },
         {
-          title: '商品名称',
-          dataIndex: 'itemName',
-          key: 'itemName',
-          render(text) { return text || '-'; },
-        },
-        {
-          title: '商品英文名称',
-          dataIndex: 'itemEn',
-          key: 'itemEn',
-          render(text) { return text || '-'; },
-        },
-        {
-          title: '采购方式',
-          dataIndex: 'mode',
-          key: 'mode',
-          width: '12%',
-          render(text) { return text || '-'; },
-        },
-        {
-          title: <font color="#00f">数量</font>,
-          dataIndex: 'quantity',
-          key: 'quantity',
-          width: '12%',
-          render(text, r) {
+          title: <font color="#00f">参考采购价</font>,
+          dataIndex: 'taskPrice',
+          key: 'taskPrice',
+          width: '8.5%',
+          render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_quantity`, {
-                  initialValue: text,
+                {getFieldDecorator(`r_${r.key}_taskPrice`, {
+                  initialValue: t || undefined,
+                })(
+                  <Input placeholder="请输入" />,
+                )}
+              </FormItem>
+            );
+          },
+        },
+        {
+          title: <font color="#00f">参考最大采购价</font>,
+          dataIndex: 'taskMaxPrice',
+          key: 'taskMaxPrice',
+          width: '8.5%',
+          render(t, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_taskMaxPrice`, {
+                  initialValue: t || undefined,
+                })(
+                  <Input placeholder="请输入" />,
+                )}
+              </FormItem>
+            );
+          },
+        },
+        {
+          title: <font color="#00f">采购方式</font>,
+          dataIndex: 'mode',
+          key: 'mode',
+          width: '8.5%',
+          render(t, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_mode`, {
+                  initialValue: t || undefined,
+                })(
+                  <Select placeholder="请选择" >
+                    <Option value="0">线上</Option>
+                    <Option value="1">线下</Option>
+                  </Select>,
+                )}
+              </FormItem>
+            );
+          },
+        },
+        {
+          title: <font color="#00f">采购数量</font>,
+          dataIndex: 'count',
+          key: 'count',
+          width: '8.5%',
+          render(t, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_count`, {
+                  initialValue: t,
                 })(
                   <InputNumber step={1} min={1} placeholder="请输入" />,
                 )}
@@ -213,44 +363,77 @@ class ProductTable extends Component {
           },
         },
         {
-          title: '尺寸',
+          title: <font color="#00f">尺寸</font>,
           dataIndex: 'scale',
           key: 'scale',
-          width: '12%',
-          render(text) { return text || '-'; },
-        },
-        {
-          title: <font color="#00f">销售价</font>,
-          dataIndex: 'salePrice',
-          key: 'salePrice',
-          width: '12%',
-          render(text, r) {
+          width: '8.5%',
+          render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_salePrice`, {
-                  initialValue: text,
+                {getFieldDecorator(`r_${r.key}_scale`, {
+                  initialValue: t,
                 })(
-                  <InputNumber step={0.01} min={0} placeholder="请输入" />,
+                  <InputNumber step={1} min={1} placeholder="请输入" />,
                 )}
-                {getFieldDecorator(`r_${r.key}_skuId`, {
-                  initialValue: r.skuId || r.id,
-                })(
-                  <Input style={{ display: 'none' }} />,
-                )}
-              </FormItem>);
+              </FormItem>
+            );
           },
         },
         {
-          title: '运费',
-          dataIndex: 'freight',
-          key: 'freight',
-          width: '12%',
-          render(text) { return text || '-'; },
+          title: <font color="#00f">任务开始时间</font>,
+          dataIndex: 'taskStartTime',
+          key: 'taskStartTime',
+          width: '10%',
+          render(t, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_taskStartTime`, {
+                  initialValue: t ? moment(t, 'YYYY-MM-DD') : undefined,
+                })(
+                  <DatePicker />,
+                )}
+              </FormItem>
+            );
+          },
+        },
+        {
+          title: <font color="#00f">任务结束时间</font>,
+          dataIndex: 'taskEndTime',
+          key: 'taskEndTime',
+          width: '10%',
+          render(t, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_taskEndTime`, {
+                  initialValue: t ? moment(t, 'YYYY-MM-DD') : undefined,
+                })(
+                  <DatePicker />,
+                )}
+              </FormItem>
+            );
+          },
+        },
+        {
+          title: <font color="#00f">说明</font>,
+          dataIndex: 'remark',
+          key: 'remark',
+          width: '8.5%',
+          render(t, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_remark`, {
+                  initialValue: t || undefined,
+                })(
+                  <Input placeholder="请输入" />,
+                )}
+              </FormItem>
+            );
+          },
         },
         {
           title: '操作',
           key: 'operator',
-          render(text, record) {
+          render(t, record) {
             return (<Popconfirm title="确定删除?" onConfirm={p.handleDelete.bind(p, record.key)}>
               <a href="javascript:void(0)">删除</a>
             </Popconfirm>);
@@ -272,6 +455,7 @@ class ProductTable extends Component {
           </Col>
         </Row>
         <Table {...modalTableProps} rowKey={record => record.key} />
+
       </div>);
   }
 }

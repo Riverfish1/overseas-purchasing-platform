@@ -1,32 +1,25 @@
 import fetch from '../utils/request';
 
-function toForm(data) {
-  let str = '?';
-  Object.keys(data).forEach((el) => {
-    if (data[el]) {
-      str += '&';
-      str += `${el}=${data[el]}`;
-    }
-  });
-  return str;
-}
-
 export function addPurchase({ payload }) {
-  return fetch.post(`/haierp1/purchase/add${toForm(payload)}`).catch(e => e);
+  return fetch.post('/haierp1/purchase/add', { data: payload }).catch(e => e);
 }
 
 export function updatePurchase({ payload }) {
-  return fetch.post(`/haierp1/purchase/update${toForm(payload)}`).catch(e => e);
+  return fetch.post('/haierp1/purchase/update', { data: payload }).catch(e => e);
 }
 
 export function queryPurchaseList({ payload }) {
-  return fetch.post(`/haierp1/purchase/queryTaskDailyList${toForm(payload)}`).catch(e => e);
+  return fetch.post('/haierp1/purchase/queryTaskDailyList', { data: payload }).catch(e => e);
 }
 
 export function queryPurchase({ payload }) {
-  return fetch.post(`/haierp1/purchase/query${toForm(payload)}`).catch(e => e);
+  return fetch.post('/haierp1/purchase/query', { data: payload }).catch(e => e);
 }
 
-export function queryBuyer({ payload }) {
-  return fetch.post(`/haierp1/purchase/queryBuyer${toForm(payload)}`).catch(e => e);
+export function queryBuyers() {
+  return fetch.post('/haierp1/purchase/queryBuyers').catch(e => e);
+}
+
+export function deletePurchase({ payload }) {
+  return fetch.post('/haierp1/purchase/delete', { data: payload }).catch(e => e);
 }

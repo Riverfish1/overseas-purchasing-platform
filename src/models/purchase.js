@@ -1,10 +1,11 @@
 import { message } from 'antd';
-import { queryPurchaseList, queryPurchase, addPurchase, updatePurchase, queryBuyer } from '../services/purchase';
+import { queryPurchaseList, queryPurchase, addPurchase, updatePurchase, deletePurchase, queryBuyers } from '../services/purchase';
 
 export default {
   namespace: 'purchase',
   state: {
-    list: {},
+    list: [],
+    total: '',
     purchaseValues: {},
     buyer: [],
   },
@@ -14,7 +15,7 @@ export default {
         if (pathname === '/purchase/purchaseList') {
           setTimeout(() => {
             dispatch({ type: 'queryPurchaseList', payload: {} });
-            dispatch({ type: 'queryBuyer', payload: {} });
+            dispatch({ type: 'queryBuyers', payload: {} });
           }, 0);
         }
       });
@@ -24,18 +25,19 @@ export default {
     * queryPurchaseList({ payload }, { call, put }) {
       const data = yield call(queryPurchaseList, { payload });
       if (data.success) {
+        data.data && data.data.forEach((el) => {
+          const url = JSON.parse(decodeURIComponent(el.imageUrl).replace(/&quot;/g, '"')) || [];
+          el.imageUrl = url.picList.length ? url.picList[0].url : '';
+        });
         yield put({ type: 'updatePurchaseList', payload: data });
       }
     },
     * addPurchase({ payload }, { call, put }) {
-      if (payload.orderTime) {
-        payload.orderTime = payload.orderTime.format('YYYY-MM-DD');
-      }
       const data = yield call(addPurchase, { payload });
       if (data.success) {
-        message.success('增加采购成功');
+        message.success('新增成功');
         yield put({
-          type: 'queryOrderList',
+          type: 'queryPurchaseList',
           payload: {},
         });
       }
@@ -43,7 +45,7 @@ export default {
     * updatePurchase({ payload }, { call, put }) {
       const data = yield call(updatePurchase, { payload });
       if (data.success) {
-        message.success('更新采购成功');
+        message.success('修改成功');
         yield put({
           type: 'queryPurchaseList',
           payload: {},
@@ -56,27 +58,33 @@ export default {
       const data = yield call(queryPurchase, { payload: newPayload });
       if (data.success) {
         yield put({
-          type: 'updatePurchase',
+          type: 'savePurchase',
           payload: data,
         });
       }
     },
-    * queryBuyer({ payload }, { call, put }) {
-      const data = yield call(queryBuyer, { payload });
+    * queryBuyers({ payload }, { call, put }) {
+      const data = yield call(queryBuyers, { payload });
       if (data.success) {
-        yield put({ type: 'updateBuyer', payload: data });
+        yield put({ type: 'updateBuyers', payload: data });
+      }
+    },
+    * deletePurchase({ payload }, { call, put }) {
+      const data = yield call(deletePurchase, { payload });
+      if (data.success) {
+        yield put({ type: 'queryPurchaseList', payload: {} });
       }
     },
   },
   reducers: {
     updatePurchaseList(state, { payload }) {
-      return { ...state, list: payload };
+      return { ...state, list: payload.data, total: payload.totalCount };
     },
-    updatePurchase(state, { payload }) {
+    savePurchase(state, { payload }) {
       return { ...state, purchaseValues: payload };
     },
-    updateBuyer(state, { payload }) {
-      return { ...state, buyer: payload };
+    updateBuyers(state, { payload }) {
+      return { ...state, buyer: payload.data };
     },
   },
 };

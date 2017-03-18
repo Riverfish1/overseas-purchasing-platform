@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Input, InputNumber, Button, Form, Table, Row, Col, Popover, Popconfirm, Modal, message } from 'antd';
 
@@ -283,6 +283,7 @@ class ProductTable extends Component {
             const list = skuSearchList[r.key] || skuList;
             console.log(skuSearchList[r.key]);
             console.log('r: ', r);
+            console.log(list);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuCode`, {
@@ -407,11 +408,6 @@ class ProductTable extends Component {
       </div>);
   }
 }
-
-ProductTable.PropTypes = {
-  data: PropTypes.array.isRequired,
-  skuList: PropTypes.object.isRequired,
-};
 
 function mapStateToProps(state) {
   const { skuList } = state.sku;

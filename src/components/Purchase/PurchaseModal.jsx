@@ -1,6 +1,4 @@
-import React, { PropTypes, Component } from 'react';
-import { connect } from 'dva';
-// import { Link } from 'dva/router';
+import React, { Component } from 'react';
 import { Modal, message, Upload, Icon, Input, Select, Row, Col, DatePicker, Form } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -10,9 +8,16 @@ import * as check from '../../utils/checkLib';
 
 moment.locale('zh-cn');
 
-
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+function toString(str, type) {
+  if (typeof str !== 'undefined' && str !== null) {
+    return str.toString();
+  }
+  if (type === 'SELECT') return undefined;
+  return '';
+}
 
 class PurchaseModal extends Component {
 
@@ -21,6 +26,7 @@ class PurchaseModal extends Component {
     this.state = {
       previewVisible: false,
       previewImage: '',
+      certFileList: '',
     };
 
     // skuTable改写父级方法
@@ -34,15 +40,37 @@ class PurchaseModal extends Component {
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
       p.getSkuValue((orderDetailList) => {
+        if (!fieldsValue.imageUrl) delete fieldsValue.imageUrl;
+        console.log(orderDetailList);
+        const values = {
+          ...fieldsValue,
+          taskStartTime: fieldsValue.taskStartTime && fieldsValue.taskStartTime.format('YYYY-MM-DD'),
+          taskEndTime: fieldsValue.taskEndTime && fieldsValue.taskEndTime.format('YYYY-MM-DD'),
+          orderDetailList: JSON.stringify(orderDetailList),
+        };
+
+        // 处理图片
+        if (values.imageUrl) {
+          const uploadMainPic = [];
+          values.imageUrl.forEach((el) => {
+            uploadMainPic.push({
+              type: el.type,
+              uid: el.uid,
+              url: el.url,
+            });
+          });
+          values.imageUrl = JSON.stringify({ picList: uploadMainPic });
+        }
+        console.log(values);
         if (modalValues && modalValues.data) {
           dispatch({
             type: 'purchase/updatePurchase',
-            payload: { ...fieldsValue, id: modalValues.data.id, orderDetailList: JSON.stringify(orderDetailList) },
+            payload: { ...values, id: modalValues.data.id, orderDetailList: JSON.stringify(orderDetailList) },
           });
         } else {
           dispatch({
             type: 'purchase/addPurchase',
-            payload: { ...fieldsValue, orderDetailList: JSON.stringify(orderDetailList) },
+            payload: { ...values, orderDetailList: JSON.stringify(orderDetailList) },
           });
         }
         p.closeModal();
@@ -105,12 +133,12 @@ class PurchaseModal extends Component {
     const { getFieldDecorator } = form;
     let picList = [];
     if (purchaseData.imageUrl) {
-      const picObj = purchaseData.imageUrl;
+      const picObj = JSON.parse(decodeURIComponent(purchaseData.imageUrl).replace(/&quot;/g, '"'));
       picList = picObj.picList || [];
     }
     const modalProps = {
       visible,
-      width: 900,
+      width: 1200,
       wrapClassName: 'modalStyle',
       okText: '保存',
       title,
@@ -151,7 +179,6 @@ class PurchaseModal extends Component {
             // 添加文件预览
             const newFile = info.file;
             newFile.url = info.file.response.data;
-            console.log(info.fileList);
           } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
         } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
         // 限制一个图片
@@ -174,7 +201,7 @@ class PurchaseModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('taskTitle', {
-                  initialValue: purchaseData.taskTitle,
+                  initialValue: toString(purchaseData.taskTitle),
                   rules: [{ required: true, message: '请输入任务名称' }],
                 })(
                   <Input placeholder="请输入任务名称" />)}
@@ -186,12 +213,11 @@ class PurchaseModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('userId', {
-                  initialValue: purchaseData.userId,
+                  initialValue: toString(purchaseData.userId, 'SELECT'),
                   rules: [{ required: true, message: '请选择用户' }],
                 })(
                   <Select placeholder="请选择用户" combobox>
-                    <Option value="1">所有</Option>
-                    {buyer.map(el => <Option key={el.id} value={el.name}>{el.name}</Option>)}
+                    {buyer.map(el => <Option key={el.id}>{el.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>
@@ -202,7 +228,7 @@ class PurchaseModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('purType', {
-                  initialValue: purchaseData.purType,
+                  initialValue: toString(purchaseData.purType, 'SELECT'),
                 })(
                   <Select placeholder="请选择采购类型" allowClear>
                     <Option value="0">订单采购</Option>
@@ -219,7 +245,7 @@ class PurchaseModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('purOrderNo', {
-                  initialValue: purchaseData.purOrderNo,
+                  initialValue: toString(purchaseData.purOrderNo),
                 })(
                   <Input placeholder="请输入采购单号" />)}
               </FormItem>
@@ -230,9 +256,9 @@ class PurchaseModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('taskStartTime', {
-                  initialValue: purchaseData.taskStartTime,
+                  initialValue: purchaseData.taskStartTime ? moment(purchaseData.taskStartTime, 'YYYY-MM-DD HH:mm:ss') : undefined,
                 })(
-                  <DatePicker />,
+                  <DatePicker style={{ width: '100%' }} />,
                 )}
               </FormItem>
             </Col>
@@ -242,9 +268,9 @@ class PurchaseModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('taskEndTime', {
-                  initialValue: purchaseData.taskEndTime,
+                  initialValue: purchaseData.taskEndTime ? moment(purchaseData.taskEndTime, 'YYYY-MM-DD HH:mm:ss') : undefined,
                 })(
-                  <DatePicker />,
+                  <DatePicker style={{ width: '100%' }} />,
                 )}
               </FormItem>
             </Col>
@@ -257,7 +283,7 @@ class PurchaseModal extends Component {
                 wrapperCol={{ span: 18 }}
               >
                 {getFieldDecorator('taskDesc', {
-                  initialValue: purchaseData.taskDesc,
+                  initialValue: toString(purchaseData.taskDesc),
                 })(
                   <Input placeholder="请输入任务描述" size="large" style={{ marginLeft: 5 }} />)}
               </FormItem>
@@ -271,7 +297,7 @@ class PurchaseModal extends Component {
                 wrapperCol={{ span: 18 }}
               >
                 {getFieldDecorator('remark', {
-                  initialValue: purchaseData.remark,
+                  initialValue: toString(purchaseData.remark),
                 })(
                   <Input placeholder="请输入备注信息" size="large" style={{ marginLeft: 5 }} />)}
               </FormItem>
@@ -310,7 +336,7 @@ class PurchaseModal extends Component {
             </Col>
           </Row>
           <Row>
-            <ProductTable data={purchaseData.orderDetails} parent={this} />
+            <ProductTable data={purchaseData.orderDetails} parent={this} buyer={buyer} />
           </Row>
         </Form>
       </Modal>
@@ -318,16 +344,4 @@ class PurchaseModal extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { salesName } = state.order;
-  return {
-    loading: state.loading.models.products,
-    salesName,
-  };
-}
-
-PurchaseModal.PropTypes = {
-  salesName: PropTypes.array.isRequired,
-};
-
-export default connect(mapStateToProps)(Form.create()(PurchaseModal));
+export default Form.create()(PurchaseModal);

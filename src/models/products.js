@@ -120,18 +120,18 @@ export default {
   },
   subscriptions: {
     setup({ dispatch, history }) {
-      return history.listen(({ pathname }) => {
+      return history.listen(({ pathname, query }) => {
         if (pathname === '/products/productsList') {
           setTimeout(() => {
             dispatch({ type: 'queryItemList', payload: { pageIndex: 1 } });
-            dispatch({ type: 'queryBrands', payload: {} });
-            dispatch({ type: 'queryCatesTree', payload: {} });
+            dispatch({ type: 'queryBrands', payload: query });
+            dispatch({ type: 'queryCatesTree', payload: query });
           }, 0);
         }
         if (pathname === '/products/productsList' || pathname === '/products/skuList') {
           setTimeout(() => {
-            dispatch({ type: 'sku/queryPackageScales', payload: {} });
-            dispatch({ type: 'sku/queryScaleTypes', payload: {} });
+            dispatch({ type: 'sku/queryPackageScales', payload: query });
+            dispatch({ type: 'sku/queryScaleTypes', payload: query });
           }, 0);
         }
       });

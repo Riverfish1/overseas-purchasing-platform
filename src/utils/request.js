@@ -5,8 +5,14 @@ function wrapper(method, url, options, getInst) {
   else options = { timeout: 10000 };
   return new Promise((resolve, reject) => {
     const request = ajax[method.toLowerCase()](url, options).then((res, pointer) => {
+      const loc = request._request.getResponseHeader('Location');
+      if (loc) {
+        location.href = '#/login';
+        return;
+      }
       if (request._request.status.toString() === '302' || request._request.responseText.match('<!')) {
         location.href = '#/login';
+        return;
       }
       resolve(res, pointer);
     }, (err, pointer) => {

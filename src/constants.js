@@ -21,8 +21,9 @@ export const routerCfg = {
   PURCHASE_STOCK_IN: 'purchaseStockIn',
 
   // 客户管理
-  AGENCY: 'agency',
+  PERSON: 'person',
   AGENCY_LIST: 'agencyList',
+  SUPPLIER_LIST: 'supplierList',
 };
 
 export const navigation = [
@@ -47,9 +48,10 @@ export const navigation = [
     ],
   },
   {
-    key: routerCfg.AGENCY, name: '客户管理', icon: 'user',
+    key: routerCfg.PERSON, name: '客户管理', icon: 'user',
     child: [
       { key: routerCfg.AGENCY_LIST, name: '经销商管理' },
+      { key: routerCfg.SUPPLIER_LIST, name: '供应商管理' },
     ],
   },
 ];

@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Table, Button, Row, Col, Form, Input, Popconfirm, Select, TreeSelect } from 'antd';
+import { Table, Button, Row, Col, Form, Input, Popconfirm, Select, TreeSelect, Modal } from 'antd';
 import SkuModal from './SkuModal';
 import styles from './Sku.less';
 
@@ -13,6 +13,8 @@ class Sku extends Component {
     super();
     this.state = {
       modalVisible: false,
+      previewVisible: false,
+      previewImage: '',
     };
   }
 
@@ -60,6 +62,10 @@ class Sku extends Component {
     });
   }
 
+  handleCancel() {
+    this.setState({ previewVisible: false });
+  }
+
   closeModal(modalVisible) {
     this.setState({
       modalVisible,
@@ -71,9 +77,17 @@ class Sku extends Component {
     });
   }
 
+  handleBigPic(value) {
+    this.setState({
+      previewVisible: true,
+      previewImage: value,
+    });
+  }
+
   render() {
     const p = this;
     const { skuList = {}, skuTotal, currentPage, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
+    const { previewImage, previewVisible } = this.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -88,6 +102,22 @@ class Sku extends Component {
         key: 'brand',
         render(text) {
           return text || '-';
+        },
+      },
+      {
+        title: 'sku图片',
+        dataIndex: 'mainPic',
+        key: 'mainPic',
+        width: 66,
+        render(text) {
+          let imgUrl = '';
+          try {
+            const imgObj = JSON.parse(decodeURIComponent(text).replace(/&quot;/g, '"'));
+            imgUrl = imgObj.picList[0].url;
+          } catch (e) {
+            return '-';
+          }
+          return <img role="presentation" onClick={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" style={{ cursor: 'pointer' }} />;
         },
       },
       { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', render(text) { return text || '-'; } },
@@ -203,6 +233,9 @@ class Sku extends Component {
             />
           </Col>
         </Row>
+        <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
+          <img role="presentation" src={previewImage} style={{ width: '100%' }} />
+        </Modal>
         <SkuModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
-import AgencyModal from './AgencyModal';
+import { Table, Popover, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
+import SupplierModal from './SupplierModal';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class Agency extends Component {
+class Supplier extends Component {
 
   constructor() {
     super();
@@ -188,6 +188,9 @@ class Agency extends Component {
               <Popconfirm title="确定删除此订单？" onConfirm={p.handleDelete.bind(p, record.id)}>
                 <a href="javascript:void(0)" style={{ marginRight: '10px' }}>删除</a>
               </Popconfirm>
+              <Popover title={null} content={orderStatusContent}>
+                <a href="javascript:void(0)" >状态操作</a>
+              </Popover>
             </div>);
         },
       },
@@ -399,7 +402,7 @@ class Agency extends Component {
             pagination={false}
           />
         </Modal>
-        <AgencyModal
+        <SupplierModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
           modalValues={orderValues}
@@ -423,4 +426,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Form.create()(Agency));
+export default connect(mapStateToProps)(Form.create()(Supplier));

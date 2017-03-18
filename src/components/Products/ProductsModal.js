@@ -56,10 +56,10 @@ class ProductsModal extends Component {
         if (values.mainPic) {
           const uploadMainPic = [];
           const mainPicNum = values.mainPicNum;
-          values.mainPic.forEach((el) => {
+          values.mainPic.forEach((el, index) => {
             uploadMainPic.push({
               type: el.type,
-              uid: el.uid,
+              uid: `i_${index}`,
               url: el.url,
             });
           });

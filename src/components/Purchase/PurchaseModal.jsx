@@ -52,10 +52,10 @@ class PurchaseModal extends Component {
         // 处理图片
         if (values.imageUrl) {
           const uploadMainPic = [];
-          values.imageUrl.forEach((el) => {
+          values.imageUrl.forEach((el, index) => {
             uploadMainPic.push({
               type: el.type,
-              uid: el.uid,
+              uid: `i_${index}`,
               url: el.url,
             });
           });

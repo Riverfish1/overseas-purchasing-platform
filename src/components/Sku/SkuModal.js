@@ -37,9 +37,9 @@ class SkuModal extends Component {
       }
       if (fieldsValue.mainPic) {
         const uploadMainPic = [];
-        fieldsValue.mainPic.forEach((item) => {
+        fieldsValue.mainPic.forEach((item, index) => {
           uploadMainPic.push({
-            uid: item.uid,
+            uid: `i_${index}`,
             type: item.type,
             url: item.url,
           });

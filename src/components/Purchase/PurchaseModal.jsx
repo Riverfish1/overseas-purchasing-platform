@@ -1,6 +1,4 @@
-import React, { PropTypes, Component } from 'react';
-import { connect } from 'dva';
-// import { Link } from 'dva/router';
+import React, { Component } from 'react';
 import { Modal, message, Upload, Icon, Input, Select, Row, Col, DatePicker, Form } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -48,7 +46,7 @@ class PurchaseModal extends Component {
           ...fieldsValue,
           taskStartTime: fieldsValue.taskStartTime && fieldsValue.taskStartTime.format('YYYY-MM-DD'),
           taskEndTime: fieldsValue.taskEndTime && fieldsValue.taskEndTime.format('YYYY-MM-DD'),
-          orderDetailList: encodeURIComponent(JSON.stringify(orderDetailList)),
+          orderDetailList: JSON.stringify(orderDetailList),
         };
 
         // 处理图片
@@ -61,8 +59,9 @@ class PurchaseModal extends Component {
               url: el.url,
             });
           });
-          values.imageUrl = encodeURIComponent(JSON.stringify({ picList: uploadMainPic }));
+          values.imageUrl = JSON.stringify({ picList: uploadMainPic });
         }
+        console.log(values);
         if (modalValues && modalValues.data) {
           dispatch({
             type: 'purchase/updatePurchase',
@@ -134,12 +133,12 @@ class PurchaseModal extends Component {
     const { getFieldDecorator } = form;
     let picList = [];
     if (purchaseData.imageUrl) {
-      const picObj = purchaseData.imageUrl;
+      const picObj = JSON.parse(decodeURIComponent(purchaseData.imageUrl).replace(/&quot;/g, '"'));
       picList = picObj.picList || [];
     }
     const modalProps = {
       visible,
-      width: 900,
+      width: 1200,
       wrapClassName: 'modalStyle',
       okText: '保存',
       title,
@@ -180,7 +179,6 @@ class PurchaseModal extends Component {
             // 添加文件预览
             const newFile = info.file;
             newFile.url = info.file.response.data;
-            console.log(info.fileList);
           } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
         } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
         // 限制一个图片
@@ -260,7 +258,7 @@ class PurchaseModal extends Component {
                 {getFieldDecorator('taskStartTime', {
                   initialValue: purchaseData.taskStartTime ? moment(purchaseData.taskStartTime, 'YYYY-MM-DD HH:mm:ss') : undefined,
                 })(
-                  <DatePicker />,
+                  <DatePicker style={{ width: '100%' }} />,
                 )}
               </FormItem>
             </Col>
@@ -272,7 +270,7 @@ class PurchaseModal extends Component {
                 {getFieldDecorator('taskEndTime', {
                   initialValue: purchaseData.taskEndTime ? moment(purchaseData.taskEndTime, 'YYYY-MM-DD HH:mm:ss') : undefined,
                 })(
-                  <DatePicker />,
+                  <DatePicker style={{ width: '100%' }} />,
                 )}
               </FormItem>
             </Col>
@@ -338,7 +336,7 @@ class PurchaseModal extends Component {
             </Col>
           </Row>
           <Row>
-            <ProductTable data={purchaseData.orderDetails} parent={this} />
+            <ProductTable data={purchaseData.orderDetails} parent={this} buyer={buyer} />
           </Row>
         </Form>
       </Modal>
@@ -346,16 +344,4 @@ class PurchaseModal extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { salesName } = state.order;
-  return {
-    loading: state.loading.models.products,
-    salesName,
-  };
-}
-
-PurchaseModal.PropTypes = {
-  salesName: PropTypes.array.isRequired,
-};
-
-export default connect(mapStateToProps)(Form.create()(PurchaseModal));
+export default Form.create()(PurchaseModal);

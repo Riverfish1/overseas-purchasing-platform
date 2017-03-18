@@ -1,14 +1,13 @@
-
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Table, Popover, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
-import OrderModal from './OrderModal';
-import styles from './Order.less';
+import AgencyModal from './AgencyModal';
+import styles from './Agency.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class Order extends Component {
+class Agency extends Component {
 
   constructor() {
     super();
@@ -16,16 +15,7 @@ class Order extends Component {
       modalVisible: false,
       visible: false,
       title: '', // modal的title
-      updateId: [], // 修改商品传的id
     };
-  }
-
-  componentWillMount() {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'order/querySalesName',
-    //   payload: {},
-    // });
   }
 
   handleSubmit(e) {
@@ -425,7 +415,7 @@ class Order extends Component {
             pagination={false}
           />
         </Modal>
-        <OrderModal
+        <AgencyModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
           modalValues={orderValues}
@@ -449,6 +439,4 @@ function mapStateToProps(state) {
   };
 }
 
-const OrderList = Form.create()(Order);
-
-export default connect(mapStateToProps)(OrderList);
+export default connect(mapStateToProps)(Form.create()(Agency));

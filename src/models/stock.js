@@ -10,22 +10,18 @@ export default {
     currentPage: 1,
     orderValues: {},
     salesName: [],
+    total: 1,
   },
-  reducers: {
-    updateStockList(state, { payload }) {
-      return { ...state, stockList: payload };
-    },
-    saveCurrentPage(state, { payload }) {
-      return { ...state, currentPage: payload.pageIndex };
-    },
-    saveOrder(state, { payload }) {
-      return { ...state, orderValues: payload };
-    },
-    saveOrderSkuSnip(state, { payload }) {
-      return { ...state, orderSkuSnip: payload };
-    },
-    saveSalesName(state, { payload }) {
-      return { ...state, salesName: payload };
+  subscriptions: {
+    setup({ dispatch, history }) {
+      return history.listen(({ pathname }) => {
+        if (pathname === '/purchase/purchaseStockIn') {
+          setTimeout(() => {
+            dispatch({ type: 'queryStockList', payload: {} });
+            dispatch({ type: 'purchase/queryBuyer', payload: {} });
+          }, 0);
+        }
+      });
     },
   },
   effects: {
@@ -94,16 +90,21 @@ export default {
       payload.callback(data.success ? data : 'ERROR');
     },
   },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      return history.listen(({ pathname }) => {
-        if (pathname === '/purchase/purchaseStockIn') {
-          setTimeout(() => {
-            dispatch({ type: 'queryStockList', payload: {} });
-            dispatch({ type: 'purchase/queryBuyer', payload: {} });
-          }, 0);
-        }
-      });
+  reducers: {
+    updateStockList(state, { payload }) {
+      return { ...state, stockList: payload.data, total: payload.total };
+    },
+    saveCurrentPage(state, { payload }) {
+      return { ...state, currentPage: payload.pageIndex };
+    },
+    saveOrder(state, { payload }) {
+      return { ...state, orderValues: payload };
+    },
+    saveOrderSkuSnip(state, { payload }) {
+      return { ...state, orderSkuSnip: payload };
+    },
+    saveSalesName(state, { payload }) {
+      return { ...state, salesName: payload };
     },
   },
 };

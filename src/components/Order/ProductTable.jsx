@@ -260,6 +260,7 @@ class ProductTable extends Component {
             const list = skuSearchList[r.key] || skuList;
             console.log(skuSearchList[r.key]);
             console.log('r: ', r);
+            console.log(list);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuCode`, {

@@ -25,13 +25,14 @@ export default {
     * queryPurchaseList({ payload }, { call, put }) {
       const data = yield call(queryPurchaseList, { payload });
       if (data.success) {
+        data.data && data.data.forEach((el) => {
+          const url = JSON.parse(decodeURIComponent(el.imageUrl).replace(/&quot;/g, '"')) || [];
+          el.imageUrl = url.picList.length ? url.picList[0].url : '';
+        });
         yield put({ type: 'updatePurchaseList', payload: data });
       }
     },
     * addPurchase({ payload }, { call, put }) {
-      if (payload.orderTime) {
-        payload.orderTime = payload.orderTime.format('YYYY-MM-DD');
-      }
       const data = yield call(addPurchase, { payload });
       if (data.success) {
         message.success('新增成功');
@@ -77,7 +78,7 @@ export default {
   },
   reducers: {
     updatePurchaseList(state, { payload }) {
-      return { ...state, list: payload.data, total: payload.total };
+      return { ...state, list: payload.data, total: payload.totalCount };
     },
     savePurchase(state, { payload }) {
       return { ...state, purchaseValues: payload };

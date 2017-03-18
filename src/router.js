@@ -12,6 +12,7 @@ import Category from './components/Category/Category';
 import Order from './components/Order/Order';
 import Purchase from './components/Purchase/Purchase'; // 采购管理
 import StockIn from './components/StockIn/StockIn'; // 入库管理
+import Agency from './components/Agency/Agency';
 
 function redirectHelper(...args) {
   // 传入参数3，为onEnter
@@ -43,6 +44,7 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.SALE}/${routerCfg.ORDER_LIST}`} component={Order} />
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} component={Purchase} />
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_STOCK_IN}`} component={StockIn} />
+        <Route path={`/${routerCfg.AGENCY}/${routerCfg.AGENCY_LIST}`} component={Agency} />
         {/* 重定向 */}
         <Redirect from={`/${routerCfg.PRODUCTS}`} to={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} />
       </Route>

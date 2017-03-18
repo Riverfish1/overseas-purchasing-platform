@@ -73,7 +73,7 @@ class Sku extends Component {
 
   render() {
     const p = this;
-    const { skuList = {}, currentPage, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
+    const { skuList = {}, skuTotal, currentPage, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -114,7 +114,7 @@ class Sku extends Component {
     ];
 
     const paginationProps = {
-      total: skuList && skuList.totalCount,
+      total: skuTotal,
       pageSize: 10,
       current: currentPage,
       onChange(pageIndex) {
@@ -194,7 +194,7 @@ class Sku extends Component {
           <Col>
             <Table
               columns={columns}
-              dataSource={skuList.data}
+              dataSource={skuList}
               bordered
               rowKey={record => record.id}
               pagination={paginationProps}
@@ -216,17 +216,18 @@ class Sku extends Component {
 }
 
 function mapStateToProps(state) {
-  const { skuList, skuData, currentPage, packageScales } = state.sku;
+  const { skuList, skuTotal, skuData, currentPage, packageScales } = state.sku;
   const { brands, productsList, tree } = state.products;
   return {
     // loading: state.loading.models.sku,
     skuList,
+    skuTotal,
     skuData,
     currentPage,
     packageScales,
-    brands: brands.data,
-    productsList: productsList.rows,
-    tree: tree.data,
+    brands,
+    productsList,
+    tree,
   };
 }
 

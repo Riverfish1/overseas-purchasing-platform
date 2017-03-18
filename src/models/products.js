@@ -13,20 +13,21 @@ export default {
   namespace: 'products',
   state: {
     productsList: [],
+    productsTotal: 0,
     productsValues: {}, // 修改商品时的值
     currentPage: 1, // 默认页码
-    brands: {}, // 品牌
+    brands: [], // 品牌
     tree: [], // 类目树
   },
   reducers: {
     saveCatesTree(state, { payload: data }) {
-      return { ...state, tree: data };
+      return { ...state, tree: data.data };
     },
     saveItemList(state, { payload: data }) {
-      return { ...state, productsList: data };
+      return { ...state, productsList: data.rows, productsTotal: data.total };
     },
     saveBrands(state, { payload: data }) { // 保存品牌
-      return { ...state, brands: data };
+      return { ...state, brands: data.data };
     },
     saveProductsValue(state, { payload: data }) {
       return { ...state, productsValues: data };

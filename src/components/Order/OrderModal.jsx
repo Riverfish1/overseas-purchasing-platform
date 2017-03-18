@@ -128,7 +128,7 @@ class ProductsModal extends Component {
       <Modal {...modalProps} className={styles.modalStyle} >
         <Form onSubmit={p.handleSubmit.bind(p)}>
           <Row gutter={10}>
-            {/* <Col span={7}>
+            <Col span={7}>
               <FormItem
                 label="订单编号"
                 {...formItemLayout}
@@ -138,7 +138,7 @@ class ProductsModal extends Component {
                 })(
                   <Input placeholder="请输入订单编号" />)}
               </FormItem>
-            </Col> */}
+            </Col>
             <Col span={7}>
               <FormItem
                 label="客户"
@@ -165,6 +165,8 @@ class ProductsModal extends Component {
                   <DatePicker format="YYYY-MM-DD" placeholder="请输入订单时间" />)}
               </FormItem>
             </Col>
+          </Row>
+          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="收件人"
@@ -177,8 +179,6 @@ class ProductsModal extends Component {
                   <Input placeholder="请输入收件人" />)}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="电话号码"
@@ -203,15 +203,19 @@ class ProductsModal extends Component {
                   <Input placeholder="请输入邮政编码" />)}
               </FormItem>
             </Col>
-            <Col span={7}>
+          </Row>
+          <Row>
+            <Col>
               <FormItem
                 label="外部订单号"
-                {...formItemLayout}
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 18 }}
               >
                 {getFieldDecorator('targetNo', {
                   initialValue: orderData.targetNo,
                 })(
-                  <Input placeholder="如有赞订单号" />)}
+                  <Input placeholder="请输入外部订单号，如有赞订单号" size="large" style={{ marginLeft: 3, width: 646 }} />,
+                )}
               </FormItem>
             </Col>
           </Row>
@@ -249,7 +253,7 @@ class ProductsModal extends Component {
                 {getFieldDecorator('remarks', {
                   initialValue: orderData.remarks,
                 })(
-                  <Input placeholder="请输入备注信息" size="large" style={{ marginLeft: 5 }} />)}
+                  <Input placeholder="请输入备注信息" size="large" style={{ marginLeft: 3, width: 646 }} />)}
               </FormItem>
             </Col>
           </Row>

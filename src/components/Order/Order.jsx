@@ -96,7 +96,7 @@ class Order extends Component {
 
   render() {
     const p = this;
-    const { form, orderList = {}, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [] } = p.props;
+    const { form, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [] } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
     const { title, visible } = p.state;
     const formItemLayout = {
@@ -208,7 +208,7 @@ class Order extends Component {
     ];
 
     const listPaginationProps = {
-      total: orderList && orderList.totalCount,
+      total: orderTotal,
       current: currentPage,
       pageSize: 10,
       onChange(page) {
@@ -407,7 +407,7 @@ class Order extends Component {
           <Col>
             <Table
               columns={columnsList}
-              dataSource={orderList && orderList.data}
+              dataSource={orderList}
               bordered
               size="large"
               rowKey={record => record.id}
@@ -438,9 +438,10 @@ class Order extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList, currentPage, orderValues, orderSkuSnip, salesName } = state.order;
+  const { orderList, orderTotal, currentPage, orderValues, orderSkuSnip, salesName } = state.order;
   return {
     orderList,
+    orderTotal,
     currentPage,
     orderValues,
     orderSkuSnip,

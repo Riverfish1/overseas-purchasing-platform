@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
-import { Modal, message, Input, Upload, InputNumber, Row, Col, Select, DatePicker, Form, Icon, TreeSelect } from 'antd';
+import { Modal, message, Input, Upload, Row, Col, Select, DatePicker, Form, Icon, TreeSelect } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 

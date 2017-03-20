@@ -198,19 +198,6 @@ class Purchase extends Component {
                   <Input placeholder="请输入任务名称" />)}
               </FormItem>
             </Col>
-            <Col span="8">
-              <FormItem
-                label="采购类型"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('purType', {})(
-                  <Select placeholder="请选择采购类型" >
-                    <Option value="0">订单采购</Option>
-                    <Option value="1">囤货采购</Option>
-                  </Select>,
-                )}
-              </FormItem>
-            </Col>
           </Row>
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">

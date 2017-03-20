@@ -125,6 +125,14 @@ class PurchaseModal extends Component {
     this.setState({ skuList: skuData });
   }
 
+  handleKeyDown(value) {
+    const { getFieldValue, setFieldsValue } = this.props.form;
+    console.log(getFieldValue('remark'));
+    if (!getFieldValue('remark')) {
+      setFieldsValue({ remark: value });
+    }
+  }
+
   render() {
     const p = this;
     const { form, title, visible, modalValues = {}, buyer = [] } = p.props;
@@ -204,7 +212,7 @@ class PurchaseModal extends Component {
                   initialValue: toString(purchaseData.taskTitle),
                   rules: [{ required: true, message: '请输入任务名称' }],
                 })(
-                  <Input placeholder="请输入任务名称" />)}
+                  <Input placeholder="请输入任务名称" onKeyDown={p.handleKeyDown.bind(p)} />)}
               </FormItem>
             </Col>
             <Col span={7}>
@@ -218,21 +226,6 @@ class PurchaseModal extends Component {
                 })(
                   <Select placeholder="请选择用户" combobox>
                     {buyer.map(el => <Option key={el.id}>{el.name}</Option>)}
-                  </Select>,
-                )}
-              </FormItem>
-            </Col>
-            <Col span={7}>
-              <FormItem
-                label="采购类型"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('purType', {
-                  initialValue: toString(purchaseData.purType, 'SELECT'),
-                })(
-                  <Select placeholder="请选择采购类型" allowClear>
-                    <Option value="0">订单采购</Option>
-                    <Option value="1">囤货采购</Option>
                   </Select>,
                 )}
               </FormItem>
@@ -256,7 +249,7 @@ class PurchaseModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('taskStartTime', {
-                  initialValue: purchaseData.taskStartTime ? moment(purchaseData.taskStartTime, 'YYYY-MM-DD HH:mm:ss') : undefined,
+                  initialValue: purchaseData.taskStartTime ? moment(purchaseData.taskStartTime, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
                 })(
                   <DatePicker style={{ width: '100%' }} />,
                 )}
@@ -297,7 +290,7 @@ class PurchaseModal extends Component {
                 wrapperCol={{ span: 18 }}
               >
                 {getFieldDecorator('remark', {
-                  initialValue: toString(purchaseData.remark),
+                  initialValue: purchaseData.remark ? toString(purchaseData.remark) : toString(purchaseData.taskTitle),
                 })(
                   <Input placeholder="请输入备注信息" size="large" style={{ marginLeft: 5 }} />)}
               </FormItem>

@@ -234,7 +234,7 @@ class ProductTable extends Component {
           title: <font color="#00f">商品SKU</font>,
           dataIndex: 'skuId',
           key: 'skuId',
-          width: '8.5%',
+          width: '10%',
           render(t, r) {
             const list = skuSearchList[r.key] || skuList;
             console.log(skuSearchList[r.key]);
@@ -259,7 +259,7 @@ class ProductTable extends Component {
           title: <font color="#00f">买手</font>,
           dataIndex: 'userId',
           key: 'userId',
-          width: '8.5%',
+          width: '10%',
           render(t, r) {
             return (<FormItem>
               {getFieldDecorator(`r_${r.key}_userId`, {
@@ -273,30 +273,10 @@ class ProductTable extends Component {
           },
         },
         {
-          title: <font color="#00f">币种</font>,
-          dataIndex: 'currency',
-          key: 'currency',
-          width: '8.5%',
-          render(t, r) {
-            return (
-              <FormItem>
-                {getFieldDecorator(`r_${r.key}_currency`, {
-                  initialValue: t || undefined,
-                })(
-                  <Select placeholder="请选择" >
-                    <Option value="1">人民币</Option>
-                    <Option value="2">美元</Option>
-                  </Select>,
-                )}
-              </FormItem>
-            );
-          },
-        },
-        {
           title: <font color="#00f">参考采购价</font>,
           dataIndex: 'taskPrice',
           key: 'taskPrice',
-          width: '8.5%',
+          width: '10%',
           render(t, r) {
             return (
               <FormItem>
@@ -313,7 +293,7 @@ class ProductTable extends Component {
           title: <font color="#00f">参考最大采购价</font>,
           dataIndex: 'taskMaxPrice',
           key: 'taskMaxPrice',
-          width: '8.5%',
+          width: '10%',
           render(t, r) {
             return (
               <FormItem>
@@ -330,7 +310,7 @@ class ProductTable extends Component {
           title: <font color="#00f">采购方式</font>,
           dataIndex: 'mode',
           key: 'mode',
-          width: '8.5%',
+          width: '10%',
           render(t, r) {
             return (
               <FormItem>
@@ -350,7 +330,7 @@ class ProductTable extends Component {
           title: <font color="#00f">采购数量</font>,
           dataIndex: 'count',
           key: 'count',
-          width: '8.5%',
+          width: '10%',
           render(t, r) {
             return (
               <FormItem>
@@ -360,23 +340,6 @@ class ProductTable extends Component {
                   <InputNumber step={1} min={1} placeholder="请输入" />,
                 )}
               </FormItem>);
-          },
-        },
-        {
-          title: <font color="#00f">尺寸</font>,
-          dataIndex: 'scale',
-          key: 'scale',
-          width: '8.5%',
-          render(t, r) {
-            return (
-              <FormItem>
-                {getFieldDecorator(`r_${r.key}_scale`, {
-                  initialValue: t,
-                })(
-                  <InputNumber step={1} min={1} placeholder="请输入" />,
-                )}
-              </FormItem>
-            );
           },
         },
         {
@@ -417,7 +380,7 @@ class ProductTable extends Component {
           title: <font color="#00f">说明</font>,
           dataIndex: 'remark',
           key: 'remark',
-          width: '8.5%',
+          width: '10%',
           render(t, r) {
             return (
               <FormItem>

@@ -5,7 +5,7 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 
 import SkuTable from './SkuTable';
-import style from './Agency.less';
+import style from './index.less';
 
 moment.locale('zh-cn');
 

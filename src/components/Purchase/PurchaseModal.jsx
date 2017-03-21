@@ -40,7 +40,6 @@ class PurchaseModal extends Component {
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
       p.getSkuValue((orderDetailList) => {
-        if (!fieldsValue.imageUrl) delete fieldsValue.imageUrl;
         console.log(orderDetailList);
         const values = {
           ...fieldsValue,
@@ -125,11 +124,10 @@ class PurchaseModal extends Component {
     this.setState({ skuList: skuData });
   }
 
-  handleKeyDown(value) {
-    const { getFieldValue, setFieldsValue } = this.props.form;
-    console.log(getFieldValue('remark'));
-    if (!getFieldValue('remark')) {
-      setFieldsValue({ remark: value });
+  handleInputChange(e) {
+    const { getFieldsValue, setFieldsValue } = this.props.form;
+    if (!getFieldsValue().taskDesc || getFieldsValue().taskDesc !== e.target.value) {
+      setFieldsValue({ taskDesc: e.target.value });
     }
   }
 
@@ -212,7 +210,7 @@ class PurchaseModal extends Component {
                   initialValue: toString(purchaseData.taskTitle),
                   rules: [{ required: true, message: '请输入任务名称' }],
                 })(
-                  <Input placeholder="请输入任务名称" onKeyDown={p.handleKeyDown.bind(p)} />)}
+                  <Input placeholder="请输入任务名称" onChange={p.handleInputChange.bind(p)} />)}
               </FormItem>
             </Col>
             <Col span={7}>
@@ -224,7 +222,7 @@ class PurchaseModal extends Component {
                   initialValue: toString(purchaseData.userId, 'SELECT'),
                   rules: [{ required: true, message: '请选择用户' }],
                 })(
-                  <Select placeholder="请选择用户" combobox>
+                  <Select placeholder="请输入用户" combobox>
                     {buyer.map(el => <Option key={el.id}>{el.name}</Option>)}
                   </Select>,
                 )}

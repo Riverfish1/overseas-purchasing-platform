@@ -71,6 +71,7 @@ class AgencyType extends Component {
   render() {
     const p = this;
     const { form, typeList = [], agencyTypeValues = {} } = p.props;
+    console.log(typeList);
     const { getFieldDecorator } = form;
     const { title, visible } = p.state;
     const formItemLayout = {

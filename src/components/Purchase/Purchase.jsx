@@ -89,7 +89,7 @@ class Purchase extends Component {
 
   render() {
     const p = this;
-    const { form, list = [], total, purchaseValues = {}, buyer = [], skuList = [] } = p.props;
+    const { form, list = [], total, purchaseValues = {}, buyer = [], skuList = [], dispatch } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
     const { title, previewImage, previewVisible } = p.state;
     const formItemLayout = {
@@ -97,31 +97,19 @@ class Purchase extends Component {
       wrapperCol: { span: 14 },
     };
     const columnsList = [
-      {
-        title: '任务单号', dataIndex: 'taskOrderNo', key: 'taskOrderNo',
-      },
-      {
-        title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle',
-      },
-      {
-        title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc',
-      },
-      {
-        title: '任务分配人', dataIndex: 'taskOwnerName', key: 'taskOwnerName',
-      },
-      {
-        title: '买手', dataIndex: 'taskUserName', key: 'taskUserName',
-      },
-      {
-        title: '图片',
+      { title: '任务单号', dataIndex: 'taskOrderNo', key: 'taskOrderNo' },
+      { title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle' },
+      { title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc' },
+      { title: '任务分配人', dataIndex: 'taskOwnerName', key: 'taskOwnerName' },
+      { title: '买手', dataIndex: 'taskUserName', key: 'taskUserName' },
+      { title: '图片',
         dataIndex: 'imageUrl',
         key: 'imageUrl',
         render(t) {
           return t ? <img role="presentation" onClick={p.handleBigPic.bind(p, t)} src={t} width="50" height="50" style={{ cursor: 'pointer' }} /> : '-';
         },
       },
-      {
-        title: '采购类型',
+      { title: '采购类型',
         dataIndex: 'purType',
         key: 'purType',
         render(t) {
@@ -133,27 +121,20 @@ class Purchase extends Component {
           return '-';
         },
       },
-      {
-        title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime',
-      },
-      {
-        title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime',
-      },
-      {
-        title: '备注', dataIndex: 'remark', key: 'remark',
-      },
-      {
-        title: '操作',
+      { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime' },
+      { title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime' },
+      { title: '备注', dataIndex: 'remark', key: 'remark' },
+      { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
         width: 160,
         render(text, record) {
           return (
             <div>
-              <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
-              <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, record)} >
+              <a href="javascript:void(0)" style={{ margin: '0 10px 0 0' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
+              {/* <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, record)} >
                 <a href="javascript:void(0)" >删除</a>
-              </Popconfirm>
+              </Popconfirm>*/}
             </div>);
         },
       },
@@ -196,19 +177,6 @@ class Purchase extends Component {
               >
                 {getFieldDecorator('taskTitle', {})(
                   <Input placeholder="请输入任务名称" />)}
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem
-                label="采购类型"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('purType', {})(
-                  <Select placeholder="请选择采购类型" >
-                    <Option value="0">订单采购</Option>
-                    <Option value="1">囤货采购</Option>
-                  </Select>,
-                )}
               </FormItem>
             </Col>
           </Row>
@@ -270,6 +238,7 @@ class Purchase extends Component {
           title={title}
           buyer={buyer}
           skuList={skuList}
+          dispatch={dispatch}
         />
       </div>
     );

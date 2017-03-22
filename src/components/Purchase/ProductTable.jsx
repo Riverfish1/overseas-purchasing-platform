@@ -1,6 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Input, DatePicker, InputNumber, Select, Button, Form, Table, Row, Col, Popconfirm, Popover } from 'antd';
+import { Input, DatePicker, InputNumber, Modal, Select, Button, Form, Table, Row, Col, Popconfirm, Popover } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
@@ -17,6 +17,8 @@ class ProductTable extends Component {
     this.state = {
       skuData: [],
       skuSearchList: {},
+      previewImage: '',
+      previewVisible: false,
     };
   }
 
@@ -35,10 +37,10 @@ class ProductTable extends Component {
     const { form } = this.props;
     const skuList = [];
     form.validateFieldsAndScroll((err, fieldsSku) => {
-      if (err) {
-        return;
-      }
+      if (err) { return; }
       let count = 1;
+      if (fieldsSku.taskStartTime) fieldsSku.taskStartTime = moment(fieldsSku.taskStartTime, 'YYYY-MM-DD');
+      if (fieldsSku.taskEndTime) fieldsSku.taskEndTime = moment(fieldsSku.taskEndTime, 'YYYY-MM-DD');
       const keys = Object.keys(fieldsSku);
       while (Object.prototype.hasOwnProperty.call(fieldsSku, `r_${count}_skuCode`)) {
         const skuSingle = {};
@@ -95,10 +97,7 @@ class ProductTable extends Component {
     source.forEach((value) => {
       if (value.skuCode.toString() === skuCode.toString()) {
         form.setFieldsValue({
-          [`r_${key}_skuCode`]: value.skuCode,
           [`r_${key}_skuId`]: value.id,
-          [`r_${key}_salePrice`]: value.salePrice || 0,
-          [`r_${key}_quantity`]: value.quantity || 0,
         });
       }
     });
@@ -138,10 +137,23 @@ class ProductTable extends Component {
     });
   }
 
+  handleCancel() {
+    this.setState({ previewVisible: false });
+  }
+
+  handleBigPic(value) {
+    if (value) {
+      this.setState({
+        previewVisible: true,
+        previewImage: value,
+      });
+    }
+  }
+
   render() {
     const p = this;
     const { form, skuList = [], parent, buyer = [] } = p.props;
-    const { skuData, skuSearchList } = p.state;
+    const { skuData, skuSearchList, previewImage, previewVisible } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 8 },
@@ -155,6 +167,10 @@ class ProductTable extends Component {
     function renderSkuPopover(list, key) {
       let skuCode = null;
       let name = null;
+
+      function JSONParse(text) {
+        return text && JSON.parse(decodeURIComponent(text).replace(/&quot;/g, '"')).picList[0].url;
+      }
 
       function handleEmpty() {
         skuCode.refs.input.value = '';
@@ -177,13 +193,14 @@ class ProductTable extends Component {
         { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 120 },
         { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 90, render(text) { return text || '-'; } },
         { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 60, render(text) { return text || '-'; } },
+        { title: '图片', dataIndex: 'mainPic', key: 'mainPic', width: 60, render(text) { return text ? <img width="100" role="presentation" src={JSONParse(text)} /> : '-'; } },
         { title: '颜色', dataIndex: 'color', key: 'color', width: 80, render(text) { return text || '-'; } },
         { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', width: 70, render(text) { return text || '-'; } },
         { title: '操作', dataIndex: 'oper', key: 'oper', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
       ];
 
       return (
-        <div style={{ width: 560 }}>
+        <div style={{ width: 680 }}>
           <Row gutter={20} style={{ width: 720 }}>
             <Col span="7">
               <FormItem
@@ -234,10 +251,9 @@ class ProductTable extends Component {
           title: <font color="#00f">商品SKU</font>,
           dataIndex: 'skuId',
           key: 'skuId',
-          width: '8.5%',
+          width: '10%',
           render(t, r) {
             const list = skuSearchList[r.key] || skuList;
-            console.log(skuSearchList[r.key]);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuId`, {
@@ -273,26 +289,6 @@ class ProductTable extends Component {
           },
         },
         {
-          title: <font color="#00f">币种</font>,
-          dataIndex: 'currency',
-          key: 'currency',
-          width: '8.5%',
-          render(t, r) {
-            return (
-              <FormItem>
-                {getFieldDecorator(`r_${r.key}_currency`, {
-                  initialValue: t || undefined,
-                })(
-                  <Select placeholder="请选择" >
-                    <Option value="1">人民币</Option>
-                    <Option value="2">美元</Option>
-                  </Select>,
-                )}
-              </FormItem>
-            );
-          },
-        },
-        {
           title: <font color="#00f">参考采购价</font>,
           dataIndex: 'taskPrice',
           key: 'taskPrice',
@@ -303,7 +299,7 @@ class ProductTable extends Component {
                 {getFieldDecorator(`r_${r.key}_taskPrice`, {
                   initialValue: t || undefined,
                 })(
-                  <Input placeholder="请输入" />,
+                  <InputNumber step={0.01} placeholder="请输入" />,
                 )}
               </FormItem>
             );
@@ -320,7 +316,7 @@ class ProductTable extends Component {
                 {getFieldDecorator(`r_${r.key}_taskMaxPrice`, {
                   initialValue: t || undefined,
                 })(
-                  <Input placeholder="请输入" />,
+                  <InputNumber step={0.01} placeholder="请输入" />,
                 )}
               </FormItem>
             );
@@ -335,7 +331,7 @@ class ProductTable extends Component {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_mode`, {
-                  initialValue: t || undefined,
+                  initialValue: t || '1',
                 })(
                   <Select placeholder="请选择" >
                     <Option value="0">线上</Option>
@@ -363,17 +359,17 @@ class ProductTable extends Component {
           },
         },
         {
-          title: <font color="#00f">尺寸</font>,
-          dataIndex: 'scale',
-          key: 'scale',
+          title: <font color="#00f">参考最大采购数量</font>,
+          dataIndex: 'taskMaxCount',
+          key: 'taskMaxCount',
           width: '8.5%',
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_scale`, {
-                  initialValue: t,
+                {getFieldDecorator(`r_${r.key}_taskMaxCount`, {
+                  initialValue: t || undefined,
                 })(
-                  <InputNumber step={1} min={1} placeholder="请输入" />,
+                  <InputNumber placeholder="请输入" />,
                 )}
               </FormItem>
             );
@@ -388,7 +384,7 @@ class ProductTable extends Component {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskStartTime`, {
-                  initialValue: t ? moment(t, 'YYYY-MM-DD') : undefined,
+                  initialValue: t ? moment(t, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
                 })(
                   <DatePicker />,
                 )}
@@ -422,9 +418,12 @@ class ProductTable extends Component {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_remark`, {
-                  initialValue: t || undefined,
+                  initialValue: t || '0',
                 })(
-                  <Input placeholder="请输入" />,
+                  <Select>
+                    <Option value="0">买手采购</Option>
+                    <Option value="1">仓库调货</Option>
+                  </Select>,
                 )}
               </FormItem>
             );
@@ -455,20 +454,17 @@ class ProductTable extends Component {
           </Col>
         </Row>
         <Table {...modalTableProps} rowKey={record => record.key} />
-
+        <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
+          <img role="presentation" style={{ width: '100%' }} src={previewImage} />
+        </Modal>
       </div>);
   }
 }
 
-ProductTable.PropTypes = {
-  data: PropTypes.array.isRequired,
-  skuList: PropTypes.object.isRequired,
-};
-
 function mapStateToProps(state) {
   const { skuList } = state.sku;
   return {
-    skuList: skuList.data,
+    skuList,
   };
 }
 

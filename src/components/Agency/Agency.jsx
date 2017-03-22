@@ -3,8 +3,8 @@ import { connect } from 'dva';
 import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
 import AgencyModal from './AgencyModal';
 
-const FormItem = Form.Item;
-const Option = Select.Option;
+// const FormItem = Form.Item;
+// const Option = Select.Option;
 
 class Agency extends Component {
 
@@ -85,95 +85,40 @@ class Agency extends Component {
 
   render() {
     const p = this;
-    const { form, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [] } = p.props;
-    const { getFieldDecorator, getFieldsValue, resetFields } = form;
+    const { form, list = [], total, currentPage, agencyValues = {} } = p.props;
+    const { getFieldsValue } = form;
     const { title, visible } = p.state;
-    const formItemLayout = {
-      labelCol: { span: 10 },
-      wrapperCol: { span: 14 },
-    };
+    // const formItemLayout = {
+    //   labelCol: { span: 10 },
+    //   wrapperCol: { span: 14 },
+    // };
     const columnsList = [
       {
-        title: '订单编号', dataIndex: 'orderNo', key: 'orderNo',
+        title: '经销商名称', dataIndex: 'name', key: 'name',
       },
       {
-        title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', render(text) { return text || '-'; },
+        title: '用户id', dataIndex: 'userId', key: 'userId', render(text) { return text || '-'; },
       },
       {
-        title: '客户', dataIndex: 'salesName', key: 'salesName', render(text) { return text || '-'; },
+        title: '用户名称', dataIndex: 'userName', key: 'userName', render(text) { return text || '-'; },
       },
       {
-        title: '订单时间', dataIndex: 'orderTime', key: 'orderTime', render(text) { return text || '-'; },
+        title: '经销商代码', dataIndex: 'code', key: 'code', render(text) { return text || '-'; },
       },
       {
-        title: '订单状态',
-        dataIndex: 'status',
-        key: 'status',
-        render(text) {
-          if (text === 0) {
-            return <span>待支付</span>;
-          } else if (text === 1) {
-            return <span>待审核</span>;
-          } else if (text === 2) {
-            return <span>备货中</span>;
-          } else if (text === 3) {
-            return <span>部分发货</span>;
-          } else if (text === 4) {
-            return <span>已发货</span>;
-          } else if (text === 5) {
-            return <span>已完成</span>;
-          } else if (text === 6) {
-            return <span>已取消</span>;
-          }
-          return '-';
-        },
+        title: '经销商类别Id', dataIndex: 'typeId', key: 'typeId', render(text) { return text || '-'; },
       },
       {
-        title: '备货状态',
-        dataIndex: 'stockStatus',
-        key: 'stockStatus',
-        render(text) {
-          if (text === 1) {
-            return <span>未备货</span>;
-          } else if (text === 2) {
-            return <span>备货中</span>;
-          } else if (text === 3) {
-            return <span>部分备货</span>;
-          } else if (text === 4) {
-            return <span>部分备货，在途</span>;
-          } else if (text === 5) {
-            return <span>部分备货，在途，可发</span>;
-          } else if (text === 6) {
-            return <span>部分备货，可发</span>;
-          } else if (text === 7) {
-            return <span>备货完成</span>;
-          } else if (text === 8) {
-            return <span>备货完成、在途</span>;
-          } else if (text === 9) {
-            return <span>备货完成、在途、可发</span>;
-          }
-          return '-';
-        },
+        title: '经销商类别名称', dataIndex: 'typeName', key: 'typeName', render(text) { return text || '-'; },
       },
       {
-        title: '收件人', dataIndex: 'receiver', key: 'receiver',
+        title: '经销商类别代码', dataIndex: 'typeCode', key: 'typeCode', render(text) { return text || '-'; },
       },
       {
-        title: '收件人地址',
-        dataIndex: 'address',
-        key: 'address',
-        render(text, record) {
-          return <span>{text ? `${text} ${record.addressDetail}` : '-'}</span>;
-        },
+        title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', render(text) { return text || '-'; },
       },
       {
-        title: '联系电话', dataIndex: 'telephone', key: 'telephone',
-      },
-      {
-        title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate',
-      },
-      {
-        title: '备注', dataIndex: 'remarks', key: 'remarks', render(text) { return text || '-'; },
+        title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; },
       },
       {
         title: '操作',
@@ -185,7 +130,7 @@ class Agency extends Component {
             <div>
               <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>查看SKU</a>
               <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
-              <Popconfirm title="确定删除此订单？" onConfirm={p.handleDelete.bind(p, record.id)}>
+              <Popconfirm title="确定删除此经销商？" onConfirm={p.handleDelete.bind(p, record.id)}>
                 <a href="javascript:void(0)" style={{ marginRight: '10px' }}>删除</a>
               </Popconfirm>
             </div>);
@@ -194,7 +139,7 @@ class Agency extends Component {
     ];
 
     const listPaginationProps = {
-      total: orderTotal,
+      total,
       current: currentPage,
       pageSize: 10,
       onChange(page) {
@@ -264,7 +209,7 @@ class Agency extends Component {
     ];
 
     const modalProps = {
-      title: `订单编号：${(orderSkuSnip.data && orderSkuSnip.data.orderNo) || '-'}`,
+      title,
       footer: null,
       visible,
       width: 1200,
@@ -277,7 +222,7 @@ class Agency extends Component {
 
     return (
       <div>
-        <Form onSubmit={this.handleSubmit.bind(this)}>
+        {/* <Form onSubmit={this.handleSubmit.bind(this)}>
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
@@ -371,17 +316,17 @@ class Agency extends Component {
               <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>
             </Col>
           </Row>
-        </Form>
+        </Form>*/}
         <Row>
           <Col className="orderBtn">
-            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增订单</Button>
+            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增经销商</Button>
           </Col>
         </Row>
         <Row>
           <Col>
             <Table
               columns={columnsList}
-              dataSource={orderList}
+              dataSource={list}
               bordered
               size="large"
               rowKey={record => record.id}
@@ -392,7 +337,7 @@ class Agency extends Component {
         <Modal {...modalProps}>
           <Table
             columns={skuColumns}
-            dataSource={orderSkuSnip.data && orderSkuSnip.data.orderDetails}
+            dataSource={list}
             bordered
             size="large"
             rowKey={record => record.id}
@@ -402,8 +347,7 @@ class Agency extends Component {
         <AgencyModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
-          modalValues={orderValues}
-          salesName={salesName}
+          modalValues={agencyValues}
           title={title}
         />
       </div>
@@ -412,14 +356,11 @@ class Agency extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList, orderTotal, currentPage, orderValues, orderSkuSnip, salesName } = state.order;
+  const { list, total, agencyValues } = state.agency;
   return {
-    orderList,
-    orderTotal,
-    currentPage,
-    orderValues,
-    orderSkuSnip,
-    salesName,
+    list,
+    total,
+    agencyValues,
   };
 }
 

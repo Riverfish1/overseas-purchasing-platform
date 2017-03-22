@@ -24,7 +24,7 @@ export const routerCfg = {
   PERSON: 'person',
   AGENCY_LIST: 'agencyList',
   AGENCY_TYPE: 'agencyType',
-  SUPPLIER_LIST: 'supplierList',
+  // SUPPLIER_LIST: 'supplierList',
 };
 
 export const navigation = [
@@ -53,7 +53,7 @@ export const navigation = [
     child: [
       { key: routerCfg.AGENCY_LIST, name: '经销商管理' },
       { key: routerCfg.AGENCY_TYPE, name: '经销商分类' },
-      { key: routerCfg.SUPPLIER_LIST, name: '供应商管理' },
+      // { key: routerCfg.SUPPLIER_LIST, name: '供应商管理' },
     ],
   },
 ];

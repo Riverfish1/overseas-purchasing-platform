@@ -37,20 +37,15 @@ class Agency extends Component {
       modalVisible: true,
       title: '新增',
     });
-    this.props.dispatch({
-      type: 'sku/querySkuList',
-      payload: {},
-    });
   }
 
   updateModal(id) {
-    window.event.stopPropagation();
     const p = this;
     p.setState({
       modalVisible: true,
       title: '修改',
     }, () => {
-      p.props.dispatch({ type: 'order/queryOrder', payload: { id } });
+      p.props.dispatch({ type: 'agency/queryAgency', payload: { id } });
     });
   }
 
@@ -59,7 +54,7 @@ class Agency extends Component {
       modalVisible,
     });
     this.props.dispatch({
-      type: 'order/saveOrder',
+      type: 'agency/saveAgency',
       payload: {},
     });
   }
@@ -78,60 +73,40 @@ class Agency extends Component {
 
   handleDelete(id) {
     this.props.dispatch({
-      type: 'order/deleteOrder',
+      type: 'agency/deleteAgency',
       payload: { id },
     });
   }
 
   render() {
     const p = this;
-    const { form, list = [], total, currentPage, agencyValues = {} } = p.props;
+    const { form, list = [], total, currentPage, agencyValues = {}, dispatch } = p.props;
     const { getFieldsValue } = form;
-    const { title, visible } = p.state;
+    const { title } = p.state;
     // const formItemLayout = {
     //   labelCol: { span: 10 },
     //   wrapperCol: { span: 14 },
     // };
     const columnsList = [
-      {
-        title: '经销商名称', dataIndex: 'name', key: 'name',
-      },
-      {
-        title: '用户id', dataIndex: 'userId', key: 'userId', render(text) { return text || '-'; },
-      },
-      {
-        title: '用户名称', dataIndex: 'userName', key: 'userName', render(text) { return text || '-'; },
-      },
-      {
-        title: '经销商代码', dataIndex: 'code', key: 'code', render(text) { return text || '-'; },
-      },
-      {
-        title: '经销商类别Id', dataIndex: 'typeId', key: 'typeId', render(text) { return text || '-'; },
-      },
-      {
-        title: '经销商类别名称', dataIndex: 'typeName', key: 'typeName', render(text) { return text || '-'; },
-      },
-      {
-        title: '经销商类别代码', dataIndex: 'typeCode', key: 'typeCode', render(text) { return text || '-'; },
-      },
-      {
-        title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', render(text) { return text || '-'; },
-      },
-      {
-        title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; },
-      },
-      {
-        title: '操作',
+      { title: '经销商名称', dataIndex: 'name', key: 'name' },
+      { title: '用户id', dataIndex: 'userId', key: 'userId', render(text) { return text || '-'; } },
+      { title: '用户名称', dataIndex: 'userName', key: 'userName', render(text) { return text || '-'; } },
+      { title: '经销商代码', dataIndex: 'code', key: 'code', render(text) { return text || '-'; } },
+      { title: '经销商类别Id', dataIndex: 'typeId', key: 'typeId', render(text) { return text || '-'; } },
+      { title: '经销商类别名称', dataIndex: 'typeName', key: 'typeName', render(text) { return text || '-'; } },
+      { title: '经销商类别代码', dataIndex: 'typeCode', key: 'typeCode', render(text) { return text || '-'; } },
+      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', render(text) { return text || '-'; } },
+      { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; } },
+      { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
         width: 200,
         render(text, record) {
           return (
             <div>
-              <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>查看SKU</a>
-              <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
+              <a href="javascript:void(0)" onClick={p.updateModal.bind(p, record.id)}>修改</a>
               <Popconfirm title="确定删除此经销商？" onConfirm={p.handleDelete.bind(p, record.id)}>
-                <a href="javascript:void(0)" style={{ marginRight: '10px' }}>删除</a>
+                <a href="javascript:void(0)" style={{ marginLeft: 10 }}>删除</a>
               </Popconfirm>
             </div>);
         },
@@ -154,69 +129,6 @@ class Agency extends Component {
           type: 'order/queryOrderList',
           payload: { ...payload, pageIndex: page },
         });
-      },
-    };
-
-    const skuColumns = [
-      {
-        title: '商品SKU',
-        dataIndex: 'skuCode',
-        key: 'skuCode',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '颜色',
-        dataIndex: 'color',
-        key: 'color',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '尺码',
-        dataIndex: 'scale',
-        key: 'scale',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '品牌',
-        dataIndex: 'brand',
-        key: 'brand',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '销售价',
-        dataIndex: 'salePrice',
-        key: 'salePrice',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '运费',
-        dataIndex: 'freight',
-        key: '10',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '数量',
-        dataIndex: 'quantity',
-        key: '11',
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '商品名称',
-        dataIndex: 'itemName',
-        key: 'itemName',
-        render(text) { return text || '-'; },
-      },
-    ];
-
-    const modalProps = {
-      title,
-      footer: null,
-      visible,
-      width: 1200,
-      closable: true,
-      onCancel() {
-        p.setState({ visible: false });
-        p.props.dispatch({ type: 'order/saveOrderSkuSnip', payload: {} });
       },
     };
 
@@ -334,21 +246,13 @@ class Agency extends Component {
             />
           </Col>
         </Row>
-        <Modal {...modalProps}>
-          <Table
-            columns={skuColumns}
-            dataSource={list}
-            bordered
-            size="large"
-            rowKey={record => record.id}
-            pagination={false}
-          />
-        </Modal>
         <AgencyModal
           visible={this.state.modalVisible}
+          list={list}
           close={this.closeModal.bind(this)}
           modalValues={agencyValues}
           title={title}
+          dispatch={dispatch}
         />
       </div>
     );

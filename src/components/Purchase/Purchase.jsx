@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Popconfirm, Input, DatePicker, Button, Row, Col, Select, Form, Modal } from 'antd';
+import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal } from 'antd';
 import PurchaseModal from './PurchaseModal';
 import styles from './Purchase.less';
 
@@ -205,14 +205,14 @@ class Purchase extends Component {
             </Col>
           </Row>
           <Row>
-            <Col className={styles.listBtnGroup}>
+            <Col className="listBtnGroup">
               <Button htmlType="submit" size="large" type="primary">查询</Button>
               <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>
             </Col>
           </Row>
         </Form>
         <Row>
-          <Col className={styles.orderBtn}>
+          <Col className="operBtn">
             <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增采购</Button>
           </Col>
         </Row>

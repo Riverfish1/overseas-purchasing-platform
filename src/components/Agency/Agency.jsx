@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
+import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Popconfirm } from 'antd';
 import AgencyModal from './AgencyModal';
 
-// const FormItem = Form.Item;
-// const Option = Select.Option;
+const FormItem = Form.Item;
+const Option = Select.Option;
 
 class Agency extends Component {
 
@@ -23,10 +23,8 @@ class Agency extends Component {
       if (err) {
         return;
       }
-      if (fieldsValue.startOrderTime) fieldsValue.startOrderTime = new Date(fieldsValue.startOrderTime).format('yyyy-MM-dd');
-      if (fieldsValue.endOrderTime) fieldsValue.endOrderTime = new Date(fieldsValue.endOrderTime).format('yyyy-MM-dd');
       this.props.dispatch({
-        type: 'order/queryOrderList',
+        type: 'agency/queryAgencyList',
         payload: { ...fieldsValue, pageIndex: 1 },
       });
     });
@@ -81,12 +79,12 @@ class Agency extends Component {
   render() {
     const p = this;
     const { form, list = [], total, currentPage, agencyValues = {}, dispatch } = p.props;
-    const { getFieldsValue } = form;
+    const { getFieldsValue, getFieldDecorator, resetFields } = form;
     const { title } = p.state;
-    // const formItemLayout = {
-    //   labelCol: { span: 10 },
-    //   wrapperCol: { span: 14 },
-    // };
+    const formItemLayout = {
+      labelCol: { span: 10 },
+      wrapperCol: { span: 14 },
+    };
     const columnsList = [
       { title: '经销商名称', dataIndex: 'name', key: 'name' },
       { title: '用户id', dataIndex: 'userId', key: 'userId', render(text) { return text || '-'; } },
@@ -134,91 +132,27 @@ class Agency extends Component {
 
     return (
       <div>
-        {/* <Form onSubmit={this.handleSubmit.bind(this)}>
+        <Form onSubmit={this.handleSubmit.bind(this)}>
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
-                label="客户"
+                label="经销商名称"
                 {...formItemLayout}
               >
-                {getFieldDecorator('salesName', {})(
-                  <Input placeholder="请输入客户名称" />)}
+                {getFieldDecorator('name', {})(
+                  <Select placeholder="请选择经销商名称" allowClear>
+                    {list.map((el, index) => <Option key={index} value={el.name}>{el.name}</Option>)}
+                  </Select>,
+                )}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
-                label="外部订单号"
+                label="经销商类别Id"
                 {...formItemLayout}
               >
-                {getFieldDecorator('targetNo', {})(
-                  <Input placeholder="请输入外部订单号" />)}
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem
-                label="订单号"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('orderNo', {})(
-                  <Input placeholder="请输入订单号" />)}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={20} style={{ width: 800 }}>
-            <Col span="8">
-              <FormItem
-                label="订单状态"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('status', {})(
-                  <Select placeholder="请选择订单状态">
-                    <Option value="0">待支付</Option>
-                    <Option value="1">待审核</Option>
-                    <Option value="2">备货中</Option>
-                    <Option value="3">部分发货</Option>
-                    <Option value="4">已发货</Option>
-                    <Option value="5">已完成</Option>
-                    <Option value="6">已取消</Option>
-                  </Select>)}
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem
-                label="订单备货状态"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('stockStatus', {})(
-                  <Select placeholder="请选择订单备货状态">
-                    <Option value="1">未备货</Option>
-                    <Option value="2">备货中</Option>
-                    <Option value="3">部分备货</Option>
-                    <Option value="4">部分备货，在途</Option>
-                    <Option value="5">部分备货，在途，可发</Option>
-                    <Option value="6">部分备货，可发</Option>
-                    <Option value="7">备货完成</Option>
-                    <Option value="8">备货完成、在途</Option>
-                    <Option value="9">备货完成、在途、可发</Option>
-                  </Select>)}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={20} style={{ width: 800 }}>
-            <Col span="8">
-              <FormItem
-                label="订单时间开始"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('startOrderTime', {})(
-                  <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem
-                label="订单时间结束"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('endOrderTime', {})(
-                  <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
+                {getFieldDecorator('typeId', {})(
+                  <Input placeholder="请输入经销商类别Id" />)}
               </FormItem>
             </Col>
           </Row>
@@ -228,9 +162,9 @@ class Agency extends Component {
               <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>
             </Col>
           </Row>
-        </Form>*/}
+        </Form>
         <Row>
-          <Col className="orderBtn">
+          <Col className="operBtn">
             <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增经销商</Button>
           </Col>
         </Row>

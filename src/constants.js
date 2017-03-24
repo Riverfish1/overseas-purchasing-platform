@@ -25,6 +25,12 @@ export const routerCfg = {
   AGENCY_LIST: 'agencyList',
   AGENCY_TYPE: 'agencyType',
   // SUPPLIER_LIST: 'supplierList',
+  // 库存管理
+  INVENTORY: 'inventory',
+  INVENTORY_LIST: 'inventoryList',
+  // 系统管理
+  SYSTEM: 'system',
+  WAREHOUSE: 'warehouse', // 仓库管理
 };
 
 export const navigation = [
@@ -41,19 +47,27 @@ export const navigation = [
       { key: routerCfg.ORDER_LIST, name: '订单管理' },
     ],
   },
-  {
-    key: routerCfg.PURCHASE, name: '采购管理', icon: 'appstore-o',
+  { key: routerCfg.PURCHASE, name: '采购管理', icon: 'appstore-o',
     child: [
       { key: routerCfg.PURCHASE_LIST, name: '采购管理' },
       { key: routerCfg.PURCHASE_STOCK_IN, name: '采购入库管理' },
     ],
   },
-  {
-    key: routerCfg.PERSON, name: '客户管理', icon: 'user',
+  { key: routerCfg.PERSON, name: '客户管理', icon: 'user',
     child: [
       { key: routerCfg.AGENCY_LIST, name: '经销商管理' },
       { key: routerCfg.AGENCY_TYPE, name: '经销商分类' },
       // { key: routerCfg.SUPPLIER_LIST, name: '供应商管理' },
+    ],
+  },
+  { key: routerCfg.INVENTORY, name: '库存管理', icon: 'shopping-cart',
+    child: [
+      { key: routerCfg.INVENTORY_LIST, name: '库存管理' },
+    ],
+  },
+  { key: routerCfg.SYSTEM, name: '系统管理', icon: 'barcode',
+    child: [
+      { key: routerCfg.WAREHOUSE, name: '仓库管理' },
     ],
   },
 ];

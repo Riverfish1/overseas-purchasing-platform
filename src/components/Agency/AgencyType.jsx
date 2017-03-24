@@ -72,7 +72,6 @@ class AgencyType extends Component {
   render() {
     const p = this;
     const { form, typeList = [], agencyTypeValues = {} } = p.props;
-    console.log(typeList);
     const { getFieldDecorator } = form;
     const { title, visible } = p.state;
     const formItemLayout = {
@@ -114,7 +113,7 @@ class AgencyType extends Component {
     return (
       <div>
         <Row>
-          <Col className="orderBtn">
+          <Col className={styles.purBtn}>
             <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增类别</Button>
           </Col>
         </Row>

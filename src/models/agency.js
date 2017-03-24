@@ -1,16 +1,16 @@
 import { message } from 'antd';
-import {
-  queryAgencyTypeList,
-  queryAgencyType,
-  deleteAgencyType,
-  updateAgencyType,
-  addAgencyType,
-  queryAgencyList,
-  queryAgency,
-  deleteAgency,
-  updateAgency,
-  addAgency,
-} from '../services/agency';
+import fetch from '../utils/request';
+
+const queryAgencyList = ({ payload }) => fetch.post('/haierp1/seller/querySellerList', { data: payload }).catch(e => e);
+const queryAgency = ({ payload }) => fetch.post('/haierp1/seller/query', { data: payload }).catch(e => e);
+const deleteAgency = ({ payload }) => fetch.post('/haierp1/seller/delete', { data: payload }).catch(e => e);
+const updateAgency = ({ payload }) => fetch.post('/haierp1/seller/update', { data: payload }).catch(e => e);
+const addAgency = ({ payload }) => fetch.post('/haierp1/seller/add', { data: payload }).catch(e => e);
+const queryAgencyTypeList = ({ payload }) => fetch.post('/haierp1/sellerType/querySellerTypeList', { data: payload }).catch(e => e);
+const queryAgencyType = ({ payload }) => fetch.post('/haierp1/sellerType/query', { data: payload }).catch(e => e);
+const deleteAgencyType = ({ payload }) => fetch.post('/haierp1/sellerType/delete', { data: payload }).catch(e => e);
+const updateAgencyType = ({ payload }) => fetch.post('/haierp1/sellerType/update', { data: payload }).catch(e => e);
+const addAgencyType = ({ payload }) => fetch.post('/haierp1/sellerType/add', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'agency',
@@ -21,6 +21,8 @@ export default {
     agencyTypeValues: {},
     total: 1,
     typeTotal: 1,
+    current: 1,
+    typeCurrent: 1,
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -28,21 +30,26 @@ export default {
         if (pathname === '/person/agencyType') {
           dispatch({
             type: 'queryAgencyTypeList',
-            payload: {},
+            payload: { pageIndex: 1 },
           });
         }
         if (pathname === '/person/agencyList') {
           dispatch({
             type: 'queryAgencyList',
-            payload: {},
+            payload: { pageIndex: 1 },
           });
         }
       });
     },
   },
   effects: {
-    * queryAgencyList({ payload }, { call, put }) {
-      const data = yield call(queryAgencyList, { payload });
+    * queryAgencyList({ payload }, { call, put, select }) {
+      let pageIndex = yield select(({ agency }) => agency.current);
+      if (payload && payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({ type: 'saveCurrentPage', payload });
+      }
+      const data = yield call(queryAgencyList, { payload: { ...payload, pageIndex } });
       if (data.success) {
         yield put({ type: 'updateList', payload: data });
       }
@@ -66,10 +73,18 @@ export default {
         });
       }
     },
-    * deleteAgency({ payload }, { call, put }) {
+    * deleteAgency({ payload }, { call, put, select }) {
       const data = yield call(deleteAgency, { payload });
       if (data.success) {
         message.success('删除类目成功');
+        const agency = yield select(model => model.agency);
+        if (agency.list.length < 2 && agency.current > 1) {
+          yield put({
+            type: 'queryAgencyList',
+            payload: { payload: agency.current - 1 },
+          });
+          return;
+        }
         yield put({
           type: 'queryAgencyList',
           payload: {},
@@ -86,8 +101,13 @@ export default {
         });
       }
     },
-    * queryAgencyTypeList({ payload }, { call, put }) {
-      const data = yield call(queryAgencyTypeList, { payload });
+    * queryAgencyTypeList({ payload }, { call, put, select }) {
+      let pageIndex = yield select(({ agency }) => agency.typeCurrent);
+      if (payload && payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({ type: 'saveTypeCurrentPage', payload });
+      }
+      const data = yield call(queryAgencyTypeList, { payload: { ...payload, pageIndex } });
       console.log(data);
       if (data.success) {
         yield put({ type: 'updateTypeList', payload: data });
@@ -112,10 +132,18 @@ export default {
         });
       }
     },
-    * deleteAgencyType({ payload }, { call, put }) {
+    * deleteAgencyType({ payload }, { call, put, select }) {
       const data = yield call(deleteAgencyType, { payload });
       if (data.success) {
         message.success('删除类目成功');
+        const agency = yield select(model => model.agency);
+        if (agency.typeList.length < 2 && agency.typeCurrent > 1) {
+          yield put({
+            type: 'queryAgencyTypeList',
+            payload: { pageIndex: agency.typeCurrent - 1 },
+          });
+          return;
+        }
         yield put({
           type: 'queryAgencyTypeList',
           payload: {},
@@ -145,6 +173,12 @@ export default {
     },
     saveAgency(state, { payload }) {
       return { ...state, agencyValues: payload };
+    },
+    saveCurrentPage(state, { payload }) {
+      return { ...state, current: payload.pageIndex };
+    },
+    saveTypeCurrentPage(state, { payload }) {
+      return { ...state, typeCurrent: payload.pageIndex };
     },
   },
 };

@@ -14,7 +14,9 @@ import Purchase from './components/Purchase/Purchase'; // 采购管理
 import StockIn from './components/StockIn/StockIn'; // 入库管理
 import Agency from './components/Agency/Agency';
 import AgencyType from './components/Agency/AgencyType';
-import Supplier from './components/Supplier/Supplier';
+// import Supplier from './components/Supplier/Supplier';
+import Inventory from './components/Inventory/Inventory';
+import Warehouse from './components/System/Warehouse'; // 仓库管理
 
 function redirectHelper(...args) {
   // 传入参数3，为onEnter
@@ -48,7 +50,9 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_STOCK_IN}`} component={StockIn} />
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_LIST}`} component={Agency} />
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_TYPE}`} component={AgencyType} />
-        <Route path={`/${routerCfg.PERSON}/${routerCfg.SUPPLIER_LIST}`} component={Supplier} />
+        {/* <Route path={`/${routerCfg.PERSON}/${routerCfg.SUPPLIER_LIST}`} component={Supplier} /> */}
+        <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} component={Inventory} />
+        <Route path={`/${routerCfg.SYSTEM}/${routerCfg.WAREHOUSE}`} component={Warehouse} />
         {/* 重定向 */}
         <Redirect from={`/${routerCfg.PRODUCTS}`} to={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} />
       </Route>

@@ -33,17 +33,18 @@ class AgencyModal extends Component {
     const { userId, typeId } = this.state;
     form.validateFieldsAndScroll((err, values) => {
       if (err) return;
-      if (modalValues) {
+      if (modalValues.data) {
+        this.props.dispatch({
+          type: 'agency/updateAgency',
+          payload: { ...values, userId: modalValues.data.userId, typeId: modalValues.data.typeId, id: modalValues.id },
+        });
+      } else {
         this.props.dispatch({
           type: 'agency/addAgency',
           payload: { ...values, userId, typeId },
         });
-      } else {
-        this.props.dispatch({
-          type: 'agency/updateAgency',
-          payload: { ...values, userId, typeId, id: modalValues.id },
-        });
       }
+      this.closeModal();
     });
   }
 
@@ -109,7 +110,7 @@ class AgencyModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('name', {
-                  initialValue: toString(agencyData.name),
+                  initialValue: toString(agencyData.name, 'SELECT'),
                   rules: [{ required: true, message: '请选择经销商名称' }],
                 })(
                   <Select placeholder="请选择经销商名称" onChange={this.handleChange.bind(this)} >
@@ -155,7 +156,7 @@ class AgencyModal extends Component {
                   initialValue: toString(agencyData.typeName),
                   rules: [{ required: true, message: '请选择经销商名称' }],
                 })(
-                  <Input placeholder="请选择经销商名称" disabled="true" />,
+                  <Input placeholder="请选择经销商名称" disabled={true} />,
                 )}
               </FormItem>
             </Col>
@@ -168,7 +169,7 @@ class AgencyModal extends Component {
                   initialValue: toString(agencyData.typeCode),
                   rules: [{ required: true, message: '请选择经销商名称' }],
                 })(
-                  <Input placeholder="请选择经销商名称" disabled="true" />,
+                  <Input placeholder="请选择经销商名称" disabled={true} />,
                 )}
               </FormItem>
             </Col>

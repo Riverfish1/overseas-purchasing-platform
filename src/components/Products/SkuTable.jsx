@@ -156,7 +156,7 @@ class SkuTable extends Component {
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_scale`, { initialValue: t || '' })(
+                {getFieldDecorator(`r_${r.key}_scale`, { initialValue: t || '', rules: [{ required: true, message: '该项必填' }] })(
                   <Input placeholder="请填写" />)}
                 {getFieldDecorator(`r_${r.key}_id`, { initialValue: r.id || null })(
                   <Input style={{ display: 'none' }} />)}
@@ -172,7 +172,7 @@ class SkuTable extends Component {
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_color`, { initialValue: t || '' })(
+                {getFieldDecorator(`r_${r.key}_color`, { initialValue: t || '', rules: [{ required: true, message: '该项必填' }] })(
                   <Input placeholder="请填写" />)}
               </FormItem>
             );
@@ -186,7 +186,7 @@ class SkuTable extends Component {
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_salePrice`, { initialValue: t || '', rules: [{ required: true, message: '请填写销售价格' }] })(
+                {getFieldDecorator(`r_${r.key}_salePrice`, { initialValue: t || '', rules: [{ required: true, message: '该项必填' }] })(
                   <InputNumber step={0.01} min={0} placeholder="请填写" />)}
               </FormItem>
             );
@@ -200,7 +200,7 @@ class SkuTable extends Component {
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_virtualInv`, { initialValue: t || '' })(
+                {getFieldDecorator(`r_${r.key}_virtualInv`, { initialValue: t || '', rules: [{ required: true, message: '该项必填' }] })(
                   <InputNumber step={1} min={0} placeholder="请填写" />)}
               </FormItem>
             );
@@ -214,7 +214,7 @@ class SkuTable extends Component {
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_weight`, { initialValue: t || '' })(
+                {getFieldDecorator(`r_${r.key}_weight`, { initialValue: t || '', rules: [{ required: true, message: '该项必填' }] })(
                   <InputNumber step={0.01} min={0} placeholder="请填写" />)}
               </FormItem>
             );
@@ -228,7 +228,10 @@ class SkuTable extends Component {
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_packageLevelId`, { initialValue: typeof t === 'string' ? JSON.parse(t) : '' })(
+                {getFieldDecorator(`r_${r.key}_packageLevelId`, {
+                  initialValue: t && typeof t === 'string' ? t.match(/\[/g) ? JSON.parse(t) : t.split(',') : '',
+                  rules: [{ required: true, message: '该项必选' }],
+                })(
                   <Cascader options={packageScales} placeholder="请选择" />)}
               </FormItem>
             );

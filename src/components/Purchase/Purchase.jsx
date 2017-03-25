@@ -101,7 +101,7 @@ class Purchase extends Component {
       { title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle' },
       { title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc' },
       { title: '任务分配人', dataIndex: 'taskOwnerName', key: 'taskOwnerName' },
-      { title: '买手', dataIndex: 'taskUserName', key: 'taskUserName' },
+      { title: '买手', dataIndex: 'taskUserName', key: 'taskUserName', render(text) { return text || '-'; } },
       { title: '图片',
         dataIndex: 'imageUrl',
         key: 'imageUrl',
@@ -109,21 +109,9 @@ class Purchase extends Component {
           return t ? <img role="presentation" onClick={p.handleBigPic.bind(p, t)} src={t} width="50" height="50" style={{ cursor: 'pointer' }} /> : '-';
         },
       },
-      { title: '采购类型',
-        dataIndex: 'purType',
-        key: 'purType',
-        render(t) {
-          if (t === 0) {
-            return <span>订单采购</span>;
-          } else if (t === 1) {
-            return <span>囤货采购</span>;
-          }
-          return '-';
-        },
-      },
       { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime' },
       { title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime' },
-      { title: '备注', dataIndex: 'remark', key: 'remark' },
+      { title: '备注', dataIndex: 'remark', key: 'remark', render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
@@ -186,9 +174,9 @@ class Purchase extends Component {
                 label="买手"
                 {...formItemLayout}
               >
-                {getFieldDecorator('userId', {})(
-                  <Select placeholder="请选择用户" combobox>
-                    {buyer.map(el => <Option key={el.id} value={el.id.toString()}>{el.name}</Option>)}
+                {getFieldDecorator('wxUserId', {})(
+                  <Select placeholder="请选择用户" optionLabelProp="title" combobox>
+                    {buyer.map(el => <Option key={el.wxUserId} value={el.wxUserId.toString()} title={el.name}>{el.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>

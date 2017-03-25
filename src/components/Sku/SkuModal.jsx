@@ -37,14 +37,14 @@ class SkuModal extends Component {
       }
       if (fieldsValue.mainPic) {
         const uploadMainPic = [];
-        fieldsValue.mainPic.forEach((item) => {
+        fieldsValue.mainPic.forEach((item, index) => {
           uploadMainPic.push({
-            uid: item.uid,
+            uid: `i_${index}`,
             type: item.type,
             url: item.url,
           });
         });
-        fieldsValue.mainPic = encodeURIComponent(JSON.stringify({ picList: uploadMainPic }));
+        fieldsValue.mainPic = JSON.stringify({ picList: uploadMainPic });
       }
       if (fieldsValue.brand) {
         brands.forEach((item) => {
@@ -52,6 +52,9 @@ class SkuModal extends Component {
             fieldsValue.brand = item.name;
           }
         });
+      }
+      if (fieldsValue.packageLevelId) {
+        fieldsValue.packageLevelId = JSON.stringify(fieldsValue.packageLevelId);
       }
       if (modalValues.data) {
         fieldsValue.id = modalValues.data.id;
@@ -131,7 +134,7 @@ class SkuModal extends Component {
     const modalProps = {
       visible,
       width: 900,
-      title: '添加',
+      title: skuModalData.skuCode ? '修改' : '添加',
       maskClosable: false,
       closable: true,
       onOk() {
@@ -224,29 +227,44 @@ class SkuModal extends Component {
             </Col>
             <Col span={7}>
               <FormItem
+                label="销售价格"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('salePrice', {
+                  initialValue: skuModalData.salePrice || 0,
+                  rules: [{ required: true, message: '请填写销售价格' }],
+                })(
+                  <InputNumber step={0.01} min={0} placeholder="请输入销售价格" />,
+                )}
+              </FormItem>
+            </Col>
+            <Col span={7}>
+              <FormItem
                 label="尺寸"
                 {...formItemLayout}
               >
                 {getFieldDecorator('scale', {
                   initialValue: toString(skuModalData.scale),
+                  rules: [{ required: true, message: '请填写尺寸' }],
                 })(
                   <Input placeholder="请输入尺寸" />,
                 )}
               </FormItem>
             </Col>
+          </Row>
+          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="包装规格"
                 {...formItemLayout}
               >
                 {getFieldDecorator('packageLevelId', {
-                  initialValue: toString(skuModalData.packageLevelId, 'SELECT'),
+                  initialValue: skuModalData.packageLevelId && typeof skuModalData.packageLevelId === 'string' ? skuModalData.packageLevelId.match(/\[/g) ? JSON.parse(skuModalData.packageLevelId) : skuModalData.packageLevelId.split(',') : undefined,
+                  rules: [{ required: true, message: '请选择包装规格' }],
                 })(
                   <Cascader options={packageScales} placeholder="请选择包装规格" />)}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="upc"
@@ -254,6 +272,7 @@ class SkuModal extends Component {
               >
                 {getFieldDecorator('upc', {
                   initialValue: toString(skuModalData.upc),
+                  rules: [{ required: true, message: '请填写upc码' }],
                 })(
                   <Input placeholder="请输入upc" />,
                 )}
@@ -266,20 +285,9 @@ class SkuModal extends Component {
               >
                 {getFieldDecorator('virtualInv', {
                   initialValue: toString(skuModalData.virtualInv),
+                  rules: [{ required: true, message: '请填写虚拟库存' }],
                 })(
                   <Input placeholder="请输入虚拟库存" />,
-                )}
-              </FormItem>
-            </Col>
-            <Col span={7}>
-              <FormItem
-                label="重量(kg)"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('weight', {
-                  initialValue: toString(skuModalData.weight),
-                })(
-                  <InputNumber skep={0.01} placeholder="请输入重量" />,
                 )}
               </FormItem>
             </Col>
@@ -287,11 +295,25 @@ class SkuModal extends Component {
           <Row gutter={10}>
             <Col span={7}>
               <FormItem
+                label="重量(kg)"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('weight', {
+                  initialValue: toString(skuModalData.weight),
+                  rules: [{ required: true, message: '请填写重量' }],
+                })(
+                  <InputNumber skep={0.01} placeholder="请输入重量" />,
+                )}
+              </FormItem>
+            </Col>
+            <Col span={7}>
+              <FormItem
                 label="颜色"
                 {...formItemLayout}
               >
                 {getFieldDecorator('color', {
                   initialValue: toString(skuModalData.color),
+                  rules: [{ required: true, message: '请填写颜色' }],
                 })(
                   <Input placeholder="请输入颜色" />,
                 )}
@@ -304,6 +326,7 @@ class SkuModal extends Component {
               >
                 {getFieldDecorator('brand', {
                   initialValue: toString(skuModalData.brand, 'SELECT'),
+                  rules: [{ required: true, message: '请选择品牌' }],
                 })(
                   <Select placeholder="请选择品牌" combobox>
                     {brands.map(item => <Option key={item.id.toString()} value={item.name}>{item.name}</Option>)}

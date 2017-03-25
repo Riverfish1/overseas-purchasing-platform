@@ -90,14 +90,23 @@ class ProductTable extends Component {
     console.log('selected');
 
     const { form, skuList } = this.props;
-    const { skuSearchList } = this.state;
+    const { skuSearchList, skuData } = this.state;
 
     const source = skuSearchList[key] || skuList;
 
     source.forEach((value) => {
       if (value.skuCode.toString() === skuCode.toString()) {
-        form.setFieldsValue({
-          [`r_${key}_skuId`]: value.id,
+        skuData.forEach((el) => {
+          if (el.key.toString() === key.toString()) {
+            el.skuId = value.id;
+            el.skuCode = value.skuCode;
+          }
+        });
+        this.setState({ skuData }, () => {
+          form.setFieldsValue({
+            [`r_${key}_skuId`]: value.id,
+            [`r_${key}_skuCode`]: value.skuCode,
+          });
         });
       }
     });
@@ -182,9 +191,10 @@ class ProductTable extends Component {
       }
 
       function updateValue(selectedSkuCode) {
+        console.log(key, selectedSkuCode);
         p.handleSelect(key, selectedSkuCode);
         setTimeout(() => {
-          p[`r_${key}_skuId`].refs.input.click();
+          p[`r_${key}_skuCode`].refs.input.click();
         }, 0);
       }
 
@@ -249,22 +259,23 @@ class ProductTable extends Component {
       columns: [
         {
           title: <font color="#00f">商品SKU</font>,
-          dataIndex: 'skuId',
-          key: 'skuId',
+          dataIndex: 'skuCode',
+          key: 'skuCode',
           width: '10%',
           render(t, r) {
             const list = skuSearchList[r.key] || skuList;
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_skuId`, {
+                {getFieldDecorator(`r_${r.key}_skuCode`, {
                   initialValue: t || undefined,
+                  rules: [{ required: true, message: '该项必填' }],
                 })(
                   <Popover
                     content={renderSkuPopover(list, r.key)}
                     title="搜索SKU"
                     trigger="click"
                   >
-                    <Input placeholder="请搜索" ref={(c) => { p[`r_${r.key}_skuId`] = c; }} value={t || undefined} />
+                    <Input placeholder="请搜索" ref={(c) => { p[`r_${r.key}_skuCode`] = c; }} value={t || undefined} />
                   </Popover>,
                 )}
               </FormItem>
@@ -273,16 +284,17 @@ class ProductTable extends Component {
         },
         {
           title: <font color="#00f">买手</font>,
-          dataIndex: 'userId',
-          key: 'userId',
+          dataIndex: 'wxUserId',
+          key: 'wxUserId',
           width: '8.5%',
           render(t, r) {
             return (<FormItem>
-              {getFieldDecorator(`r_${r.key}_userId`, {
-                initialValue: t || undefined,
+              {getFieldDecorator(`r_${r.key}_wxUserId`, {
+                initialValue: t ? t.toString() : undefined,
+                rules: [{ required: true, message: '该项必选' }],
               })(
-                <Select placeholder="请选择">
-                  {buyer.map(el => <Option key={el.id}>{el.name}</Option>)}
+                <Select placeholder="请选择" optionLabelProp="title">
+                  {buyer.map(el => <Option key={el.wxUserId} title={el.name}>{el.name}</Option>)}
                 </Select>,
               )}
             </FormItem>);
@@ -298,6 +310,7 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskPrice`, {
                   initialValue: t || undefined,
+                  rules: [{ required: true, message: '该项必填' }],
                 })(
                   <InputNumber step={0.01} placeholder="请输入" />,
                 )}
@@ -315,6 +328,7 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskMaxPrice`, {
                   initialValue: t || undefined,
+                  rules: [{ required: true, message: '该项必填' }],
                 })(
                   <InputNumber step={0.01} placeholder="请输入" />,
                 )}
@@ -331,7 +345,8 @@ class ProductTable extends Component {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_mode`, {
-                  initialValue: t || '1',
+                  initialValue: typeof t !== 'undefined' ? t.toString() : '1',
+                  rules: [{ required: true, message: '该项必填' }],
                 })(
                   <Select placeholder="请选择" >
                     <Option value="0">线上</Option>
@@ -352,6 +367,7 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_count`, {
                   initialValue: t,
+                  rules: [{ required: true, message: '该项必填' }],
                 })(
                   <InputNumber step={1} min={1} placeholder="请输入" />,
                 )}
@@ -368,6 +384,7 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskMaxCount`, {
                   initialValue: t || undefined,
+                  rules: [{ required: true, message: '该项必填' }],
                 })(
                   <InputNumber placeholder="请输入" />,
                 )}
@@ -385,6 +402,7 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskStartTime`, {
                   initialValue: t ? moment(t, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
+                  rules: [{ required: true, message: '该项必填' }],
                 })(
                   <DatePicker />,
                 )}
@@ -402,6 +420,7 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskEndTime`, {
                   initialValue: t ? moment(t, 'YYYY-MM-DD') : undefined,
+                  rules: [{ required: true, message: '该项必填' }],
                 })(
                   <DatePicker />,
                 )}
@@ -419,11 +438,22 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_remark`, {
                   initialValue: t || '0',
+                  rules: [{ required: true, message: '该项必选' }],
                 })(
                   <Select>
                     <Option value="0">买手采购</Option>
                     <Option value="1">仓库调货</Option>
                   </Select>,
+                )}
+                {getFieldDecorator(`r_${r.key}_skuId`, {
+                  initialValue: r.skuId || undefined,
+                })(
+                  <Input placeholder="请搜索" ref={(c) => { p[`r_${r.key}_skuId`] = c; }} style={{ display: 'none' }} />,
+                )}
+                {getFieldDecorator(`r_${r.key}_id`, {
+                  initialValue: r.id,
+                })(
+                  <Input placeholder="请搜索" ref={(c) => { p[`r_${r.key}_id`] = c; }} style={{ display: 'none' }} />,
                 )}
               </FormItem>
             );

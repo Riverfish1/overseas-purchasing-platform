@@ -39,13 +39,13 @@ class PurchaseModal extends Component {
     const { form, dispatch, modalValues } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
-      p.getSkuValue((orderDetailList) => {
-        console.log(orderDetailList);
+      p.getSkuValue((detailList) => {
+        console.log(detailList);
         const values = {
           ...fieldsValue,
           taskStartTime: fieldsValue.taskStartTime && fieldsValue.taskStartTime.format('YYYY-MM-DD'),
           taskEndTime: fieldsValue.taskEndTime && fieldsValue.taskEndTime.format('YYYY-MM-DD'),
-          orderDetailList: JSON.stringify(orderDetailList),
+          detailList: JSON.stringify(detailList),
         };
 
         // 处理图片
@@ -64,12 +64,12 @@ class PurchaseModal extends Component {
         if (modalValues && modalValues.data) {
           dispatch({
             type: 'purchase/updatePurchase',
-            payload: { ...values, id: modalValues.data.id, orderDetailList: JSON.stringify(orderDetailList) },
+            payload: { ...values, id: modalValues.data.id, detailList: JSON.stringify(detailList) },
           });
         } else {
           dispatch({
             type: 'purchase/addPurchase',
-            payload: { ...values, orderDetailList: JSON.stringify(orderDetailList) },
+            payload: { ...values, detailList: JSON.stringify(detailList) },
           });
         }
         p.closeModal();
@@ -218,12 +218,12 @@ class PurchaseModal extends Component {
                 label="买手"
                 {...formItemLayout}
               >
-                {getFieldDecorator('userId', {
-                  initialValue: toString(purchaseData.userId, 'SELECT'),
+                {getFieldDecorator('wxUserId', {
+                  initialValue: toString(purchaseData.wxUserId, 'SELECT'),
                   rules: [{ required: true, message: '请选择用户' }],
                 })(
-                  <Select placeholder="请输入用户" combobox>
-                    {buyer.map(el => <Option key={el.id}>{el.name}</Option>)}
+                  <Select placeholder="请输入用户" optionLabelProp="title" combobox>
+                    {buyer.map(el => <Option key={el.wxUserId} title={el.name}>{el.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>
@@ -248,6 +248,7 @@ class PurchaseModal extends Component {
               >
                 {getFieldDecorator('taskStartTime', {
                   initialValue: purchaseData.taskStartTime ? moment(purchaseData.taskStartTime, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
+                  rules: [{ required: true, message: '该项必填' }],
                 })(
                   <DatePicker style={{ width: '100%' }} />,
                 )}
@@ -260,6 +261,7 @@ class PurchaseModal extends Component {
               >
                 {getFieldDecorator('taskEndTime', {
                   initialValue: purchaseData.taskEndTime ? moment(purchaseData.taskEndTime, 'YYYY-MM-DD HH:mm:ss') : undefined,
+                  rules: [{ required: true, message: '该项必填' }],
                 })(
                   <DatePicker style={{ width: '100%' }} />,
                 )}
@@ -327,7 +329,7 @@ class PurchaseModal extends Component {
             </Col>
           </Row>
           <Row>
-            <ProductTable data={purchaseData.orderDetails} parent={this} buyer={buyer} />
+            <ProductTable data={purchaseData.taskDetailList} parent={this} buyer={buyer} />
           </Row>
         </Form>
       </Modal>

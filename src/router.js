@@ -20,8 +20,9 @@ function redirectHelper(...args) {
   const { location } = args[len - 3];
   const replace = args[len - 2];
   const callback = args[len - 1];
-  console.log('redirect');
-  if (!localStorage.getItem('HAIERP_LAST_LOGIN') && location.pathname !== `/${routerCfg.LOGIN}`) replace(`/${routerCfg.LOGIN}`);
+  const lastLoginTime = parseInt(localStorage.getItem('HAIERP_LAST_LOGIN') || 0, 10);
+  const isTimeout = new Date().getTime() - lastLoginTime > (7 * 24 * 60 * 60 * 1000) - 10000;
+  if (isTimeout && location.pathname !== `/${routerCfg.LOGIN}`) replace(`/${routerCfg.LOGIN}`);
   else if (location.pathname === '/') replace(`/${routerCfg.OVERVIEW}`);
   callback();
 }

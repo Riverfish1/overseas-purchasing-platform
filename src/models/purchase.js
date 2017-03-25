@@ -1,11 +1,19 @@
 import { message } from 'antd';
-import { queryPurchaseList, queryPurchase, addPurchase, updatePurchase, deletePurchase, queryBuyers } from '../services/purchase';
+import fetch from '../utils/request';
+
+const addPurchase = ({ payload }) => fetch.post('/haierp1/purchase/add', { data: payload }).catch(e => e);
+const updatePurchase = ({ payload }) => fetch.post('/haierp1/purchase/update', { data: payload }).catch(e => e);
+const queryPurchaseList = ({ payload }) => fetch.post('/haierp1/purchase/queryTaskDailyList', { data: payload }).catch(e => e);
+const queryPurchase = ({ payload }) => fetch.post('/haierp1/purchase/query', { data: payload }).catch(e => e);
+const queryBuyers = ({ payload }) => fetch.post('/haierp1/purchase/queryBuyers', { data: payload }).catch(e => e);
+const deletePurchase = ({ payload }) => fetch.post('/haierp1/purchase/delete', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'purchase',
   state: {
     list: [],
     total: '',
+    currentPage: '',
     purchaseValues: {},
     buyer: [],
   },

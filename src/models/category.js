@@ -1,11 +1,12 @@
 import { message } from 'antd';
-import {
-  addCate,
-  queryCateList,
-  updateCate,
-  deleteCate,
-  queryCate,
-} from '../services/category';
+import fetch from '../utils/request';
+
+const addCate = ({ payload }) => fetch.post('/haierp1/category/add', { data: payload }).catch(e => e);
+const queryCateList = ({ payload }) => fetch.post('/haierp1/category/queryList', { data: payload }).catch(e => e);
+const queryCate = ({ payload }) => fetch.post('/haierp1/category/query', { data: payload }).catch(e => e);
+const updateCate = ({ payload }) => fetch.post('/haierp1/category/update', { data: payload }).catch(e => e);
+const deleteCate = ({ payload }) => fetch.post('/haierp1/category/delete', { data: payload }).catch(e => e);
+
 
 export default {
   namespace: 'cate',

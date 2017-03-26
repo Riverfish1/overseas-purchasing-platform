@@ -264,7 +264,7 @@ class SkuTable extends Component {
         <CheckboxGroup options={scaleOptions} value={batchSelected} onChange={this.handleBatchSelect.bind(this)} />
         <div style={{ height: 20 }} />
         <Button type="primary" size="small" onClick={this.handleBatchSkuAddVisible.bind(this, false)}>添加</Button>
-        <Button style={{ marginLeft: 10 }} size="small" onClick={this.handleBatchSkuAddVisible.bind(this, false)}>关闭</Button>
+        <Button style={{ marginLeft: 10 }} size="small" onClick={() => this.setState({ batchSkuAddVisible: false })}>关闭</Button>
       </div>
     );
 

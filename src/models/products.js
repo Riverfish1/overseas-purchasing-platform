@@ -1,13 +1,12 @@
 import { message } from 'antd';
+import fetch from '../utils/request';
 
-import {
-  queryItemList, // 获取商品列表
-  updateProducts, // 修改商品
-  queryProduct, // 查询单个商品，修改之前调用
-  addProducts, // 增加商品
-  queryBrands, // 获取品牌
-  queryCatesTree, // 获取类目
-} from '../services/products';
+const queryItemList = ({ payload }) => fetch.post('/haierp1/item/queryItemList', { data: payload }).catch(e => e);
+const queryProduct = ({ payload }) => fetch.post('/haierp1/item/query', { data: payload }).catch(e => e);
+const updateProducts = ({ payload }) => fetch.post('/haierp1/item/update', { data: payload }).catch(e => e);
+const addProducts = ({ payload }) => fetch.post('/haierp1/item/add', { data: payload }).catch(e => e);
+const queryBrands = () => fetch.post('/haierp1/item/brand/queryBrands').catch(e => e);
+const queryCatesTree = () => fetch.post('/haierp1/category/tree').catch(e => e);
 
 export default {
   namespace: 'products',
@@ -18,6 +17,7 @@ export default {
     currentPage: 1, // 默认页码
     brands: [], // 品牌
     tree: [], // 类目树
+    searchValues: {},
   },
   reducers: {
     saveCatesTree(state, { payload: data }) {
@@ -34,6 +34,9 @@ export default {
     },
     saveCurrentPage(state, { payload }) {
       return { ...state, currentPage: payload.pageIndex };
+    },
+    saveSearchValues(state, { payload }) {
+      return { ...state, searchValues: payload };
     },
   },
   effects: {
@@ -69,14 +72,15 @@ export default {
         });
       }
     },
-    * updateProducts({ payload }, { call, put }) { // 修改商品
+    * updateProducts({ payload }, { call, put, select }) { // 修改商品
       const data = yield call(updateProducts, { payload });
       console.log('updateProducts success', data);
       if (data.success) {
         message.success('修改商品成功');
+        const values = yield select(({ products }) => products.searchValues);
         yield put({
           type: 'queryItemList',
-          payload: {},
+          payload: { ...values },
         });
       }
     },
@@ -97,7 +101,7 @@ export default {
         });
       }
     },
-    * queryBrands({ payload }, { call, put }) { // 获取品牌
+    * queryBrands(param, { call, put }) { // 获取品牌
       const data = yield call(queryBrands);
       console.log('queryBrands success', data);
       if (data.success) {
@@ -107,7 +111,7 @@ export default {
         });
       }
     },
-    * queryCatesTree({ payload }, { call, put }) {
+    * queryCatesTree(param, { call, put }) {
       const data = yield call(queryCatesTree);
       console.log('queryCatesTree success', data);
       if (data.success) {

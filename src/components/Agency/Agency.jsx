@@ -140,7 +140,7 @@ class Agency extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('name', {})(
-                  <Select placeholder="请选择经销商名称" allowClear>
+                  <Select placeholder="请选择经销商名称">
                     {list.map((el, index) => <Option key={index} value={el.name}>{el.name}</Option>)}
                   </Select>,
                 )}
@@ -148,11 +148,14 @@ class Agency extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="经销商类别Id"
+                label="经销商类别名称"
                 {...formItemLayout}
               >
                 {getFieldDecorator('typeId', {})(
-                  <Input placeholder="请输入经销商类别Id" />)}
+                  <Select placeholder="请选择经销商类别名称">
+                    {list.map((el, index) => <Option key={index} value={el.typeId.toString()}>{el.typeName}</Option>)}
+                  </Select>,
+                )}
               </FormItem>
             </Col>
           </Row>

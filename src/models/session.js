@@ -1,6 +1,8 @@
 import { message } from 'antd';
 import { routerCfg } from '../constants';
-import { login } from '../services/session';
+import fetch from '../utils/request';
+
+const login = ({ payload }) => fetch.post('/haierp1/haiLogin/login', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'session',

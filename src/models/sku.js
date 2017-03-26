@@ -1,6 +1,14 @@
 import { message } from 'antd';
-import { addSku, querySkuList, updateSku, querySku, deleteSku, queryPackageScales, queryScaleTypes } from '../services/sku';
-import { queryItemList } from '../services/products';
+import fetch from '../utils/request';
+
+const addSku = ({ payload }) => fetch.post('/haierp1/itemSku/add', { data: payload }).catch(e => e);
+const updateSku = ({ payload }) => fetch.post('/haierp1/itemSku/update', { data: payload }).catch(e => e);
+const querySku = ({ payload }) => fetch.post('/haierp1/itemSku/query', { data: payload }).catch(e => e);
+const querySkuList = ({ payload }) => fetch.post('/haierp1/itemSku/queryItemSkuList', { data: payload }).catch(e => e);
+const deleteSku = ({ payload }) => fetch.post('/haierp1/itemSku/delete', { data: payload }).catch(e => e);
+const queryPackageScales = () => fetch.post('/haierp1/freight/getPackageScaleList').catch(e => e);
+const queryScaleTypes = () => fetch.post('/haierp1/itemSku/scaleTypeList').catch(e => e);
+const queryItemList = ({ payload }) => fetch.post('/haierp1/item/queryItemList', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'sku',

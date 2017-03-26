@@ -1,6 +1,6 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Button, Row, Col, Form, Input, Popconfirm, Select, TreeSelect, Modal } from 'antd';
+import { Table, Button, Row, Col, Form, Input, Popconfirm, Popover, Select, TreeSelect } from 'antd';
 import SkuModal from './SkuModal';
 import styles from './Sku.less';
 
@@ -87,8 +87,12 @@ class Sku extends Component {
   render() {
     const p = this;
     const { skuList = {}, skuTotal, currentPage, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
-    const { previewImage, previewVisible } = this.state;
+    const { previewImage } = this.state;
     const { getFieldDecorator } = form;
+
+    const content = (
+      <img role="presentation" src={previewImage} style={{ width: 400 }} />
+    );
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -117,7 +121,11 @@ class Sku extends Component {
           } catch (e) {
             return '-';
           }
-          return <img role="presentation" onClick={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" style={{ cursor: 'pointer' }} />;
+          return (
+            <Popover title={null} content={content}>
+              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />;
+            </Popover>
+          );
         },
       },
       { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', render(text) { return text || '-'; } },
@@ -233,9 +241,6 @@ class Sku extends Component {
             />
           </Col>
         </Row>
-        <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
-          <img role="presentation" src={previewImage} style={{ width: '100%' }} />
-        </Modal>
         <SkuModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
@@ -265,13 +270,5 @@ function mapStateToProps(state) {
     tree,
   };
 }
-
-Sku.PropTypes = {
-  skuList: PropTypes.object.isRequired,
-  skuData: PropTypes.object.isRequired,
-  current: PropTypes.number.isRequired,
-  brands: PropTypes.array.isRequired,
-  productsList: PropTypes.array.isRequired,
-};
 
 export default connect(mapStateToProps)(Form.create()(Sku));

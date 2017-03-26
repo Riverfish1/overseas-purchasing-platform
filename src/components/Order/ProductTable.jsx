@@ -198,15 +198,15 @@ class ProductTable extends Component {
 
     function renderSkuPopover(list, key) {
       let skuCode = null;
-      let name = null;
+      let itemName = null;
 
       function handleEmpty() {
         skuCode.refs.input.value = '';
-        name.refs.input.value = '';
+        itemName.refs.input.value = '';
       }
 
       function doSearch() {
-        p.handleSearch(key, { skuCode: skuCode.refs.input.value, name: name.refs.input.value });
+        p.handleSearch(key, { skuCode: skuCode.refs.input.value, itemName: itemName.refs.input.value });
       }
 
       function updateValue(selectedSkuCode) {
@@ -249,7 +249,7 @@ class ProductTable extends Component {
                 <Input
                   size="default"
                   placeholder="请输入商品名称"
-                  ref={(c) => { name = c; }}
+                  ref={(c) => { itemName = c; }}
                 />
               </FormItem>
             </Col>

@@ -1,6 +1,14 @@
 import { message } from 'antd';
-import { addOrder, queryOrder, queryOrderList, querySalesName, updateOrder, deleteOrder } from '../services/order';
-import { querySkuList } from '../services/sku';
+import fetch from '../utils/request';
+
+const addOrder = ({ payload }) => fetch.post('/haierp1/order/add', { data: payload }).catch(e => e);
+const updateOrder = ({ payload }) => fetch.post('/haierp1/order/update', { data: payload }).catch(e => e);
+const querySkuList = ({ payload }) => fetch.post('/haierp1/itemSku/queryItemSkuList', { data: payload }).catch(e => e);
+const deleteOrder = ({ payload }) => fetch.post('/haierp1/order/delete', { data: payload }).catch(e => e);
+const queryOrderList = ({ payload }) => fetch.post('/haierp1/order/queryOrderList', { data: payload }).catch(e => e);
+const queryOrder = ({ payload }) => fetch.post('/haierp1/order/query', { data: payload }).catch(e => e);
+const querySalesName = ({ payload }) => fetch.post('/haierp1/order/querySalesName', { data: payload }).catch(e => e);
+
 
 export default {
   namespace: 'order',
@@ -118,7 +126,7 @@ export default {
     * searchSku({ payload }, { call }) {
       const param = {};
       if (payload.keyword.skuCode) { param.skuCode = payload.keyword.skuCode; }
-      if (payload.keyword.name) { param.name = payload.keyword.name; }
+      if (payload.keyword.itemName) { param.itemName = payload.keyword.itemName; }
       const data = yield call(querySkuList, { payload: param });
       payload.callback(data.success ? data : 'ERROR');
     },

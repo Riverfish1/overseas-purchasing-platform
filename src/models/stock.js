@@ -1,6 +1,12 @@
 import { message } from 'antd';
-import { addOrder, queryOrder, queryStockList, querySalesName, updateOrder } from '../services/stock';
-import { querySkuList } from '../services/sku';
+import fetch from '../utils/request';
+
+const addOrder = ({ payload }) => fetch.post('/haierp1/order/add', { data: payload }).catch(e => e);
+const updateOrder = ({ payload }) => fetch.post('/haierp1/order/update', { data: payload }).catch(e => e);
+const deleteOrder = ({ payload }) => fetch.post('/haierp1/order/delete', { data: payload }).catch(e => e);
+const queryOrderList = ({ payload }) => fetch.post('/haierp1/order/queryOrderList', { data: payload }).catch(e => e);
+const queryOrder = ({ payload }) => fetch.post('/haierp1/order/query', { data: payload }).catch(e => e);
+const querySalesName = ({ payload }) => fetch.post('/haierp1/order/querySalesName', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'stock',
@@ -68,7 +74,7 @@ export default {
       }
     },
     * queryStockList({ payload }, { call, put }) {
-      const data = yield call(queryStockList, { payload });
+      const data = yield call(queryOrderList, { payload });
       if (data.success) {
         yield put({
           type: 'updateStockList',
@@ -86,7 +92,7 @@ export default {
       }
     },
     * searchSku({ payload }, { call }) {
-      const data = yield call(querySkuList, { payload: { skuCode: payload.keyword } });
+      const data = yield call(deleteOrder, { payload: { skuCode: payload.keyword } });
       payload.callback(data.success ? data : 'ERROR');
     },
   },

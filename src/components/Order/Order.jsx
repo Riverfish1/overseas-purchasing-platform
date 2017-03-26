@@ -304,7 +304,7 @@ class Order extends Component {
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row gutter={20} style={{ width: 800 }}>
+          <Row gutter={20}>
             <Col span="8">
               <FormItem
                 label="客户"
@@ -333,7 +333,7 @@ class Order extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={20} style={{ width: 800 }}>
+          <Row gutter={20}>
             <Col span="8">
               <FormItem
                 label="收件人"
@@ -370,7 +370,7 @@ class Order extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={20} style={{ width: 800 }}>
+          <Row gutter={20}>
             <Col span="8">
               <FormItem
                 label="订单备货状态"

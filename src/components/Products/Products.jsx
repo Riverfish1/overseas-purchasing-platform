@@ -26,6 +26,10 @@ class Products extends Component {
       }
       console.log(values);
       this.props.dispatch({
+        type: 'products/saveSearchValues',
+        payload: { ...values },
+      });
+      this.props.dispatch({
         type: 'products/queryItemList',
         payload: { ...values, pageIndex: 1 },
       });

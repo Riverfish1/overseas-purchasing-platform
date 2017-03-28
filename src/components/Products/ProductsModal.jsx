@@ -195,7 +195,6 @@ class ProductsModal extends Component {
       wrapperCol: { span: 13 },
     };
     const fileListSource = this.state.picList || picList;
-    console.log(fileListSource);
 
     return (
       <Modal

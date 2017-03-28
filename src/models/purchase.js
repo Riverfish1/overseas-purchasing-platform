@@ -26,6 +26,12 @@ export default {
             dispatch({ type: 'queryBuyers', payload: {} });
           }, 0);
         }
+        if (pathname === '/purchase/preStock') {
+          setTimeout(() => {
+            dispatch({ type: 'queryPurchaseList', payload: {} });
+            dispatch({ type: 'queryBuyers', payload: {} });
+          }, 0);
+        }
       });
     },
   },

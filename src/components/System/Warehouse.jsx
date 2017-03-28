@@ -50,7 +50,7 @@ class Warehouse extends Component {
         render(t, r) {
           return (
             <div>
-              <a href="javascript:void(0)" onClick={p.handleQuery.bind(p, r)}>修改</a>
+              <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.handleQuery.bind(p, r)}>修改</a>
               <Popconfirm title="确定删除" onConfirm={p.handleDelete.bind(p, r)}>
                 <a href="javascript:void(0)">删除</a>
               </Popconfirm>

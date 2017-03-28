@@ -91,22 +91,6 @@ class PurchaseModal extends Component {
     this.setState({ previewVisible: false });
   }
 
-  checkPhone(rules, value, callback) {
-    if (check.phone(value)) {
-      callback();
-    } else {
-      callback(new Error('请填写正确的手机号'));
-    }
-  }
-
-  checkPostcode(rules, value, callback) {
-    if (check.postcode(value)) {
-      callback();
-    } else {
-      callback(new Error('请填写正确的邮政编码'));
-    }
-  }
-
   checkImg(rules, values, callback) {
     callback();
   }

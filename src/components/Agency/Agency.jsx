@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Popconfirm } from 'antd';
+import { Table, Button, Row, Col, Select, Form, Popconfirm } from 'antd';
 import AgencyModal from './AgencyModal';
 
 const FormItem = Form.Item;

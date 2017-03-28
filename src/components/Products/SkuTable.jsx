@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Form, Table, Input, InputNumber, Button, Popconfirm, Cascader, message, Popover, Checkbox, Select } from 'antd';
+import { Row, Col, Form, Table, Input, InputNumber, Button, Popconfirm, Upload, Icon, Cascader, message, Popover, Checkbox, Select } from 'antd';
 
 import styles from './Products.less';
 
@@ -27,7 +27,14 @@ function getScaleOptions(batchSkuSort, scaleTypes) {
 class SkuTable extends Component {
   constructor() {
     super();
-    this.state = { skuData: [], batchSkuAddVisible: false, batchSkuSort: '', batchSelected: [] };
+    this.state = {
+      skuData: [],
+      batchSkuAddVisible: false,
+      batchSkuSort: '',
+      batchSelected: [],
+      previewVisible: false,
+      previewImage: '',
+    };
   }
   componentWillReceiveProps(...args) {
     if (args[0].data instanceof Array && args[0].data.length > 0 && this.state.skuData.length === 0) {
@@ -51,6 +58,18 @@ class SkuTable extends Component {
           }
         });
         skuSingle.packageLevelId = JSON.stringify(skuSingle.packageLevelId); // 数组转字符串
+        // 处理图片
+        if (skuSingle.mainPic) {
+          const uploadMainPic = [];
+          skuSingle.mainPic.fileList.forEach((el, index) => {
+            uploadMainPic.push({
+              type: el.type,
+              uid: `i_${index}`,
+              url: el.url,
+            });
+          });
+          skuSingle.mainPic = JSON.stringify({ picList: uploadMainPic });
+        }
         skuList.push(skuSingle);
         count += 1;
       }
@@ -88,6 +107,7 @@ class SkuTable extends Component {
       skuCode: '',
       salePrice: '',
       weight: '',
+      mainPic: '',
     };
     skuData.push(newItem);
     this.setState({ skuData });
@@ -101,6 +121,9 @@ class SkuTable extends Component {
         this.setState({ skuData: newSkuData.map((el, index) => { el.key = index + 1; return el; }) });
       }, 100);
     });
+  }
+  checkImg(rules, values, callback) {
+    callback();
   }
   handleBatchSkuAddVisible(batchSkuAddVisible) {
     if (!batchSkuAddVisible) {
@@ -126,10 +149,47 @@ class SkuTable extends Component {
     const { form, parent, packageScales, scaleTypes } = this.props;
     const { getFieldDecorator } = form;
     const { skuData, batchSkuSort, batchSelected } = this.state;
+    let picList = [];
+    if (skuData) {
+      skuData.forEach((el) => {
+        if (el.mainPic) {
+          const picObj = JSON.parse(el.mainPic);
+          console.log(picObj);
+          picList = picObj.picList || [];
+        }
+      });
+    }
 
     // 注册props
     if (!parent.clearSkuValue) parent.clearSkuValue = this.clearValue.bind(this);
     if (!parent.getSkuValue) parent.getSkuValue = this.getValue.bind(this);
+
+    const uploadProps = {
+      action: '/haierp1/uploadFile/picUpload',
+      listType: 'picture-card',
+      data(file) {
+        return {
+          pic: file.name,
+        };
+      },
+      beforeUpload(file) {
+        const isImg = file.type === 'image/jpeg' || file.type === 'image/bmp' || file.type === 'image/gif' || file.type === 'image/png';
+        if (!isImg) { message.error('请上传图片文件'); }
+        return isImg;
+      },
+      name: 'pic',
+      onPreview: false,
+      onChange(info) {
+        if (info.file.status === 'done') {
+          if (info.file.response && info.file.response.success) {
+            message.success(`${info.file.name} 成功上传`);
+            // 添加文件预览
+            const newFile = info.file;
+            newFile.url = info.file.response.data;
+          } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
+        } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
+      },
+    };
 
     const modalTableProps = {
       columns: [
@@ -200,7 +260,9 @@ class SkuTable extends Component {
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_virtualInv`, { initialValue: t || '', rules: [{ required: true, message: '该项必填' }] })(
+                {getFieldDecorator(`r_${r.key}_virtualInv`, {
+                  initialValue: t || '', rules: [{ required: true, message: '该项必填' }],
+                })(
                   <InputNumber step={1} min={0} placeholder="请填写" />)}
               </FormItem>
             );
@@ -216,6 +278,34 @@ class SkuTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_weight`, { initialValue: t || '', rules: [{ required: true, message: '该项必填' }] })(
                   <InputNumber step={0.01} min={0} placeholder="请填写" />)}
+              </FormItem>
+            );
+          },
+        },
+        {
+          title: '商品图片',
+          dataIndex: 'mainPic',
+          key: 'mainPic',
+          width: '12%',
+          render(t, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_mainPic`, {
+                  initialValue: picList,
+                  valuePropName: 'fileList',
+                  getValueFromEvent(e) {
+                    if (!e || !e.fileList) {
+                      return e;
+                    }
+                    const { fileList } = e;
+                    return fileList;
+                  },
+                  rules: [{ validator: p.checkImg.bind(p) }],
+                })(
+                  <Upload {...uploadProps} className={styles.picStyle}>
+                    <Icon type="plus" style={{ fontSize: 12 }} />
+                  </Upload>,
+                )}
               </FormItem>
             );
           },

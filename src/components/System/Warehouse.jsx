@@ -9,28 +9,34 @@ class Warehouse extends Component {
     super(props);
     this.state = {
       visible: false,
-      titel: '',
+      title: '',
     };
   }
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit() {
+    const p = this;
     const { modalValues = {}, dispatch, form } = this.props;
-    form.validateFieldsAndScroll((err, values) => {
+    console.log(modalValues);
+    form.validateFields((err, values) => {
       if (err) return;
       if (modalValues.data) {
         dispatch({ type: 'system/updateWare', payload: { ...values, id: modalValues.data.id } });
-      } else dispatch({ type: 'system/addWare', payload: { ...values } });
+      } else {
+        dispatch({ type: 'system/addWare', payload: { ...values } });
+      }
+      p.handleCancel();
     });
   }
   handleCancel() {
     this.setState({ visible: false });
+    this.props.form.resetFields();
   }
   showModal() {
-    this.setState({ visible: true });
+    this.setState({ visible: true, title: '新增' });
   }
   handleQuery(r) {
     this.setState({
       visible: true,
+      title: '修改',
     });
     this.props.dispatch({ type: 'system/queryWare', payload: { id: r.id } });
   }

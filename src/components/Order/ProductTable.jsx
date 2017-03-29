@@ -12,6 +12,7 @@ class ProductTable extends Component {
     this.state = {
       skuData: [],
       skuSearchList: {},
+      total: 1,
     };
     this.skuSearchInputs = {};
   }
@@ -161,7 +162,7 @@ class ProductTable extends Component {
           if (status !== 'ERROR') {
             const { skuSearchList } = p.state;
             skuSearchList[key] = status.data || [];
-            p.setState({ skuSearchList });
+            p.setState({ skuSearchList, total: status.totalCount });
           }
           // 搜索始终进行
           if (searchQueue.length > 0) {
@@ -219,6 +220,12 @@ class ProductTable extends Component {
       const paginationProps = {
         pageSize: 10,
         total: skuTotal,
+        onChange(page) {
+          p.props.dispatch({
+            type: 'sku/querySkuList',
+            payload: { pageIndex: page },
+          });
+        },
       };
 
       const columns = [
@@ -286,9 +293,7 @@ class ProductTable extends Component {
           width: '12%',
           render(text, r) {
             const list = skuSearchList[r.key] || skuList;
-            console.log(skuSearchList[r.key]);
-            console.log('r: ', r);
-            console.log(list);
+            const skuTotal = skuSearchList[r.key] ? p.state.total : total;
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuCode`, {
@@ -296,7 +301,7 @@ class ProductTable extends Component {
                   rules: [{ required: true, message: '请选择SKU' }],
                 })(
                   <Popover
-                    content={renderSkuPopover(list, r.key, total)}
+                    content={renderSkuPopover(list, r.key, skuTotal)}
                     title="搜索SKU"
                     trigger="click"
                   >
@@ -416,7 +421,6 @@ class ProductTable extends Component {
 
 function mapStateToProps(state) {
   const { skuList, skuTotal } = state.sku;
-  console.log(skuTotal);
   return {
     skuList,
     total: skuTotal,

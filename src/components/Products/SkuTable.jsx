@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Form, Table, Input, InputNumber, Button, Popconfirm, Upload, Icon, Cascader, message, Popover, Checkbox, Select } from 'antd';
+import { Row, Col, Form, Table, Input, InputNumber, Button, Popconfirm, Upload, Icon, Cascader, message, Popover, Checkbox, Select, Modal } from 'antd';
 
 import styles from './Products.less';
 
@@ -92,7 +92,7 @@ class SkuTable extends Component {
     });
     this.setState({ skuData: data });
   }
-  addItem(scale) {
+  addItem(scale, color, salePrice) {
     const { skuData } = this.state;
     const skuLen = skuData.length;
     const lastId = skuLen < 1 ? 0 : skuData[skuData.length - 1].key;
@@ -101,11 +101,11 @@ class SkuTable extends Component {
       // id: newId,
       key: newId,
       scale: typeof scale === 'string' ? scale : '',
-      color: '',
+      color: typeof color === 'string' ? color : '',
       virtualInv: '',
       packageLevelId: [],
       skuCode: '',
-      salePrice: '',
+      salePrice: typeof salePrice === 'string' ? salePrice : '',
       weight: '',
       mainPic: '',
     };
@@ -128,10 +128,14 @@ class SkuTable extends Component {
   handleBatchSkuAddVisible(batchSkuAddVisible) {
     if (!batchSkuAddVisible) {
       const { batchSelected } = this.state;
+      const salePrice = this.salePrice.refs.input.value;
+      const color = this.color.refs.input.value;
       batchSelected.forEach((el) => {
-        this.addItem(el);
+        this.addItem(el, salePrice, color);
       });
       this.setState({ batchSkuSort: '', batchSelected: [] });
+      this.salePrice.refs.input.value = '';
+      this.color.refs.input.value = '';
     }
     this.setState({ batchSkuAddVisible });
   }
@@ -144,17 +148,19 @@ class SkuTable extends Component {
   handleBatchSelect(batchSelected) {
     this.setState({ batchSelected });
   }
+  handleCancel() {
+    this.setState({ previewVisible: false });
+  }
   render() {
     const p = this;
     const { form, parent, packageScales, scaleTypes } = this.props;
     const { getFieldDecorator } = form;
-    const { skuData, batchSkuSort, batchSelected } = this.state;
+    const { skuData, batchSkuSort, batchSelected, previewImage, previewVisible } = this.state;
     let picList = [];
     if (skuData) {
       skuData.forEach((el) => {
         if (el.mainPic) {
           const picObj = JSON.parse(el.mainPic);
-          console.log(picObj);
           picList = picObj.picList || [];
         }
       });
@@ -178,13 +184,19 @@ class SkuTable extends Component {
         return isImg;
       },
       name: 'pic',
-      onPreview: false,
+      onPreview(file) {
+        p.setState({
+          previewImage: file.url,
+          previewVisible: true,
+        });
+      },
       onChange(info) {
         if (info.file.status === 'done') {
           if (info.file.response && info.file.response.success) {
             message.success(`${info.file.name} 成功上传`);
             // 添加文件预览
             const newFile = info.file;
+            info.fileList = info.fileList.slice(-1);
             newFile.url = info.file.response.data;
           } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
         } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
@@ -344,12 +356,13 @@ class SkuTable extends Component {
     };
 
     const scaleOptions = getScaleOptions(batchSkuSort, scaleTypes);
-
     const BatchSkuAdd = (
       <div style={{ width: 400 }}>
         <Select placeholder="请选择类型" value={batchSkuSort || undefined} style={{ width: 200, marginTop: 10 }} onChange={this.changeBatchSkuType.bind(this)}>
           {scaleTypes.map(el => <Option key={el.id} value={el.id}>{el.type}</Option>)}
         </Select>
+        <div><Input placeholder="请输入颜色" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.color = c; }} /></div>
+        <Input placeholder="请输入售价" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.salePrice = c; }} />
         {scaleOptions.length > 0 && <div style={{ height: 10 }} />}
         <CheckboxGroup options={scaleOptions} value={batchSelected} onChange={this.handleBatchSelect.bind(this)} />
         <div style={{ height: 20 }} />
@@ -376,6 +389,9 @@ class SkuTable extends Component {
           rowKey={record => record.key}
           pagination={false}
         />
+        <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
+          <img role="presentation" src={previewImage} style={{ width: '100%' }} />
+        </Modal>
       </Row>
     );
   }

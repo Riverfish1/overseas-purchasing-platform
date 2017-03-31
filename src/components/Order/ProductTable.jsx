@@ -231,10 +231,30 @@ class ProductTable extends Component {
       const columns = [
         { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode', width: 90 },
         { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 120 },
+        { title: '品牌', dataIndex: 'brand', key: 'brand', width: 90 },
         { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 90, render(text) { return text || '-'; } },
         { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 60, render(text) { return text || '-'; } },
+        { title: '图片',
+          dataIndex: 'mainPic',
+          key: 'mainPic',
+          width: 60,
+          render(text) { // 需要解决返回的mainPic的格式的问题
+            if (text) {
+              const picList = JSON.parse(text.replace(/&quot;/g, '"')).picList;
+              const src = picList[0] && picList[0].url;
+              const picContent = <img src={src} role="presentation" style={{ height: 600 }} />;
+              return (
+                <Popover title="主图预览" content={picContent}>
+                  <img src={src} role="presentation" width="60" />
+                </Popover>
+              );
+            }
+            return '-';
+          },
+        },
         { title: '颜色', dataIndex: 'color', key: 'color', width: 80, render(text) { return text || '-'; } },
         { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', width: 70, render(text) { return text || '-'; } },
+        { title: '重量（kg）', dataIndex: 'weight', key: 'weight', width: 70, render(text) { return text || '-'; } },
         { title: '操作', dataIndex: 'oper', key: 'oper', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
       ];
 
@@ -278,6 +298,7 @@ class ProductTable extends Component {
               bordered
               rowKey={record => record.id}
               pagination={paginationProps}
+              style={{ height: 500, overflowY: 'scroll' }}
             />
           </Row>
         </div>
@@ -290,7 +311,7 @@ class ProductTable extends Component {
           title: <font color="#00f">商品SKU</font>,
           dataIndex: 'skuCode',
           key: 'skuCode',
-          width: '12%',
+          width: '20%',
           render(text, r) {
             const list = skuSearchList[r.key] || skuList;
             const skuTotal = skuSearchList[r.key] ? p.state.total : total;
@@ -306,19 +327,6 @@ class ProductTable extends Component {
                     trigger="click"
                   >
                     <Input placeholder="选择SKU" value={text || undefined} ref={(c) => { p[`r_${r.key}_skuCode_dom`] = c; }} />
-                    {/* <Select
-                      combobox
-                      placeholder="请选择"
-                      onSelect={p.handleSelect.bind(p, r.key)}
-                      onChange={p.handleSearch.bind(p, r.key)}
-                      defaultActiveFirstOption={false}
-                      showArrow={false}
-                      filterOption={false}
-                    >
-                      {list.map((item, index) => {
-                        return <Option key={`r_${index}`} value={item.skuCode}>{item.skuCode}</Option>;
-                      })}
-                    </Select> */}
                   </Popover>,
                 )}
               </FormItem>
@@ -329,27 +337,28 @@ class ProductTable extends Component {
           title: '商品名称',
           dataIndex: 'itemName',
           key: 'itemName',
+          width: '14%',
           render(text) { return text || '-'; },
         },
         {
           title: '颜色',
           dataIndex: 'color',
           key: 'color',
-          width: '12%',
+          width: '14%',
           render(text) { return text || '-'; },
         },
         {
           title: '尺寸',
           dataIndex: 'scale',
           key: 'scale',
-          width: '12%',
+          width: '14%',
           render(text) { return text || '-'; },
         },
         {
           title: <font color="#00f">销售价</font>,
           dataIndex: 'salePrice',
           key: 'salePrice',
-          width: '12%',
+          width: '14%',
           render(text, r) {
             return (
               <FormItem>
@@ -366,18 +375,11 @@ class ProductTable extends Component {
               </FormItem>);
           },
         },
-        // {
-        //   title: '运费',
-        //   dataIndex: 'freight',
-        //   key: 'freight',
-        //   width: '12%',
-        //   render(text) { return text || '-'; },
-        // },
         {
           title: <font color="#00f">数量</font>,
           dataIndex: 'quantity',
           key: 'quantity',
-          width: '12%',
+          width: '14%',
           render(text, r) {
             return (
               <FormItem>

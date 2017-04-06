@@ -1,13 +1,13 @@
 import { message } from 'antd';
 import fetch from '../utils/request';
 
-const addOrder = ({ payload }) => fetch.post('/haierp1/order/add', { data: payload }).catch(e => e);
-const updateOrder = ({ payload }) => fetch.post('/haierp1/order/update', { data: payload }).catch(e => e);
+const addOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/add', { data: payload }).catch(e => e);
+const updateOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/update', { data: payload }).catch(e => e);
 const querySkuList = ({ payload }) => fetch.post('/haierp1/itemSku/queryItemSkuList', { data: payload }).catch(e => e);
-const deleteOrder = ({ payload }) => fetch.post('/haierp1/order/delete', { data: payload }).catch(e => e);
-const queryOrderList = ({ payload }) => fetch.post('/haierp1/order/queryOrderList', { data: payload }).catch(e => e);
-const queryOrder = ({ payload }) => fetch.post('/haierp1/order/query', { data: payload }).catch(e => e);
-const querySalesName = ({ payload }) => fetch.post('/haierp1/order/querySalesName', { data: payload }).catch(e => e);
+const deleteOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/delete', { data: payload }).catch(e => e);
+const queryOrderList = ({ payload }) => fetch.post('/haierp1/outerOrder/queryOuterOrderList', { data: payload }).catch(e => e);
+const queryOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/query', { data: payload }).catch(e => e);
+const querySalesName = ({ payload }) => fetch.post('/haierp1/outerOrder/querySalesName', { data: payload }).catch(e => e);
 
 
 export default {

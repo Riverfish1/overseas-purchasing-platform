@@ -34,10 +34,7 @@ class Warehouse extends Component {
     this.setState({ visible: true, title: '新增' });
   }
   handleQuery(r) {
-    this.setState({
-      visible: true,
-      title: '修改',
-    });
+    this.setState({ visible: true, title: '修改' });
     this.props.dispatch({ type: 'system/queryWare', payload: { id: r.id } });
   }
   handleDelete(r) {

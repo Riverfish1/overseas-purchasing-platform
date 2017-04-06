@@ -161,7 +161,7 @@ class ProductTable extends Component {
 
   render() {
     const p = this;
-    const { form, skuList = [], parent, buyer = [] } = p.props;
+    const { form, skuList = [], parent, buyer = [], total } = p.props;
     const { skuData, skuSearchList, previewImage, previewVisible } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
@@ -173,13 +173,9 @@ class ProductTable extends Component {
     if (!parent.clearSkuValue) parent.clearSkuValue = this.clearValue.bind(this);
     if (!parent.getSkuValue) parent.getSkuValue = this.getValue.bind(this);
 
-    function renderSkuPopover(list, key) {
+    function renderSkuPopover(list, key, skuTotal) {
       let skuCode = null;
       let name = null;
-
-      function JSONParse(text) {
-        return text && JSON.parse(decodeURIComponent(text).replace(/&quot;/g, '"')).picList[0].url;
-      }
 
       function handleEmpty() {
         skuCode.refs.input.value = '';
@@ -198,12 +194,38 @@ class ProductTable extends Component {
         }, 0);
       }
 
+      const paginationProps = {
+        pageSize: 10,
+        total: skuTotal,
+        onChange(page) {
+          p.props.dispatch({
+            type: 'sku/querySkuList',
+            payload: { pageIndex: page },
+          });
+        },
+      };
+
       const columns = [
         { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode', width: 90 },
         { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 120 },
         { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 90, render(text) { return text || '-'; } },
         { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 60, render(text) { return text || '-'; } },
-        { title: '图片', dataIndex: 'mainPic', key: 'mainPic', width: 60, render(text) { return text ? <img width="100" role="presentation" src={JSONParse(text)} /> : '-'; } },
+        { title: '图片',
+          dataIndex: 'mainPic',
+          key: 'mainPic',
+          width: 60,
+          render(text) { // 需要解决返回的mainPic的格式的问题
+            if (text) {
+              const picContent = <img src={text} role="presentation" style={{ height: 600 }} />;
+              return (
+                <Popover title="主图预览" content={picContent}>
+                  <img src={text} role="presentation" width="60" />
+                </Popover>
+              );
+            }
+            return '-';
+          },
+        },
         { title: '颜色', dataIndex: 'color', key: 'color', width: 80, render(text) { return text || '-'; } },
         { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', width: 70, render(text) { return text || '-'; } },
         { title: '操作', dataIndex: 'oper', key: 'oper', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
@@ -248,7 +270,8 @@ class ProductTable extends Component {
               size="small"
               bordered
               rowKey={record => record.id}
-              pagination={false}
+              pagination={paginationProps}
+              style={{ height: 500, overflowY: 'scroll' }}
             />
           </Row>
         </div>
@@ -264,6 +287,7 @@ class ProductTable extends Component {
           width: '10%',
           render(t, r) {
             const list = skuSearchList[r.key] || skuList;
+            const skuTotal = skuSearchList[r.key] ? p.state.total : total;
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuCode`, {
@@ -271,7 +295,7 @@ class ProductTable extends Component {
                   rules: [{ required: true, message: '该项必填' }],
                 })(
                   <Popover
-                    content={renderSkuPopover(list, r.key)}
+                    content={renderSkuPopover(list, r.key, skuTotal)}
                     title="搜索SKU"
                     trigger="click"
                   >
@@ -492,9 +516,10 @@ class ProductTable extends Component {
 }
 
 function mapStateToProps(state) {
-  const { skuList } = state.sku;
+  const { skuList, skuTotal } = state.sku;
   return {
     skuList,
+    total: skuTotal,
   };
 }
 

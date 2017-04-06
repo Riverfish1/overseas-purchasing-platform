@@ -18,7 +18,9 @@ export const routerCfg = {
   // 采购管理
   PURCHASE: 'purchase',
   PURCHASE_LIST: 'purchaseList',
-  PRE_STOCK: 'preStock',
+  CHECK: 'check', // 盘点管理
+  JOURNAL: 'journal', // 流水管理
+  RECEIPT: 'receipt', // 小票管理
   // PURCHASE_STOCK_IN: 'purchaseStockIn',
 
   // 客户管理
@@ -51,7 +53,13 @@ export const navigation = [
   { key: routerCfg.PURCHASE, name: '采购管理', icon: 'appstore-o',
     child: [
       { key: routerCfg.PURCHASE_LIST, name: '采购管理' },
-      { key: routerCfg.PRE_STOCK, name: '盘点管理' },
+      { key: routerCfg.CHECK,
+        name: '盘点管理',
+        child: [
+          { key: routerCfg.JOURNAL, name: '流水管理' },
+          { key: routerCfg.RECEIPT, name: '小票管理' },
+        ],
+      },
       // { key: routerCfg.PURCHASE_STOCK_IN, name: '采购入库管理' },
     ],
   },

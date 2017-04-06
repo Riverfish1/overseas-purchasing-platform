@@ -58,17 +58,18 @@ class SkuTable extends Component {
           }
         });
         skuSingle.packageLevelId = JSON.stringify(skuSingle.packageLevelId); // 数组转字符串
+        console.log(skuSingle);
         // 处理图片
-        if (skuSingle.mainPic) {
+        if (skuSingle.skuPic) {
           const uploadMainPic = [];
-          skuSingle.mainPic.fileList.forEach((el, index) => {
+          skuSingle.skuPic.forEach((el, index) => {
             uploadMainPic.push({
               type: el.type,
               uid: `i_${index}`,
               url: el.url,
             });
           });
-          skuSingle.mainPic = JSON.stringify({ picList: uploadMainPic });
+          skuSingle.skuPic = JSON.stringify({ picList: uploadMainPic });
         }
         skuList.push(skuSingle);
         count += 1;
@@ -92,7 +93,8 @@ class SkuTable extends Component {
     });
     this.setState({ skuData: data });
   }
-  addItem(scale, color, salePrice) {
+  addItem(obj) {
+    console.log(obj);
     const { skuData } = this.state;
     const skuLen = skuData.length;
     const lastId = skuLen < 1 ? 0 : skuData[skuData.length - 1].key;
@@ -100,14 +102,14 @@ class SkuTable extends Component {
     const newItem = {
       // id: newId,
       key: newId,
-      scale: typeof scale === 'string' ? scale : '',
-      color: typeof color === 'string' ? color : '',
+      scale: typeof obj.scale === 'string' ? obj.scale : '',
+      color: typeof obj.color === 'string' ? obj.color : '',
       virtualInv: '',
       packageLevelId: [],
       skuCode: '',
-      salePrice: typeof salePrice === 'string' ? salePrice : '',
+      salePrice: typeof obj.salePrice === 'string' ? obj.salePrice : '',
       weight: '',
-      mainPic: '',
+      skuPic: '',
     };
     skuData.push(newItem);
     this.setState({ skuData });
@@ -131,7 +133,8 @@ class SkuTable extends Component {
       const salePrice = this.salePrice.refs.input.value;
       const color = this.color.refs.input.value;
       batchSelected.forEach((el) => {
-        this.addItem(el, salePrice, color);
+        const obj = { scale: el, salePrice, color };
+        this.addItem(obj);
       });
       this.setState({ batchSkuSort: '', batchSelected: [] });
       this.salePrice.refs.input.value = '';
@@ -159,8 +162,8 @@ class SkuTable extends Component {
     let picList = [];
     if (skuData) {
       skuData.forEach((el) => {
-        if (el.mainPic) {
-          const picObj = JSON.parse(el.mainPic);
+        if (el.skuPic) {
+          const picObj = JSON.parse(el.skuPic);
           picList = picObj.picList || [];
         }
       });
@@ -296,13 +299,13 @@ class SkuTable extends Component {
         },
         {
           title: '商品图片',
-          dataIndex: 'mainPic',
-          key: 'mainPic',
+          dataIndex: 'skuPic',
+          key: 'skuPic',
           width: '12%',
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_mainPic`, {
+                {getFieldDecorator(`r_${r.key}_skuPic`, {
                   initialValue: picList,
                   valuePropName: 'fileList',
                   getValueFromEvent(e) {

@@ -240,12 +240,10 @@ class ProductTable extends Component {
           width: 60,
           render(text) { // 需要解决返回的mainPic的格式的问题
             if (text) {
-              const picList = JSON.parse(text.replace(/&quot;/g, '"')).picList;
-              const src = picList[0] && picList[0].url;
-              const picContent = <img src={src} role="presentation" style={{ height: 600 }} />;
+              const picContent = <img src={text} role="presentation" style={{ height: 600 }} />;
               return (
                 <Popover title="主图预览" content={picContent}>
-                  <img src={src} role="presentation" width="60" />
+                  <img src={text} role="presentation" width="60" />
                 </Popover>
               );
             }

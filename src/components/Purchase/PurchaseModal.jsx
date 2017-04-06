@@ -4,7 +4,6 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 import ProductTable from './ProductTable';
 import styles from './Purchase.less';
-import * as check from '../../utils/checkLib';
 
 moment.locale('zh-cn');
 
@@ -206,7 +205,7 @@ class PurchaseModal extends Component {
                   initialValue: toString(purchaseData.wxUserId, 'SELECT'),
                   rules: [{ required: true, message: '请选择用户' }],
                 })(
-                  <Select placeholder="请输入用户" optionLabelProp="title" combobox>
+                  <Select placeholder="请输入用户" optionLabelProp="title">
                     {buyer.map(el => <Option key={el.wxUserId} title={el.name}>{el.name}</Option>)}
                   </Select>,
                 )}

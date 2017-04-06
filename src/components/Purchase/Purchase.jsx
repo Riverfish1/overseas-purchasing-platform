@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal } from 'antd';
+import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
 import PurchaseModal from './PurchaseModal';
-import styles from './Purchase.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -25,7 +24,10 @@ class Purchase extends Component {
       if (err) {
         return;
       }
-      if (fieldsValue.taskEndTime) fieldsValue.taskEndTime = new Date(fieldsValue.taskEndTime).format('yyyy-MM-dd');
+      if (fieldsValue.taskStart1) fieldsValue.taskStart1 = new Date(fieldsValue.taskStart1).format('yyyy-MM-dd');
+      if (fieldsValue.taskStart2) fieldsValue.taskStart2 = new Date(fieldsValue.taskStart2).format('yyyy-MM-dd');
+      if (fieldsValue.taskEnd1) fieldsValue.taskEnd1 = new Date(fieldsValue.taskEnd1).format('yyyy-MM-dd');
+      if (fieldsValue.taskEnd2) fieldsValue.taskEnd2 = new Date(fieldsValue.taskEnd2).format('yyyy-MM-dd');
       this.props.dispatch({
         type: 'purchase/queryPurchaseList',
         payload: { ...fieldsValue, pageIndex: 1 },
@@ -120,9 +122,9 @@ class Purchase extends Component {
           return (
             <div>
               <a href="javascript:void(0)" style={{ margin: '0 10px 0 0' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
-              {/* <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, record)} >
+              <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, record)} >
                 <a href="javascript:void(0)" >删除</a>
-              </Popconfirm>*/}
+              </Popconfirm>
             </div>);
         },
       },
@@ -148,7 +150,7 @@ class Purchase extends Component {
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row gutter={20} style={{ width: 800 }}>
+          <Row gutter={20} style={{ width: 1000 }}>
             <Col span="8">
               <FormItem
                 label="任务单号"
@@ -167,8 +169,6 @@ class Purchase extends Component {
                   <Input placeholder="请输入任务名称" />)}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="买手"
@@ -181,13 +181,35 @@ class Purchase extends Component {
                 )}
               </FormItem>
             </Col>
-            <Col span="8">
+          </Row>
+          <Row gutter={20} style={{ width: 800 }}>
+            <Col>
               <FormItem
-                label="采购结束日期"
+                label="采购开始时间范围"
                 {...formItemLayout}
+                labelCol={{ span: 4 }}
               >
-                {getFieldDecorator('taskEndTime', {})(
-                  <DatePicker />,
+                {getFieldDecorator('taskStart1')(
+                  <DatePicker style={{ marginRight: 20 }} />,
+                )}-
+                {getFieldDecorator('taskStart2')(
+                  <DatePicker style={{ marginLeft: 20 }} />,
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={20} style={{ width: 800 }}>
+            <Col>
+              <FormItem
+                label="采购结束时间范围"
+                {...formItemLayout}
+                labelCol={{ span: 4 }}
+              >
+                {getFieldDecorator('taskEnd1')(
+                  <DatePicker style={{ marginRight: 20 }} />,
+                )}-
+                {getFieldDecorator('taskEnd2')(
+                  <DatePicker style={{ marginLeft: 20 }} />,
                 )}
               </FormItem>
             </Col>

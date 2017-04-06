@@ -11,7 +11,8 @@ import Sku from './components/Sku/Sku';
 import Category from './components/Category/Category';
 import Order from './components/Order/Order';
 import Purchase from './components/Purchase/Purchase'; // 采购管理
-import PreStock from './components/Purchase/PreStock'; // 采购管理
+import Journal from './components/Check/Journal'; // 流水管理
+import Receipt from './components/Check/Receipt'; // 小票管理
 // import StockIn from './components/StockIn/StockIn'; // 入库管理
 import Agency from './components/Agency/Agency';
 import AgencyType from './components/Agency/AgencyType';
@@ -49,7 +50,8 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.CATE_LIST}`} component={Category} />
         <Route path={`/${routerCfg.SALE}/${routerCfg.ORDER_LIST}`} component={Order} />
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} component={Purchase} />
-        <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PRE_STOCK}`} component={PreStock} />
+        <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.JOURNAL}`} component={Journal} />
+        <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.RECEIPT}`} component={Receipt} />
         {/* <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_STOCK_IN}`} component={StockIn} />*/}
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_LIST}`} component={Agency} />
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_TYPE}`} component={AgencyType} />

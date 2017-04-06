@@ -48,36 +48,36 @@ class Menus extends Component {
   }
   render() {
     const { location } = this.props;
-    const { navOpenKeys, siderFold } = this.state;
+    const { /* navOpenKeys, */siderFold } = this.state;
     const menuItems = getMenus(navigation, siderFold);
-    const onOpenChange = (openKeys) => {
-      const latestOpenKey = openKeys.find(key => !(navOpenKeys.indexOf(key) > -1));
-      const latestCloseKey = navOpenKeys.find(key => !(openKeys.indexOf(key) > -1));
-      let nextOpenKeys = [];
-      if (latestOpenKey) {
-        nextOpenKeys = getAncestorKeys(latestOpenKey).concat(latestOpenKey);
-      }
-      if (latestCloseKey) {
-        nextOpenKeys = getAncestorKeys(latestCloseKey);
-      }
-      this.changeOpenKeys(nextOpenKeys);
-    };
-    const getAncestorKeys = (key) => {
-      const map = {
-        navigation2: ['navigation'],
-      };
-      return map[key] || [];
-    };
+    // const onOpenChange = (openKeys) => {
+    //   const latestOpenKey = openKeys.find(key => !(navOpenKeys.indexOf(key) > -1));
+    //   const latestCloseKey = navOpenKeys.find(key => !(openKeys.indexOf(key) > -1));
+    //   let nextOpenKeys = [];
+    //   if (latestOpenKey) {
+    //     nextOpenKeys = getAncestorKeys(latestOpenKey).concat(latestOpenKey);
+    //   }
+    //   if (latestCloseKey) {
+    //     nextOpenKeys = getAncestorKeys(latestCloseKey);
+    //   }
+    //   this.changeOpenKeys(nextOpenKeys);
+    // };
+    // const getAncestorKeys = (key) => {
+    //   const map = {
+    //     navigation2: ['navigation'],
+    //   };
+    //   return map[key] || [];
+    // };
     // 菜单栏收起时，不能操作openKeys
-    const menuProps = !siderFold ? {
-      onOpenChange,
-      openKeys: navOpenKeys,
-    } : {};
+    // const menuProps = !siderFold ? {
+    //   onOpenChange,
+    //   openKeys: navOpenKeys,
+    // } : {};
 
     return (
       <aside className={styles.sidebar}>
         <Menu
-          {...menuProps}
+          /* ...menuProps */
           mode={siderFold ? 'vertical' : 'inline'}
           theme="dark"
           defaultSelectedKeys={[location.pathname.split('/')[location.pathname.split('/').length - 1] || 'overview']}

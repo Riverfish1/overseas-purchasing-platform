@@ -11,8 +11,8 @@ import Sku from './components/Sku/Sku';
 import Category from './components/Category/Category';
 import Order from './components/Order/Order';
 import Purchase from './components/Purchase/Purchase'; // 采购管理
-import Journal from './components/Check/Journal'; // 流水管理
-import Receipt from './components/Check/Receipt'; // 小票管理
+// import Journal from './components/Check/Journal'; // 流水管理
+// import Receipt from './components/Check/Receipt'; // 小票管理
 // import StockIn from './components/StockIn/StockIn'; // 入库管理
 import Agency from './components/Agency/Agency';
 import AgencyType from './components/Agency/AgencyType';
@@ -27,7 +27,7 @@ function redirectHelper(...args) {
   const replace = args[len - 2];
   const callback = args[len - 1];
   const lastLoginTime = parseInt(localStorage.getItem('HAIERP_LAST_LOGIN') || 0, 10);
-  const isTimeout = new Date().getTime() - lastLoginTime > (7 * 24 * 60 * 60 * 1000) - 10000;
+  const isTimeout = new Date().getTime() - lastLoginTime > (15 * 60 * 1000) - 10000; // 15分钟超时
   if (isTimeout && location.pathname !== `/${routerCfg.LOGIN}`) replace(`/${routerCfg.LOGIN}`);
   else if (location.pathname === '/') replace(`/${routerCfg.OVERVIEW}`);
   callback();
@@ -50,16 +50,21 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.CATE_LIST}`} component={Category} />
         <Route path={`/${routerCfg.SALE}/${routerCfg.ORDER_LIST}`} component={Order} />
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} component={Purchase} />
-        <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.JOURNAL}`} component={Journal} />
-        <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.RECEIPT}`} component={Receipt} />
+        {/* <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.JOURNAL}`} component={Journal} /> */}
+        {/* <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.RECEIPT}`} component={Receipt} /> */}
         {/* <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_STOCK_IN}`} component={StockIn} />*/}
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_LIST}`} component={Agency} />
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_TYPE}`} component={AgencyType} />
         {/* <Route path={`/${routerCfg.PERSON}/${routerCfg.SUPPLIER_LIST}`} component={Supplier} /> */}
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} component={Inventory} />
         <Route path={`/${routerCfg.SYSTEM}/${routerCfg.WAREHOUSE}`} component={Warehouse} />
-        {/* 重定向 */}
+        {/* 一级导航重定向 */}
         <Redirect from={`/${routerCfg.PRODUCTS}`} to={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} />
+        <Redirect from={`/${routerCfg.SALE}`} to={`/${routerCfg.SALE}/${routerCfg.ORDER_LIST}`} />
+        <Redirect from={`/${routerCfg.PURCHASE}`} to={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} />
+        <Redirect from={`/${routerCfg.PERSON}`} to={`/${routerCfg.PERSON}/${routerCfg.AGENCY_LIST}`} />
+        <Redirect from={`/${routerCfg.INVENTORY}`} to={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} />
+        <Redirect from={`/${routerCfg.SYSTEM}`} to={`/${routerCfg.SYSTEM}/${routerCfg.WAREHOUSE}`} />
       </Route>
     </Router>
   );

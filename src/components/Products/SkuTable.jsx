@@ -303,6 +303,8 @@ class SkuTable extends Component {
           key: 'skuPic',
           width: '12%',
           render(t, r) {
+            const formValue = form.getFieldValue(`r_${r.key}_skuPic`);
+            console.log(formValue);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuPic`, {
@@ -318,7 +320,7 @@ class SkuTable extends Component {
                   rules: [{ validator: p.checkImg.bind(p) }],
                 })(
                   <Upload {...uploadProps} className={styles.picStyle}>
-                    <Icon type="plus" style={{ fontSize: 12 }} />
+                    {(!formValue || formValue.length < 1) && <Icon type="plus" style={{ fontSize: 12 }} />}
                   </Upload>,
                 )}
               </FormItem>

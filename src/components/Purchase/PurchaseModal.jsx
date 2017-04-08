@@ -198,7 +198,7 @@ class PurchaseModal extends Component {
             </Col>
             <Col span={7}>
               <FormItem
-                label="买手"
+                label="任务分配人"
                 {...formItemLayout}
               >
                 {getFieldDecorator('wxUserId', {

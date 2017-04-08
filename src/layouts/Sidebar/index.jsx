@@ -49,7 +49,15 @@ class Menus extends Component {
   render() {
     const { location } = this.props;
     const { /* navOpenKeys, */siderFold } = this.state;
-    const menuItems = getMenus(navigation, siderFold);
+    let navArr = [];
+    let navParentPath = '/';
+    navigation.forEach((nav) => {
+      if (nav.key === (location.pathname.split('/')[1] || 'overview')) {
+        if (nav.child) navArr = nav.child;
+        navParentPath = `/${nav.key}/`;
+      }
+    });
+    const menuItems = getMenus(navArr, siderFold, navParentPath);
     // const onOpenChange = (openKeys) => {
     //   const latestOpenKey = openKeys.find(key => !(navOpenKeys.indexOf(key) > -1));
     //   const latestCloseKey = navOpenKeys.find(key => !(openKeys.indexOf(key) > -1));
@@ -80,7 +88,7 @@ class Menus extends Component {
           /* ...menuProps */
           mode={siderFold ? 'vertical' : 'inline'}
           theme="dark"
-          defaultSelectedKeys={[location.pathname.split('/')[location.pathname.split('/').length - 1] || 'overview']}
+          selectedKeys={[location.pathname.split('/')[location.pathname.split('/').length - 1] || 'overview']}
         >
           {menuItems}
         </Menu>

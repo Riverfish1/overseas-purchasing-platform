@@ -75,7 +75,7 @@ export const navigation = [
       { key: routerCfg.INVENTORY_LIST, name: '库存管理' },
     ],
   },
-  { key: routerCfg.SYSTEM, name: '系统管理', icon: 'barcode',
+  { key: routerCfg.SYSTEM, name: '系统管理', icon: 'global',
     child: [
       { key: routerCfg.WAREHOUSE, name: '仓库管理' },
     ],

@@ -3,6 +3,10 @@ import ajax from './ajax';
 function wrapper(method, url, options, getInst) {
   if (options) options.timeout = 10000;
   else options = { timeout: 10000 };
+
+  // 重置超时时间
+  localStorage.setItem('HAIERP_LAST_LOGIN', new Date().getTime());
+
   return new Promise((resolve, reject) => {
     const request = ajax[method.toLowerCase()](url, options).then((res, pointer) => {
       const loc = request._request.getResponseHeader('Location');

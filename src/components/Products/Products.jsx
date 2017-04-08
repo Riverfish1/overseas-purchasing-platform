@@ -235,7 +235,7 @@ class Products extends Component {
                 label="开始销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('startGmt', {})(<DatePicker placeholder="请选择开始时间" />)}
+                {getFieldDecorator('startDate', {})(<DatePicker placeholder="请选择开始时间" />)}
               </FormItem>
             </Col>
             <Col span={8}>
@@ -243,7 +243,7 @@ class Products extends Component {
                 label="结束销售时间"
                 {...formItemLayout}
               >
-                {getFieldDecorator('endGmt', {})(
+                {getFieldDecorator('endDate', {})(
                   <DatePicker placeholder="请选择结束时间" />)}
               </FormItem>
             </Col>

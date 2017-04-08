@@ -90,8 +90,8 @@ export default {
         pageIndex = payload.pageIndex;
         yield put({ type: 'saveCurrentPage', payload });
       }
-      if (payload.startGmt) payload.startGmt = payload.startGmt.format('YYYY-MM-DD');
-      if (payload.endGmt) payload.endGmt = payload.endGmt.format('YYYY-MM-DD');
+      if (payload.startDate) payload.startDate = payload.startDate.format('YYYY-MM-DD');
+      if (payload.endDate) payload.endDate = payload.endDate.format('YYYY-MM-DD');
       const data = yield call(queryItemList, { payload: { ...payload, pageIndex } });
       console.log('queryItemList success', data);
       if (data.success) {

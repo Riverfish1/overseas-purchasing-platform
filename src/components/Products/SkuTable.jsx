@@ -66,7 +66,7 @@ class SkuTable extends Component {
             uploadMainPic.push({
               type: el.type,
               uid: `i_${index}`,
-              url: el.url,
+              url: el.response.data,
             });
           });
           skuSingle.skuPic = JSON.stringify({ picList: uploadMainPic });
@@ -189,7 +189,7 @@ class SkuTable extends Component {
       name: 'pic',
       onPreview(file) {
         p.setState({
-          previewImage: file.url,
+          previewImage: file.url || file.thumbUrl,
           previewVisible: true,
         });
       },
@@ -212,7 +212,7 @@ class SkuTable extends Component {
           title: 'SKU条码',
           dataIndex: 'skuCode',
           key: 'skuCode',
-          width: '12%',
+          width: '10%',
           render(t, r) {
             return (
               <FormItem>
@@ -227,7 +227,7 @@ class SkuTable extends Component {
           title: '尺寸',
           dataIndex: 'scale',
           key: 'scale',
-          width: '12%',
+          width: '10%',
           render(t, r) {
             return (
               <FormItem>
@@ -243,7 +243,7 @@ class SkuTable extends Component {
           title: '颜色',
           dataIndex: 'color',
           key: 'color',
-          width: '12%',
+          width: '10%',
           render(t, r) {
             return (
               <FormItem>
@@ -257,7 +257,7 @@ class SkuTable extends Component {
           title: '销售价格',
           dataIndex: 'salePrice',
           key: 'salePrice',
-          width: '12%',
+          width: '10%',
           render(t, r) {
             return (
               <FormItem>
@@ -271,12 +271,12 @@ class SkuTable extends Component {
           title: '虚拟库存',
           dataIndex: 'virtualInv',
           key: 'virtualInv',
-          width: '12%',
+          width: '10%',
           render(t, r) {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_virtualInv`, {
-                  initialValue: t || '', rules: [{ required: true, message: '该项必填' }],
+                  initialValue: t || '',
                 })(
                   <InputNumber step={1} min={0} placeholder="请填写" />)}
               </FormItem>
@@ -287,7 +287,7 @@ class SkuTable extends Component {
           title: '重量(KG)',
           dataIndex: 'weight',
           key: 'weight',
-          width: '12%',
+          width: '10%',
           render(t, r) {
             return (
               <FormItem>
@@ -298,13 +298,26 @@ class SkuTable extends Component {
           },
         },
         {
+          title: 'upc码',
+          dataIndex: 'upc',
+          key: 'upc',
+          width: '10%',
+          render(t, r) {
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_upc`, { initialValue: t || '', rules: [{ required: true, message: '该项必填' }] })(
+                  <Input placeholder="请填写" />)}
+              </FormItem>
+            );
+          },
+        },
+        {
           title: '商品图片',
           dataIndex: 'skuPic',
           key: 'skuPic',
-          width: '12%',
+          width: '10%',
           render(t, r) {
             const formValue = form.getFieldValue(`r_${r.key}_skuPic`);
-            console.log(formValue);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuPic`, {
@@ -320,7 +333,7 @@ class SkuTable extends Component {
                   rules: [{ validator: p.checkImg.bind(p) }],
                 })(
                   <Upload {...uploadProps} className={styles.picStyle}>
-                    {(!formValue || formValue.length < 1) && <Icon type="plus" style={{ fontSize: 12 }} />}
+                    {(!formValue || formValue.length < 1) && <Icon type="plus" style={{ fontSize: 10 }} />}
                   </Upload>,
                 )}
               </FormItem>
@@ -331,7 +344,7 @@ class SkuTable extends Component {
           title: '包装规格',
           dataIndex: 'packageLevelId',
           key: 'packageLevelId',
-          width: '20%',
+          width: '15%',
           render(t, r) {
             return (
               <FormItem>
@@ -360,6 +373,39 @@ class SkuTable extends Component {
       bordered: false,
     };
 
+    const batchUploadProps = {
+      action: '/haierp1/uploadFile/picUpload',
+      listType: 'picture-card',
+      data(file) {
+        return {
+          pic: file.name,
+        };
+      },
+      beforeUpload(file) {
+        const isImg = file.type === 'image/jpeg' || file.type === 'image/bmp' || file.type === 'image/gif' || file.type === 'image/png';
+        if (!isImg) { message.error('请上传图片文件'); }
+        return isImg;
+      },
+      name: 'pic',
+      onPreview(file) {
+        p.setState({
+          previewImage: file.url || file.thumbUrl,
+          previewVisible: true,
+        });
+      },
+      onChange(info) {
+        if (info.file.status === 'done') {
+          if (info.file.response && info.file.response.success) {
+            message.success(`${info.file.name} 成功上传`);
+            // 添加文件预览
+            const newFile = info.file;
+            info.fileList = info.fileList.slice(-1);
+            newFile.url = info.file.response.data;
+          } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
+        } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
+      },
+    };
+
     const scaleOptions = getScaleOptions(batchSkuSort, scaleTypes);
     const BatchSkuAdd = (
       <div style={{ width: 400 }}>
@@ -367,7 +413,8 @@ class SkuTable extends Component {
           {scaleTypes.map(el => <Option key={el.id} value={el.id}>{el.type}</Option>)}
         </Select>
         <div><Input placeholder="请输入颜色" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.color = c; }} /></div>
-        <Input placeholder="请输入售价" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.salePrice = c; }} />
+        <div><Input placeholder="请输入售价" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.salePrice = c; }} /></div>
+        <div style={{ marginTop: 10 }}><Upload {...batchUploadProps} ref={(c) => { this.batchPic = c; }}>上传图片</Upload></div>
         {scaleOptions.length > 0 && <div style={{ height: 10 }} />}
         <CheckboxGroup options={scaleOptions} value={batchSelected} onChange={this.handleBatchSelect.bind(this)} />
         <div style={{ height: 20 }} />
@@ -382,7 +429,7 @@ class SkuTable extends Component {
           <Button type="primary" onClick={this.addItem.bind(this)}>新增SKU</Button>
           <Popover
             content={BatchSkuAdd}
-            title="选择分类"
+            title="选择类型"
             trigger="click"
             visible={this.state.batchSkuAddVisible}
           >

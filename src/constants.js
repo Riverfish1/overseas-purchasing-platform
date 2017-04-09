@@ -51,7 +51,7 @@ export const navigation = [
   },
   { key: routerCfg.SALE, name: '销售管理', icon: 'book',
     child: [
-      { key: routerCfg.ORDER_LIST, name: '订单管理' },
+      { key: routerCfg.ORDER_LIST, name: '外部订单管理' },
     ],
   },
   { key: routerCfg.PURCHASE, name: '采购管理', icon: 'appstore-o',

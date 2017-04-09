@@ -39,16 +39,19 @@ class ProductTable extends Component {
     form.validateFieldsAndScroll((err, fieldsSku) => {
       if (err) { return; }
       let count = 1;
-      if (fieldsSku.taskStartTime) fieldsSku.taskStartTime = moment(fieldsSku.taskStartTime, 'YYYY-MM-DD');
-      if (fieldsSku.taskEndTime) fieldsSku.taskEndTime = moment(fieldsSku.taskEndTime, 'YYYY-MM-DD');
       const keys = Object.keys(fieldsSku);
       while (Object.prototype.hasOwnProperty.call(fieldsSku, `r_${count}_skuCode`)) {
         const skuSingle = {};
         keys.forEach((key) => {
+          // if (key === `r_${count}_taskStartTime`) fieldsSku[`r_${count}_taskStartTime`] = moment(fieldsSku[`r_${count}_taskStartTime`], 'YYYY-MM-DD');
+          // if (key === `r_${count}_taskEndTime`) fieldsSku[`r_${count}_taskEndTime`] = moment(fieldsSku[`r_${count}_taskEndTime`], 'YYYY-MM-DD');
           if (key.match(`r_${count}_`)) {
             skuSingle[key.split(`r_${count}_`)[1]] = fieldsSku[key];
           }
         });
+        skuSingle.taskStartTime = moment(skuSingle.taskStartTime).format('YYYY-MM-DD');
+        skuSingle.taskEndTime = moment(skuSingle.taskEndTime).format('YYYY-MM-DD');
+        if (!skuSingle.id) delete skuSingle.id;
         skuList.push(skuSingle);
         count += 1;
       }
@@ -211,10 +214,10 @@ class ProductTable extends Component {
         { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 90, render(text) { return text || '-'; } },
         { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 60, render(text) { return text || '-'; } },
         { title: '图片',
-          dataIndex: 'mainPic',
-          key: 'mainPic',
+          dataIndex: 'skuPic',
+          key: 'skuPic',
           width: 60,
-          render(text) { // 需要解决返回的mainPic的格式的问题
+          render(text) { // 需要解决返回的skuPic的格式的问题
             if (text) {
               const picContent = <img src={text} role="presentation" style={{ height: 600 }} />;
               return (
@@ -312,16 +315,18 @@ class ProductTable extends Component {
           key: 'buyerId',
           width: '8.5%',
           render(t, r) {
-            return (<FormItem>
-              {getFieldDecorator(`r_${r.key}_buyerId`, {
-                initialValue: t ? t.toString() : undefined,
-                rules: [{ required: true, message: '该项必选' }],
-              })(
-                <Select placeholder="请选择" optionLabelProp="title">
-                  {buyer.map(el => <Option key={el.buyerId} title={el.name}>{el.name}</Option>)}
-                </Select>,
-              )}
-            </FormItem>);
+            return (
+              <FormItem>
+                {getFieldDecorator(`r_${r.key}_buyerId`, {
+                  initialValue: t ? t.toString() : undefined,
+                  rules: [{ required: true, message: '该项必选' }],
+                })(
+                  <Select placeholder="请选择" optionLabelProp="title">
+                    {buyer.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
+                  </Select>,
+                )}
+              </FormItem>
+            );
           },
         },
         {

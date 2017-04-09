@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Modal, message, Input, Upload, Row, Col, Select, DatePicker, Form, Icon, TreeSelect } from 'antd';
 import moment from 'moment';
@@ -53,14 +53,16 @@ class ProductsModal extends Component {
         };
 
         // 处理图片
+        console.log(values.mainPic);
         if (values.mainPic) {
           const uploadMainPic = [];
           const mainPicNum = values.mainPicNum;
           values.mainPic.forEach((el, index) => {
+            console.log(el);
             uploadMainPic.push({
               type: el.type,
               uid: `i_${index}`,
-              url: el.url,
+              url: el.response.data,
             });
           });
           values.mainPic = JSON.stringify({ picList: uploadMainPic, mainPicNum });
@@ -176,10 +178,6 @@ class ProductsModal extends Component {
             console.log(info.fileList);
           } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
         } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
-        // 限制一个图片
-        // const fileLength = info.fileList.length;
-        // p.setState({ certFileList: fileLength > 1 ? [info.fileList[fileLength - 1]] : info.fileList });
-
         // 主图选项增删联动
         const fileList = p.state.picList || [];
         const newFileList = info.fileList;
@@ -377,74 +375,6 @@ class ProductsModal extends Component {
               </FormItem>
             </Col>
           </Row>
-          {/* <Row gutter={10}>
-            <Col span={7}>
-              <FormItem
-                label="规格"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('spec', {
-                  initialValue: toString(productData.spec),
-                  rules: [{ message: '请输入规格' }],
-                })(
-                  <Input placeholder="请输入规格" />,
-                )}
-              </FormItem>
-            </Col>
-            <Col span={7}>
-              <FormItem
-                label="型号"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('model', {
-                  initialValue: toString(productData.model),
-                  rules: [{ message: '请输入型号' }],
-                })(
-                  <Input placeholder="请输入型号" />,
-                )}
-              </FormItem>
-            </Col>
-            <Col span={7}>
-              <FormItem
-                label="重量（kg）"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('weight', {
-                  initialValue: toString(productData.weight),
-                })(
-                  <InputNumber step={0.01} min={0} style={{ width: 133.5 }} placeholder="请输入重量" />,
-                )}
-              </FormItem>
-            </Col>
-          </Row> */}
-          {/* <Row gutter={10}>
-            <Col span={7}>
-              <FormItem
-                label="单位"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('unit', {
-                  initialValue: toString(productData.unit),
-                  rules: [{ message: '请输入单位' }],
-                })(
-                  <Input placeholder="请输入单位" />,
-                )}
-              </FormItem>
-            </Col>
-            <Col span={7}>
-              <FormItem
-                label="来源"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('source', {
-                  initialValue: toString(productData.source),
-                  rules: [{ message: '请输入来源' }],
-                })(
-                  <Input placeholder="请输入来源" />,
-                )}
-              </FormItem>
-            </Col>
-          </Row> */}
           <Row gutter={10}>
             <Col span={7}>
               <FormItem
@@ -574,12 +504,7 @@ function mapStateToProps(state) {
   return {
     packageScales,
     scaleTypes,
-    loading: state.loading.models.products,
   };
 }
-
-ProductsModal.PropTypes = {
-  brands: PropTypes.array.isRequired,
-};
 
 export default connect(mapStateToProps)(Form.create()(ProductsModal));

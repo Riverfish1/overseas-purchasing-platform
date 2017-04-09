@@ -31,13 +31,14 @@ export default {
       return { ...state, currentPage: payload.pageIndex };
     },
     savePackageScales(state, { payload }) {
+      console.log(payload);
       // 预处理数据
       return {
         ...state,
         packageScales: payload.data.data.map((el) => {
           el.label = el.name;
           el.value = el.id;
-          el.children = el.packageList;
+          el.children = el.packageLevels;
           el.children.forEach((child) => {
             child.label = child.name;
             child.value = child.id;

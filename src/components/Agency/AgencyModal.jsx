@@ -11,9 +11,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 function toString(str, type) {
-  if (typeof str !== 'undefined' && str !== null) {
-    return str.toString();
-  }
+  if (typeof str !== 'undefined' && str !== null) return str.toString();
   if (type === 'SELECT') return undefined;
   return '';
 }

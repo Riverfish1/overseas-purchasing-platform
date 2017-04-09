@@ -38,12 +38,12 @@ class ProductsModal extends Component {
         if (modalValues && modalValues.data) {
           dispatch({
             type: 'order/updateOrder',
-            payload: { ...fieldsValue, id: modalValues.data.id, orderDetailList: JSON.stringify(orderDetailList) },
+            payload: { ...fieldsValue, id: modalValues.data.id, outerOrderDetailList: JSON.stringify(orderDetailList) },
           });
         } else {
           dispatch({
             type: 'order/addOrder',
-            payload: { ...fieldsValue, orderDetailList: JSON.stringify(orderDetailList) },
+            payload: { ...fieldsValue, outerOrderDetailList: JSON.stringify(orderDetailList) },
           });
         }
         p.closeModal();

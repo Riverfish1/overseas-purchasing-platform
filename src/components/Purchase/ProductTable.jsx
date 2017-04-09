@@ -308,17 +308,17 @@ class ProductTable extends Component {
         },
         {
           title: <font color="#00f">买手</font>,
-          dataIndex: 'wxUserId',
-          key: 'wxUserId',
+          dataIndex: 'buyerId',
+          key: 'buyerId',
           width: '8.5%',
           render(t, r) {
             return (<FormItem>
-              {getFieldDecorator(`r_${r.key}_wxUserId`, {
+              {getFieldDecorator(`r_${r.key}_buyerId`, {
                 initialValue: t ? t.toString() : undefined,
                 rules: [{ required: true, message: '该项必选' }],
               })(
                 <Select placeholder="请选择" optionLabelProp="title">
-                  {buyer.map(el => <Option key={el.wxUserId} title={el.name}>{el.name}</Option>)}
+                  {buyer.map(el => <Option key={el.buyerId} title={el.name}>{el.name}</Option>)}
                 </Select>,
               )}
             </FormItem>);

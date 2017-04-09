@@ -102,8 +102,9 @@ class Purchase extends Component {
       { title: '任务单号', dataIndex: 'taskOrderNo', key: 'taskOrderNo' },
       { title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle' },
       { title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc' },
-      { title: '任务分配人', dataIndex: 'taskOwnerName', key: 'taskOwnerName' },
-      { title: '买手', dataIndex: 'taskUserName', key: 'taskUserName', render(text) { return text || '-'; } },
+      { title: '任务分配人', dataIndex: 'ownerName', key: 'ownerName' },
+      { title: '分配者ID', dataIndex: 'ownerId', key: 'ownerId' },
+      { title: '买手', dataIndex: 'buyerName', key: 'buyerName', render(text) { return text || '-'; } },
       { title: '图片',
         dataIndex: 'imageUrl',
         key: 'imageUrl',
@@ -174,9 +175,9 @@ class Purchase extends Component {
                 label="买手"
                 {...formItemLayout}
               >
-                {getFieldDecorator('wxUserId', {})(
+                {getFieldDecorator('buyerId', {})(
                   <Select placeholder="请选择用户" optionLabelProp="title" combobox>
-                    {buyer.map(el => <Option key={el.wxUserId} value={el.wxUserId.toString()} title={el.name}>{el.name}</Option>)}
+                    {buyer.map(el => <Option key={el.id} value={el.id.toString()} title={el.name}>{el.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>

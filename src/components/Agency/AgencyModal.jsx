@@ -60,12 +60,11 @@ class AgencyModal extends Component {
     list.forEach((item) => {
       if (item.name === name) {
         form.setFieldsValue({
-          typeName: item.typeName,
-          typeCode: item.typeCode,
+          typeCode: item.code,
         });
         p.setState({
-          userId: item.userId,
-          typeId: item.typeId,
+          userId: item.id,
+          // typeId: item.typeId,
         });
       }
     });
@@ -106,12 +105,12 @@ class AgencyModal extends Component {
           <Row>
             <Col>
               <FormItem
-                label="经销商名称"
+                label="经销商类别"
                 {...formItemLayout}
               >
-                {getFieldDecorator('name', {
-                  initialValue: toString(agencyData.name, 'SELECT'),
-                  rules: [{ required: true, message: '请选择经销商名称' }],
+                {getFieldDecorator('typeName', {
+                  initialValue: toString(agencyData.typeName, 'SELECT'),
+                  rules: [{ required: true, message: '请选择经销商类别' }],
                 })(
                   <Select placeholder="请选择经销商名称" onChange={this.handleChange.bind(this)} >
                     {list.map((el, index) => <Option key={index} value={el.name}>{el.name}</Option>)}
@@ -142,21 +141,6 @@ class AgencyModal extends Component {
                   rules: [{ required: true, message: '请输入经销商代码' }],
                 })(
                   <Input placeholder="请输入经销商代码" />,
-                )}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <FormItem
-                label="经销商类别名称"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('typeName', {
-                  initialValue: toString(agencyData.typeName),
-                  rules: [{ required: true, message: '请选择经销商名称' }],
-                })(
-                  <Input placeholder="请选择经销商名称" disabled={true} />,
                 )}
               </FormItem>
             </Col>

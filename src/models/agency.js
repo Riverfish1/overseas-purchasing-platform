@@ -34,10 +34,8 @@ export default {
           });
         }
         if (pathname === '/person/agencyList') {
-          dispatch({
-            type: 'queryAgencyList',
-            payload: { pageIndex: 1 },
-          });
+          dispatch({ type: 'queryAgencyList', payload: { pageIndex: 1 } });
+          dispatch({ type: 'queryAgencyTypeList', payload: { pageIndex: 1 } });
         }
       });
     },

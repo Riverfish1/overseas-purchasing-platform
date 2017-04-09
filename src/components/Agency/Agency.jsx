@@ -78,7 +78,7 @@ class Agency extends Component {
 
   render() {
     const p = this;
-    const { form, list = [], total, currentPage, agencyValues = {}, dispatch } = p.props;
+    const { form, list = [], typeList = [], total, currentPage, agencyValues = {}, dispatch } = p.props;
     const { getFieldsValue, getFieldDecorator, resetFields } = form;
     const { title } = p.state;
     const formItemLayout = {
@@ -185,7 +185,7 @@ class Agency extends Component {
         </Row>
         <AgencyModal
           visible={this.state.modalVisible}
-          list={list}
+          list={typeList}
           close={this.closeModal.bind(this)}
           modalValues={agencyValues}
           title={title}
@@ -197,9 +197,10 @@ class Agency extends Component {
 }
 
 function mapStateToProps(state) {
-  const { list, total, agencyValues } = state.agency;
+  const { list, typeList, total, agencyValues } = state.agency;
   return {
     list,
+    typeList,
     total,
     agencyValues,
   };

@@ -7,6 +7,8 @@ import MainLayout from './layouts/Main';
 import Login from './components/Login';
 import Overview from './components/Overview';
 import Products from './components/Products/Products';
+import PackageScale from './components/Products/PackageScale';
+import PackageLevel from './components/Products/PackageLevel';
 import Sku from './components/Sku/Sku';
 import Category from './components/Category/Category';
 import Order from './components/Order/Order';
@@ -47,6 +49,8 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.OVERVIEW}`} component={Overview} />
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} component={Products} />
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.SKU_LIST}`} component={Sku} />
+        <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.PACKAGE_SCALE}`} component={PackageScale} />
+        <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.PACKAGE_LEVEL}`} component={PackageLevel} />
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.CATE_LIST}`} component={Category} />
         <Route path={`/${routerCfg.SALE}/${routerCfg.ORDER_LIST}`} component={Order} />
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} component={Purchase} />

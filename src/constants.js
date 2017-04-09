@@ -12,6 +12,8 @@ export const routerCfg = {
   PRODUCTS_LIST: 'productsList',
   SKU_LIST: 'skuList',
   CATE_LIST: 'cateList',
+  PACKAGE_SCALE: 'packageScale',
+  PACKAGE_LEVEL: 'packageLevel',
   // 销售管理
   SALE: 'sale',
   ORDER_LIST: 'orderList',
@@ -43,6 +45,8 @@ export const navigation = [
       { key: routerCfg.PRODUCTS_LIST, name: '商品列表' },
       { key: routerCfg.SKU_LIST, name: 'SKU管理' },
       { key: routerCfg.CATE_LIST, name: '类目管理' },
+      { key: routerCfg.PACKAGE_SCALE, name: '包装规格类别' },
+      { key: routerCfg.PACKAGE_LEVEL, name: '包装规格' },
     ],
   },
   { key: routerCfg.SALE, name: '销售管理', icon: 'book',

@@ -201,12 +201,12 @@ class PurchaseModal extends Component {
                 label="任务分配人"
                 {...formItemLayout}
               >
-                {getFieldDecorator('wxUserId', {
-                  initialValue: toString(purchaseData.wxUserId, 'SELECT'),
+                {getFieldDecorator('buyerId', {
+                  initialValue: toString(purchaseData.buyerId, 'SELECT'),
                   rules: [{ required: true, message: '请选择用户' }],
                 })(
                   <Select placeholder="请输入用户" optionLabelProp="title">
-                    {buyer.map(el => <Option key={el.wxUserId} title={el.name}>{el.name}</Option>)}
+                    {buyer.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>

@@ -16,16 +16,10 @@ class Order extends Component {
       modalVisible: false,
       visible: false,
       title: '', // modal的title
-      updateId: [], // 修改商品传的id
+      checkId: [], // 审核时传的id
+      checkModalVisible: false,
+      isNotSelected: true,
     };
-  }
-
-  componentWillMount() {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'order/querySalesName',
-    //   payload: {},
-    // });
   }
 
   handleSubmit(e) {
@@ -51,6 +45,21 @@ class Order extends Component {
     this.props.dispatch({
       type: 'sku/querySkuList',
       payload: {},
+    });
+  }
+
+  showCheckModal() {
+    this.setState({ checkModalVisible: true });
+  }
+
+  checkOrder() {
+    const { form } = this.props;
+    const { checkId } = this.state;
+    const actions = form.getFieldValue('actions');
+    const comments = form.getFieldValue('comments');
+    this.props.dispatch({
+      type: 'order/reviewOrder',
+      payload: { orderId: checkId, actions, comments },
     });
   }
 
@@ -98,96 +107,44 @@ class Order extends Component {
     const p = this;
     const { form, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [] } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
-    const { title, visible } = p.state;
+    const { title, visible, checkModalVisible, isNotSelected, checkId } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
     const columnsList = [
-      {
-        title: '订单编号', dataIndex: 'orderNo', key: 'orderNo',
-      },
-      {
-        title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', render(text) { return text || '-'; },
-      },
-      {
-        title: '客户', dataIndex: 'salesName', key: 'salesName', render(text) { return text || '-'; },
-      },
-      {
-        title: '订单时间', dataIndex: 'orderTime', key: 'orderTime', render(text) { return text || '-'; },
-      },
-      {
-        title: '订单状态',
+      { title: '订单编号', dataIndex: 'outerNo', key: 'outerNo' },
+      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', render(text) { return text || '-'; } },
+      { title: '客户', dataIndex: 'salesName', key: 'salesName', render(text) { return text || '-'; } },
+      { title: '订单时间', dataIndex: 'orderTime', key: 'orderTime', render(text) { return text || '-'; } },
+      { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
         render(text) {
-          if (text === 0) {
-            return <span>待支付</span>;
-          } else if (text === 1) {
-            return <span>待审核</span>;
-          } else if (text === 2) {
-            return <span>备货中</span>;
-          } else if (text === 3) {
-            return <span>部分发货</span>;
-          } else if (text === 4) {
-            return <span>已发货</span>;
-          } else if (text === 5) {
-            return <span>已完成</span>;
-          } else if (text === 6) {
-            return <span>已取消</span>;
+          switch (text) {
+            case 0: return '待支付';
+            case 1: return '待审核';
+            case 2: return '备货中';
+            case 3: return '部分发货';
+            case 4: return '已发货';
+            case 5: return '已完成';
+            case 6: return '已取消';
+            default: return '-';
           }
-          return '-';
         },
       },
-      {
-        title: '备货状态',
-        dataIndex: 'stockStatus',
-        key: 'stockStatus',
-        render(text) {
-          if (text === 1) {
-            return <span>未备货</span>;
-          } else if (text === 2) {
-            return <span>备货中</span>;
-          } else if (text === 3) {
-            return <span>部分备货</span>;
-          } else if (text === 4) {
-            return <span>部分备货，在途</span>;
-          } else if (text === 5) {
-            return <span>部分备货，在途，可发</span>;
-          } else if (text === 6) {
-            return <span>部分备货，可发</span>;
-          } else if (text === 7) {
-            return <span>备货完成</span>;
-          } else if (text === 8) {
-            return <span>备货完成、在途</span>;
-          } else if (text === 9) {
-            return <span>备货完成、在途、可发</span>;
-          }
-          return '-';
-        },
-      },
-      {
-        title: '收件人', dataIndex: 'receiver', key: 'receiver',
-      },
-      {
-        title: '收件人地址',
+      { title: '收件人', dataIndex: 'receiver', key: 'receiver' },
+      { title: '收件人地址',
         dataIndex: 'address',
         key: 'address',
         render(text, record) {
           return <span>{text ? `${text} ${record.addressDetail}` : '-'}</span>;
         },
       },
-      {
-        title: '联系电话', dataIndex: 'telephone', key: 'telephone',
-      },
-      {
-        title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate',
-      },
-      {
-        title: '备注', dataIndex: 'remarks', key: 'remarks', render(text) { return text || '-'; },
-      },
-      {
-        title: '操作',
+      { title: '联系电话', dataIndex: 'telephone', key: 'telephone' },
+      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate' },
+      { title: '备注', dataIndex: 'remarks', key: 'remarks', render(text) { return text || '-'; } },
+      { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
         width: 200,
@@ -206,6 +163,18 @@ class Order extends Component {
         },
       },
     ];
+
+    const rowSelection = {
+      onChange(selectedRowKeys, selectedRows) {
+        const listId = [];
+        selectedRows.length ? p.setState({ isNotSelected: false }) : p.setState({ isNotSelected: true });
+        selectedRows.forEach((el) => {
+          listId.push(el.id && el.id.toString());
+        });
+        console.log(listId);
+        p.setState({ checkId: listId });
+      },
+    };
 
     const listPaginationProps = {
       total: orderTotal,
@@ -417,8 +386,11 @@ class Order extends Component {
           </Row>
         </Form>
         <Row>
-          <Col className={styles.orderBtn}>
+          <Col className={styles.orderBtn} span={22}>
             <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增订单</Button>
+          </Col>
+          <Col className={styles.orderBtn} span={2}>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showCheckModal.bind(p)}>审核</Button>
           </Col>
         </Row>
         <Row>
@@ -430,6 +402,7 @@ class Order extends Component {
               size="large"
               rowKey={record => record.id}
               pagination={listPaginationProps}
+              rowSelection={rowSelection}
             />
           </Col>
         </Row>
@@ -442,6 +415,47 @@ class Order extends Component {
             rowKey={record => record.id}
             pagination={false}
           />
+        </Modal>
+        <Modal
+          visible={checkModalVisible}
+          title="审核"
+          onOk={p.checkOrder.bind(p)}
+          onCancel={() => { p.setState({ checkModalVisible: false }); }}
+        >
+          <Form>
+            <FormItem
+              label="外部订单ID"
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 12 }}
+            >
+              {getFieldDecorator('orderId', {
+                initialValue: checkId.join(', '),
+              })(
+                <Input disabled={true} />,
+              )}
+            </FormItem>
+            <FormItem
+              label="审核结果"
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 12 }}
+            >
+              {getFieldDecorator('actions')(
+                <Select placeholder="请选择审核结果">
+                  <Option value="1">审核通过</Option>
+                  <Option value="2">审核拒绝</Option>
+                </Select>,
+              )}
+            </FormItem>
+            <FormItem
+              label="外部订单ID"
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 12 }}
+            >
+              {getFieldDecorator('comments')(
+                <Input type="textarea" placeholder="请输入备注" />,
+              )}
+            </FormItem>
+          </Form>
         </Modal>
         <OrderModal
           visible={this.state.modalVisible}

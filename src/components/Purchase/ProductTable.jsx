@@ -505,10 +505,10 @@ class ProductTable extends Component {
     return (
       <div>
         <Row style={{ paddingBottom: 10 }}>
-          <Col style={{ float: 'left' }}>
+          <Col span={20}>
             <span>采购明细信息（<font color="#00f">蓝色列可编辑</font>）</span>
           </Col>
-          <Col style={{ float: 'right' }}>
+          <Col span={4}>
             <Button type="primary" onClick={p.addProduct.bind(p)}>添加商品</Button>
           </Col>
         </Row>

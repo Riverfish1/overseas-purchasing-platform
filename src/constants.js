@@ -17,6 +17,7 @@ export const routerCfg = {
   // 销售管理
   SALE: 'sale',
   ORDER_LIST: 'orderList',
+  ERP_ORDER: 'erpOrder',
   // 采购管理
   PURCHASE: 'purchase',
   PURCHASE_LIST: 'purchaseList',
@@ -52,6 +53,7 @@ export const navigation = [
   { key: routerCfg.SALE, name: '销售管理', icon: 'book',
     child: [
       { key: routerCfg.ORDER_LIST, name: '外部订单管理' },
+      { key: routerCfg.ERP_ORDER, name: 'erp订单管理' },
     ],
   },
   { key: routerCfg.PURCHASE, name: '采购管理', icon: 'appstore-o',

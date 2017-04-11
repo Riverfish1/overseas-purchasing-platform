@@ -31,7 +31,6 @@ export default {
       return { ...state, currentPage: payload.pageIndex };
     },
     savePackageScales(state, { payload }) {
-      console.log(payload);
       // 预处理数据
       return {
         ...state,

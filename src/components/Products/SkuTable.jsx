@@ -34,6 +34,7 @@ class SkuTable extends Component {
       batchSelected: [],
       previewVisible: false,
       previewImage: '',
+      batchFileList: [],
     };
   }
   componentWillReceiveProps(...args) {
@@ -99,6 +100,19 @@ class SkuTable extends Component {
     const skuLen = skuData.length;
     const lastId = skuLen < 1 ? 0 : skuData[skuData.length - 1].key;
     const newId = parseInt(lastId, 10) + 1;
+    // 处理图片
+    const pic = {};
+    obj.batchFileList.map((el) => {
+      const list = [];
+      list.push({
+        uid: el.uid,
+        url: el.response.data,
+        type: el.type,
+      });
+      pic.picList = list;
+      return pic;
+    });
+    // 处理图片结束
     const newItem = {
       // id: newId,
       key: newId,
@@ -109,7 +123,7 @@ class SkuTable extends Component {
       skuCode: '',
       salePrice: typeof obj.salePrice === 'string' ? obj.salePrice : '',
       weight: '',
-      skuPic: '',
+      skuPic: JSON.stringify(pic),
     };
     skuData.push(newItem);
     this.setState({ skuData });
@@ -132,8 +146,9 @@ class SkuTable extends Component {
       const { batchSelected } = this.state;
       const salePrice = this.salePrice.refs.input.value;
       const color = this.color.refs.input.value;
+      const batchFileList = this.batchPic.state.fileList;
       batchSelected.forEach((el) => {
-        const obj = { scale: el, salePrice, color };
+        const obj = { scale: el, salePrice, color, batchFileList };
         this.addItem(obj);
       });
       this.setState({ batchSkuSort: '', batchSelected: [] });
@@ -141,6 +156,13 @@ class SkuTable extends Component {
       this.color.refs.input.value = '';
     }
     this.setState({ batchSkuAddVisible });
+  }
+  handleCloseBatch() {
+    this.setState({
+      batchSkuAddVisible: false,
+    });
+    this.salePrice.refs.input.value = '';
+    this.color.refs.input.value = '';
   }
   changeBatchSkuType(type) {
     this.setState({ batchSkuSort: type });
@@ -157,6 +179,7 @@ class SkuTable extends Component {
   render() {
     const p = this;
     const { form, parent, packageScales, scaleTypes } = this.props;
+    const { batchFileList } = this.state;
     const { getFieldDecorator } = form;
     const { skuData, batchSkuSort, batchSelected, previewImage, previewVisible } = this.state;
     let picList = [];
@@ -393,20 +416,30 @@ class SkuTable extends Component {
           previewVisible: true,
         });
       },
+      onRemove() {
+        p.setState({
+          batchFileList: [],
+        });
+      },
       onChange(info) {
+        console.log(info);
         if (info.file.status === 'done') {
           if (info.file.response && info.file.response.success) {
             message.success(`${info.file.name} 成功上传`);
             // 添加文件预览
             const newFile = info.file;
-            info.fileList = info.fileList.slice(-1);
             newFile.url = info.file.response.data;
+            batchFileList.push(newFile);
+            p.setState({ batchFileList });
           } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
         } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
       },
     };
 
     const scaleOptions = getScaleOptions(batchSkuSort, scaleTypes);
+    const uploadButton = (<div>
+      <Icon type="plus" style={{ fontSize: 28 }} /><div className="ant-upload-text">上传图片</div>
+    </div>);
     const BatchSkuAdd = (
       <div style={{ width: 400 }}>
         <Select placeholder="请选择类型" value={batchSkuSort || undefined} style={{ width: 200, marginTop: 10 }} onChange={this.changeBatchSkuType.bind(this)}>
@@ -414,12 +447,16 @@ class SkuTable extends Component {
         </Select>
         <div><Input placeholder="请输入颜色" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.color = c; }} /></div>
         <div><Input placeholder="请输入售价" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.salePrice = c; }} /></div>
-        <div style={{ marginTop: 10 }}><Upload {...batchUploadProps} ref={(c) => { this.batchPic = c; }}>上传图片</Upload></div>
+        <div style={{ marginTop: 10, minHeight: 100 }}>
+          <Upload {...batchUploadProps} ref={(c) => { this.batchPic = c; }}>
+            {batchFileList.length >= 1 ? null : uploadButton}
+          </Upload>
+        </div>
         {scaleOptions.length > 0 && <div style={{ height: 10 }} />}
         <CheckboxGroup options={scaleOptions} value={batchSelected} onChange={this.handleBatchSelect.bind(this)} />
         <div style={{ height: 20 }} />
         <Button type="primary" size="small" onClick={this.handleBatchSkuAddVisible.bind(this, false)}>添加</Button>
-        <Button style={{ marginLeft: 10 }} size="small" onClick={() => this.setState({ batchSkuAddVisible: false })}>关闭</Button>
+        <Button style={{ marginLeft: 10 }} size="small" onClick={this.handleCloseBatch.bind(this)}>关闭</Button>
       </div>
     );
 

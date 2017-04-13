@@ -20,17 +20,17 @@ export default {
     searchValues: {},
   },
   reducers: {
-    saveCatesTree(state, { payload: data }) {
-      return { ...state, tree: data.data };
+    saveCatesTree(state, { payload }) {
+      return { ...state, tree: payload.data };
     },
-    saveItemList(state, { payload: data }) {
-      return { ...state, productsList: data.rows, productsTotal: data.total };
+    saveItemList(state, { payload }) {
+      return { ...state, productsList: payload.rows, productsTotal: payload.total };
     },
-    saveBrands(state, { payload: data }) { // 保存品牌
-      return { ...state, brands: data.data };
+    saveBrands(state, { payload }) { // 保存品牌
+      return { ...state, brands: payload.data };
     },
-    saveProductsValue(state, { payload: data }) {
-      return { ...state, productsValues: data };
+    saveProductsValue(state, { payload }) {
+      return { ...state, productsValues: payload };
     },
     saveCurrentPage(state, { payload }) {
       return { ...state, currentPage: payload.pageIndex };

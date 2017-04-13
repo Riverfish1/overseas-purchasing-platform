@@ -62,13 +62,11 @@ class Category extends Component {
 
   render() {
     const p = this;
-    const { cateList = {}, cate = {}, tree = [], dispatch } = p.props;
+    const { cateList = [], cate = {}, tree = [], dispatch } = p.props;
     const { title } = this.state;
-    if (cateList.data) {
-      cateList.data.forEach((item) => {
-        if (item.children && item.children.length < 1) delete item.children;
-      });
-    }
+    cateList.forEach((item) => {
+      if (item.children && item.children.length < 1) delete item.children;
+    });
     const columns = [
       {
         title: '类目名称',
@@ -110,7 +108,7 @@ class Category extends Component {
           <Col>
             <Table
               columns={columns}
-              dataSource={cateList.data}
+              dataSource={cateList}
               bordered
               size="large"
               rowKey={record => record.id}
@@ -138,13 +136,8 @@ function mapStateToProps(state) {
     loading: state.loading.models.products,
     cateList,
     cate,
-    tree: tree.data,
+    tree,
   };
 }
-
-Category.PropTypes = {
-  cateList: PropTypes.array.isRequired,
-  tree: PropTypes.array.isRequired,
-};
 
 export default connect(mapStateToProps)(Category);

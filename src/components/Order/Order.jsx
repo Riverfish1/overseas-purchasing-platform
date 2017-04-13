@@ -55,11 +55,11 @@ class Order extends Component {
   checkOrder() {
     const { form } = this.props;
     const { checkId } = this.state;
-    const actions = form.getFieldValue('actions');
+    const action = form.getFieldValue('action');
     const comments = form.getFieldValue('comments');
     this.props.dispatch({
       type: 'order/reviewOrder',
-      payload: { orderId: checkId, actions, comments },
+      payload: { orderId: JSON.stringify(checkId), action, comments },
     });
   }
 
@@ -171,7 +171,6 @@ class Order extends Component {
         selectedRows.forEach((el) => {
           listId.push(el.id && el.id.toString());
         });
-        console.log(listId);
         p.setState({ checkId: listId });
       },
     };
@@ -439,7 +438,7 @@ class Order extends Component {
               labelCol={{ span: 6 }}
               wrapperCol={{ span: 12 }}
             >
-              {getFieldDecorator('actions')(
+              {getFieldDecorator('action')(
                 <Select placeholder="请选择审核结果">
                   <Option value="1">审核通过</Option>
                   <Option value="2">审核拒绝</Option>

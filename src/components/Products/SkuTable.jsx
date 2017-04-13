@@ -67,7 +67,7 @@ class SkuTable extends Component {
             uploadMainPic.push({
               type: el.type,
               uid: `i_${index}`,
-              url: el.response.data,
+              url: el.url || el.response.data,
             });
           });
           skuSingle.skuPic = JSON.stringify({ picList: uploadMainPic });
@@ -101,17 +101,19 @@ class SkuTable extends Component {
     const lastId = skuLen < 1 ? 0 : skuData[skuData.length - 1].key;
     const newId = parseInt(lastId, 10) + 1;
     // 处理图片
-    const pic = {};
-    obj.batchFileList.map((el) => {
-      const list = [];
-      list.push({
-        uid: el.uid,
-        url: el.response.data,
-        type: el.type,
+    const list = [];
+    if (obj.batchFileList) {
+      obj.batchFileList.forEach((el) => {
+        if (el.response && el.response.success) {
+          list.push({
+            uid: el.uid,
+            url: el.response.data,
+            type: el.type,
+          });
+        }
       });
-      pic.picList = list;
-      return pic;
-    });
+    }
+    console.log(list);
     // 处理图片结束
     const newItem = {
       // id: newId,
@@ -119,13 +121,14 @@ class SkuTable extends Component {
       scale: typeof obj.scale === 'string' ? obj.scale : '',
       color: typeof obj.color === 'string' ? obj.color : '',
       virtualInv: '',
-      packageLevelId: [],
+      packageLevelId: obj.packageLevelId ? JSON.stringify(obj.packageLevelId) : [],
       skuCode: '',
       salePrice: typeof obj.salePrice === 'string' ? obj.salePrice : '',
-      weight: '',
-      skuPic: JSON.stringify(pic),
+      weight: typeof obj.weight === 'string' ? obj.weight : '',
+      skuPic: list,
     };
     skuData.push(newItem);
+    console.log(skuData);
     this.setState({ skuData });
   }
   delItem(key) {
@@ -146,14 +149,19 @@ class SkuTable extends Component {
       const { batchSelected } = this.state;
       const salePrice = this.salePrice.refs.input.value;
       const color = this.color.refs.input.value;
+      const weight = this.weight.refs.input.value;
+      const packageLevelId = this.packageLevelId.state.value;
+      console.log(packageLevelId);
       const batchFileList = this.batchPic.state.fileList;
       batchSelected.forEach((el) => {
-        const obj = { scale: el, salePrice, color, batchFileList };
+        const obj = { scale: el, salePrice, color, batchFileList, weight, packageLevelId };
         this.addItem(obj);
       });
       this.setState({ batchSkuSort: '', batchSelected: [] });
       this.salePrice.refs.input.value = '';
       this.color.refs.input.value = '';
+      this.weight.refs.input.value = '';
+      this.packageLevelId.state.value = '';
     }
     this.setState({ batchSkuAddVisible });
   }
@@ -179,18 +187,8 @@ class SkuTable extends Component {
   render() {
     const p = this;
     const { form, parent, packageScales, scaleTypes } = this.props;
-    const { batchFileList } = this.state;
     const { getFieldDecorator } = form;
-    const { skuData, batchSkuSort, batchSelected, previewImage, previewVisible } = this.state;
-    let picList = [];
-    if (skuData) {
-      skuData.forEach((el) => {
-        if (el.skuPic) {
-          const picObj = JSON.parse(el.skuPic);
-          picList = picObj.picList || [];
-        }
-      });
-    }
+    const { skuData, batchSkuSort, batchSelected, previewImage, previewVisible, batchFileList } = this.state;
 
     // 注册props
     if (!parent.clearSkuValue) parent.clearSkuValue = this.clearValue.bind(this);
@@ -254,7 +252,7 @@ class SkuTable extends Component {
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_scale`, { initialValue: t || '', rules: [{ required: true, message: '该项必填' }] })(
+                {getFieldDecorator(`r_${r.key}_scale`, { initialValue: t || '' })(
                   <Input placeholder="请填写" />)}
                 {getFieldDecorator(`r_${r.key}_id`, { initialValue: r.id || null })(
                   <Input style={{ display: 'none' }} />)}
@@ -270,7 +268,7 @@ class SkuTable extends Component {
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_color`, { initialValue: t || '', rules: [{ required: true, message: '该项必填' }] })(
+                {getFieldDecorator(`r_${r.key}_color`, { initialValue: t || '' })(
                   <Input placeholder="请填写" />)}
               </FormItem>
             );
@@ -340,11 +338,11 @@ class SkuTable extends Component {
           key: 'skuPic',
           width: '10%',
           render(t, r) {
-            const formValue = form.getFieldValue(`r_${r.key}_skuPic`);
+            console.log(t);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuPic`, {
-                  initialValue: picList,
+                  initialValue: t || undefined,
                   valuePropName: 'fileList',
                   getValueFromEvent(e) {
                     if (!e || !e.fileList) {
@@ -356,7 +354,7 @@ class SkuTable extends Component {
                   rules: [{ validator: p.checkImg.bind(p) }],
                 })(
                   <Upload {...uploadProps} className={styles.picStyle}>
-                    {(!formValue || formValue.length < 1) && <Icon type="plus" style={{ fontSize: 10 }} />}
+                    {(!t || t.length < 1) && <Icon type="plus" style={{ fontSize: 10 }} />}
                   </Upload>,
                 )}
               </FormItem>
@@ -399,11 +397,7 @@ class SkuTable extends Component {
     const batchUploadProps = {
       action: '/haierp1/uploadFile/picUpload',
       listType: 'picture-card',
-      data(file) {
-        return {
-          pic: file.name,
-        };
-      },
+      data(file) { return { pic: file.name }; },
       beforeUpload(file) {
         const isImg = file.type === 'image/jpeg' || file.type === 'image/bmp' || file.type === 'image/gif' || file.type === 'image/png';
         if (!isImg) { message.error('请上传图片文件'); }
@@ -447,6 +441,8 @@ class SkuTable extends Component {
         </Select>
         <div><Input placeholder="请输入颜色" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.color = c; }} /></div>
         <div><Input placeholder="请输入售价" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.salePrice = c; }} /></div>
+        <div><Input placeholder="请输入重量" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.weight = c; }} /></div>
+        <div><Cascader options={packageScales} placeholder="请选择包装规格" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.packageLevelId = c; }} /></div>
         <div style={{ marginTop: 10, minHeight: 100 }}>
           <Upload {...batchUploadProps} ref={(c) => { this.batchPic = c; }}>
             {batchFileList.length >= 1 ? null : uploadButton}
@@ -463,22 +459,23 @@ class SkuTable extends Component {
     return (
       <Row>
         <Col className={styles.productModalBtn}>
-          <Button type="primary" onClick={this.addItem.bind(this)}>新增SKU</Button>
           <Popover
             content={BatchSkuAdd}
             title="选择类型"
             trigger="click"
             visible={this.state.batchSkuAddVisible}
+            style={{ width: 200 }}
           >
-            <Button type="ghost" style={{ marginLeft: 10 }} onClick={this.handleBatchSkuAddVisible.bind(this, true)}>批量新增SKU</Button>
+            <Button type="ghost" onClick={this.handleBatchSkuAddVisible.bind(this, true)}>批量新增SKU</Button>
           </Popover>
+          <Button type="primary" style={{ marginLeft: 10 }} onClick={this.addItem.bind(this)}>新增SKU</Button>
         </Col>
         <Table
           {...modalTableProps}
           rowKey={record => record.key}
           pagination={false}
         />
-        <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
+        <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)} style={{ marginLeft: '40%' }} >
           <img role="presentation" src={previewImage} style={{ width: '100%' }} />
         </Modal>
       </Row>

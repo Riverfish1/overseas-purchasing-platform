@@ -149,9 +149,8 @@ class ProductsModal extends Component {
                   initialValue: orderData.salesName,
                   rules: [{ required: true, message: '请选择客户' }],
                 })(
-                  <Select placeholder="请选择客户" combobox>
-                    <Option value="0">张三</Option>
-                  </Select>)}
+                  <Input placeholder="请输入客户" />,
+                )}
               </FormItem>
             </Col>
             <Col span={7}>
@@ -259,7 +258,7 @@ class ProductsModal extends Component {
             </Col>
           </Row>
           <Row>
-            <ProductTable data={orderData.orderDetails} parent={this} />
+            <ProductTable data={orderData.outerOrderDetails} parent={this} />
           </Row>
         </Form>
       </Modal>

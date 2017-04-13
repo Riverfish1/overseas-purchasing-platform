@@ -16,7 +16,7 @@ export default {
   },
   reducers: {
     saveCateList(state, { payload }) {
-      return { ...state, cateList: payload };
+      return { ...state, cateList: payload.data };
     },
     saveCate(state, { payload }) {
       return { ...state, cate: payload };

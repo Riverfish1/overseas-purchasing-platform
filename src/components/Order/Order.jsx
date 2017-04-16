@@ -30,6 +30,7 @@ class Order extends Component {
       }
       if (fieldsValue.startOrderTime) fieldsValue.startOrderTime = new Date(fieldsValue.startOrderTime).format('yyyy-MM-dd');
       if (fieldsValue.endOrderTime) fieldsValue.endOrderTime = new Date(fieldsValue.endOrderTime).format('yyyy-MM-dd');
+      delete fieldsValue.action;
       this.props.dispatch({
         type: 'order/queryOrderList',
         payload: { ...fieldsValue, pageIndex: 1 },
@@ -315,6 +316,7 @@ class Order extends Component {
               >
                 {getFieldDecorator('status', {})(
                   <Select placeholder="请选择订单状态">
+                    <Option value="10">全部</Option>
                     <Option value="0">待审核</Option>
                     <Option value="1">审核通过</Option>
                     <Option value="2">未通过</Option>
@@ -388,17 +390,6 @@ class Order extends Component {
           onCancel={() => { p.setState({ checkModalVisible: false }); }}
         >
           <Form>
-            <FormItem
-              label="外部订单ID"
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 12 }}
-            >
-              {getFieldDecorator('orderId', {
-                initialValue: checkId.join(', '),
-              })(
-                <Input disabled={true} />,
-              )}
-            </FormItem>
             <FormItem
               label="审核结果"
               labelCol={{ span: 6 }}

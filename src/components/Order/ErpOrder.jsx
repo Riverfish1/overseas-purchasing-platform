@@ -1,13 +1,35 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Popover } from 'antd';
+import { Form, Table, Popover, Row, Col, Input, Select, Button } from 'antd';
 
 import styles from './Order.less';
 
+const FormItem = Form.Item;
+const Option = Select.Option;
+
+
 class ErpOrder extends Component {
+  handleSubmit(e) {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
+      if (err) {
+        return;
+      }
+      this.props.dispatch({
+        type: 'order/queryErpOrderList',
+        payload: { ...fieldsValue, pageIndex: 1 },
+      });
+    });
+  }
   render() {
     const p = this;
-    const { erpOrderList } = p.props;
+    const { erpOrderList, form } = p.props;
+    const { getFieldDecorator, resetFields } = form;
+
+    const formItemLayout = {
+      labelCol: { span: 10 },
+      wrapperCol: { span: 14 },
+    };
     const orderStatusContent = (
       <div className={styles.popoverContent}>
         <p><a href="javascript:void(0)">取消订单</a></p>
@@ -29,21 +51,17 @@ class ErpOrder extends Component {
         width: '6%',
         render(text) {
           switch (text) {
-            case 0: return '待支付';
-            case 1: return '待审核';
-            case 2: return '备货中';
-            case 3: return '部分发货';
-            case 4: return '已发货';
-            case 5: return '已完成';
-            case 6: return '已取消';
+            case 0: return '未发货';
+            case 3: return '已发货';
+            case -1: return '已关闭';
             default: return '-';
           }
         },
       },
       {
         title: '备货状态',
-        dataIndex: 'stockupStatus',
-        key: 'stockupStatus',
+        dataIndex: 'stockStatus',
+        key: 'stockStatus',
         width: '6%',
         render(text) {
           switch (text) {
@@ -51,7 +69,7 @@ class ErpOrder extends Component {
             case 1: return '部分备货';
             case 2: return '部分在途备货';
             case 3: return '全部在途备货';
-            case 10: return '已备货';
+            case 4: return '已备货';
             default: return '-';
           }
         },
@@ -89,6 +107,85 @@ class ErpOrder extends Component {
     ];
     return (
       <div>
+        <Form onSubmit={this.handleSubmit.bind(this)}>
+          <Row gutter={20}>
+            <Col span="8">
+              <FormItem
+                label="订单状态"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('status', {})(
+                  <Select placeholder="请选择" allowClear>
+                    <Option value="0">未发货</Option>
+                    <Option value="3">已发货</Option>
+                    <Option value="-1">已关闭</Option>
+                  </Select>,
+                )}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="备货状态"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('stockStatus', {})(
+                  <Select placeholder="请选择" allowClear>
+                    <Option value="0">未备货</Option>
+                    <Option value="1">部分备货</Option>
+                    <Option value="2">部分在途备货</Option>
+                    <Option value="3">全部在途备货</Option>
+                    <Option value="4">已备货</Option>
+                  </Select>,
+                )}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="外部订单ID"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('outerOrderId', {})(
+                  <Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={20}>
+            <Col span="8">
+              <FormItem
+                label="外部订单的内部订单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('outerNo', {})(
+                  <Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="内部订单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('erpNo', {})(
+                  <Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="外部订单的订单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('targetNo', {})(
+                  <Input placeholder="请输入" />,
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col className={styles.listBtnGroup}>
+              <Button htmlType="submit" size="large" type="primary">查询</Button>
+              <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>
+            </Col>
+          </Row>
+        </Form>
         <Table columns={columns} dataSource={erpOrderList} rowKey={r => r.id} />
       </div>
     );

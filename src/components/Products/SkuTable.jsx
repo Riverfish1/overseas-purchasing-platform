@@ -62,7 +62,15 @@ class SkuTable extends Component {
         console.log(skuSingle);
         // 处理图片
         if (skuSingle.skuPic) {
-          skuSingle.skuPic = skuSingle.skuPic[0].response && skuSingle.skuPic[0].response.data;
+          const uploadMainPic = [];
+          skuSingle.skuPic.forEach((el, index) => {
+            uploadMainPic.push({
+              type: el.type,
+              uid: `i_${index}`,
+              url: el.url || el.response.data,
+            });
+          });
+          skuSingle.skuPic = JSON.stringify({ picList: uploadMainPic });
         }
         skuList.push(skuSingle);
         count += 1;
@@ -93,9 +101,10 @@ class SkuTable extends Component {
     const lastId = skuLen < 1 ? 0 : skuData[skuData.length - 1].key;
     const newId = parseInt(lastId, 10) + 1;
     // 处理图片
-    const list = [];
+    const pic = {};
     if (obj.batchFileList) {
       obj.batchFileList.forEach((el) => {
+        const list = [];
         if (el.response && el.response.success) {
           list.push({
             uid: el.uid,
@@ -103,9 +112,10 @@ class SkuTable extends Component {
             type: el.type,
           });
         }
+        pic.picList = list;
       });
     }
-    console.log(list);
+    console.log(pic);
     // 处理图片结束
     const newItem = {
       // id: newId,
@@ -117,7 +127,7 @@ class SkuTable extends Component {
       skuCode: '',
       salePrice: typeof obj.salePrice === 'string' ? obj.salePrice : '',
       weight: typeof obj.weight === 'string' ? obj.weight : '',
-      skuPic: list,
+      skuPic: JSON.stringify(pic),
     };
     skuData.push(newItem);
     console.log(skuData);
@@ -331,12 +341,15 @@ class SkuTable extends Component {
           width: '10%',
           render(t, r) {
             console.log(t);
+            const formValue = form.getFieldValue(`r_${r.key}_skuPic`);
+            console.log(formValue);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuPic`, {
-                  initialValue: t || undefined,
+                  initialValue: t ? JSON.parse(t).picList : formValue,
                   valuePropName: 'fileList',
                   getValueFromEvent(e) {
+                    console.log(e);
                     if (!e || !e.fileList) {
                       return e;
                     }
@@ -346,7 +359,7 @@ class SkuTable extends Component {
                   rules: [{ validator: p.checkImg.bind(p) }],
                 })(
                   <Upload {...uploadProps} className={styles.picStyle}>
-                    {(!t || t.length < 1) && <Icon type="plus" style={{ fontSize: 10 }} />}
+                    {(!formValue || formValue.length < 1) && <Icon type="plus" style={{ fontSize: 10 }} />}
                   </Upload>,
                 )}
               </FormItem>

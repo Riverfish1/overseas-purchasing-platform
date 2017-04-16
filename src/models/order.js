@@ -120,6 +120,7 @@ export default {
       }
       if (payload.startGmt) payload.startGmt = payload.startGmt.format('YYYY-MM-DD');
       if (payload.endGmt) payload.endGmt = payload.endGmt.format('YYYY-MM-DD');
+      if (!payload.status) payload.status = 0;
       const data = yield call(queryOrderList, { payload: { ...payload, pageIndex } });
       if (data.success) {
         yield put({
@@ -160,17 +161,24 @@ export default {
       const data = yield call(querySkuList, { payload: param });
       payload.callback(data.success ? data : 'ERROR');
     },
-    * reviewOrder({ payload }, { call }) {
-      console.log(payload);
+    * reviewOrder({ payload }, { call, put }) {
       const data = yield call(reviewOrder, { payload });
       if (data.success) {
-        setTimeout(window.location.reload(), 200);
+        message.success('审核完成');
+        yield put({
+          type: 'queryOrderList',
+          payload: {},
+        });
       }
     },
-    * reviewOrderList({ payload }, { call }) {
+    * reviewOrderList({ payload }, { call, put }) {
       const data = yield call(reviewOrderList, { payload });
       if (data.success) {
-        setTimeout(window.location.reload(), 200);
+        message.success('审核完成');
+        yield put({
+          type: 'queryOrderList',
+          payload: {},
+        });
       }
     },
   },

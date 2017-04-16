@@ -9,6 +9,7 @@ const queryOrderList = ({ payload }) => fetch.post('/haierp1/outerOrder/queryOut
 const queryOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/query', { data: payload }).catch(e => e);
 const querySalesName = ({ payload }) => fetch.post('/haierp1/outerOrder/querySalesName', { data: payload }).catch(e => e);
 const reviewOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/review', { data: payload }).catch(e => e);
+const reviewOrderList = ({ payload }) => fetch.post('/haierp1/outerOrder/reviewList', { data: payload }).catch(e => e);
 // erp
 const queryErpOrderList = ({ payload }) => fetch.post('/haierp1/erpOrder/query', { data: payload }).catch(e => e);
 
@@ -159,11 +160,17 @@ export default {
       const data = yield call(querySkuList, { payload: param });
       payload.callback(data.success ? data : 'ERROR');
     },
-    * reviewOrder({ payload }, { call, put }) {
+    * reviewOrder({ payload }, { call }) {
       console.log(payload);
       const data = yield call(reviewOrder, { payload });
       if (data.success) {
-        yield put({ type: 'queryOrderList', payload: { pageIndex: 1 } });
+        setTimeout(window.location.reload(), 200);
+      }
+    },
+    * reviewOrderList({ payload }, { call }) {
+      const data = yield call(reviewOrderList, { payload });
+      if (data.success) {
+        setTimeout(window.location.reload(), 200);
       }
     },
   },

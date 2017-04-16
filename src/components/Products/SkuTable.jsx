@@ -62,15 +62,7 @@ class SkuTable extends Component {
         console.log(skuSingle);
         // 处理图片
         if (skuSingle.skuPic) {
-          const uploadMainPic = [];
-          skuSingle.skuPic.forEach((el, index) => {
-            uploadMainPic.push({
-              type: el.type,
-              uid: `i_${index}`,
-              url: el.url || el.response.data,
-            });
-          });
-          skuSingle.skuPic = JSON.stringify({ picList: uploadMainPic });
+          skuSingle.skuPic = skuSingle.skuPic[0].response && skuSingle.skuPic[0].response.data;
         }
         skuList.push(skuSingle);
         count += 1;

@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Popover, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
+import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
 import OrderModal from './OrderModal';
 import styles from './Order.less';
 
@@ -56,11 +56,18 @@ class Order extends Component {
     const { form } = this.props;
     const { checkId } = this.state;
     const action = form.getFieldValue('action');
-    const comments = form.getFieldValue('comments');
-    this.props.dispatch({
-      type: 'order/reviewOrder',
-      payload: { orderId: JSON.stringify(checkId), action, comments },
-    });
+    if (checkId.length === 1) {
+      this.props.dispatch({
+        type: 'order/reviewOrder',
+        payload: { orderId: checkId[0], action },
+      });
+    } else {
+      this.props.dispatch({
+        type: 'order/reviewOrderList',
+        payload: { orderIds: JSON.stringify(checkId), action },
+      });
+    }
+    this.setState({ checkModalVisible: false });
   }
 
   updateModal(id) {
@@ -113,7 +120,7 @@ class Order extends Component {
       wrapperCol: { span: 14 },
     };
     const columnsList = [
-      { title: '订单编号', dataIndex: 'outerNo', key: 'outerNo' },
+      { title: '订单编号', dataIndex: 'orderNo', key: 'orderNo' },
       { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', render(text) { return text || '-'; } },
       { title: '客户', dataIndex: 'salesName', key: 'salesName', render(text) { return text || '-'; } },
       { title: '订单时间', dataIndex: 'orderTime', key: 'orderTime', render(text) { return text || '-'; } },
@@ -122,13 +129,9 @@ class Order extends Component {
         key: 'status',
         render(text) {
           switch (text) {
-            case 0: return '待支付';
-            case 1: return '待审核';
-            case 2: return '备货中';
-            case 3: return '部分发货';
-            case 4: return '已发货';
-            case 5: return '已完成';
-            case 6: return '已取消';
+            case 0: return '待审核';
+            case 1: return '审核通过';
+            case 2: return '未通过';
             default: return '-';
           }
         },
@@ -151,14 +154,11 @@ class Order extends Component {
         render(text, record) {
           return (
             <div>
-              <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>查看SKU</a>
+              <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>订单明细</a>
               <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
               <Popconfirm title="确定删除此订单？" onConfirm={p.handleDelete.bind(p, record.id)}>
                 <a href="javascript:void(0)" style={{ marginRight: '10px' }}>删除</a>
               </Popconfirm>
-              <Popover title={null} content={orderStatusContent}>
-                <a href="javascript:void(0)" >状态操作</a>
-              </Popover>
             </div>);
         },
       },
@@ -169,7 +169,7 @@ class Order extends Component {
         const listId = [];
         selectedRows.length ? p.setState({ isNotSelected: false }) : p.setState({ isNotSelected: true });
         selectedRows.forEach((el) => {
-          listId.push(el.id && el.id.toString());
+          listId.push(el.id);
         });
         p.setState({ checkId: listId });
       },
@@ -245,18 +245,6 @@ class Order extends Component {
       },
     ];
 
-    const orderStatusContent = (
-      <div className={styles.popoverContent}>
-        <p><a href="javascript:void(0)">取消订单</a></p>
-        <p><a href="javascript:void(0)">支付确认</a></p>
-        <p><a href="javascript:void(0)">完成确认</a></p>
-        <p><a href="javascript:void(0)">重新分配库存</a></p>
-        <p><a href="javascript:void(0)">所有订单重新分配库存</a></p>
-        <p><a href="javascript:void(0)">清除分配数据</a></p>
-        <p><a href="javascript:void(0)">拆分订单</a></p>
-      </div>
-    );
-
     const modalProps = {
       title: `订单编号：${(orderSkuSnip.data && orderSkuSnip.data.orderNo) || '-'}`,
       footer: null,
@@ -327,37 +315,15 @@ class Order extends Component {
               >
                 {getFieldDecorator('status', {})(
                   <Select placeholder="请选择订单状态">
-                    <Option value="0">待支付</Option>
-                    <Option value="1">待审核</Option>
-                    <Option value="2">备货中</Option>
-                    <Option value="3">部分发货</Option>
-                    <Option value="4">已发货</Option>
-                    <Option value="5">已完成</Option>
-                    <Option value="6">已取消</Option>
-                  </Select>)}
+                    <Option value="0">待审核</Option>
+                    <Option value="1">审核通过</Option>
+                    <Option value="2">未通过</Option>
+                  </Select>,
+                )}
               </FormItem>
             </Col>
           </Row>
           <Row gutter={20}>
-            <Col span="8">
-              <FormItem
-                label="订单备货状态"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('stockStatus', {})(
-                  <Select placeholder="请选择订单备货状态">
-                    <Option value="1">未备货</Option>
-                    <Option value="2">备货中</Option>
-                    <Option value="3">部分备货</Option>
-                    <Option value="4">部分备货，在途</Option>
-                    <Option value="5">部分备货，在途，可发</Option>
-                    <Option value="6">部分备货，可发</Option>
-                    <Option value="7">备货完成</Option>
-                    <Option value="8">备货完成、在途</Option>
-                    <Option value="9">备货完成、在途、可发</Option>
-                  </Select>)}
-              </FormItem>
-            </Col>
             <Col span="8">
               <FormItem
                 label="订单时间开始"
@@ -408,7 +374,7 @@ class Order extends Component {
         <Modal {...modalProps}>
           <Table
             columns={skuColumns}
-            dataSource={orderSkuSnip.data && orderSkuSnip.data.orderDetails}
+            dataSource={orderSkuSnip.data && orderSkuSnip.data.outerOrderDetails}
             bordered
             size="large"
             rowKey={record => record.id}
@@ -443,15 +409,6 @@ class Order extends Component {
                   <Option value="1">审核通过</Option>
                   <Option value="2">审核拒绝</Option>
                 </Select>,
-              )}
-            </FormItem>
-            <FormItem
-              label="外部订单ID"
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 12 }}
-            >
-              {getFieldDecorator('comments')(
-                <Input type="textarea" placeholder="请输入备注" />,
               )}
             </FormItem>
           </Form>

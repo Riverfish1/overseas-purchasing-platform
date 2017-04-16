@@ -181,7 +181,7 @@ class PurchaseModal extends Component {
     };
 
     return (
-      <Modal {...modalProps} className={styles.modalStyle} >
+      <Modal {...modalProps}>
         <Form onSubmit={p.handleSubmit.bind(p)}>
           <Row gutter={10}>
             <Col span={7}>

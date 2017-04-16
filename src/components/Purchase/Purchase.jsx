@@ -151,7 +151,7 @@ class Purchase extends Component {
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row gutter={20} style={{ width: 1000 }}>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="任务单号"
@@ -183,12 +183,12 @@ class Purchase extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={20} style={{ width: 800 }}>
+          <Row gutter={20} style={{ width: 800, marginLeft: -6 }}>
             <Col>
               <FormItem
-                label="采购开始时间范围"
+                label="采购开始时间"
                 {...formItemLayout}
-                labelCol={{ span: 4 }}
+                labelCol={{ span: 3 }}
               >
                 {getFieldDecorator('taskStart1')(
                   <DatePicker style={{ marginRight: 20 }} />,
@@ -199,12 +199,12 @@ class Purchase extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={20} style={{ width: 800 }}>
+          <Row gutter={20} style={{ width: 800, marginLeft: -6 }}>
             <Col>
               <FormItem
-                label="采购结束时间范围"
+                label="采购结束时间"
                 {...formItemLayout}
-                labelCol={{ span: 4 }}
+                labelCol={{ span: 3 }}
               >
                 {getFieldDecorator('taskEnd1')(
                   <DatePicker style={{ marginRight: 20 }} />,
@@ -215,7 +215,7 @@ class Purchase extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">
               <Button htmlType="submit" size="large" type="primary">查询</Button>
               <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>

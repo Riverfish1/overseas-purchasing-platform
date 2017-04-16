@@ -69,8 +69,8 @@ class Warehouse extends Component {
     return (
       <div>
         <Row>
-          <Col className="operBtn">
-            <Button type="primary" onClick={this.showModal.bind(this)}>增加仓库</Button>
+          <Col style={{ paddingBottom: '15px' }}>
+            <Button type="primary" size="large" onClick={this.showModal.bind(this)}>增加仓库</Button>
           </Col>
         </Row>
         <Row>

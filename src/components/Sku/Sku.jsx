@@ -114,12 +114,10 @@ class Sku extends Component {
         key: 'skuPic',
         width: 66,
         render(text) {
-          console.log(text);
           let imgUrl = '';
           try {
             const imgObj = JSON.parse(text);
             imgUrl = imgObj.picList[0].url;
-            console.log(imgUrl);
           } catch (e) {
             return '-';
           }

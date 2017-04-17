@@ -125,16 +125,18 @@ class SkuModal extends Component {
     const { getFieldDecorator } = form;
     const skuModalData = modalValues.data || {};
     const list = proSearchList.data || productsList;
-
+    // 获取初始化的图片列表
     let defaultPicList = [];
     if (skuModalData.skuPic) {
       const picObj = JSON.parse(skuModalData.skuPic);
       defaultPicList = picObj.picList || [];
     }
-
-    let showAddIcon = true;
-    console.log(picList);
-    console.log(defaultPicList);
+    // 操作加号
+    let firstLoad = true;
+    let showAddIcon = false;
+    if (picList) firstLoad = false;
+    if (firstLoad && defaultPicList.length < 1) showAddIcon = true;
+    if (!firstLoad && picList && picList.length < 1) showAddIcon = true;
 
     const modalProps = {
       visible,

@@ -12,6 +12,8 @@ const reviewOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/review', { 
 const reviewOrderList = ({ payload }) => fetch.post('/haierp1/outerOrder/reviewList', { data: payload }).catch(e => e);
 // erp
 const queryErpOrderList = ({ payload }) => fetch.post('/haierp1/erpOrder/query', { data: payload }).catch(e => e);
+const multiDelivery = ({ payload }) => fetch.post('/haierp1/erpOrder/multiDelivery', { data: payload }).catch(e => e);
+const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/split', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'order',
@@ -179,6 +181,23 @@ export default {
           type: 'queryOrderList',
           payload: {},
         });
+      }
+    },
+    * multiDelivery({ payload }, { call, put }) {
+      const data = yield call(multiDelivery, { payload });
+      if (data.success) {
+        message.success('发货完成');
+        yield put({
+          type: 'queryErpOrderList',
+          payload: {},
+        });
+      }
+    },
+    * splitOrder({ payload, success }, { call }) {
+      const data = yield call(splitOrder, { payload });
+      if (data.success) {
+        message.success('拆分成功');
+        success({ success: true });
       }
     },
   },

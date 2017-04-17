@@ -163,7 +163,8 @@ class SkuTable extends Component {
       this.salePrice.refs.input.value = '';
       this.color.refs.input.value = '';
       this.weight.refs.input.value = '';
-      this.packageLevelId.state.value = '';
+      this.packageLevelId.state.value = [];
+      this.setState({ batchFileList: [] });
     }
     this.setState({ batchSkuAddVisible });
   }
@@ -173,6 +174,9 @@ class SkuTable extends Component {
     });
     this.salePrice.refs.input.value = '';
     this.color.refs.input.value = '';
+    this.weight.refs.input.value = '';
+    this.packageLevelId.state.value = [];
+    this.setState({ batchFileList: [] });
   }
   changeBatchSkuType(type) {
     this.setState({ batchSkuSort: type });
@@ -340,13 +344,15 @@ class SkuTable extends Component {
           key: 'skuPic',
           width: '10%',
           render(t, r) {
-            console.log(t);
+            const picList = t ? JSON.parse(t).picList || [] : [];
             const formValue = form.getFieldValue(`r_${r.key}_skuPic`);
-            console.log(formValue);
+            let showAdd = false;
+            if (formValue && formValue.length < 1) showAdd = true;
+            if (picList.length < 1 && !formValue) showAdd = true;
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuPic`, {
-                  initialValue: t ? JSON.parse(t).picList : formValue,
+                  initialValue: t ? picList : formValue,
                   valuePropName: 'fileList',
                   getValueFromEvent(e) {
                     console.log(e);
@@ -359,7 +365,7 @@ class SkuTable extends Component {
                   rules: [{ validator: p.checkImg.bind(p) }],
                 })(
                   <Upload {...uploadProps} className={styles.picStyle}>
-                    {(!formValue || formValue.length < 1) && <Icon type="plus" style={{ fontSize: 10 }} />}
+                    {showAdd && <Icon type="plus" style={{ fontSize: 10 }} />}
                   </Upload>,
                 )}
               </FormItem>
@@ -401,6 +407,7 @@ class SkuTable extends Component {
 
     const batchUploadProps = {
       action: '/haierp1/uploadFile/picUpload',
+      fileList: batchFileList,
       listType: 'picture-card',
       data(file) { return { pic: file.name }; },
       beforeUpload(file) {
@@ -422,12 +429,14 @@ class SkuTable extends Component {
       },
       onChange(info) {
         console.log(info);
+        p.setState({ batchFileList: info.fileList });
         if (info.file.status === 'done') {
           if (info.file.response && info.file.response.success) {
             message.success(`${info.file.name} 成功上传`);
             // 添加文件预览
             const newFile = info.file;
             newFile.url = info.file.response.data;
+            console.log(newFile);
             batchFileList.push(newFile);
             p.setState({ batchFileList });
           } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }

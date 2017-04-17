@@ -115,7 +115,7 @@ class Order extends Component {
     const p = this;
     const { form, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [] } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
-    const { title, visible, checkModalVisible, isNotSelected, checkId } = p.state;
+    const { title, visible, checkModalVisible, isNotSelected } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -387,7 +387,7 @@ class Order extends Component {
           visible={checkModalVisible}
           title="审核"
           onOk={p.checkOrder.bind(p)}
-          onCancel={() => { p.setState({ checkModalVisible: false }); }}
+          onCancel={() => { form.setFieldsValue({ action: undefined }); p.setState({ checkModalVisible: false }); }}
         >
           <Form>
             <FormItem

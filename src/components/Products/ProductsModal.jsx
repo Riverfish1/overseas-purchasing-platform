@@ -62,7 +62,7 @@ class ProductsModal extends Component {
             uploadMainPic.push({
               type: el.type,
               uid: `i_${index}`,
-              url: el.response.data,
+              url: el.url || el.response.data,
             });
           });
           values.mainPic = JSON.stringify({ picList: uploadMainPic, mainPicNum });
@@ -124,7 +124,7 @@ class ProductsModal extends Component {
     // 图片字符串解析
     let mainPicNum;
     let picList = [];
-    if (modalValues && modalValues.data && modalValues.data.mainPic) {
+    if (modalValues.data && modalValues.data.mainPic) {
       const picObj = JSON.parse(modalValues.data.mainPic);
       mainPicNum = toString(picObj.mainPicNum, 'SELECT') || '1';
       picList = picObj.picList || [];
@@ -277,7 +277,7 @@ class ProductsModal extends Component {
                   initialValue: toString(productData.brand, 'SELECT'),
                   rules: [{ required: true, message: '请输入品牌' }],
                 })(
-                  <Select placeholder="请输入品牌" combobox>
+                  <Select placeholder="请输入品牌">
                     {brands && brands.map(item => <Option key={item.id.toString()} value={item.name}>{item.name}</Option>)}
                   </Select>,
                 )}

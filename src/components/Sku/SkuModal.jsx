@@ -23,6 +23,7 @@ class SkuModal extends Component {
       previewVisible: false, // 上传图片的modal是否显示
       previewImage: '', // 上传图片的url
       proSearchList: {},
+      picList: null,
     };
   }
 
@@ -119,17 +120,21 @@ class SkuModal extends Component {
 
   render() {
     const p = this;
-    const { previewVisible, previewImage, proSearchList } = p.state;
+    const { previewVisible, previewImage, proSearchList, picList } = p.state;
     const { form, visible, modalValues = {}, brands = [], productsList = [], packageScales } = p.props;
     const { getFieldDecorator } = form;
     const skuModalData = modalValues.data || {};
     const list = proSearchList.data || productsList;
 
-    let picList = [];
-    if (skuModalData.mainPic) {
-      const picObj = skuModalData.mainPic;
-      picList = picObj.picList || [];
+    let defaultPicList = [];
+    if (skuModalData.skuPic) {
+      const picObj = JSON.parse(skuModalData.skuPic);
+      defaultPicList = picObj.picList || [];
     }
+
+    let showAddIcon = true;
+    console.log(picList);
+    console.log(defaultPicList);
 
     const modalProps = {
       visible,
@@ -170,6 +175,7 @@ class SkuModal extends Component {
         });
       },
       onChange(info) {
+        p.setState({ picList: info.fileList });
         if (info.file.status === 'done') {
           if (info.file.response && info.file.response.success) {
             message.success(`${info.file.name} 成功上传`);
@@ -179,9 +185,6 @@ class SkuModal extends Component {
             console.log(info.fileList);
           } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
         } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
-        // 限制一个图片
-        const fileLength = info.fileList.length;
-        p.setState({ certFileList: fileLength > 1 ? [info.fileList[fileLength - 1]] : info.fileList });
       },
     };
     return (
@@ -190,18 +193,6 @@ class SkuModal extends Component {
       >
         <Form>
           <Row gutter={10}>
-            {/* <Col span={7}>
-              <FormItem
-                label="SKU代码"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('skuCode', {
-                  initialValue: toString(skuModalData.skuCode),
-                })(
-                  <Input placeholder="请输入SKU代码" />,
-                )}
-              </FormItem>
-            </Col> */}
             <Col span={7}>
               <FormItem
                 label="所属商品"
@@ -212,7 +203,7 @@ class SkuModal extends Component {
                   rules: [{ required: true, message: '请选择' }],
                 })(
                   <Select
-                    combobox
+                    mode="combobox"
                     placeholder="请选择"
                     onChange={p.handleSearch.bind(p)}
                     defaultActiveFirstOption={false}
@@ -328,7 +319,7 @@ class SkuModal extends Component {
                   initialValue: toString(skuModalData.brand, 'SELECT'),
                   rules: [{ required: true, message: '请选择品牌' }],
                 })(
-                  <Select placeholder="请选择品牌" combobox>
+                  <Select placeholder="请选择品牌" mode="combobox">
                     {brands.map(item => <Option key={item.id.toString()} value={item.name}>{item.name}</Option>)}
                   </Select>,
                 )}
@@ -344,7 +335,7 @@ class SkuModal extends Component {
                 style={{ marginRight: '-20px' }}
               >
                 {getFieldDecorator('mainPic', {
-                  initialValue: picList,
+                  initialValue: defaultPicList,
                   valuePropName: 'fileList',
                   getValueFromEvent(e) {
                     if (!e || !e.fileList) {
@@ -356,8 +347,10 @@ class SkuModal extends Component {
                   rules: [{ validator: this.checkImg.bind(this) }],
                 })(
                   <Upload {...uploadProps}>
-                    <Icon type="plus" className={styles.uploadPlus} />
-                    <div className="ant-upload-text">上传图片</div>
+                    {showAddIcon && <div>
+                      <Icon type="plus" className={styles.uploadPlus} />
+                      <div className="ant-upload-text">上传图片</div>
+                    </div>}
                   </Upload>,
                 )}
 

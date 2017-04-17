@@ -110,20 +110,22 @@ class Sku extends Component {
       },
       {
         title: 'sku图片',
-        dataIndex: 'mainPic',
-        key: 'mainPic',
+        dataIndex: 'skuPic',
+        key: 'skuPic',
         width: 66,
         render(text) {
+          console.log(text);
           let imgUrl = '';
           try {
-            const imgObj = JSON.parse(decodeURIComponent(text).replace(/&quot;/g, '"'));
+            const imgObj = JSON.parse(text);
             imgUrl = imgObj.picList[0].url;
+            console.log(imgUrl);
           } catch (e) {
             return '-';
           }
           return (
             <Popover title={null} content={content}>
-              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />;
+              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />
             </Popover>
           );
         },

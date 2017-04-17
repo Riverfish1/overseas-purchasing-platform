@@ -253,7 +253,7 @@ class ProductTable extends Component {
         { title: '颜色', dataIndex: 'color', key: 'color', width: 80, render(text) { return text || '-'; } },
         { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', width: 70, render(text) { return text || '-'; } },
         { title: '重量（kg）', dataIndex: 'weight', key: 'weight', width: 70, render(text) { return text || '-'; } },
-        { title: '操作', dataIndex: 'oper', key: 'oper', width: 50, render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
+        { title: '操作', dataIndex: 'oper', key: 'oper', width: 50, fixed: 'right', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
       ];
 
       return (

@@ -57,8 +57,6 @@ export default {
         // 处理图片缩略图
         if (data.data.mainPic && data.data.mainPic !== '0') {
           const picStr = decodeURIComponent(data.data.mainPic).replace(/&quot;/g, '"');
-          console.log(picStr);
-          console.log(data.data.mainPic);
           const picObj = JSON.parse(picStr);
           picObj.picList.forEach((el) => {
             el.thumbUrl = `${el.url}?x-oss-process=image/resize,w_200,limit_0`;

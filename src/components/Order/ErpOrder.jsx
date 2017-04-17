@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Popover, Row, Col, Input, Select, Button } from 'antd';
+import { Form, Table, Row, Col, Input, Select, Button, Modal } from 'antd';
 
 import styles from './Order.less';
 
@@ -9,6 +9,15 @@ const Option = Select.Option;
 
 
 class ErpOrder extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isNotSelected: true,
+      checkId: [], // 发货时传的ID
+      visible: false,
+      needSplitId: '',
+    };
+  }
   handleSubmit(e) {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
@@ -21,26 +30,61 @@ class ErpOrder extends Component {
       });
     });
   }
+  multiDelivery() { // 批量发货
+    const p = this;
+    Modal.confirm({
+      title: '确认发货',
+      content: `确认要对id为“${this.state.checkId.join(', ')}”的订单进行发货吗？`,
+      onOk() {
+        p.props.dispatch({
+          type: 'order/multiDelivery',
+          payload: { ids: JSON.stringify(p.state.checkId) },
+        });
+      },
+    });
+  }
+  splitOrder() {
+    const p = this;
+    console.log(p);
+    const num = p.num.refs.input.value;
+    this.props.dispatch({
+      type: 'order/splitOrder',
+      payload: { id: p.state.needSplitId, num },
+      success(data) {
+        if (data.success) {
+          p.handleCancel();
+          p.props.dispatch({
+            type: 'order/queryErpOrderList',
+            payload: {},
+          });
+        }
+      },
+    });
+  }
+  handleCancel() {
+    this.num.refs.input.value = '';
+    this.setState({ visible: false });
+  }
   render() {
     const p = this;
     const { erpOrderList, form } = p.props;
     const { getFieldDecorator, resetFields } = form;
+    const { isNotSelected, visible } = p.state;
 
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
-    const orderStatusContent = (
-      <div className={styles.popoverContent}>
-        <p><a href="javascript:void(0)">取消订单</a></p>
-        <p><a href="javascript:void(0)">支付确认</a></p>
-        <p><a href="javascript:void(0)">完成确认</a></p>
-        <p><a href="javascript:void(0)">重新分配库存</a></p>
-        <p><a href="javascript:void(0)">所有订单重新分配库存</a></p>
-        <p><a href="javascript:void(0)">清除分配数据</a></p>
-        <p><a href="javascript:void(0)">拆分订单</a></p>
-      </div>
-    );
+    const rowSelection = {
+      onChange(selectedRowKeys, selectedRows) {
+        const listId = [];
+        selectedRows.length ? p.setState({ isNotSelected: false }) : p.setState({ isNotSelected: true });
+        selectedRows.forEach((el) => {
+          listId.push(el.id);
+        });
+        p.setState({ checkId: listId });
+      },
+    };
     const columns = [
       { title: 'erp订单号', dataIndex: 'erpNo', key: 'erpNo', width: '12%' },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: '12%' },
@@ -90,17 +134,10 @@ class ErpOrder extends Component {
         dataIndex: 'operator',
         key: 'operator',
         width: 200,
-        render() {
+        render(t, r) {
           return (
             <div>
-              {/* <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>查看SKU</a>
-              <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
-              <Popconfirm title="确定删除此订单？" onConfirm={p.handleDelete.bind(p, record.id)}>
-                <a href="javascript:void(0)" style={{ marginRight: '10px' }}>删除</a>
-              </Popconfirm>*/}
-              <Popover title={null} content={orderStatusContent}>
-                <a href="javascript:void(0)" >状态操作</a>
-              </Popover>
+              <a href="javascript:void(0)" onClick={() => { p.setState({ visible: true, needSplitId: r.id }); }} >订单拆分</a>
             </div>);
         },
       },
@@ -186,7 +223,25 @@ class ErpOrder extends Component {
             </Col>
           </Row>
         </Form>
-        <Table columns={columns} dataSource={erpOrderList} rowKey={r => r.id} />
+        <Row>
+          <Col className={styles.orderBtn} style={{ textAlign: 'right' }}>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.multiDelivery.bind(p)}>批量发货</Button>
+          </Col>
+        </Row>
+        <Modal
+          visible={visible}
+          title="拆分"
+          onOk={p.splitOrder.bind(p)}
+          onCancel={p.handleCancel.bind(p)}
+        >
+          <Row>
+            <Col span={2} offset={3} style={{ marginTop: 5 }}>数量：</Col>
+            <Col span={12}>
+              <Input style={{ width: '100%' }} ref={(c) => { this.num = c; }} placeholder="请输入需要拆分的数量" />
+            </Col>
+          </Row>
+        </Modal>
+        <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} />
       </div>
     );
   }

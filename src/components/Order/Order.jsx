@@ -122,7 +122,7 @@ class Order extends Component {
     };
     const columnsList = [
       { title: '订单编号', dataIndex: 'orderNo', key: 'orderNo' },
-      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', render(text) { return text || '-'; } },
+      { title: '交易订单', dataIndex: 'targetNo', key: 'targetNo', render(text) { return text || '-'; } },
       { title: '客户', dataIndex: 'salesName', key: 'salesName', render(text) { return text || '-'; } },
       { title: '订单时间', dataIndex: 'orderTime', key: 'orderTime', render(text) { return text || '-'; } },
       { title: '订单状态',
@@ -273,11 +273,11 @@ class Order extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="外部订单号"
+                label="交易订单"
                 {...formItemLayout}
               >
                 {getFieldDecorator('targetNo', {})(
-                  <Input placeholder="请输入外部订单号" />)}
+                  <Input placeholder="请输入交易订单" />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -328,21 +328,17 @@ class Order extends Component {
           <Row gutter={20}>
             <Col span="8">
               <FormItem
-                label="订单时间开始"
+                label="订单时间范围"
                 {...formItemLayout}
               >
                 {getFieldDecorator('startOrderTime', {})(
-                  <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
+                  <DatePicker placeholder="请选择开始日期" format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
               </FormItem>
             </Col>
-            <Col span="8">
-              <FormItem
-                label="订单时间结束"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('endOrderTime', {})(
-                  <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
-              </FormItem>
+            <Col span="5"> -
+              {getFieldDecorator('endOrderTime', {})(
+                <DatePicker placeholder="请选择结束日期" format="YYYY-MM-DD" style={{ width: '80%', marginLeft: 15 }} size="large" />,
+              )}
             </Col>
           </Row>
           <Row>

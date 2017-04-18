@@ -218,15 +218,19 @@ class ProductTable extends Component {
           key: 'skuPic',
           width: 60,
           render(text) { // 需要解决返回的skuPic的格式的问题
-            if (text) {
-              const picContent = <img src={text} role="presentation" style={{ height: 600 }} />;
+            let imgUrl = '';
+            try {
+              const imgObj = JSON.parse(text);
+              imgUrl = imgObj.picList[0].url;
+              const picContent = <img src={imgUrl} role="presentation" style={{ height: 600 }} />;
               return (
                 <Popover title="主图预览" content={picContent}>
-                  <img src={text} role="presentation" width="60" />
+                  <img src={imgUrl} role="presentation" width="60" />
                 </Popover>
               );
+            } catch (e) {
+              return '-';
             }
-            return '-';
           },
         },
         { title: '颜色', dataIndex: 'color', key: 'color', width: 80, render(text) { return text || '-'; } },

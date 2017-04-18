@@ -235,19 +235,23 @@ class ProductTable extends Component {
         { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 90, render(text) { return text || '-'; } },
         { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 60, render(text) { return text || '-'; } },
         { title: '图片',
-          dataIndex: 'mainPic',
-          key: 'mainPic',
+          dataIndex: 'skuPic',
+          key: 'skuPic',
           width: 60,
-          render(text) { // 需要解决返回的mainPic的格式的问题
-            if (text) {
-              const picContent = <img src={text} role="presentation" style={{ height: 600 }} />;
+          render(text) { // 需要解决返回的skuPic的格式的问题
+            let imgUrl = '';
+            try {
+              const imgObj = JSON.parse(text);
+              imgUrl = imgObj.picList[0].url;
+              const picContent = <img src={imgUrl} role="presentation" style={{ height: 600 }} />;
               return (
                 <Popover title="主图预览" content={picContent}>
-                  <img src={text} role="presentation" width="60" />
+                  <img src={imgUrl} role="presentation" width="60" />
                 </Popover>
               );
+            } catch (e) {
+              return '-';
             }
-            return '-';
           },
         },
         { title: '颜色', dataIndex: 'color', key: 'color', width: 80, render(text) { return text || '-'; } },

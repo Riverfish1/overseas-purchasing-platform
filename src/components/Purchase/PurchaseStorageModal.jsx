@@ -67,6 +67,8 @@ class PurchaseModal extends Component {
       const newIndex = lastIndex + 1;
       storageList.splice(newIndex, 0, { ...storageList[lastIndex] });
       storageList[newIndex].skuId = generateRandomSkuId(storageList[newIndex].skuId);
+      storageList[newIndex].shelfNo = '';
+      if (storageList[newIndex].id) delete storageList[newIndex].id;
       console.log(storageList);
     }
     this.setState({ storageList });
@@ -104,13 +106,19 @@ class PurchaseModal extends Component {
         const item = {};
         item.skuId = restoreSkuId(el.skuId);
 
-        if (!checkPassed(el.quantity) || !checkPassed(el.transQuantity) || !checkPassed(el.price) || !checkPassed(el.shelfNo)) {
+        if (el.id) item.id = el.id;
+
+        if (!checkPassed(el.price) || !checkPassed(el.shelfNo)) {
           hasError = true;
-          Modal.error({ title: '数量、在途数量、单价、货架号均为必填项' });
+          Modal.error({ title: '单价、货架号均为必填项' });
           return false;
         } else {
-          item.quantity = el.quantity;
-          item.transQuantity = el.transQuantity;
+          if (!checkPassed(el.quantity) && !checkPassed(el.transQuantity)) {
+            Modal.error({ title: '数量、在途数量请至少填写一项' });
+            return false;
+          }
+          item.quantity = el.quantity || 0;
+          item.transQuantity = el.transQuantity || 0;
           item.price = el.price;
           item.shelfNo = el.shelfNo;
           return item;
@@ -122,7 +130,7 @@ class PurchaseModal extends Component {
         if (!fieldsValue.id) delete fieldsValue.id;
         if (type === 'save') {
           dispatch({
-            type: 'purchaseStorage/addStorage',
+            type: fieldsValue.id ? 'purchaseStorage/saveStorage' : 'purchaseStorage/addStorage',
             payload: {
               fieldsValue,
               success() {

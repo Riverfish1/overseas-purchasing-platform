@@ -5,6 +5,7 @@ import fetch from '../utils/request';
 const queryPurchaseStorageList = ({ payload }) => fetch.post('/haierp1/purchaseStorage/queryPurStorages', { data: payload }).catch(e => e);
 const queryBuyerTaskList = ({ payload }) => fetch.post('/haierp1/purchase/queryBuyerTaskList', { data: payload }).catch(e => e);
 const addStorage = ({ payload }) => fetch.post('/haierp1/purchaseStorage/add', { data: payload }).catch(e => e);
+const saveStorage = ({ payload }) => fetch.post('/haierp1/purchaseStorage/update', { data: payload }).catch(e => e);
 const confirmStorage = ({ payload }) => fetch.post('/haierp1/purchaseStorage/confirm', { data: payload }).catch(e => e);
 const deleteStorage = ({ payload }) => fetch.post('/haierp1/purchaseStorage/delete', { data: payload }).catch(e => e);
 const queryPurchaseStorage = ({ payload }) => fetch.post('/haierp1/purchaseStorage/query', { data: payload }).catch(e => e);
@@ -60,6 +61,14 @@ export default {
       const data = yield call(addStorage, { payload: payload.fieldsValue });
       if (data.success) {
         message.success('添加入库单成功');
+        if (payload.success) payload.success();
+        yield put({ type: 'queryPurchaseStorageList', payload: {} });
+      }
+    },
+    * saveStorage({ payload }, { call, put }) {
+      const data = yield call(saveStorage, { payload: payload.fieldsValue });
+      if (data.success) {
+        message.success('修改入库单成功');
         if (payload.success) payload.success();
         yield put({ type: 'queryPurchaseStorageList', payload: {} });
       }

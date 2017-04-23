@@ -72,8 +72,8 @@ export const navigation = [
   },
   { key: routerCfg.PERSON, name: '客户管理', icon: 'user',
     child: [
-      { key: routerCfg.AGENCY_LIST, name: '经销商管理' },
-      { key: routerCfg.AGENCY_TYPE, name: '经销商分类' },
+      { key: routerCfg.AGENCY_LIST, name: '销售管理' },
+      { key: routerCfg.AGENCY_TYPE, name: '销售分类' },
       // { key: routerCfg.SUPPLIER_LIST, name: '供应商管理' },
     ],
   },

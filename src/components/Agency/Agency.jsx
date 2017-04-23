@@ -86,13 +86,13 @@ class Agency extends Component {
       wrapperCol: { span: 14 },
     };
     const columnsList = [
-      { title: '经销商名称', dataIndex: 'name', key: 'name' },
+      { title: '销售名称', dataIndex: 'name', key: 'name' },
       { title: '用户id', dataIndex: 'userId', key: 'userId', render(text) { return text || '-'; } },
       { title: '用户名称', dataIndex: 'userName', key: 'userName', render(text) { return text || '-'; } },
-      { title: '经销商代码', dataIndex: 'code', key: 'code', render(text) { return text || '-'; } },
-      { title: '经销商类别Id', dataIndex: 'typeId', key: 'typeId', render(text) { return text || '-'; } },
-      { title: '经销商类别名称', dataIndex: 'typeName', key: 'typeName', render(text) { return text || '-'; } },
-      { title: '经销商类别代码', dataIndex: 'typeCode', key: 'typeCode', render(text) { return text || '-'; } },
+      { title: '销售代码', dataIndex: 'code', key: 'code', render(text) { return text || '-'; } },
+      { title: '销售类别Id', dataIndex: 'typeId', key: 'typeId', render(text) { return text || '-'; } },
+      { title: '销售类别名称', dataIndex: 'typeName', key: 'typeName', render(text) { return text || '-'; } },
+      { title: '销售类别代码', dataIndex: 'typeCode', key: 'typeCode', render(text) { return text || '-'; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', render(text) { return text || '-'; } },
       { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; } },
       { title: '操作',
@@ -103,7 +103,7 @@ class Agency extends Component {
           return (
             <div>
               <a href="javascript:void(0)" onClick={p.updateModal.bind(p, record.id)}>修改</a>
-              <Popconfirm title="确定删除此经销商？" onConfirm={p.handleDelete.bind(p, record.id)}>
+              <Popconfirm title="确定删除此销售？" onConfirm={p.handleDelete.bind(p, record.id)}>
                 <a href="javascript:void(0)" style={{ marginLeft: 10 }}>删除</a>
               </Popconfirm>
             </div>);
@@ -136,11 +136,11 @@ class Agency extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
-                label="经销商名称"
+                label="销售名称"
                 {...formItemLayout}
               >
                 {getFieldDecorator('name', {})(
-                  <Select placeholder="请选择经销商名称">
+                  <Select placeholder="请选择销售名称">
                     {list.map((el, index) => <Option key={index} value={el.name}>{el.name}</Option>)}
                   </Select>,
                 )}
@@ -148,11 +148,11 @@ class Agency extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="经销商类别名称"
+                label="销售类别名称"
                 {...formItemLayout}
               >
                 {getFieldDecorator('typeId', {})(
-                  <Select placeholder="请选择经销商类别名称">
+                  <Select placeholder="请选择销售类别名称">
                     {list.map((el, index) => <Option key={index} value={el.typeId.toString()}>{el.typeName}</Option>)}
                   </Select>,
                 )}
@@ -168,7 +168,7 @@ class Agency extends Component {
         </Form>
         <Row>
           <Col className="operBtn">
-            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增经销商</Button>
+            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增销售</Button>
           </Col>
         </Row>
         <Row>

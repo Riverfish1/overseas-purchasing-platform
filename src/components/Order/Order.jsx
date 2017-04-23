@@ -122,7 +122,7 @@ class Order extends Component {
     };
     const columnsList = [
       { title: '订单编号', dataIndex: 'orderNo', key: 'orderNo' },
-      { title: '交易订单', dataIndex: 'targetNo', key: 'targetNo', render(text) { return text || '-'; } },
+      { title: '交易订单号', dataIndex: 'targetNo', key: 'targetNo', render(text) { return text || '-'; } },
       { title: '客户', dataIndex: 'salesName', key: 'salesName', render(text) { return text || '-'; } },
       { title: '订单时间', dataIndex: 'orderTime', key: 'orderTime', render(text) { return text || '-'; } },
       { title: '订单状态',
@@ -273,20 +273,28 @@ class Order extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="交易订单"
+                label="交易订单号"
                 {...formItemLayout}
               >
                 {getFieldDecorator('targetNo', {})(
-                  <Input placeholder="请输入交易订单" />)}
+                  <Input placeholder="请输入交易订单号" />)}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
-                label="订单号"
+                label="订单状态"
                 {...formItemLayout}
               >
-                {getFieldDecorator('orderNo', {})(
-                  <Input placeholder="请输入订单号" />)}
+                {getFieldDecorator('status', {
+                  initialValue: '0',
+                })(
+                  <Select placeholder="请选择订单状态">
+                    <Option value="10">全部</Option>
+                    <Option value="0">待审核</Option>
+                    <Option value="1">审核通过</Option>
+                    <Option value="2">未通过</Option>
+                  </Select>,
+                )}
               </FormItem>
             </Col>
           </Row>
@@ -307,21 +315,6 @@ class Order extends Component {
               >
                 {getFieldDecorator('telephone', {})(
                   <Input placeholder="请输入联系电话" />)}
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem
-                label="订单状态"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('status', {})(
-                  <Select placeholder="请选择订单状态">
-                    <Option value="10">全部</Option>
-                    <Option value="0">待审核</Option>
-                    <Option value="1">审核通过</Option>
-                    <Option value="2">未通过</Option>
-                  </Select>,
-                )}
               </FormItem>
             </Col>
           </Row>

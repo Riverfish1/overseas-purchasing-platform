@@ -216,7 +216,7 @@ class ProductTable extends Component {
         { title: '图片',
           dataIndex: 'skuPic',
           key: 'skuPic',
-          width: 60,
+          width: 80,
           render(text) { // 需要解决返回的skuPic的格式的问题
             let imgUrl = '';
             try {
@@ -278,7 +278,7 @@ class ProductTable extends Component {
               bordered
               rowKey={record => record.id}
               pagination={paginationProps}
-              style={{ height: 500, overflowY: 'scroll' }}
+              scroll={{ y: 500 }}
             />
           </Row>
         </div>

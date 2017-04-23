@@ -142,7 +142,7 @@ class ProductsModal extends Component {
             </Col>
             <Col span={7}>
               <FormItem
-                label="经销商"
+                label="销售"
                 {...formItemLayout}
               >
                 {getFieldDecorator('salesName', {

@@ -300,7 +300,7 @@ class ProductTable extends Component {
               bordered
               rowKey={record => record.id}
               pagination={paginationProps}
-              style={{ height: 500, overflowY: 'scroll' }}
+              scroll={{ y: 500 }}
             />
           </Row>
         </div>

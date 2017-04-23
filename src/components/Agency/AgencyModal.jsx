@@ -103,14 +103,14 @@ class AgencyModal extends Component {
           <Row>
             <Col>
               <FormItem
-                label="经销商类别"
+                label="销售类别"
                 {...formItemLayout}
               >
                 {getFieldDecorator('typeName', {
                   initialValue: toString(agencyData.typeName, 'SELECT'),
-                  rules: [{ required: true, message: '请选择经销商类别' }],
+                  rules: [{ required: true, message: '请选择销售类别' }],
                 })(
-                  <Select placeholder="请选择经销商名称" onChange={this.handleChange.bind(this)} >
+                  <Select placeholder="请选择销售名称" onChange={this.handleChange.bind(this)} >
                     {list.map((el, index) => <Option key={index} value={el.name}>{el.name}</Option>)}
                   </Select>,
                 )}
@@ -131,27 +131,27 @@ class AgencyModal extends Component {
             </Col>
             <Col>
               <FormItem
-                label="经销商代码"
+                label="销售代码"
                 {...formItemLayout}
               >
                 {getFieldDecorator('code', {
                   initialValue: toString(agencyData.code),
-                  rules: [{ required: true, message: '请输入经销商代码' }],
+                  rules: [{ required: true, message: '请输入销售代码' }],
                 })(
-                  <Input placeholder="请输入经销商代码" />,
+                  <Input placeholder="请输入销售代码" />,
                 )}
               </FormItem>
             </Col>
             <Col>
               <FormItem
-                label="经销商类别代码"
+                label="销售类别代码"
                 {...formItemLayout}
               >
                 {getFieldDecorator('typeCode', {
                   initialValue: toString(agencyData.typeCode),
-                  rules: [{ required: true, message: '请选择经销商名称' }],
+                  rules: [{ required: true, message: '请选择销售名称' }],
                 })(
-                  <Input placeholder="请选择经销商名称" disabled={true} />,
+                  <Input placeholder="请选择销售名称" disabled={true} />,
                 )}
               </FormItem>
             </Col>

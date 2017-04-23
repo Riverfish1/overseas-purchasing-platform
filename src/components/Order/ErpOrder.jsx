@@ -88,7 +88,7 @@ class ErpOrder extends Component {
     const columns = [
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: '12%' },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: '12%' },
-      { title: '订单号', dataIndex: 'outerNo', key: 'outerNo', width: '10%', render(text) { return text || '-'; } },
+      { title: '交易订单号', dataIndex: 'targetNo', key: 'targetNo', width: '10%', render(text) { return text || '-'; } },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
@@ -188,15 +188,6 @@ class ErpOrder extends Component {
             </Col>
           </Row>
           <Row gutter={20}>
-            <Col span="8">
-              <FormItem
-                label="订单号"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('outerNo', {})(
-                  <Input placeholder="请输入" />)}
-              </FormItem>
-            </Col>
             <Col span="8">
               <FormItem
                 label="子订单号"

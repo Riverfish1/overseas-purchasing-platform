@@ -54,8 +54,8 @@ class Purchase extends Component {
     });
   }
 
-  updateModal(id) {
-    window.event.stopPropagation();
+  updateModal(id, e) {
+    e.stopPropagation();
     const p = this;
     p.setState({
       modalVisible: true,

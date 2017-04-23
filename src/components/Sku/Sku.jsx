@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Table, Button, Row, Col, Form, Input, Popconfirm, Popover, Select, TreeSelect } from 'antd';
 import SkuModal from './SkuModal';
-import styles from './Sku.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -132,11 +131,20 @@ class Sku extends Component {
       { title: '尺寸', dataIndex: 'scale', key: 'scale', render(text) { return text || '-'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', render(text) { return text || '-'; } },
       { title: '销售价格', dataIndex: 'salePrice', key: 'salePrice', render(text) { return text || '-'; } },
-      { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', render(text) { return text || '-'; } },
-      { title: '可用库存', dataIndex: 'availableInv', key: 'availableInv', render(text) { return text || '-'; } },
-      { title: '锁定库存', dataIndex: 'lockedInv', key: 'lockedInv', render(text) { return text || '-'; } },
-      { title: '实际库存', dataIndex: 'inventory', key: 'inventory', render(text) { return text || '-'; } },
-      { title: '在途库存', dataIndex: 'transInv', key: 'transInv', render(text) { return text || '-'; } },
+      { title: '库存',
+        key: 'inve',
+        render(t, r) {
+          return (
+            <div>
+              虚拟库存：{r.virtualInv}<br />
+              可用库存：{r.availableInv}<br />
+              锁定库存：{r.lockedInv}<br />
+              实际库存：{r.inventory}<br />
+              在途库存：{r.transInv}
+            </div>
+          );
+        },
+      },
       { title: '重量', dataIndex: 'weight', key: 'weight', render(text) { return text || '-'; } },
       { title: '运费', dataIndex: 'freightStr', key: 'freightStr', render(text) { return text || '-'; } },
       { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; } },
@@ -170,9 +178,9 @@ class Sku extends Component {
     };
 
     return (
-      <div className={styles.normal}>
+      <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row gutter={20} style={{ width: 700 }}>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="商品代码"
@@ -222,7 +230,7 @@ class Sku extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">
               <Button htmlType="submit" size="large" type="primary">查询</Button>
               <Button size="large" type="ghost" onClick={this.handleEmpty.bind(this)}>清空</Button>
@@ -263,7 +271,6 @@ function mapStateToProps(state) {
   const { skuList, skuTotal, skuData, currentPage, packageScales } = state.sku;
   const { brands, productsList, tree } = state.products;
   return {
-    // loading: state.loading.models.sku,
     skuList,
     skuTotal,
     skuData,

@@ -159,7 +159,7 @@ class Agency extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">
               <Button htmlType="submit" size="large" type="primary">查询</Button>
               <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>

@@ -1,9 +1,8 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 // import { Link } from 'dva/router';
 import { Table, Button, Row, Col, Popconfirm } from 'antd';
 import CategoryModal from './CategoryModal';
-import styles from './Category.less';
 
 class Category extends Component {
 
@@ -98,9 +97,9 @@ class Category extends Component {
     ];
 
     return (
-      <div className={styles.normal}>
+      <div>
         <Row>
-          <Col className={styles.operBtn}>
+          <Col className="operBtn">
             <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button>
           </Col>
         </Row>
@@ -133,7 +132,6 @@ function mapStateToProps(state) {
   const { cateList, cate } = state.cate;
   const { tree } = state.products;
   return {
-    loading: state.loading.models.products,
     cateList,
     cate,
     tree,

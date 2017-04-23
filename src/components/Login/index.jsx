@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Button, Row, Form, Input } from 'antd';
 import { connect } from 'dva';
 import logoImg from '../../assets/images/logo.png';
@@ -72,10 +72,6 @@ class Login extends Component {
     );
   }
 }
-
-Login.propTypes = {
-  form: PropTypes.object,
-};
 
 function mapStateToProps({ session }) {
   return { session };

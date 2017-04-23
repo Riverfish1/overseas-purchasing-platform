@@ -3,8 +3,6 @@ import { Modal, Input, Row, Col, Select, Form } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
-import style from './index.less';
-
 moment.locale('zh-cn');
 
 const FormItem = Form.Item;
@@ -97,7 +95,6 @@ class AgencyModal extends Component {
     return (
       <Modal
         {...modalProps}
-        className={style.modalStyle}
       >
         <Form onSubmit={this.handleSubmit.bind(this)}>
           <Row>

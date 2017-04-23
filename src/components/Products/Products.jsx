@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect, Modal } from 'antd';
 import ProductsModal from './ProductsModal';
-import styles from './Products.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const { RangePicker } = DatePicker;
 
 class Products extends Component {
 
@@ -21,10 +21,12 @@ class Products extends Component {
   handleSubmit(e) {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (err) {
-        return;
+      if (err) return;
+      if (values.saleDate) {
+        values.startDate = new Date(values.saleDate[0]).format('yyyy-MM-dd 00:00:00');
+        values.endDate = new Date(values.saleDate[1]).format('yyyy-MM-dd 00:00:00');
+        delete values.saleDate;
       }
-      console.log(values);
       this.props.dispatch({
         type: 'products/saveSearchValues',
         payload: { ...values },
@@ -185,9 +187,9 @@ class Products extends Component {
     };
 
     return (
-      <div className={styles.normal}>
+      <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row gutter={20} style={{ width: 700 }}>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="商品代码"
@@ -218,7 +220,7 @@ class Products extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={20} style={{ width: 700 }}>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span={8}>
               <FormItem
                 label="品牌"
@@ -230,25 +232,19 @@ class Products extends Component {
                   </Select>)}
               </FormItem>
             </Col>
-            <Col span={8}>
+          </Row>
+          <Row gutter={20} style={{ width: 800, marginLeft: -6 }}>
+            <Col>
               <FormItem
                 label="开始销售时间"
                 {...formItemLayout}
+                labelCol={{ span: 3 }}
               >
-                {getFieldDecorator('startDate', {})(<DatePicker placeholder="请选择开始时间" />)}
-              </FormItem>
-            </Col>
-            <Col span={8}>
-              <FormItem
-                label="结束销售时间"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('endDate', {})(
-                  <DatePicker placeholder="请选择结束时间" />)}
+                {getFieldDecorator('saleDate')(<RangePicker />)}
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">
               <Button htmlType="submit" size="large" type="primary">查询</Button>
               <Button size="large" type="ghost" onClick={this.handleEmpty.bind(this)}>清空</Button>
@@ -290,7 +286,6 @@ class Products extends Component {
 function mapStateToProps(state) {
   const { productsList, productsTotal, productsValues, brands, tree, currentPage } = state.products;
   return {
-    loading: state.loading.models.products,
     productsList,
     productsTotal,
     productsValues,

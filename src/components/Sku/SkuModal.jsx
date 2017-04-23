@@ -1,6 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { Modal, Input, InputNumber, Row, Col, Form, Icon, Upload, Select, Cascader, message } from 'antd';
-import styles from './Sku.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -205,15 +204,13 @@ class SkuModal extends Component {
                   rules: [{ required: true, message: '请选择' }],
                 })(
                   <Select
-                    mode="combobox"
+                    combobox
                     placeholder="请选择"
                     onChange={p.handleSearch.bind(p)}
                     defaultActiveFirstOption={false}
                     showArrow={false}
                   >
-                    {list.map((item, index) => {
-                      return <Option key={index} value={item.name}>{item.name}</Option>;
-                    })}
+                    {list.map((item, index) => <Option key={index} value={item.name}>{item.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>
@@ -321,8 +318,8 @@ class SkuModal extends Component {
                   initialValue: toString(skuModalData.brand, 'SELECT'),
                   rules: [{ required: true, message: '请选择品牌' }],
                 })(
-                  <Select placeholder="请选择品牌" mode="combobox">
-                    {brands.map(item => <Option key={item.id.toString()} value={item.name}>{item.name}</Option>)}
+                  <Select placeholder="请选择品牌" combobox>
+                    {brands.map(item => <Option key={item.id} value={item.name}>{item.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>
@@ -350,7 +347,7 @@ class SkuModal extends Component {
                 })(
                   <Upload {...uploadProps}>
                     {showAddIcon && <div>
-                      <Icon type="plus" className={styles.uploadPlus} />
+                      <Icon type="plus" className="uploadPlus" />
                       <div className="ant-upload-text">上传图片</div>
                     </div>}
                   </Upload>,
@@ -367,9 +364,5 @@ class SkuModal extends Component {
     );
   }
 }
-
-SkuModal.PropTypes = {
-  productsList: PropTypes.object.isRequired,
-};
 
 export default Form.create()(SkuModal);

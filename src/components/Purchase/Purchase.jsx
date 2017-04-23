@@ -5,6 +5,7 @@ import PurchaseModal from './PurchaseModal';
 
 const FormItem = Form.Item;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 class Purchase extends Component {
 
@@ -24,10 +25,16 @@ class Purchase extends Component {
       if (err) {
         return;
       }
-      if (fieldsValue.taskStart1) fieldsValue.taskStart1 = new Date(fieldsValue.taskStart1).format('yyyy-MM-dd');
-      if (fieldsValue.taskStart2) fieldsValue.taskStart2 = new Date(fieldsValue.taskStart2).format('yyyy-MM-dd');
-      if (fieldsValue.taskEnd1) fieldsValue.taskEnd1 = new Date(fieldsValue.taskEnd1).format('yyyy-MM-dd');
-      if (fieldsValue.taskEnd2) fieldsValue.taskEnd2 = new Date(fieldsValue.taskEnd2).format('yyyy-MM-dd');
+      if (fieldsValue.taskStart) {
+        fieldsValue.taskStart1 = new Date(fieldsValue.taskStart[0]).format('yyyy-MM-dd');
+        fieldsValue.taskStart2 = new Date(fieldsValue.taskStart[1]).format('yyyy-MM-dd');
+        delete fieldsValue.taskStart;
+      }
+      if (fieldsValue.taskEnd) {
+        fieldsValue.taskEnd1 = new Date(fieldsValue.taskEnd[0]).format('yyyy-MM-dd');
+        fieldsValue.taskEnd2 = new Date(fieldsValue.taskEnd[1]).format('yyyy-MM-dd');
+        delete fieldsValue.taskEnd;
+      }
       this.props.dispatch({
         type: 'purchase/queryPurchaseList',
         payload: { ...fieldsValue, pageIndex: 1 },
@@ -177,7 +184,7 @@ class Purchase extends Component {
               >
                 {getFieldDecorator('buyerId', {})(
                   <Select placeholder="请选择用户" optionLabelProp="title" combobox>
-                    {buyer.map(el => <Option key={el.id} value={el.id.toString()} title={el.name}>{el.name}</Option>)}
+                    {buyer.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>
@@ -186,32 +193,22 @@ class Purchase extends Component {
           <Row gutter={20} style={{ width: 800, marginLeft: -6 }}>
             <Col>
               <FormItem
-                label="采购开始时间"
+                label="开始时间范围"
                 {...formItemLayout}
                 labelCol={{ span: 3 }}
               >
-                {getFieldDecorator('taskStart1')(
-                  <DatePicker style={{ marginRight: 20 }} />,
-                )}-
-                {getFieldDecorator('taskStart2')(
-                  <DatePicker style={{ marginLeft: 20 }} />,
-                )}
+                {getFieldDecorator('taskStart')(<RangePicker />)}
               </FormItem>
             </Col>
           </Row>
           <Row gutter={20} style={{ width: 800, marginLeft: -6 }}>
             <Col>
               <FormItem
-                label="采购结束时间"
+                label="结束时间范围"
                 {...formItemLayout}
                 labelCol={{ span: 3 }}
               >
-                {getFieldDecorator('taskEnd1')(
-                  <DatePicker style={{ marginRight: 20 }} />,
-                )}-
-                {getFieldDecorator('taskEnd2')(
-                  <DatePicker style={{ marginLeft: 20 }} />,
-                )}
+                {getFieldDecorator('taskEnd')(<RangePicker />)}
               </FormItem>
             </Col>
           </Row>

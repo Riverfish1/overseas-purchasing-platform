@@ -5,8 +5,12 @@ const queryItemList = ({ payload }) => fetch.post('/haierp1/item/queryItemList',
 const queryProduct = ({ payload }) => fetch.post('/haierp1/item/query', { data: payload }).catch(e => e);
 const updateProducts = ({ payload }) => fetch.post('/haierp1/item/update', { data: payload }).catch(e => e);
 const addProducts = ({ payload }) => fetch.post('/haierp1/item/add', { data: payload }).catch(e => e);
-const queryBrands = () => fetch.post('/haierp1/item/brand/queryBrands').catch(e => e);
 const queryCatesTree = () => fetch.post('/haierp1/category/tree').catch(e => e);
+// 品牌
+const queryBrands = () => fetch.post('/haierp1/item/brand/queryBrands').catch(e => e);
+const addBrand = ({ payload }) => fetch.post('/haierp1/item/brand/add', { data: payload }).catch(e => e);
+const updateBrand = ({ payload }) => fetch.post('/haierp1/item/brand/update', { data: payload }).catch(e => e);
+const queryBrandById = ({ payload }) => fetch.post('/haierp1/item/brand/query', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'products',
@@ -15,9 +19,10 @@ export default {
     productsTotal: 0,
     productsValues: {}, // 修改商品时的值
     currentPage: 1, // 默认页码
-    brands: [], // 品牌
     tree: [], // 类目树
     searchValues: {},
+    brands: [], // 品牌
+    brandValue: {},
   },
   reducers: {
     saveCatesTree(state, { payload }) {
@@ -37,6 +42,9 @@ export default {
     },
     saveSearchValues(state, { payload }) {
       return { ...state, searchValues: payload };
+    },
+    saveBrand(state, { payload }) {
+      return { ...state, brandValue: payload };
     },
   },
   effects: {
@@ -88,10 +96,7 @@ export default {
         pageIndex = payload.pageIndex;
         yield put({ type: 'saveCurrentPage', payload });
       }
-      if (payload.startDate) payload.startDate = payload.startDate.format('YYYY-MM-DD');
-      if (payload.endDate) payload.endDate = payload.endDate.format('YYYY-MM-DD');
       const data = yield call(queryItemList, { payload: { ...payload, pageIndex } });
-      console.log('queryItemList success', data);
       if (data.success) {
         yield put({
           type: 'saveItemList',
@@ -101,7 +106,6 @@ export default {
     },
     * queryBrands(param, { call, put }) { // 获取品牌
       const data = yield call(queryBrands);
-      console.log('queryBrands success', data);
       if (data.success) {
         yield put({
           type: 'saveBrands',
@@ -109,9 +113,35 @@ export default {
         });
       }
     },
+    * queryBrandById({ payload }, { call, put }) {
+      const data = yield call(queryBrandById, payload);
+      if (data.success) {
+        yield put({
+          type: 'saveBrand',
+          payload: data,
+        });
+      }
+    },
+    * updateBrand({ payload }, { call, put }) {
+      const data = yield call(updateBrand, payload);
+      if (data.success) {
+        yield put({
+          type: 'queryBrands',
+          payload: {},
+        });
+      }
+    },
+    * addBrand({ payload }, { call, put }) {
+      const data = yield call(addBrand, payload);
+      if (data.success) {
+        yield put({
+          type: 'queryBrands',
+          payload: {},
+        });
+      }
+    },
     * queryCatesTree(param, { call, put }) {
       const data = yield call(queryCatesTree);
-      console.log('queryCatesTree success', data);
       if (data.success) {
         yield put({
           type: 'saveCatesTree',

@@ -66,14 +66,18 @@ class Inventory extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">
               <Button htmlType="submit" size="large" type="primary">查询</Button>
               <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>
             </Col>
           </Row>
         </Form>
-        <Table dataSource={list} columns={columns} pagination={paginationProps} rowKey={record => record.id} />
+        <Row style={{ marginTop: 15 }}>
+          <Col>
+            <Table bordered dataSource={list} columns={columns} pagination={paginationProps} rowKey={record => record.id} />
+          </Col>
+        </Row>
       </div>);
   }
 }

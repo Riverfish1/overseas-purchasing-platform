@@ -17,10 +17,8 @@ import Purchase from './components/Purchase/Purchase'; // 采购管理
 import PurchaseStorage from './components/Purchase/PurchaseStorage'; // 采购入库管理
 // import Journal from './components/Check/Journal'; // 流水管理
 // import Receipt from './components/Check/Receipt'; // 小票管理
-// import StockIn from './components/StockIn/StockIn'; // 入库管理
 import Agency from './components/Agency/Agency';
 import AgencyType from './components/Agency/AgencyType';
-// import Supplier from './components/Supplier/Supplier';
 import Inventory from './components/Inventory/Inventory';
 import Warehouse from './components/System/Warehouse'; // 仓库管理
 
@@ -60,10 +58,8 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_STORAGE}`} component={PurchaseStorage} />
         {/* <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.JOURNAL}`} component={Journal} /> */}
         {/* <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.RECEIPT}`} component={Receipt} /> */}
-        {/* <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_STOCK_IN}`} component={StockIn} />*/}
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_LIST}`} component={Agency} />
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_TYPE}`} component={AgencyType} />
-        {/* <Route path={`/${routerCfg.PERSON}/${routerCfg.SUPPLIER_LIST}`} component={Supplier} /> */}
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} component={Inventory} />
         <Route path={`/${routerCfg.SYSTEM}/${routerCfg.WAREHOUSE}`} component={Warehouse} />
         {/* 一级导航重定向 */}

@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Form, Table, Row, Col, Input, Select, Button, Modal } from 'antd';
 
-import styles from './Order.less';
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -78,7 +76,8 @@ class ErpOrder extends Component {
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
         const listId = [];
-        selectedRows.length ? p.setState({ isNotSelected: false }) : p.setState({ isNotSelected: true });
+        if (selectedRows.length) p.setState({ isNotSelected: false });
+        else p.setState({ isNotSelected: true });
         selectedRows.forEach((el) => {
           listId.push(el.id);
         });
@@ -145,7 +144,7 @@ class ErpOrder extends Component {
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row gutter={20}>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="订单状态"
@@ -187,7 +186,7 @@ class ErpOrder extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={20}>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="子订单号"
@@ -198,15 +197,15 @@ class ErpOrder extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
-            <Col className={styles.listBtnGroup}>
+          <Row style={{ marginLeft: 13 }}>
+            <Col className="listBtnGroup">
               <Button htmlType="submit" size="large" type="primary">查询</Button>
               <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>
             </Col>
           </Row>
         </Form>
         <Row>
-          <Col className={styles.orderBtn} style={{ textAlign: 'right' }}>
+          <Col className="operBtn" style={{ textAlign: 'right' }}>
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.multiDelivery.bind(p)}>批量发货</Button>
           </Col>
         </Row>
@@ -223,7 +222,7 @@ class ErpOrder extends Component {
             </Col>
           </Row>
         </Modal>
-        <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} />
+        <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} bordered />
       </div>
     );
   }

@@ -1,6 +1,5 @@
 import dva from 'dva';
 import { hashHistory } from 'dva/router';
-import createLoading from 'dva-loading';
 import { message, Modal } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -42,7 +41,6 @@ const app = dva({
 });
 
 // 2. Plugins
-app.use(createLoading());
 
 // 3. Model
 Object.keys(models).forEach((key) => {

@@ -25,13 +25,10 @@ export const routerCfg = {
   CHECK: 'check', // 盘点管理
   JOURNAL: 'journal', // 流水管理
   RECEIPT: 'receipt', // 小票管理
-  // PURCHASE_STOCK_IN: 'purchaseStockIn',
-
   // 客户管理
   PERSON: 'person',
   AGENCY_LIST: 'agencyList',
   AGENCY_TYPE: 'agencyType',
-  // SUPPLIER_LIST: 'supplierList',
   // 库存管理
   INVENTORY: 'inventory',
   INVENTORY_LIST: 'inventoryList',
@@ -74,7 +71,6 @@ export const navigation = [
     child: [
       { key: routerCfg.AGENCY_LIST, name: '销售管理' },
       { key: routerCfg.AGENCY_TYPE, name: '销售分类' },
-      // { key: routerCfg.SUPPLIER_LIST, name: '供应商管理' },
     ],
   },
   { key: routerCfg.INVENTORY, name: '库存管理', icon: 'shopping-cart',

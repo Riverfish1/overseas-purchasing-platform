@@ -1,11 +1,9 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
-// import { Link } from 'dva/router';
-import { Modal, Cascader, Input, Select, Row, Col, DatePicker, Form } from 'antd';
+import { Modal, Cascader, Input, Row, Col, DatePicker, Form } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import ProductTable from './ProductTable';
-import styles from './Order.less';
 import divisions from '../../utils/divisions.json';
 import * as check from '../../utils/checkLib';
 
@@ -13,7 +11,6 @@ moment.locale('zh-cn');
 
 
 const FormItem = Form.Item;
-const Option = Select.Option;
 
 class ProductsModal extends Component {
 
@@ -125,7 +122,7 @@ class ProductsModal extends Component {
     };
 
     return (
-      <Modal {...modalProps} className={styles.modalStyle} >
+      <Modal {...modalProps} >
         <Form onSubmit={p.handleSubmit.bind(p)}>
           <Row gutter={10}>
             <Col span={7}>
@@ -147,7 +144,7 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('salesName', {
                   initialValue: orderData.salesName,
-                  rules: [{ required: true, message: '请选择客户' }],
+                  rules: [{ required: true, message: '请选择销售' }],
                 })(
                   <Input placeholder="请输入客户" />,
                 )}
@@ -269,13 +266,8 @@ class ProductsModal extends Component {
 function mapStateToProps(state) {
   const { salesName } = state.order;
   return {
-    loading: state.loading.models.products,
     salesName,
   };
 }
-
-ProductsModal.PropTypes = {
-  salesName: PropTypes.array.isRequired,
-};
 
 export default connect(mapStateToProps)(Form.create()(ProductsModal));

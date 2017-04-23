@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Table, Input, Button, Row, Col, Form, Modal, Popconfirm } from 'antd';
-import styles from './index.less';
 
 const FormItem = Form.Item;
 
@@ -88,8 +87,8 @@ class AgencyType extends Component {
         key: 'operator',
         render(t, r) {
           return (
-            <div className={styles.operation}>
-              <a href="javascript:void(0)" onClick={p.handleQuery.bind(p, r)}>修改</a>
+            <div>
+              <a href="javascript:void(0)" onClick={p.handleQuery.bind(p, r)} style={{ marginRight: 10 }}>修改</a>
               <Popconfirm title="确定删除此类别？" onConfirm={p.handleDelete.bind(p, r)}>
                 <a href="javascript:void(0)">删除</a>
               </Popconfirm>
@@ -113,7 +112,7 @@ class AgencyType extends Component {
     return (
       <div>
         <Row>
-          <Col className={styles.purBtn}>
+          <Col style={{ marginBottom: 10 }}>
             <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增类别</Button>
           </Col>
         </Row>

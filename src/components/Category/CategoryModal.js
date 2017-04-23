@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { Modal, Input, Row, Col, Select, Form, TreeSelect } from 'antd';
 
 const FormItem = Form.Item;
@@ -133,9 +133,5 @@ class CategoryModal extends Component {
     );
   }
 }
-
-CategoryModal.PropTypes = {
-  tree: PropTypes.array.isRequired,
-};
 
 export default Form.create()(CategoryModal);

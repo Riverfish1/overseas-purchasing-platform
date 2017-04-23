@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
 import OrderModal from './OrderModal';
-import styles from './Order.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const { RangePicker } = DatePicker;
 
 class Order extends Component {
 
@@ -28,8 +28,11 @@ class Order extends Component {
       if (err) {
         return;
       }
-      if (fieldsValue.startOrderTime) fieldsValue.startOrderTime = new Date(fieldsValue.startOrderTime).format('yyyy-MM-dd');
-      if (fieldsValue.endOrderTime) fieldsValue.endOrderTime = new Date(fieldsValue.endOrderTime).format('yyyy-MM-dd');
+      if (fieldsValue.orderTime) {
+        fieldsValue.startOrderTime = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
+        fieldsValue.endOrderTime = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
+        delete fieldsValue.orderTime;
+      }
       delete fieldsValue.action;
       this.props.dispatch({
         type: 'order/queryOrderList',
@@ -168,7 +171,8 @@ class Order extends Component {
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
         const listId = [];
-        selectedRows.length ? p.setState({ isNotSelected: false }) : p.setState({ isNotSelected: true });
+        if (selectedRows.length) p.setState({ isNotSelected: false });
+        else p.setState({ isNotSelected: true });
         selectedRows.forEach((el) => {
           listId.push(el.id);
         });
@@ -261,7 +265,7 @@ class Order extends Component {
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
-          <Row gutter={20}>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="客户"
@@ -298,7 +302,7 @@ class Order extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={20}>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="收件人"
@@ -318,34 +322,28 @@ class Order extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={20}>
-            <Col span="8">
+          <Row gutter={20} style={{ width: 800 }}>
+            <Col style={{ marginLeft: 6 }}>
               <FormItem
                 label="订单时间范围"
-                {...formItemLayout}
+                labelCol={{ span: 3 }}
               >
-                {getFieldDecorator('startOrderTime', {})(
-                  <DatePicker placeholder="请选择开始日期" format="YYYY-MM-DD" style={{ width: '100%' }} size="large" />)}
+                {getFieldDecorator('orderTime', {})(<RangePicker />)}
               </FormItem>
             </Col>
-            <Col span="5"> -
-              {getFieldDecorator('endOrderTime', {})(
-                <DatePicker placeholder="请选择结束日期" format="YYYY-MM-DD" style={{ width: '80%', marginLeft: 15 }} size="large" />,
-              )}
-            </Col>
           </Row>
-          <Row>
-            <Col className={styles.listBtnGroup}>
+          <Row style={{ marginLeft: 13 }}>
+            <Col className="listBtnGroup">
               <Button htmlType="submit" size="large" type="primary">查询</Button>
               <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>
             </Col>
           </Row>
         </Form>
         <Row>
-          <Col className={styles.orderBtn} span={22}>
+          <Col className="operBtn" span={22}>
             <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增订单</Button>
           </Col>
-          <Col className={styles.orderBtn} span={2}>
+          <Col className="operBtn" span={2}>
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showCheckModal.bind(p)}>审核</Button>
           </Col>
         </Row>

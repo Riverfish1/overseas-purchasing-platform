@@ -1,8 +1,8 @@
 import ajax from './ajax';
 
 function wrapper(method, url, options, getInst) {
-  if (options) options.timeout = 10000;
-  else options = { timeout: 10000 };
+  if (options) options.timeout = 20000;
+  else options = { timeout: 20000 };
 
   // 重置超时时间
   localStorage.setItem('HAIERP_LAST_LOGIN', new Date().getTime());

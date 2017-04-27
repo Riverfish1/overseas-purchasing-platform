@@ -12,8 +12,11 @@ const reviewOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/review', { 
 const reviewOrderList = ({ payload }) => fetch.post('/haierp1/outerOrder/reviewList', { data: payload }).catch(e => e);
 // erp
 const queryErpOrderList = ({ payload }) => fetch.post('/haierp1/erpOrder/query', { data: payload }).catch(e => e);
-const multiDelivery = ({ payload }) => fetch.post('/haierp1/erpOrder/multiDelivery', { data: payload }).catch(e => e);
 const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/split', { data: payload }).catch(e => e);
+// 批量发货
+const multiDelivery = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDelivery', { data: payload }).catch(e => e);
+// 发货单查询
+const queryShippingOrderList = ({ payload }) => fetch.post('/haierp1/shippingOrder/query', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'order',
@@ -28,6 +31,10 @@ export default {
     erpOrderList: [],
     erpCurrentPage: 1,
     erpOrderTotal: 1,
+    // 发货单
+    shippingOrderList: [],
+    shippingCurrentPage: 1,
+    shippingOrderTotal: 1,
   },
   reducers: {
     saveOrderList(state, { payload }) {
@@ -51,6 +58,13 @@ export default {
     },
     saveErpOrderList(state, { payload }) {
       return { ...state, erpOrderList: payload.data, erpOrderTotal: payload.totalCount };
+    },
+    // 发货单
+    saveShippingCurrentPage(state, { payload }) {
+      return { ...state, shippingCurrentPage: payload.pageIndex };
+    },
+    saveShippingOrderList(state, { payload }) {
+      return { ...state, shippingOrderList: payload.data, shippingOrderTotal: payload.totalCount };
     },
   },
   effects: {
@@ -147,6 +161,22 @@ export default {
         });
       }
     },
+    * queryShippingOrderList({ payload }, { call, put, select }) {
+      let pageIndex = yield select(({ order }) => order.shippingCurrentPage);
+      if (payload && payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({ type: 'saveShippingCurrentPage', payload });
+      }
+      // if (payload.startGmt) payload.startGmt = payload.startGmt.format('YYYY-MM-DD');
+      // if (payload.endGmt) payload.endGmt = payload.endGmt.format('YYYY-MM-DD');
+      const data = yield call(queryShippingOrderList, { payload: { ...payload, pageIndex } });
+      if (data.success) {
+        yield put({
+          type: 'saveShippingOrderList',
+          payload: data,
+        });
+      }
+    },
     * querySalesName({ payload }, { call, put }) {
       const data = yield call(querySalesName, { payload });
       if (data.success) {
@@ -186,9 +216,10 @@ export default {
     * multiDelivery({ payload }, { call, put }) {
       const data = yield call(multiDelivery, { payload });
       if (data.success) {
-        message.success('发货完成');
+        message.success('批量发货完成');
+        console.log(location); // 这里要跳转页面
         yield put({
-          type: 'queryErpOrderList',
+          type: 'queryShippingOrderList',
           payload: {},
         });
       }
@@ -207,11 +238,17 @@ export default {
         if (pathname === '/sale/orderList') {
           setTimeout(() => {
             dispatch({ type: 'queryOrderList', payload: query });
+            dispatch({ type: 'agency/queryAgencyList', payload: query });
           }, 0);
         }
         if (pathname === '/sale/erpOrder') {
           setTimeout(() => {
             dispatch({ type: 'queryErpOrderList', payload: query });
+          }, 0);
+        }
+        if (pathname === '/sale/shippingOrder') {
+          setTimeout(() => {
+            dispatch({ type: 'queryShippingOrderList', payload: query });
           }, 0);
         }
       });

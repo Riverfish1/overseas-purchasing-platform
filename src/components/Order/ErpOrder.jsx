@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Form, Table, Row, Col, Input, Select, Button, Modal } from 'antd';
 
+import DeliveryModal from './component/DeliveryModal';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -14,32 +16,21 @@ class ErpOrder extends Component {
       checkId: [], // 发货时传的ID
       visible: false,
       needSplitId: '',
+      deliveryModalVisible: false,
     };
   }
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
-      if (err) {
-        return;
-      }
+    this.props.form.validateFields((err, fieldsValue) => {
+      if (err) return;
       this.props.dispatch({
         type: 'order/queryErpOrderList',
         payload: { ...fieldsValue, pageIndex: 1 },
       });
     });
   }
-  multiDelivery() { // 批量发货
-    const p = this;
-    Modal.confirm({
-      title: '确认发货',
-      content: `确认要对id为“${this.state.checkId.join(', ')}”的订单进行发货吗？`,
-      onOk() {
-        p.props.dispatch({
-          type: 'order/multiDelivery',
-          payload: { ids: JSON.stringify(p.state.checkId) },
-        });
-      },
-    });
+  showDeliveryModal() { // 批量发货
+    this.setState({ deliveryModalVisible: true });
   }
   splitOrder() {
     const p = this;
@@ -63,11 +54,14 @@ class ErpOrder extends Component {
     this.num.refs.input.value = '';
     this.setState({ visible: false });
   }
+  closeDeliveryModal() {
+    this.setState({ deliveryModalVisible: false });
+  }
   render() {
     const p = this;
-    const { erpOrderList, form } = p.props;
+    const { erpOrderList, erpOrderTotal, form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { isNotSelected, visible } = p.state;
+    const { isNotSelected, visible, deliveryModalVisible, checkId } = p.state;
 
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -141,6 +135,15 @@ class ErpOrder extends Component {
         },
       },
     ];
+    const pagination = {
+      total: erpOrderTotal,
+      onChange(page) {
+        dispatch({
+          type: 'order/queryErpOrderList',
+          payload: { pageIndex: page },
+        });
+      },
+    };
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -196,6 +199,35 @@ class ErpOrder extends Component {
                   <Input placeholder="请输入" />)}
               </FormItem>
             </Col>
+            <Col span="8">
+              <FormItem
+                label="upc码"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('upc', {})(
+                  <Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="商品skuCode"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('skuCode', {})(
+                  <Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={20} style={{ width: 800 }}>
+            <Col span="8">
+              <FormItem
+                label="商品名称"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('itemName', {})(
+                  <Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
           </Row>
           <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">
@@ -206,7 +238,7 @@ class ErpOrder extends Component {
         </Form>
         <Row>
           <Col className="operBtn" style={{ textAlign: 'right' }}>
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.multiDelivery.bind(p)}>批量发货</Button>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>批量发货</Button>
           </Col>
         </Row>
         <Modal
@@ -222,15 +254,16 @@ class ErpOrder extends Component {
             </Col>
           </Row>
         </Modal>
-        <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} bordered />
+        <DeliveryModal visible={deliveryModalVisible} ids={checkId} closeModal={this.closeDeliveryModal.bind(this)} />
+        <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} bordered />
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { erpOrderList } = state.order;
-  return { erpOrderList };
+  const { erpOrderList, erpOrderTotal } = state.order;
+  return { erpOrderList, erpOrderTotal };
 }
 
 export default connect(mapStateToProps)(Form.create()(ErpOrder));

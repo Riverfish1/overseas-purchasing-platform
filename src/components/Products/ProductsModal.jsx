@@ -100,7 +100,7 @@ class ProductsModal extends Component {
         }
 
         // 处理图文详情
-        values.detail = encodeURIComponent(editor.$txt.html()) || '';
+        values.detail = encodeURIComponent(editor && editor.$txt && editor.$txt.html()) || '';
 
         console.log(values);
         if (modalValues && modalValues.data) {
@@ -127,7 +127,7 @@ class ProductsModal extends Component {
     setTimeout(() => {
       this.clearSkuValue();
       // 清理编辑器
-      editor.destroy();
+      if (editor) editor.destroy();
       editor = null;
       this.setState({ activeTab: '1' });
     }, 100);

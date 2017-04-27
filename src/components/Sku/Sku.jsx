@@ -130,22 +130,22 @@ class Sku extends Component {
       { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', render(text) { return text || '-'; } },
       { title: '尺寸', dataIndex: 'scale', key: 'scale', render(text) { return text || '-'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', render(text) { return text || '-'; } },
-      { title: '销售价格', dataIndex: 'salePrice', key: 'salePrice', render(text) { return text || '-'; } },
+      { title: '销售价格(元)', dataIndex: 'salePrice', key: 'salePrice', render(text) { return text || '-'; } },
       { title: '库存',
         key: 'inve',
         render(t, r) {
           return (
             <div>
-              虚拟库存：{r.virtualInv}<br />
-              可用库存：{r.availableInv}<br />
-              锁定库存：{r.lockedInv}<br />
-              实际库存：{r.inventory}<br />
-              在途库存：{r.transInv}
+              虚拟：{r.virtualInv}<br />
+              可用：{r.availableInv}<br />
+              锁定：{r.lockedInv}<br />
+              实际：{r.inventory}<br />
+              在途：{r.transInv}
             </div>
           );
         },
       },
-      { title: '重量', dataIndex: 'weight', key: 'weight', render(text) { return text || '-'; } },
+      { title: '重量(kg)', dataIndex: 'weight', key: 'weight', render(text) { return text || '-'; } },
       { title: '运费', dataIndex: 'freightStr', key: 'freightStr', render(text) { return text || '-'; } },
       { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; } },
       {

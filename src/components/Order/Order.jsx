@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
@@ -82,6 +81,7 @@ class Order extends Component {
       title: '修改',
     }, () => {
       p.props.dispatch({ type: 'order/queryOrder', payload: { id } });
+      p.props.dispatch({ type: 'sku/querySkuList', payload: {} });
     });
   }
 
@@ -116,7 +116,7 @@ class Order extends Component {
 
   render() {
     const p = this;
-    const { form, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [] } = p.props;
+    const { form, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [], agencyList = [] } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
     const { title, visible, checkModalVisible, isNotSelected } = p.state;
     const formItemLayout = {
@@ -395,6 +395,7 @@ class Order extends Component {
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
           modalValues={orderValues}
+          agencyList={agencyList}
           salesName={salesName}
           title={title}
         />
@@ -405,6 +406,7 @@ class Order extends Component {
 
 function mapStateToProps(state) {
   const { orderList, orderTotal, currentPage, orderValues, orderSkuSnip, salesName } = state.order;
+  const { list } = state.agency;
   return {
     orderList,
     orderTotal,
@@ -412,6 +414,7 @@ function mapStateToProps(state) {
     orderValues,
     orderSkuSnip,
     salesName,
+    agencyList: list,
   };
 }
 

@@ -15,6 +15,7 @@ class Products extends Component {
       modalVisible: false,
       previewVisible: false,
       previewImage: '',
+      isNotSelected: true,
     };
   }
 
@@ -23,8 +24,8 @@ class Products extends Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (err) return;
       if (values.saleDate) {
-        values.startDate = new Date(values.saleDate[0]).format('yyyy-MM-dd 00:00:00');
-        values.endDate = new Date(values.saleDate[1]).format('yyyy-MM-dd 00:00:00');
+        values.startDate = new Date(values.saleDate[0]).format('yyyy-MM-dd');
+        values.endDate = new Date(values.saleDate[1]).format('yyyy-MM-dd');
         delete values.saleDate;
       }
       this.props.dispatch({
@@ -83,11 +84,31 @@ class Products extends Component {
     this.setState({ previewVisible: false });
   }
 
+  batchAction(batchType) {
+    const p = this;
+    const { checkId } = this.state;
+    let action = '';
+    let type = '';
+    switch (batchType) {
+      case 'syn': action = '同步'; type = 'products/batchSynItemYouzan'; break;
+      case 'onSell': action = '上架'; type = 'products/batchListingYouzan'; break;
+      case 'offSell': action = '下架'; type = 'products/batchDelistingYouzan'; break;
+      default: action = '';
+    }
+    Modal.confirm({
+      title: '确定',
+      content: `确定要${action}id为${JSON.stringify(checkId)}的产品吗？`,
+      onOk() {
+        p.props.dispatch({ type, payload: { itemIds: JSON.stringify(checkId) } });
+      },
+    });
+  }
+
   render() {
     const p = this;
     const { form, currentPage, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
     const { getFieldDecorator } = form;
-    const { previewImage, previewVisible } = this.state;
+    const { previewImage, previewVisible, isNotSelected } = this.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -186,6 +207,18 @@ class Products extends Component {
       },
     };
 
+    const rowSelection = {
+      onChange(selectedRowKeys, selectedRows) {
+        const listId = [];
+        if (selectedRows.length) p.setState({ isNotSelected: false });
+        else p.setState({ isNotSelected: true });
+        selectedRows.forEach((el) => {
+          listId.push(el.id);
+        });
+        p.setState({ checkId: listId });
+      },
+    };
+
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -236,7 +269,7 @@ class Products extends Component {
           <Row gutter={20} style={{ width: 800, marginLeft: -6 }}>
             <Col>
               <FormItem
-                label="开始销售时间"
+                label="销售时间范围"
                 {...formItemLayout}
                 labelCol={{ span: 3 }}
               >
@@ -252,8 +285,17 @@ class Products extends Component {
           </Row>
         </Form>
         <Row>
-          <Col className="operBtn">
+          <Col className="operBtn" span={18}>
             <Button type="primary" size="large" onClick={this.addModal.bind(this)}>添加商品</Button>
+          </Col>
+          <Col className="operBtn" span={2}>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.batchAction.bind(p, 'syn')}>批量同步</Button>
+          </Col>
+          <Col className="operBtn" span={2}>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.batchAction.bind(p, 'onSell')}>批量上架</Button>
+          </Col>
+          <Col className="operBtn" span={2}>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.batchAction.bind(p, 'offSell')}>批量下架</Button>
           </Col>
         </Row>
         <Row>
@@ -265,6 +307,7 @@ class Products extends Component {
               size="large"
               rowKey={record => record.id}
               pagination={paginationProps}
+              rowSelection={rowSelection}
             />
           </Col>
         </Row>

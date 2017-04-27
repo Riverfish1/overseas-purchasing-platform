@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Modal, Cascader, Input, Row, Col, DatePicker, Form } from 'antd';
+import { Modal, Cascader, Input, Row, Col, DatePicker, Form, Select } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import ProductTable from './ProductTable';
@@ -9,7 +9,7 @@ import * as check from '../../utils/checkLib';
 
 moment.locale('zh-cn');
 
-
+const Option = Select.Option;
 const FormItem = Form.Item;
 
 class ProductsModal extends Component {
@@ -98,7 +98,7 @@ class ProductsModal extends Component {
 
   render() {
     const p = this;
-    const { form, title, visible, modalValues = {} } = p.props;
+    const { form, title, visible, modalValues = {}, agencyList = [] } = p.props;
     const orderData = (modalValues && modalValues.data) || {};
     const { getFieldDecorator } = form;
     const modalProps = {
@@ -143,10 +143,12 @@ class ProductsModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('salesName', {
-                  initialValue: orderData.salesName,
+                  initialValue: orderData.salesName || undefined,
                   rules: [{ required: true, message: '请选择销售' }],
                 })(
-                  <Input placeholder="请输入客户" />,
+                  <Select placeholder="请选择销售" >
+                    {agencyList.map(el => <Option key={el.id} value={el.userName}>{el.userName}</Option>)}
+                  </Select>,
                 )}
               </FormItem>
             </Col>

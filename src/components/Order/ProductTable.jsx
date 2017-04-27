@@ -32,7 +32,8 @@ class ProductTable extends Component {
     const p = this;
     const { form } = this.props;
     const skuList = [];
-    form.validateFieldsAndScroll((err, fieldsSku) => {
+    form.validateFields((err, fieldsSku) => {
+      console.log(err, fieldsSku);
       if (err) {
         return;
       }
@@ -237,7 +238,7 @@ class ProductTable extends Component {
         { title: '图片',
           dataIndex: 'skuPic',
           key: 'skuPic',
-          width: 60,
+          width: 80,
           render(text) { // 需要解决返回的skuPic的格式的问题
             let imgUrl = '';
             try {
@@ -315,12 +316,13 @@ class ProductTable extends Component {
           key: 'skuCode',
           width: '20%',
           render(text, r) {
+            console.log(text);
             const list = skuSearchList[r.key] || skuList;
             const skuTotal = skuSearchList[r.key] ? p.state.total : total;
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuCode`, {
-                  value: text || undefined,
+                  initialValue: text || undefined,
                   rules: [{ required: true, message: '请选择SKU' }],
                 })(
                   <Popover
@@ -328,7 +330,7 @@ class ProductTable extends Component {
                     title="搜索SKU"
                     trigger="click"
                   >
-                    <Input placeholder="选择SKU" value={text || undefined} ref={(c) => { p[`r_${r.key}_skuCode_dom`] = c; }} />
+                    <Input placeholder="请选择SKU" value={text || undefined} ref={(c) => { p[`r_${r.key}_skuCode_dom`] = c; }} />
                   </Popover>,
                 )}
               </FormItem>

@@ -162,6 +162,28 @@ class ProductTable extends Component {
     }
   }
 
+  checkPrice(type, r, rules, value, cb) {
+    const { getFieldValue } = this.props.form;
+    switch (type) {
+      case 'taskPrice':
+        if (getFieldValue(`r_${r.key}_taskMaxPrice`) && getFieldValue(`r_${r.key}_taskMaxPrice`) < value) cb('参考采购价必须小于参考最大采购价'); break;
+      case 'taskMaxPrice':
+        if (getFieldValue(`r_${r.key}_taskPrice`) && getFieldValue(`r_${r.key}_taskPrice`) > value) cb('参考最大采购价必须大于参考采购价'); break;
+      default: cb();
+    }
+  }
+
+  checkCount(type, r, rules, value, cb) {
+    const { getFieldValue } = this.props.form;
+    switch (type) {
+      case 'count':
+        if (getFieldValue(`r_${r.key}_taskMaxCount`) && getFieldValue(`r_${r.key}_taskMaxCount`) < value) cb('参考采购数量必须小于参考最大采购数量'); break;
+      case 'taskMaxCount':
+        if (getFieldValue(`r_${r.key}_count`) && getFieldValue(`r_${r.key}_count`) > value) cb('参考最大采购数量必须大于参考采购数量'); break;
+      default: cb();
+    }
+  }
+
   render() {
     const p = this;
     const { form, skuList = [], parent, buyer = [], total } = p.props;
@@ -343,7 +365,7 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskPrice`, {
                   initialValue: t || undefined,
-                  rules: [{ required: true, message: '该项必填' }],
+                  rules: [{ validator: p.checkPrice.bind(p, 'taskPrice', r) }],
                 })(
                   <InputNumber step={0.01} placeholder="请输入" />,
                 )}
@@ -361,7 +383,7 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskMaxPrice`, {
                   initialValue: t || undefined,
-                  rules: [{ required: true, message: '该项必填' }],
+                  rules: [{ validator: p.checkPrice.bind(p, 'taskMaxPrice', r) }],
                 })(
                   <InputNumber step={0.01} placeholder="请输入" />,
                 )}
@@ -400,7 +422,7 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_count`, {
                   initialValue: t,
-                  rules: [{ required: true, message: '该项必填' }],
+                  rules: [{ validator: p.checkCount.bind(p, 'count', r) }],
                 })(
                   <InputNumber step={1} min={1} placeholder="请输入" />,
                 )}
@@ -417,7 +439,7 @@ class ProductTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskMaxCount`, {
                   initialValue: t || undefined,
-                  rules: [{ required: true, message: '该项必填' }],
+                  rules: [{ validator: p.checkCount.bind(p, 'taskMaxCount', r) }],
                 })(
                   <InputNumber placeholder="请输入" />,
                 )}

@@ -114,6 +114,24 @@ class PurchaseModal extends Component {
     }
   }
 
+  disabledStartDate(startDate) {
+    const { form } = this.props;
+    const endDate = form.getFieldValue('taskEndTime');
+    if (!endDate || !startDate) {
+      return false;
+    }
+    return startDate.valueOf() <= endDate.valueOf();
+  }
+
+  disabledEndDate(endDate) {
+    const { form } = this.props;
+    const startDate = form.getFieldValue('taskStartTime');
+    if (!endDate || !startDate) {
+      return false;
+    }
+    return startDate.valueOf() > endDate.valueOf();
+  }
+
   render() {
     const p = this;
     const { form, title, visible, modalValues = {}, buyer = [] } = p.props;
@@ -233,7 +251,7 @@ class PurchaseModal extends Component {
                   initialValue: purchaseData.taskStartTime ? moment(purchaseData.taskStartTime, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
                   rules: [{ required: true, message: '该项必填' }],
                 })(
-                  <DatePicker style={{ width: '100%' }} />,
+                  <DatePicker disabledDate={this.disabledStartDate.bind(this)} style={{ width: '100%' }} />,
                 )}
               </FormItem>
             </Col>
@@ -246,7 +264,7 @@ class PurchaseModal extends Component {
                   initialValue: purchaseData.taskEndTime ? moment(purchaseData.taskEndTime, 'YYYY-MM-DD HH:mm:ss') : undefined,
                   rules: [{ required: true, message: '该项必填' }],
                 })(
-                  <DatePicker style={{ width: '100%' }} />,
+                  <DatePicker disabledDate={this.disabledEndDate.bind(this)} style={{ width: '100%' }} />,
                 )}
               </FormItem>
             </Col>

@@ -378,6 +378,7 @@ class SkuTable extends Component {
           key: 'packageLevelId',
           width: '15%',
           render(t, r) {
+            console.log(t);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_packageLevelId`, {

@@ -6,6 +6,12 @@ const queryProduct = ({ payload }) => fetch.post('/haierp1/item/query', { data: 
 const updateProducts = ({ payload }) => fetch.post('/haierp1/item/update', { data: payload }).catch(e => e);
 const addProducts = ({ payload }) => fetch.post('/haierp1/item/add', { data: payload }).catch(e => e);
 const queryCatesTree = () => fetch.post('/haierp1/category/tree').catch(e => e);
+// 批量同步
+const batchSynItemYouzan = ({ payload }) => fetch.post('/haierp1/youzanSyn/batchSynItemYouzan', { data: payload }).catch(e => e);
+// 批量上架
+const batchListingYouzan = ({ payload }) => fetch.post('/haierp1/youzanSyn/batchListingYouzan', { data: payload }).catch(e => e);
+// 批量下架
+const batchDelistingYouzan = ({ payload }) => fetch.post('/haierp1/youzanSyn/batchDelistingYouzan', { data: payload }).catch(e => e);
 // 品牌
 const queryBrands = () => fetch.post('/haierp1/item/brand/queryBrands').catch(e => e);
 const addBrand = ({ payload }) => fetch.post('/haierp1/item/brand/add', { data: payload }).catch(e => e);
@@ -146,6 +152,37 @@ export default {
         yield put({
           type: 'saveCatesTree',
           payload: data,
+        });
+      }
+    },
+    * batchDelistingYouzan({ payload }, { call, put }) {
+      const data = yield call(batchDelistingYouzan, { payload });
+      if (data.success) {
+        message.success('批量下架成功');
+        yield put({
+          type: 'queryItemList',
+          payload: {},
+        });
+      }
+    },
+    * batchListingYouzan({ payload }, { call, put }) {
+      const data = yield call(batchListingYouzan, { payload });
+      if (data.success) {
+        message.success('批量上架成功');
+        yield put({
+          type: 'queryItemList',
+          payload: {},
+        });
+      }
+    },
+    * batchSynItemYouzan({ payload }, { call, put }) {
+      console.log(payload);
+      const data = yield call(batchSynItemYouzan, { payload });
+      if (data.success) {
+        message.success('批量同步成功');
+        yield put({
+          type: 'queryItemList',
+          payload: {},
         });
       }
     },

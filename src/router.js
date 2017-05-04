@@ -21,7 +21,7 @@ import PurchaseStorage from './components/Purchase/PurchaseStorage'; // 采购�
 import Agency from './components/Agency/Agency';
 import AgencyType from './components/Agency/AgencyType';
 import Inventory from './components/Inventory/Inventory';
-import Warehouse from './components/System/Warehouse'; // 仓库管理
+import Warehouse from './components/Inventory/Warehouse'; // 仓库管理
 import Resource from './components/Permission/Resource';
 import Role from './components/Permission/Role';
 import User from './components/Permission/User';
@@ -71,7 +71,7 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_LIST}`} component={Agency} />
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_TYPE}`} component={AgencyType} />
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} component={Inventory} />
-        <Route path={`/${routerCfg.SYSTEM}/${routerCfg.WAREHOUSE}`} component={Warehouse} />
+        <Route path={`/${routerCfg.INVENTORY}/${routerCfg.WAREHOUSE}`} component={Warehouse} />
         {/* 一级导航重定向 */}
         <Redirect from={`/${routerCfg.PERMISSION}`} to={`/${routerCfg.PERMISSION}/${routerCfg.RESOURCE}`} />
         <Redirect from={`/${routerCfg.PRODUCTS}`} to={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} />
@@ -79,7 +79,6 @@ function RouterConfig({ history }) {
         <Redirect from={`/${routerCfg.PURCHASE}`} to={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} />
         <Redirect from={`/${routerCfg.PERSON}`} to={`/${routerCfg.PERSON}/${routerCfg.AGENCY_LIST}`} />
         <Redirect from={`/${routerCfg.INVENTORY}`} to={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} />
-        <Redirect from={`/${routerCfg.SYSTEM}`} to={`/${routerCfg.SYSTEM}/${routerCfg.WAREHOUSE}`} />
       </Route>
     </Router>
   );

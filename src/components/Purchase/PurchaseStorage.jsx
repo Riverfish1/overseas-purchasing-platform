@@ -241,7 +241,7 @@ class PurchaseStorage extends Component {
 
 function mapStateToProps(state) {
   const { list, total, buyer, showModal, editInfo, buyerTaskList } = state.purchaseStorage;
-  const { wareList } = state.system;
+  const { wareList } = state.inventory;
   return {
     list, total, buyer, wareList, showModal, editInfo, buyerTaskList,
   };

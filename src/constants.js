@@ -39,8 +39,6 @@ export const routerCfg = {
   // 库存管理
   INVENTORY: 'inventory',
   INVENTORY_LIST: 'inventoryList',
-  // 系统管理
-  SYSTEM: 'system',
   WAREHOUSE: 'warehouse', // 仓库管理
 };
 
@@ -92,10 +90,6 @@ export const navigation = [
   { key: routerCfg.INVENTORY, name: '库存管理', icon: 'shopping-cart',
     child: [
       { key: routerCfg.INVENTORY_LIST, name: '库存管理' },
-    ],
-  },
-  { key: routerCfg.SYSTEM, name: '系统管理', icon: 'global',
-    child: [
       { key: routerCfg.WAREHOUSE, name: '仓库管理' },
     ],
   },

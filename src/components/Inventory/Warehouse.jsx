@@ -19,9 +19,9 @@ class Warehouse extends Component {
     form.validateFields((err, values) => {
       if (err) return;
       if (modalValues.data) {
-        dispatch({ type: 'system/updateWare', payload: { ...values, id: modalValues.data.id } });
+        dispatch({ type: 'inventory/updateWare', payload: { ...values, id: modalValues.data.id } });
       } else {
-        dispatch({ type: 'system/addWare', payload: { ...values } });
+        dispatch({ type: 'inventory/addWare', payload: { ...values } });
       }
       p.handleCancel();
     });
@@ -35,10 +35,10 @@ class Warehouse extends Component {
   }
   handleQuery(r) {
     this.setState({ visible: true, title: '修改' });
-    this.props.dispatch({ type: 'system/queryWare', payload: { id: r.id } });
+    this.props.dispatch({ type: 'inventory/queryWare', payload: { id: r.id } });
   }
   handleDelete(r) {
-    this.props.dispatch({ type: 'system/deleteWare', payload: { id: r.id } });
+    this.props.dispatch({ type: 'inventory/deleteWare', payload: { id: r.id } });
   }
   render() {
     const p = this;
@@ -99,7 +99,7 @@ class Warehouse extends Component {
 }
 
 function mapStateToProps(state) {
-  const { wareList, total, modalValues } = state.system;
+  const { wareList, total, modalValues } = state.inventory;
   return { wareList, total, modalValues };
 }
 

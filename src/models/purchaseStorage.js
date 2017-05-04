@@ -32,7 +32,7 @@ export default {
           setTimeout(() => {
             dispatch({ type: 'queryPurchaseStorageList', payload: {} });
             dispatch({ type: 'queryBuyers', payload: {} });
-            dispatch({ type: 'system/queryWareList', payload: {} });
+            dispatch({ type: 'inventory/queryWareList', payload: {} });
           }, 0);
         }
       });

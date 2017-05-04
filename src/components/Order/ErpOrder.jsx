@@ -254,7 +254,7 @@ class ErpOrder extends Component {
             </Col>
           </Row>
         </Modal>
-        <DeliveryModal visible={deliveryModalVisible} ids={checkId} closeModal={this.closeDeliveryModal.bind(this)} />
+        <DeliveryModal visible={deliveryModalVisible} ids={checkId} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} />
         <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} bordered />
       </div>
     );

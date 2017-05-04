@@ -22,6 +22,10 @@ import Agency from './components/Agency/Agency';
 import AgencyType from './components/Agency/AgencyType';
 import Inventory from './components/Inventory/Inventory';
 import Warehouse from './components/System/Warehouse'; // 仓库管理
+import Resource from './components/Permission/Resource';
+import Role from './components/Permission/Role';
+import User from './components/Permission/User';
+import Organization from './components/Permission/Organization';
 
 function redirectHelper(...args) {
   // 传入参数3，为onEnter
@@ -48,6 +52,10 @@ function RouterConfig({ history }) {
         <IndexRoute component={Login} />
         <Route path={`/${routerCfg.LOGIN}`} component={Login} />
         <Route path={`/${routerCfg.OVERVIEW}`} component={Overview} />
+        <Route path={`/${routerCfg.PERMISSION}/${routerCfg.RESOURCE}`} component={Resource} />
+        <Route path={`/${routerCfg.PERMISSION}/${routerCfg.ROLE}`} component={Role} />
+        <Route path={`/${routerCfg.PERMISSION}/${routerCfg.USER}`} component={User} />
+        <Route path={`/${routerCfg.PERMISSION}/${routerCfg.ORGANIZATION}`} component={Organization} />
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} component={Products} />
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.SKU_LIST}`} component={Sku} />
         <Route path={`/${routerCfg.PRODUCTS}/${routerCfg.PACKAGE_SCALE}`} component={PackageScale} />
@@ -65,6 +73,7 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} component={Inventory} />
         <Route path={`/${routerCfg.SYSTEM}/${routerCfg.WAREHOUSE}`} component={Warehouse} />
         {/* 一级导航重定向 */}
+        <Redirect from={`/${routerCfg.PERMISSION}`} to={`/${routerCfg.PERMISSION}/${routerCfg.RESOURCE}`} />
         <Redirect from={`/${routerCfg.PRODUCTS}`} to={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} />
         <Redirect from={`/${routerCfg.SALE}`} to={`/${routerCfg.SALE}/${routerCfg.ORDER_LIST}`} />
         <Redirect from={`/${routerCfg.PURCHASE}`} to={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} />

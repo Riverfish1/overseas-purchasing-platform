@@ -7,6 +7,12 @@ export const routerCfg = {
   LOGIN: 'login',
   // 总览
   OVERVIEW: 'overview',
+  // 权限管理
+  PERMISSION: 'permission',
+  ROLE: 'role',
+  RESOURCE: 'resource',
+  USER: 'user',
+  ORGANIZATION: 'organization',
   // 商品管理
   PRODUCTS: 'products',
   PRODUCTS_LIST: 'productsList',
@@ -40,6 +46,14 @@ export const routerCfg = {
 
 export const navigation = [
   { key: routerCfg.OVERVIEW, name: '总览', icon: 'laptop' },
+  { key: routerCfg.PERMISSION, name: '权限管理', icon: 'team',
+    child: [
+      { key: routerCfg.RESOURCE, name: '资源管理' },
+      { key: routerCfg.ROLE, name: '角色管理' },
+      { key: routerCfg.USER, name: '用户管理' },
+      { key: routerCfg.ORGANIZATION, name: '机构管理' },
+    ],
+  },
   { key: routerCfg.PRODUCTS, name: '商品管理', icon: 'bars',
     child: [
       { key: routerCfg.PRODUCTS_LIST, name: '商品列表' },

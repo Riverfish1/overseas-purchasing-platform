@@ -26,14 +26,14 @@ class DeliveryModal extends Component {
     const { visible, form } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
-      labelCol: { span: 6 },
+      labelCol: { span: 8 },
       wrapperCol: { span: 10 },
     };
     return (
       <div>
         <Modal
           visible={visible}
-          title="批量返货"
+          title="批量发货"
           onOk={p.multiDelivery.bind(p)}
           onCancel={p.handleCancel.bind(p)}
         >
@@ -42,36 +42,44 @@ class DeliveryModal extends Component {
               label="收件人"
               {...formItemLayout}
             >
-              {getFieldDecorator('receiver', {})(
-                <Input placeholder="请输入" />)}
+              {getFieldDecorator('receiver', {
+                rules: [{ required: true, message: '请输入收件人' }],
+              })(
+                <Input placeholder="请输入收件人" />)}
             </FormItem>
             <FormItem
               label="收件地址"
               {...formItemLayout}
             >
-              {getFieldDecorator('address', {})(
-                <Input placeholder="请输入" />)}
+              {getFieldDecorator('address', {
+                rules: [{ required: true, message: '请输入收件地址' }],
+              })(
+                <Input placeholder="请输入收件地址" />)}
             </FormItem>
             <FormItem
               label="联系电话"
               {...formItemLayout}
             >
-              {getFieldDecorator('telephone', {})(
-                <Input placeholder="请输入" />)}
+              {getFieldDecorator('telephone', {
+                rules: [{ required: true, message: '请输入联系电话' }],
+              })(
+                <Input placeholder="请输入联系电话" />)}
+            </FormItem>
+            <FormItem
+              label="详细地址"
+              {...formItemLayout}
+            >
+              {getFieldDecorator('addressDetail', {
+                rules: [{ required: true, message: '请输入详细地址' }],
+              })(
+                <Input placeholder="请输入详细地址" />)}
             </FormItem>
             <FormItem
               label="邮编"
               {...formItemLayout}
             >
               {getFieldDecorator('postcode', {})(
-                <Input placeholder="请输入" />)}
-            </FormItem>
-            <FormItem
-              label="详细地址"
-              {...formItemLayout}
-            >
-              {getFieldDecorator('addressDetail', {})(
-                <Input placeholder="请输入" />)}
+                <Input placeholder="请输入邮编" />)}
             </FormItem>
             <FormItem
               label="备注"

@@ -6,7 +6,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 
-class ErpOrder extends Component {
+class ShippingOrder extends Component {
   handleSubmit(e) {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -134,4 +134,4 @@ function mapStateToProps(state) {
   return { shippingOrderList };
 }
 
-export default connect(mapStateToProps)(Form.create()(ErpOrder));
+export default connect(mapStateToProps)(Form.create()(ShippingOrder));

@@ -166,9 +166,9 @@ class ProductTable extends Component {
     const { getFieldValue } = this.props.form;
     switch (type) {
       case 'taskPrice':
-        if (getFieldValue(`r_${r.key}_taskMaxPrice`) && getFieldValue(`r_${r.key}_taskMaxPrice`) < value) cb('参考采购价必须小于参考最大采购价'); break;
+        if (getFieldValue(`r_${r.key}_taskMaxPrice`) && getFieldValue(`r_${r.key}_taskMaxPrice`) < value) cb('参考采购价必须小于参考最大采购价'); else cb(); break;
       case 'taskMaxPrice':
-        if (getFieldValue(`r_${r.key}_taskPrice`) && getFieldValue(`r_${r.key}_taskPrice`) > value) cb('参考最大采购价必须大于参考采购价'); break;
+        if (getFieldValue(`r_${r.key}_taskPrice`) && getFieldValue(`r_${r.key}_taskPrice`) > value) cb('参考最大采购价必须大于参考采购价'); else cb(); break;
       default: cb();
     }
   }
@@ -177,9 +177,9 @@ class ProductTable extends Component {
     const { getFieldValue } = this.props.form;
     switch (type) {
       case 'count':
-        if (getFieldValue(`r_${r.key}_taskMaxCount`) && getFieldValue(`r_${r.key}_taskMaxCount`) < value) cb('参考采购数量必须小于参考最大采购数量'); break;
+        if (getFieldValue(`r_${r.key}_taskMaxCount`) && getFieldValue(`r_${r.key}_taskMaxCount`) < value) cb('参考采购数量必须小于参考最大采购数量'); else cb(); break;
       case 'taskMaxCount':
-        if (getFieldValue(`r_${r.key}_count`) && getFieldValue(`r_${r.key}_count`) > value) cb('参考最大采购数量必须大于参考采购数量'); break;
+        if (getFieldValue(`r_${r.key}_count`) && getFieldValue(`r_${r.key}_count`) > value) cb('参考最大采购数量必须大于参考采购数量'); else cb(); break;
       default: cb();
     }
   }

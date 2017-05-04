@@ -297,7 +297,7 @@ class PurchaseModal extends Component {
 
     const storageListMapKeys = storageList.map(el => parseInt(el.skuId.toString().split('__')[0], 10));
 
-    const filteredBuyerTask = buyerTaskList.filter(el => storageListMapKeys.indexOf(el.skuId) === -1);
+    const filteredBuyerTask = buyerTaskList ? buyerTaskList.filter(el => storageListMapKeys.indexOf(el.skuId) === -1) : [];
 
     return (
       <Modal {...modalProps}>

@@ -120,8 +120,8 @@ class DeliveryModal extends Component {
                   label="身份证号"
                   {...formItemLayout}
                 >
-                  {getFieldDecorator('idcard', {
-                    initialValue: data.idcard,
+                  {getFieldDecorator('idCard', {
+                    initialValue: data.idCard,
                   })(
                     <Input placeholder="请输入身份证号" />)}
                 </FormItem>

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Form, Table, Row, Col, Button, Modal, Input, Popconfirm, DatePicker } from 'antd';
+import { Form, Table, Row, Col, Button, Modal, Input, Popconfirm, DatePicker, Select } from 'antd';
 import { connect } from 'dva';
 import moment from 'moment';
+import isNull from '../../utils/isNull';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 class Resource extends Component {
   constructor(props) {
@@ -85,6 +87,7 @@ class Resource extends Component {
         p.props.dispatch({ type: 'permission/queryUserList', payload: { pageIndex } });
       },
     };
+
     return (
       <div>
         <Row>
@@ -129,14 +132,17 @@ class Resource extends Component {
               <Col span={12}>
                 <FormItem label="性别" {...formItemLayout}>
                   {getFieldDecorator('sex', {
-                    rules: [{ required: true, message: '请输入性别' }],
-                    initialValue: userModal.sex,
+                    rules: [{ required: true, message: '请选择性别' }],
+                    initialValue: !isNull(userModal.sex) ? userModal.sex.toString() : '1',
                   })(
-                    <Input placeholder="请输入性别" />,
+                    <Select placeholder="请选择性别">
+                      <Option value="1">男</Option>
+                      <Option value="0">女</Option>
+                    </Select>,
                   )}
                 </FormItem>
               </Col>
-              <Col span={12}>
+              {/* <Col span={12}>
                 <FormItem label="年龄" {...formItemLayout}>
                   {getFieldDecorator('age', {
                     rules: [{ required: true, message: '请输入年龄' }],
@@ -145,7 +151,7 @@ class Resource extends Component {
                     <Input placeholder="请输入年龄" />,
                   )}
                 </FormItem>
-              </Col>
+              </Col> */}
               <Col span={12}>
                 <FormItem label="手机号" {...formItemLayout}>
                   {getFieldDecorator('phone', {
@@ -159,14 +165,17 @@ class Resource extends Component {
               <Col span={12}>
                 <FormItem label="状态" {...formItemLayout}>
                   {getFieldDecorator('status', {
-                    rules: [{ required: true, message: '请输入状态' }],
-                    initialValue: userModal.status,
+                    rules: [{ required: true, message: '请选择状态' }],
+                    initialValue: !isNull(userModal.status) ? userModal.status.toString() : '1',
                   })(
-                    <Input placeholder="请输入状态" />,
+                    <Select placeholder="请选择状态">
+                      <Option value="1">正常</Option>
+                      <Option value="0">禁用</Option>
+                    </Select>,
                   )}
                 </FormItem>
               </Col>
-              <Col span={12}>
+              {/* <Col span={12}>
                 <FormItem label="用户类别" {...formItemLayout}>
                   {getFieldDecorator('userType', {
                     rules: [{ required: true, message: '请输入用户类别' }],
@@ -175,7 +184,7 @@ class Resource extends Component {
                     <Input placeholder="请输入用户类别" />,
                   )}
                 </FormItem>
-              </Col>
+              </Col> */}
               <Col span={12}>
                 <FormItem label="所属机构ID" {...formItemLayout}>
                   {getFieldDecorator('organizationId', {

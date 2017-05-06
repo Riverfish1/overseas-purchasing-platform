@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Button, Row, Col, Select, Form, Popconfirm } from 'antd';
+import { Table, Button, Row, Col, Select, Form, Popconfirm, Input } from 'antd';
 import AgencyModal from './AgencyModal';
 
 const FormItem = Form.Item;
@@ -86,7 +86,7 @@ class Agency extends Component {
       wrapperCol: { span: 14 },
     };
     const columnsList = [
-      { title: '销售名称', dataIndex: 'name', key: 'name' },
+      // { title: '销售名称', dataIndex: 'name', key: 'name' },
       // { title: '用户id', dataIndex: 'userId', key: 'userId', render(text) { return text || '-'; } },
       { title: '用户名称', dataIndex: 'userName', key: 'userName', render(text) { return text || '-'; } },
       // { title: '销售代码', dataIndex: 'code', key: 'code', render(text) { return text || '-'; } },
@@ -136,13 +136,11 @@ class Agency extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
-                label="销售名称"
+                label="用户名称"
                 {...formItemLayout}
               >
-                {getFieldDecorator('name', {})(
-                  <Select placeholder="请选择销售名称">
-                    {list.map((el, index) => <Option key={index} value={el.name}>{el.name}</Option>)}
-                  </Select>,
+                {getFieldDecorator('userName', {})(
+                  <Input placeholder="请输入用户名称" />,
                 )}
               </FormItem>
             </Col>

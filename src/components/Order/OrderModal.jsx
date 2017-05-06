@@ -203,8 +203,8 @@ class ProductsModal extends Component {
                 label="身份证号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('idcard', {
-                  initialValue: orderData.idcard,
+                {getFieldDecorator('idCard', {
+                  initialValue: orderData.idCard,
                   rules: [{ required: false, validator: this.checkIdCard.bind(this) }],
                 })(
                   <Input placeholder="请输入身份证号" />)}

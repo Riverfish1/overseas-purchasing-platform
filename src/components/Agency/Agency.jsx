@@ -87,12 +87,12 @@ class Agency extends Component {
     };
     const columnsList = [
       { title: '销售名称', dataIndex: 'name', key: 'name' },
-      { title: '用户id', dataIndex: 'userId', key: 'userId', render(text) { return text || '-'; } },
+      // { title: '用户id', dataIndex: 'userId', key: 'userId', render(text) { return text || '-'; } },
       { title: '用户名称', dataIndex: 'userName', key: 'userName', render(text) { return text || '-'; } },
-      { title: '销售代码', dataIndex: 'code', key: 'code', render(text) { return text || '-'; } },
-      { title: '销售类别Id', dataIndex: 'typeId', key: 'typeId', render(text) { return text || '-'; } },
+      // { title: '销售代码', dataIndex: 'code', key: 'code', render(text) { return text || '-'; } },
+      // { title: '销售类别Id', dataIndex: 'typeId', key: 'typeId', render(text) { return text || '-'; } },
       { title: '销售类别名称', dataIndex: 'typeName', key: 'typeName', render(text) { return text || '-'; } },
-      { title: '销售类别代码', dataIndex: 'typeCode', key: 'typeCode', render(text) { return text || '-'; } },
+      // { title: '销售类别代码', dataIndex: 'typeCode', key: 'typeCode', render(text) { return text || '-'; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', render(text) { return text || '-'; } },
       { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; } },
       { title: '操作',

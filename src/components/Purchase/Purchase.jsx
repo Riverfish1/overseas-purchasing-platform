@@ -110,7 +110,7 @@ class Purchase extends Component {
       { title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle' },
       { title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc' },
       { title: '任务分配人', dataIndex: 'ownerName', key: 'ownerName' },
-      { title: '分配者ID', dataIndex: 'ownerId', key: 'ownerId' },
+      // { title: '分配者ID', dataIndex: 'ownerId', key: 'ownerId' },
       { title: '买手', dataIndex: 'buyerName', key: 'buyerName', render(text) { return text || '-'; } },
       { title: '图片',
         dataIndex: 'imageUrl',

@@ -63,19 +63,27 @@ class ProductsModal extends Component {
   }
 
   checkPhone(rules, value, callback) {
-    if (check.phone(value)) {
+    if (check.phone(value) || check.tel(value)) {
       callback();
     } else {
-      callback(new Error('请填写正确的手机号'));
+      callback(new Error('请填写正确的手机或座机'));
     }
   }
 
-  checkPostcode(rules, value, callback) {
+  checkIdCard(rules, value, callback) {
     if (!value) callback();
-    else if (check.postcode(value)) {
+    else if (check.idcard(value)) {
       callback();
     } else {
-      callback(new Error('请填写正确的邮政编码'));
+      callback(new Error('请填写正确的身份证号'));
+    }
+  }
+
+  checkName(rules, value, callback) {
+    if (check.ChineseName(value, { min: 2 })) {
+      callback();
+    } else {
+      callback(new Error('请填写正确的姓名'));
     }
   }
 
@@ -173,7 +181,7 @@ class ProductsModal extends Component {
               >
                 {getFieldDecorator('receiver', {
                   initialValue: orderData.receiver,
-                  rules: [{ required: true, message: '请输入收件人' }],
+                  rules: [{ required: true, validator: this.checkName.bind(this), message: '请输入收件人中文名' }],
                 })(
                   <Input placeholder="请输入收件人" />)}
               </FormItem>
@@ -192,14 +200,14 @@ class ProductsModal extends Component {
             </Col>
             <Col span={7}>
               <FormItem
-                label="邮政编码"
+                label="身份证号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('postcode', {
-                  initialValue: orderData.postcode,
-                  rules: [{ required: false, validator: this.checkPostcode.bind(this) }],
+                {getFieldDecorator('idcard', {
+                  initialValue: orderData.idcard,
+                  rules: [{ required: false, validator: this.checkIdCard.bind(this) }],
                 })(
-                  <Input placeholder="请输入邮政编码" />)}
+                  <Input placeholder="请输入身份证号" />)}
               </FormItem>
             </Col>
           </Row>

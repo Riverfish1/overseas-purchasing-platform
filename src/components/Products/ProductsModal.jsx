@@ -100,7 +100,9 @@ class ProductsModal extends Component {
         }
 
         // 处理图文详情
-        values.detail = encodeURIComponent(editor && editor.$txt && editor.$txt.html()) || '';
+        const detailInfo = editor && editor.$txt && editor.$txt.html();
+        const lastDetailInfo = modalValues && modalValues.data && modalValues.data.detail;
+        values.detail = detailInfo ? encodeURIComponent(detailInfo) : lastDetailInfo || '';
 
         console.log(values);
         if (modalValues && modalValues.data) {

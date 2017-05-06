@@ -30,7 +30,17 @@ class ErpOrder extends Component {
     });
   }
   showDeliveryModal() { // 批量发货
-    this.setState({ deliveryModalVisible: true });
+    const p = this;
+    // 请求信息
+    this.props.dispatch({
+      type: 'order/queryErpOrderDetail',
+      payload: {
+        erpOrderId: this.state.checkId,
+        callback() {
+          p.setState({ deliveryModalVisible: true });
+        },
+      },
+    });
   }
   splitOrder() {
     const p = this;
@@ -55,11 +65,15 @@ class ErpOrder extends Component {
     this.setState({ visible: false });
   }
   closeDeliveryModal() {
+    this.props.dispatch({
+      type: 'order/saveErpOrderDetail',
+      payload: {},
+    });
     this.setState({ deliveryModalVisible: false });
   }
   render() {
     const p = this;
-    const { erpOrderList, erpOrderTotal, form, dispatch } = p.props;
+    const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { isNotSelected, visible, deliveryModalVisible, checkId } = p.state;
 
@@ -254,7 +268,7 @@ class ErpOrder extends Component {
             </Col>
           </Row>
         </Modal>
-        <DeliveryModal visible={deliveryModalVisible} ids={checkId} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} />
+        <DeliveryModal visible={deliveryModalVisible} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} />
         <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} bordered />
       </div>
     );
@@ -262,8 +276,8 @@ class ErpOrder extends Component {
 }
 
 function mapStateToProps(state) {
-  const { erpOrderList, erpOrderTotal } = state.order;
-  return { erpOrderList, erpOrderTotal };
+  const { erpOrderList, erpOrderTotal, erpOrderDetail } = state.order;
+  return { erpOrderList, erpOrderTotal, erpOrderDetail };
 }
 
 export default connect(mapStateToProps)(Form.create()(ErpOrder));

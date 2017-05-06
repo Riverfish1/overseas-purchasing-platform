@@ -102,3 +102,9 @@ exports.postcode = function (value) {
     var pattern = /[1-9]\d{5}(?!\d)/;
     return pattern.test(value);
 };
+
+//检查身份证号
+exports.idcard = function (value) {
+    var pattern = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
+    return pattern.test(value.toUpperCase());
+};

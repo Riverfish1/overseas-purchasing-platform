@@ -17,6 +17,8 @@ const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/split', { data
 const multiDelivery = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDelivery', { data: payload }).catch(e => e);
 // 发货单查询
 const queryShippingOrderList = ({ payload }) => fetch.post('/haierp1/shippingOrder/query', { data: payload }).catch(e => e);
+// 发货单详情表单查询
+const queryShippingOrderDetail = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDeliveryForm', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'order',
@@ -31,6 +33,7 @@ export default {
     erpOrderList: [],
     erpCurrentPage: 1,
     erpOrderTotal: 1,
+    erpOrderDetail: {},
     // 发货单
     shippingOrderList: [],
     shippingCurrentPage: 1,
@@ -58,6 +61,9 @@ export default {
     },
     saveErpOrderList(state, { payload }) {
       return { ...state, erpOrderList: payload.data, erpOrderTotal: payload.totalCount };
+    },
+    saveErpOrderDetail(state, { payload }) {
+      return { ...state, erpOrderDetail: payload.data || {} };
     },
     // 发货单
     saveShippingCurrentPage(state, { payload }) {
@@ -161,6 +167,16 @@ export default {
         });
       }
     },
+    * queryErpOrderDetail({ payload }, { call, put }) {
+      const data = yield call(queryShippingOrderDetail, { payload: { erpOrderId: JSON.stringify(payload.erpOrderId) } });
+      if (data.success) {
+        yield put({
+          type: 'saveErpOrderDetail',
+          payload: data,
+        });
+        if (payload.callback) payload.callback();
+      }
+    },
     * queryShippingOrderList({ payload }, { call, put, select }) {
       let pageIndex = yield select(({ order }) => order.shippingCurrentPage);
       if (payload && payload.pageIndex) {
@@ -213,11 +229,12 @@ export default {
         });
       }
     },
-    * multiDelivery({ payload }, { call, put }) {
+    * multiDelivery({ payload, callback }, { call, put }) {
       const data = yield call(multiDelivery, { payload });
       if (data.success) {
         message.success('批量发货完成');
         console.log(location); // 这里要跳转页面
+        if (callback) callback();
         yield put({
           type: 'queryShippingOrderList',
           payload: {},

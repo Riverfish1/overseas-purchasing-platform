@@ -37,7 +37,7 @@ class PopoverSku extends Component {
       },
     };
     const columns = [
-      { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode', width: 90 },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 90 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 120 },
       { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 90, render(text) { return text || '-'; } },
       { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 60, render(text) { return text || '-'; } },
@@ -70,13 +70,13 @@ class PopoverSku extends Component {
         <Row gutter={20} style={{ width: 720 }}>
           <Col span="7">
             <FormItem
-              label="SKU编码"
+              label="SKU代码"
               {...formItemLayout}
             >
               {getFieldDecorator('skuCode')(
                 <Input
                   size="default"
-                  placeholder="请输入SKU编码"
+                  placeholder="请输入SKU代码"
                 />,
               )}
             </FormItem>

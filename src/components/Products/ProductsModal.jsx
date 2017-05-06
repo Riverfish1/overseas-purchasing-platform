@@ -246,14 +246,14 @@ class ProductsModal extends Component {
               <Row gutter={10}>
                 <Col span={7}>
                   <FormItem
-                    label="商品编码"
+                    label="商品代码"
                     {...formItemLayout}
                   >
                     {getFieldDecorator('itemCode', {
                       initialValue: toString(productData.itemCode),
-                      rules: [{ message: '请输入商品编码' }],
+                      rules: [{ message: '请输入商品代码' }],
                     })(
-                      <Input placeholder="请输入商品编码" />,
+                      <Input placeholder="请输入商品代码" />,
                     )}
                   </FormItem>
                 </Col>

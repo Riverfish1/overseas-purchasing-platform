@@ -97,7 +97,7 @@ class Sku extends Component {
       wrapperCol: { span: 14 },
     };
     const columns = [
-      { title: 'SKU条码', dataIndex: 'skuCode', key: 'skuCode' },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode' },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
       { title: '商品代码', dataIndex: 'itemCode', key: 'itemCode' },
       { title: '品牌',
@@ -192,11 +192,11 @@ class Sku extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="SKU条码"
+                label="SKU代码"
                 {...formItemLayout}
               >
                 {getFieldDecorator('skuCode', {})(
-                  <Input placeholder="请输入SKU条码" />)}
+                  <Input placeholder="请输入SKU代码" />)}
               </FormItem>
             </Col>
             <Col span="8">

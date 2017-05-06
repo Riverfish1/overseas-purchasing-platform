@@ -236,7 +236,7 @@ class SkuTable extends Component {
     const modalTableProps = {
       columns: [
         {
-          title: 'SKU条码',
+          title: 'SKU代码',
           dataIndex: 'skuCode',
           key: 'skuCode',
           width: '10%',
@@ -244,7 +244,7 @@ class SkuTable extends Component {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuCode`, { initialValue: t || '' })(
-                  r.skuCode ? <Input placeholder="请填写SKU条码" disabled /> : <span style={{ color: '#ccc' }}>自动生成</span>,
+                  r.skuCode ? <Input placeholder="请填写SKU代码" disabled /> : <span style={{ color: '#ccc' }}>自动生成</span>,
                 )}
               </FormItem>
             );

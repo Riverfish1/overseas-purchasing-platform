@@ -16,7 +16,6 @@ class Order extends Component {
       visible: false,
       title: '', // modal的title
       checkId: [], // 审核时传的id
-      checkModalVisible: false,
       isNotSelected: true,
     };
   }
@@ -51,26 +50,14 @@ class Order extends Component {
     });
   }
 
-  showCheckModal() {
-    this.setState({ checkModalVisible: true });
-  }
-
-  checkOrder() {
-    const { form } = this.props;
+  handleOrderAction(type) {
+    const { dispatch } = this.props;
     const { checkId } = this.state;
-    const action = form.getFieldValue('action');
-    if (checkId.length === 1) {
-      this.props.dispatch({
-        type: 'order/reviewOrder',
-        payload: { orderId: checkId[0], action },
-      });
-    } else {
-      this.props.dispatch({
-        type: 'order/reviewOrderList',
-        payload: { orderIds: JSON.stringify(checkId), action },
-      });
+    switch (type) {
+      case 'confirm': dispatch({ type: 'order/confirmOrder', payload: { orderIds: JSON.stringify(checkId) } }); break;
+      case 'close': dispatch({ type: 'order/closeOrder', payload: { orderIds: JSON.stringify(checkId) } }); break;
+      default: return false;
     }
-    this.setState({ checkModalVisible: false });
   }
 
   updateModal(id, e) {
@@ -118,7 +105,7 @@ class Order extends Component {
     const p = this;
     const { form, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [], agencyList = [] } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
-    const { title, visible, checkModalVisible, isNotSelected } = p.state;
+    const { title, visible, isNotSelected } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -294,9 +281,9 @@ class Order extends Component {
                 })(
                   <Select placeholder="请选择订单状态">
                     <Option value="10">全部</Option>
-                    <Option value="0">待审核</Option>
-                    <Option value="1">审核通过</Option>
-                    <Option value="2">未通过</Option>
+                    <Option value="0">新建</Option>
+                    <Option value="1">订单通过</Option>
+                    <Option value="-1">订单关闭</Option>
                   </Select>,
                 )}
               </FormItem>
@@ -321,6 +308,15 @@ class Order extends Component {
                   <Input placeholder="请输入联系电话" />)}
               </FormItem>
             </Col>
+            <Col span="8">
+              <FormItem
+                label="订单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('orderNo', {})(
+                  <Input placeholder="请输入订单号" />)}
+              </FormItem>
+            </Col>
           </Row>
           <Row gutter={20} style={{ width: 800 }}>
             <Col style={{ marginLeft: 6 }}>
@@ -340,11 +336,14 @@ class Order extends Component {
           </Row>
         </Form>
         <Row>
-          <Col className="operBtn" span={22}>
+          <Col className="operBtn" span={20}>
             <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增订单</Button>
           </Col>
           <Col className="operBtn" span={2}>
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showCheckModal.bind(p)}>审核</Button>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.handleOrderAction.bind(p, 'confirm')}>订单确定</Button>
+          </Col>
+          <Col className="operBtn" span={2}>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.handleOrderAction.bind(p, 'close')}>订单关闭</Button>
           </Col>
         </Row>
         <Row>
@@ -369,27 +368,6 @@ class Order extends Component {
             rowKey={record => record.id}
             pagination={false}
           />
-        </Modal>
-        <Modal
-          visible={checkModalVisible}
-          title="审核"
-          onOk={p.checkOrder.bind(p)}
-          onCancel={() => { form.setFieldsValue({ action: undefined }); p.setState({ checkModalVisible: false }); }}
-        >
-          <Form>
-            <FormItem
-              label="审核结果"
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 12 }}
-            >
-              {getFieldDecorator('action')(
-                <Select placeholder="请选择审核结果">
-                  <Option value="1">审核通过</Option>
-                  <Option value="2">审核拒绝</Option>
-                </Select>,
-              )}
-            </FormItem>
-          </Form>
         </Modal>
         <OrderModal
           visible={this.state.modalVisible}

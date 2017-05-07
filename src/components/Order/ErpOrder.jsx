@@ -93,9 +93,11 @@ class ErpOrder extends Component {
       },
     };
     const columns = [
-      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: '12%' },
-      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: '12%' },
-      { title: '交易订单号', dataIndex: 'targetNo', key: 'targetNo', width: '10%', render(text) { return text || '-'; } },
+      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: '8%' },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: '8%' },
+      { title: 'upc码', dataIndex: 'upc', key: 'upc', width: '8%' },
+      { title: 'sku条码', dataIndex: 'skuCode', key: 'skuCode', width: '8%' },
+      { title: '交易订单号', dataIndex: 'targetNo', key: 'targetNo', width: '8%', render(text) { return text || '-'; } },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
@@ -129,14 +131,14 @@ class ErpOrder extends Component {
       { title: '收件人地址',
         dataIndex: 'address',
         key: 'address',
-        width: '10%',
+        width: '8%',
         render(text, record) {
           return <span>{text ? `${text} ${record.addressDetail}` : '-'}</span>;
         },
       },
       { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: '8%' },
-      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: '12%' },
-      { title: '备注', dataIndex: 'remarks', key: 'remarks', width: '10%', render(text) { return text || '-'; } },
+      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: '8%' },
+      { title: '备注', dataIndex: 'remarks', key: 'remarks', width: '8%', render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
@@ -252,7 +254,7 @@ class ErpOrder extends Component {
         </Form>
         <Row>
           <Col className="operBtn" style={{ textAlign: 'right' }}>
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>批量发货</Button>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>发货</Button>
           </Col>
         </Row>
         <Modal

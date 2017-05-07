@@ -8,8 +8,8 @@ const deleteOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/delete', { 
 const queryOrderList = ({ payload }) => fetch.post('/haierp1/outerOrder/queryOuterOrderList', { data: payload }).catch(e => e);
 const queryOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/query', { data: payload }).catch(e => e);
 const querySalesName = ({ payload }) => fetch.post('/haierp1/outerOrder/querySalesName', { data: payload }).catch(e => e);
-const reviewOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/review', { data: payload }).catch(e => e);
-const reviewOrderList = ({ payload }) => fetch.post('/haierp1/outerOrder/reviewList', { data: payload }).catch(e => e);
+const confirmOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/confirm', { data: payload }).catch(e => e);
+const closeOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/close', { data: payload }).catch(e => e);
 // erp
 const queryErpOrderList = ({ payload }) => fetch.post('/haierp1/erpOrder/query', { data: payload }).catch(e => e);
 const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/split', { data: payload }).catch(e => e);
@@ -209,20 +209,20 @@ export default {
       const data = yield call(querySkuList, { payload: param });
       payload.callback(data.success ? data : 'ERROR');
     },
-    * reviewOrder({ payload }, { call, put }) {
-      const data = yield call(reviewOrder, { payload });
+    * confirmOrder({ payload }, { call, put }) {
+      const data = yield call(confirmOrder, { payload });
       if (data.success) {
-        message.success('审核完成');
+        message.success('订单确认完成');
         yield put({
           type: 'queryOrderList',
           payload: {},
         });
       }
     },
-    * reviewOrderList({ payload }, { call, put }) {
-      const data = yield call(reviewOrderList, { payload });
+    * closeOrder({ payload }, { call, put }) {
+      const data = yield call(closeOrder, { payload });
       if (data.success) {
-        message.success('审核完成');
+        message.success('订单关闭完成');
         yield put({
           type: 'queryOrderList',
           payload: {},

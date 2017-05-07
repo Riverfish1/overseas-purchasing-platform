@@ -35,17 +35,20 @@ class SkuModal extends Component {
       if (err) {
         return;
       }
-      if (fieldsValue.mainPic) {
+      // 处理图片
+      if (fieldsValue.skuPic) {
         const uploadMainPic = [];
-        fieldsValue.mainPic.forEach((item, index) => {
+        fieldsValue.skuPic.forEach((item, index) => {
+          console.log(item);
           uploadMainPic.push({
             uid: `i_${index}`,
             type: item.type,
-            url: item.url,
+            url: item.url || item.response.data,
           });
         });
-        fieldsValue.mainPic = JSON.stringify({ picList: uploadMainPic });
+        fieldsValue.skuPic = JSON.stringify({ picList: uploadMainPic });
       }
+      // 结束处理图片
       if (fieldsValue.brand) {
         brands.forEach((item) => {
           if (item.id.toString() === fieldsValue.brand) {
@@ -112,7 +115,7 @@ class SkuModal extends Component {
 
   closeModal() {
     const { close, form } = this.props;
-    this.setState({ proSearchList: {} });
+    this.setState({ proSearchList: {}, picList: null });
     form.resetFields();
     close(false);
   }
@@ -183,7 +186,6 @@ class SkuModal extends Component {
             // 添加文件预览
             const newFile = info.file;
             newFile.url = info.file.response.data;
-            console.log(info.fileList);
           } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
         } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
       },
@@ -333,7 +335,7 @@ class SkuModal extends Component {
                 wrapperCol={{ span: 9 }}
                 style={{ marginRight: '-20px' }}
               >
-                {getFieldDecorator('mainPic', {
+                {getFieldDecorator('skuPic', {
                   initialValue: defaultPicList,
                   valuePropName: 'fileList',
                   getValueFromEvent(e) {

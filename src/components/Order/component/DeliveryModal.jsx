@@ -131,10 +131,10 @@ class DeliveryModal extends Component {
                   label="备注"
                   {...formItemLayout}
                 >
-                  {getFieldDecorator('remarks', {
-                    initialValue: data.remarks,
+                  {getFieldDecorator('remark', {
+                    initialValue: data.remark,
                   })(
-                    <Input placeholder="请输入" />)}
+                    <Input placeholder="请输入备注" />)}
                 </FormItem>
               </Col>
             </Row>

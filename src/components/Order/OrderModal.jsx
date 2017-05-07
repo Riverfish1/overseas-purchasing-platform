@@ -31,6 +31,12 @@ class ProductsModal extends Component {
     const { form, dispatch, modalValues } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
+      if (fieldsValue.address) {
+        fieldsValue.receiverState = fieldsValue.address[0];
+        fieldsValue.receiverCity = fieldsValue.address[1];
+        fieldsValue.receiverDistrict = fieldsValue.address[2];
+        delete fieldsValue.address;
+      }
       p.getSkuValue((orderDetailList) => {
         if (modalValues && modalValues.data) {
           dispatch({
@@ -128,6 +134,10 @@ class ProductsModal extends Component {
       labelCol: { span: 11 },
       wrapperCol: { span: 13 },
     };
+    const initialAddress = [];
+    if (orderData.receiverState) initialAddress.push(orderData.receiverState);
+    if (orderData.receiverCity) initialAddress.push(orderData.receiverCity);
+    if (orderData.receiverDistrict) initialAddress.push(orderData.receiverDistrict);
 
     return (
       <Modal {...modalProps} >
@@ -211,17 +221,54 @@ class ProductsModal extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
-            <Col>
+          <Row gutter={10}>
+            <Col span={7}>
               <FormItem
                 label="外部订单号"
-                labelCol={{ span: 3 }}
-                wrapperCol={{ span: 18 }}
+                {...formItemLayout}
               >
                 {getFieldDecorator('targetNo', {
                   initialValue: orderData.targetNo,
                 })(
-                  <Input placeholder="请输入外部订单号，如有赞订单号" size="large" style={{ marginLeft: 3, width: 646 }} />,
+                  <Input placeholder="请输入外部订单号" />,
+                )}
+              </FormItem>
+            </Col>
+            <Col span={7}>
+              <FormItem
+                label="销售来源"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('platformType', {
+                  initialValue: orderData.platformType && orderData.platformType.toString(),
+                  rules: [{ required: true, message: '请选择销售来源' }],
+                })(
+                  <Select placeholder="请选择销售来源">
+                    <Option key="1">有赞</Option>
+                    <Option key="2">微信</Option>
+                    <Option key="10">其他</Option>
+                  </Select>,
+                )}
+              </FormItem>
+            </Col>
+            <Col span={7}>
+              <FormItem
+                label="支付方式"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('payType', {
+                  initialValue: orderData.payType || undefined,
+                })(
+                  <Select placeholder="请选择支付方式">
+                    <Option key="0">微信自有支付</Option>
+                    <Option key="1">微信代销支付</Option>
+                    <Option key="2">支付宝支付</Option>
+                    <Option key="3">银行卡支付</Option>
+                    <Option key="4">代付</Option>
+                    <Option key="5">货到付款</Option>
+                    <Option key="6">百度钱包支付</Option>
+                    <Option key="12">信用卡</Option>
+                  </Select>,
                 )}
               </FormItem>
             </Col>
@@ -231,13 +278,14 @@ class ProductsModal extends Component {
               <FormItem
                 label="收件人地址"
                 labelCol={{ span: 6 }}
-                wrapperCol={{ span: 17 }}
+                wrapperCol={{ span: 18 }}
               >
                 {getFieldDecorator('address', {
-                  initialValue: orderData.address && orderData.address.split(','),
+                  initialValue: initialAddress.length ? initialAddress : undefined,
                   rules: [{ required: true, message: '请选择' }],
                 })(
-                  <Cascader options={divisions} placeholder="请选择" style={{ marginLeft: 5 }} />)}
+                  <Cascader options={divisions} placeholder="请选择" style={{ marginLeft: 5 }} />,
+                )}
               </FormItem>
             </Col>
             <Col span={9}>

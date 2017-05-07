@@ -80,9 +80,17 @@ class PackageLevel extends Component {
     });
   }
 
+  handleSelectScale(value) {
+    console.log(value);
+    const { scaleList, form } = this.props;
+    scaleList.forEach((el) => {
+      if (el.id.toString() === value) form.setFieldsValue({ packageEn: el.enName });
+    });
+  }
+
   render() {
     const p = this;
-    const { form, levelList = [], levelValues = {}, scaleList = [] } = p.props;
+    const { form, levelList = [], levelValues = {}, scaleList = [], levelTotal } = p.props;
     const modalValues = levelValues.data || {};
     const { getFieldDecorator } = form;
     const { title, visible } = p.state;
@@ -96,7 +104,7 @@ class PackageLevel extends Component {
       { title: '包装规格类别英文名称', dataIndex: 'packageEn', key: 'packageEn' },
       { title: '包装级别', dataIndex: 'packageLevel', key: 'packageLevel' },
       { title: '包装规格ID', dataIndex: 'packageId', key: 'packageId' },
-      { title: '重量（g）', dataIndex: 'weight', key: 'weight' },
+      { title: '重量(kg)', dataIndex: 'weight', key: 'weight' },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
@@ -123,6 +131,16 @@ class PackageLevel extends Component {
         p.closeModal(false);
       },
     };
+    const paginationProps = {
+      total: levelTotal,
+      pageSize: 10,
+      onChange(page) {
+        p.props.dispatch({
+          type: 'pack/queryPackageLevelList',
+          payload: { pageIndex: page },
+        });
+      },
+    };
 
     return (
       <div>
@@ -139,6 +157,7 @@ class PackageLevel extends Component {
               bordered
               size="large"
               rowKey={record => record.id}
+              pagination={paginationProps}
             />
           </Col>
         </Row>
@@ -152,9 +171,20 @@ class PackageLevel extends Component {
                 initialValue: toString(modalValues.packageId, 'SELECT'),
                 rules: [{ required: true, message: '请选择包装规格类别名称' }],
               })(
-                <Select placeholder="请选择包装规格类别名称" optionLabelProp="title" >
+                <Select placeholder="请选择包装规格类别名称" onChange={this.handleSelectScale.bind(this)} optionLabelProp="title" >
                   {scaleList.map(el => <Option key={el.name} value={el.id.toString()} title={el.name}>{el.name}</Option>)}
                 </Select>,
+              )}
+            </FormItem>
+            <FormItem
+              label="包装规格类别英文名称"
+              {...formItemLayout}
+            >
+              {getFieldDecorator('packageEn', {
+                initialValue: toString(modalValues.packageEn),
+                rules: [{ required: true }],
+              })(
+                <Input placeholder="请选择包装规格类别名称" disabled={true} />,
               )}
             </FormItem>
             <FormItem
@@ -169,17 +199,6 @@ class PackageLevel extends Component {
               )}
             </FormItem>
             <FormItem
-              label="包装规格类别英文名称"
-              {...formItemLayout}
-            >
-              {getFieldDecorator('packageEn', {
-                initialValue: toString(modalValues.packageEn),
-                rules: [{ required: true, message: '请输入包装规格英文名称' }],
-              })(
-                <Input placeholder="请输入包装规格英文名称" />,
-              )}
-            </FormItem>
-            <FormItem
               label="包装级别"
               {...formItemLayout}
             >
@@ -188,16 +207,16 @@ class PackageLevel extends Component {
                 rules: [{ required: true, message: '请输入包装级别' }],
               })(
                 <Select placeholder="请输入包装级别" >
-                  <Option value="1">一级</Option>
-                  <Option value="2">二级</Option>
-                  <Option value="3">三级</Option>
-                  <Option value="4">四级</Option>
-                  <Option value="5">五级</Option>
+                  <Option key="1">一级</Option>
+                  <Option key="2">二级</Option>
+                  <Option key="3">三级</Option>
+                  <Option key="4">四级</Option>
+                  <Option key="5">五级</Option>
                 </Select>,
               )}
             </FormItem>
             <FormItem
-              label="重量（g）"
+              label="重量(kg)"
               {...formItemLayout}
             >
               {getFieldDecorator('weight', {
@@ -215,11 +234,12 @@ class PackageLevel extends Component {
 }
 
 function mapStateToProps(state) {
-  const { levelList, levelValues, scaleList } = state.pack;
+  const { levelList, levelValues, scaleList, levelTotal } = state.pack;
   return {
     levelValues,
     levelList,
     scaleList,
+    levelTotal,
   };
 }
 

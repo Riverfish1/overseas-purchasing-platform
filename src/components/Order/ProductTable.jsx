@@ -230,15 +230,15 @@ class ProductTable extends Component {
       };
 
       const columns = [
-        { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 90 },
-        { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 120 },
-        { title: '品牌', dataIndex: 'brand', key: 'brand', width: 90 },
-        { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 90, render(text) { return text || '-'; } },
-        { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 60, render(text) { return text || '-'; } },
+        { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: '9%' },
+        { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: '14%' },
+        { title: '品牌', dataIndex: 'brand', key: 'brand', width: '12%' },
+        { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: '8%', render(text) { return text || '-'; } },
+        { title: '尺寸', dataIndex: 'scale', key: 'scale', width: '10%', render(text) { return text || '-'; } },
         { title: '图片',
           dataIndex: 'skuPic',
           key: 'skuPic',
-          width: 80,
+          width: '14%',
           render(text) { // 需要解决返回的skuPic的格式的问题
             let imgUrl = '';
             try {
@@ -255,10 +255,10 @@ class ProductTable extends Component {
             }
           },
         },
-        { title: '颜色', dataIndex: 'color', key: 'color', width: 80, render(text) { return text || '-'; } },
-        { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', width: 70, render(text) { return text || '-'; } },
-        { title: '重量（kg）', dataIndex: 'weight', key: 'weight', width: 70, render(text) { return text || '-'; } },
-        { title: '操作', dataIndex: 'oper', key: 'oper', width: 50, fixed: 'right', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
+        { title: '颜色', dataIndex: 'color', key: 'color', width: '8%', render(text) { return text || '-'; } },
+        { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', width: '8%', render(text) { return text || '-'; } },
+        { title: '重量(kg)', dataIndex: 'weight', key: 'weight', width: '8%', render(text) { return text || '-'; } },
+        { title: '操作', dataIndex: 'oper', key: 'oper', width: '8%', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
       ];
 
       return (
@@ -301,7 +301,7 @@ class ProductTable extends Component {
               bordered
               rowKey={record => record.id}
               pagination={paginationProps}
-              scroll={{ y: 500 }}
+              scroll={{ x: '100%', y: 500 }}
             />
           </Row>
         </div>

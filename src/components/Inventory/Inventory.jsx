@@ -26,7 +26,7 @@ class Inventory extends Component {
       wrapperCol: { span: 14 },
     };
     const columns = [
-      { title: '商品sku', key: 'skuCode', dataIndex: 'skuCode' },
+      { title: 'sku代码', key: 'skuCode', dataIndex: 'skuCode' },
       { title: '商品名称', key: 'itemName', dataIndex: 'itemName' },
       { title: '商品图片', key: 'skuPic', dataIndex: 'skuPic' },
       { title: '仓库名称', key: 'warehouseName', dataIndex: 'warehouseName' },
@@ -47,21 +47,41 @@ class Inventory extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
-                label="商品ID"
+                label="仓库名称"
                 {...formItemLayout}
               >
-                {getFieldDecorator('itemId', {})(
-                  <Input placeholder="请输入商品ID" />,
+                {getFieldDecorator('warehouseName', {})(
+                  <Input placeholder="请输入仓库名称" />,
                 )}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
-                label="skuId"
+                label="sku代码"
                 {...formItemLayout}
               >
-                {getFieldDecorator('skuId', {})(
-                  <Input placeholder="请输入skuId" />,
+                {getFieldDecorator('skuCode', {})(
+                  <Input placeholder="请输入sku代码" />,
+                )}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="upc"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('upc', {})(
+                  <Input placeholder="请输入upc" />,
+                )}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="商品名称"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('itemName', {})(
+                  <Input placeholder="请输入商品名称" />,
                 )}
               </FormItem>
             </Col>

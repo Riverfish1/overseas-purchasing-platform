@@ -111,8 +111,8 @@ class Order extends Component {
       wrapperCol: { span: 14 },
     };
     const columnsList = [
-      { title: '订单编号', dataIndex: 'orderNo', key: 'orderNo' },
-      { title: '交易订单号', dataIndex: 'targetNo', key: 'targetNo', render(text) { return text || '-'; } },
+      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo' },
+      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', render(text) { return text || '-'; } },
       { title: '客户', dataIndex: 'salesName', key: 'salesName', render(text) { return text || '-'; } },
       { title: '订单时间', dataIndex: 'orderTime', key: 'orderTime', render(text) { return text || '-'; } },
       { title: '订单状态',
@@ -120,9 +120,9 @@ class Order extends Component {
         key: 'status',
         render(text) {
           switch (text) {
-            case 0: return '待审核';
-            case 1: return '审核通过';
-            case 2: return '未通过';
+            case 0: return '新建';
+            case 1: return '已确定';
+            case -1: return '已关闭';
             default: return '-';
           }
         },
@@ -131,8 +131,8 @@ class Order extends Component {
       { title: '收件人地址',
         dataIndex: 'address',
         key: 'address',
-        render(text, record) {
-          return <span>{text ? `${text} ${record.addressDetail}` : '-'}</span>;
+        render(t, r) {
+          return <span>{`${r.receiverState} ${r.receiverCity} ${r.receiverDistrict} ${r.addressDetail}`}</span>;
         },
       },
       { title: '联系电话', dataIndex: 'telephone', key: 'telephone' },
@@ -255,20 +255,20 @@ class Order extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
-                label="客户"
+                label="主订单号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('salesName', {})(
-                  <Input placeholder="请输入客户名称" />)}
+                {getFieldDecorator('orderNo', {})(
+                  <Input placeholder="请输入主订单号" />)}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
-                label="交易订单号"
+                label="外部订单号"
                 {...formItemLayout}
               >
                 {getFieldDecorator('targetNo', {})(
-                  <Input placeholder="请输入交易订单号" />)}
+                  <Input placeholder="请输入外部订单号" />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -282,8 +282,8 @@ class Order extends Component {
                   <Select placeholder="请选择订单状态">
                     <Option value="10">全部</Option>
                     <Option value="0">新建</Option>
-                    <Option value="1">订单通过</Option>
-                    <Option value="-1">订单关闭</Option>
+                    <Option value="1">已确定</Option>
+                    <Option value="-1">已关闭</Option>
                   </Select>,
                 )}
               </FormItem>
@@ -310,11 +310,11 @@ class Order extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="订单号"
+                label="客户"
                 {...formItemLayout}
               >
-                {getFieldDecorator('orderNo', {})(
-                  <Input placeholder="请输入订单号" />)}
+                {getFieldDecorator('salesName', {})(
+                  <Input placeholder="请输入客户名称" />)}
               </FormItem>
             </Col>
           </Row>

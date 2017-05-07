@@ -104,6 +104,17 @@ class Products extends Component {
     });
   }
 
+  handleBrandBlur(value) {
+    const { brands, form } = this.props;
+    const data = brands.filter(brand => value === brand.name);
+    if (!data.length) form.setFieldsValue({ brand: undefined });
+  }
+
+  chooseCate(rules, value, cb) {
+    if (value !== 3) cb('只能选择最后一级类目');
+    cb();
+  }
+
   render() {
     const p = this;
     const { form, currentPage, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
@@ -248,7 +259,9 @@ class Products extends Component {
                 label="商品类目"
                 {...formItemLayout}
               >
-                {getFieldDecorator('categoryId', {})(
+                {getFieldDecorator('categoryId', {
+                  rules: [{ validator: this.chooseCate.bind(this) }],
+                })(
                   <TreeSelect placeholder="请选择类目" treeData={tree} />)}
               </FormItem>
             </Col>
@@ -260,7 +273,7 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {})(
-                  <Select placeholder="请选择品牌">
+                  <Select placeholder="请选择品牌" onBlur={this.handleBrandBlur.bind(this)} combobox>
                     {brands && brands.map(item => <Option key={item.name}>{item.name}</Option>)}
                   </Select>)}
               </FormItem>

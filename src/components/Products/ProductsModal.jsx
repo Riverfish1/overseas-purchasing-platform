@@ -149,12 +149,16 @@ class ProductsModal extends Component {
     } else callback();
   }
 
-  // queryItemSkus(param) {
-  //   const { modalValues = {} } = this.props;
-  //   modalValues.data && modalValues.data.itemSkus.map(item => {
-  //     return item[param];
-  //   });
-  // }
+  handleBrandBlur(value) {
+    const { brands, form } = this.props;
+    const data = brands.filter(brand => value === brand.name);
+    if (!data.length) form.setFieldsValue({ brand: undefined });
+  }
+
+  chooseCate(rules, value, cb) {
+    if (value !== 3) cb('只能选择最后一级类目');
+    cb();
+  }
 
   render() {
     const p = this;
@@ -305,7 +309,7 @@ class ProductsModal extends Component {
                   >
                     {getFieldDecorator('categoryId', {
                       initialValue: toString(productData.categoryId, 'SELECT'),
-                      rules: [{ required: true, message: '请选择所属类目' }],
+                      rules: [{ validator: this.chooseCate.bind(this) }],
                     })(
                       <TreeSelect placeholder="请选择所属类目" treeData={tree} />,
                     )}
@@ -320,7 +324,7 @@ class ProductsModal extends Component {
                       initialValue: toString(productData.brand, 'SELECT'),
                       rules: [{ required: true, message: '请输入品牌' }],
                     })(
-                      <Select placeholder="请输入品牌">
+                      <Select placeholder="请输入品牌" onBlur={this.handleBrandBlur.bind(this)} combobox>
                         {brands && brands.map(item => <Option key={item.id.toString()} value={item.name}>{item.name}</Option>)}
                       </Select>,
                     )}

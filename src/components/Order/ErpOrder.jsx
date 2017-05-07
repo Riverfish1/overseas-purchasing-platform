@@ -93,11 +93,12 @@ class ErpOrder extends Component {
       },
     };
     const columns = [
+      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: '7%' },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: '8%' },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: '8%' },
-      { title: 'upc码', dataIndex: 'upc', key: 'upc', width: '8%' },
-      { title: 'sku条码', dataIndex: 'skuCode', key: 'skuCode', width: '8%' },
-      { title: '交易订单号', dataIndex: 'targetNo', key: 'targetNo', width: '8%', render(text) { return text || '-'; } },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: '6%' },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: '8%' },
+      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: '6%', render(text) { return text || '-'; } },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
@@ -132,17 +133,18 @@ class ErpOrder extends Component {
         dataIndex: 'address',
         key: 'address',
         width: '8%',
-        render(text, record) {
-          return <span>{text ? `${text} ${record.addressDetail}` : '-'}</span>;
+        render(text, r) {
+          return <span>{`${r.receiverState} ${r.receiverCity} ${r.receiverDistrict} ${r.addressDetail}`}</span>;
         },
       },
       { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: '8%' },
+      { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: '8%' },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: '8%' },
-      { title: '备注', dataIndex: 'remarks', key: 'remarks', width: '8%', render(text) { return text || '-'; } },
+      { title: '备注', dataIndex: 'remarks', key: 'remarks', width: '4%', render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
-        width: 200,
+        width: '4%',
         render(t, r) {
           return (
             <div>
@@ -163,6 +165,37 @@ class ErpOrder extends Component {
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
+          <Row gutter={20} style={{ width: 800 }}>
+            <Col span="8">
+              <FormItem
+                label="主订单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('orderNo', {})(
+                  <Input placeholder="请输入" />,
+                )}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="子订单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('erpNo', {})(
+                  <Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="外部订单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('targetNo', {})(
+                  <Input placeholder="请输入" />,
+                )}
+              </FormItem>
+            </Col>
+          </Row>
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
@@ -196,37 +229,7 @@ class ErpOrder extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="交易订单号"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('targetNo', {})(
-                  <Input placeholder="请输入" />,
-                )}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={20} style={{ width: 800 }}>
-            <Col span="8">
-              <FormItem
-                label="子订单号"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('erpNo', {})(
-                  <Input placeholder="请输入" />)}
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem
-                label="upc码"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('upc', {})(
-                  <Input placeholder="请输入" />)}
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem
-                label="商品skuCode"
+                label="SKU代码"
                 {...formItemLayout}
               >
                 {getFieldDecorator('skuCode', {})(
@@ -241,6 +244,15 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemName', {})(
+                  <Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="UPC"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('upc', {})(
                   <Input placeholder="请输入" />)}
               </FormItem>
             </Col>
@@ -271,7 +283,7 @@ class ErpOrder extends Component {
           </Row>
         </Modal>
         <DeliveryModal visible={deliveryModalVisible} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} />
-        <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} bordered />
+        <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} scroll={{ x: 1000 }} bordered />
       </div>
     );
   }

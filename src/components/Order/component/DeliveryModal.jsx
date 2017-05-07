@@ -9,6 +9,12 @@ class DeliveryModal extends Component {
     const { form, dispatch, ids } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
+      if (values.address) {
+        values.receiverState = values.address[0];
+        values.receiverCity = values.address[1];
+        values.receiverDistrict = values.address[2];
+        delete values.address;
+      }
       console.log(values);
       values.erpOrderId = JSON.stringify(ids);
       dispatch({
@@ -43,6 +49,11 @@ class DeliveryModal extends Component {
       { title: '数量', dataIndex: 'quantity', key: 'quantity' },
       { title: '仓库', dataIndex: 'warehouseName', key: 'warehouseName' },
     ];
+
+    const initialAddress = [];
+    initialAddress.push(data.receiverState);
+    initialAddress.push(data.receiverCity);
+    initialAddress.push(data.receiverDistrict);
 
     return (
       <div>
@@ -81,7 +92,7 @@ class DeliveryModal extends Component {
                   {...formItemLayout}
                 >
                   {getFieldDecorator('address', {
-                    initialValue: data.address,
+                    initialValue: initialAddress,
                     rules: [{ required: true, message: '请输入收件地址' }],
                   })(
                     <Input placeholder="请输入收件地址" />)}

@@ -35,7 +35,8 @@ class Inventory extends Component {
       { title: '虚拟库存', key: 'virtualInv', dataIndex: 'virtualInv' },
       { title: '在途库存', key: 'transInv', dataIndex: 'transInv' },
       { title: '可售库存', key: 'availableInv', dataIndex: 'availableInv' },
-      { title: '锁定库存', key: 'lockedInv', dataIndex: 'lockedInv' },
+      { title: '占用库存', key: 'lockedInv', dataIndex: 'lockedInv' },
+      { title: '货架号', key: 'positionNo', dataIndex: 'positionNo' },
     ];
     const paginationProps = {
       total,

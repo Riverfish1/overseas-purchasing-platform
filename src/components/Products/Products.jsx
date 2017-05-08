@@ -45,11 +45,6 @@ class Products extends Component {
     });
   }
 
-  handleEmpty() {
-    const { resetFields } = this.props.form;
-    resetFields();
-  }
-
   updateModal(id) {
     const p = this;
     console.log(id);
@@ -110,15 +105,32 @@ class Products extends Component {
     if (!data.length) form.setFieldsValue({ brand: undefined });
   }
 
+  interator(arr, value) {
+    const p = this;
+    let data = '';
+    arr.forEach((el) => {
+      console.log(el.id.toString(), value);
+      if (el.id.toString() === value) data = el;
+      else if (el.children.length) p.interator(el.children, value);
+    });
+    console.log(data);
+    if (data) return data;
+    return false;
+  }
+
   chooseCate(rules, value, cb) {
-    if (value !== 3) cb('只能选择最后一级类目');
+    // const { tree } = this.props;
+    // console.log(value);
+    // const data = this.interator(tree, value);
+    // console.log(data);
+    // if (data.level !== 3) cb('只能选择最后一级类目');
     cb();
   }
 
   render() {
     const p = this;
     const { form, currentPage, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
-    const { getFieldDecorator } = form;
+    const { getFieldDecorator, resetFields } = form;
     const { previewImage, previewVisible, isNotSelected } = this.state;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -293,7 +305,7 @@ class Products extends Component {
           <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">
               <Button htmlType="submit" size="large" type="primary">查询</Button>
-              <Button size="large" type="ghost" onClick={this.handleEmpty.bind(this)}>清空</Button>
+              <Button size="large" type="ghost" onClick={() => resetFields()}>清空</Button>
             </Col>
           </Row>
         </Form>

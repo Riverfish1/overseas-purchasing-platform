@@ -156,7 +156,7 @@ class ProductsModal extends Component {
   }
 
   chooseCate(rules, value, cb) {
-    if (value !== 3) cb('只能选择最后一级类目');
+    // if (value !== 3) cb('只能选择最后一级类目');
     cb();
   }
 

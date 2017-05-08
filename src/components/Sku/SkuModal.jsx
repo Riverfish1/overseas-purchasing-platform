@@ -129,6 +129,7 @@ class SkuModal extends Component {
     const list = proSearchList.data || productsList;
     // 获取初始化的图片列表
     let defaultPicList = [];
+    console.log(skuModalData);
     if (skuModalData.skuPic) {
       const picObj = JSON.parse(skuModalData.skuPic);
       defaultPicList = picObj.picList || [];

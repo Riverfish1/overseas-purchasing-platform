@@ -138,7 +138,7 @@ class Sku extends Component {
             <div>
               虚拟：{r.virtualInv}<br />
               可用：{r.availableInv}<br />
-              锁定：{r.lockedInv}<br />
+              占用：{r.lockedInv}<br />
               实际：{r.inventory}<br />
               在途：{r.transInv}
             </div>

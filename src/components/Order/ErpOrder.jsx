@@ -93,16 +93,16 @@ class ErpOrder extends Component {
       },
     };
     const columns = [
-      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: '7%' },
-      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: '8%' },
-      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: '8%' },
-      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: '6%' },
-      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: '8%' },
-      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: '6%', render(text) { return text || '-'; } },
+      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 100 },
+      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 150 },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150 },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 100 },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 100 },
+      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
-        width: '6%',
+        width: 50,
         render(text) {
           switch (text) {
             case 0: return '未发货';
@@ -116,7 +116,7 @@ class ErpOrder extends Component {
         title: '备货状态',
         dataIndex: 'stockStatus',
         key: 'stockStatus',
-        width: '6%',
+        width: 80,
         render(text) {
           switch (text) {
             case 0: return '未备货';
@@ -128,23 +128,23 @@ class ErpOrder extends Component {
           }
         },
       },
-      { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: '6%' },
+      { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 50 },
       { title: '收件人地址',
         dataIndex: 'address',
         key: 'address',
-        width: '8%',
+        width: 200,
         render(text, r) {
-          return <span>{`${r.receiverState} ${r.receiverCity} ${r.receiverDistrict} ${r.addressDetail}`}</span>;
+          return <span>{r.receiverState ? `${r.receiverState} ${r.receiverCity} ${r.receiverDistrict} ${r.addressDetail}` : '-'}</span>;
         },
       },
-      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: '8%' },
-      { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: '8%' },
-      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: '8%' },
-      { title: '备注', dataIndex: 'remarks', key: 'remarks', width: '4%', render(text) { return text || '-'; } },
+      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 150 },
+      { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: 220 },
+      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
+      { title: '备注', dataIndex: 'remarks', key: 'remarks', width: 100, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
-        width: '4%',
+        width: 100,
         render(t, r) {
           return (
             <div>
@@ -283,7 +283,7 @@ class ErpOrder extends Component {
           </Row>
         </Modal>
         <DeliveryModal visible={deliveryModalVisible} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} />
-        <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} scroll={{ x: 1000 }} bordered />
+        <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} scroll={{ x: '130%' }} bordered />
       </div>
     );
   }

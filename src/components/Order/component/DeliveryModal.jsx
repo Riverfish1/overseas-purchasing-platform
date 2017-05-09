@@ -4,9 +4,9 @@ import { Form, Input, Modal, Row, Col, Alert, Table } from 'antd';
 const FormItem = Form.Item;
 
 class DeliveryModal extends Component {
-  multiDelivery() {
+  handleSubmit() {
     const p = this;
-    const { form, dispatch, ids } = this.props;
+    const { form, dispatch, ids, type } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
       if (values.address) {
@@ -16,14 +16,29 @@ class DeliveryModal extends Component {
         delete values.address;
       }
       console.log(values);
-      values.erpOrderId = JSON.stringify(ids);
-      dispatch({
-        type: 'order/multiDelivery',
-        payload: { ...values },
-        callback() {
-          p.handleCancel();
-        },
-      });
+      switch (type) {
+        case 'add':
+          values.erpOrderId = JSON.stringify(ids);
+          dispatch({
+            type: 'order/multiDelivery',
+            payload: { ...values },
+            callback() {
+              p.handleCancel();
+            },
+          });
+          break;
+        case 'update':
+          values.id = ids;
+          dispatch({
+            type: 'order/updateShippingOrder',
+            payload: { ...values },
+            callback() {
+              p.handleCancel();
+            },
+          });
+          break;
+        default: return false;
+      }
     });
   }
   handleCancel() {
@@ -60,7 +75,7 @@ class DeliveryModal extends Component {
         <Modal
           visible={visible}
           title="批量发货"
-          onOk={p.multiDelivery.bind(p)}
+          onOk={p.handleSubmit.bind(p)}
           onCancel={p.handleCancel.bind(p)}
           width={900}
         >

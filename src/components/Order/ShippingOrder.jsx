@@ -2,11 +2,22 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Form, Table, Row, Col, Input, Select, Button } from 'antd';
 
+import DeliveryModal from './component/DeliveryModal';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 
 class ShippingOrder extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+      checkId: [],
+      erpOrderDetail: {},
+      type: 'update',
+    };
+  }
   handleSubmit(e) {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -17,10 +28,21 @@ class ShippingOrder extends Component {
       });
     });
   }
+  updateModal(r) { // 修改发货单
+    this.setState({ visible: true, erpOrderDetail: r, checkId: r.id });
+  }
+  closeDeliveryModal() {
+    this.props.dispatch({
+      type: 'order/saveErpOrderDetail',
+      payload: {},
+    });
+    this.setState({ visible: false });
+  }
   render() {
     const p = this;
-    const { shippingOrderList, form } = p.props;
+    const { shippingOrderList, form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
+    const { visible, checkId, erpOrderDetail, type } = p.state;
 
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -45,6 +67,17 @@ class ShippingOrder extends Component {
       },
       { title: '收件人', dataIndex: 'receiver', key: 'receiver', render(text) { return text || '-'; } },
       { title: '联系电话', dataIndex: 'telephone', key: 'telephone', render(text) { return text || '-'; } },
+      { title: '操作',
+        dataIndex: 'operator',
+        key: 'operator',
+        width: 200,
+        render(text, record) {
+          return (
+            <div>
+              <a href="javascript:void(0)" onClick={p.updateModal.bind(p, record)}>修改</a>
+            </div>);
+        },
+      },
     ];
     return (
       <div>
@@ -124,6 +157,7 @@ class ShippingOrder extends Component {
         <Row style={{ marginTop: 20 }}>
           <Table columns={columns} dataSource={shippingOrderList} rowKey={r => r.id} bordered />
         </Row>
+        <DeliveryModal visible={visible} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
       </div>
     );
   }

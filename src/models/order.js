@@ -17,6 +17,7 @@ const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/split', { data
 const multiDelivery = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDelivery', { data: payload }).catch(e => e);
 // 发货单查询
 const queryShippingOrderList = ({ payload }) => fetch.post('/haierp1/shippingOrder/query', { data: payload }).catch(e => e);
+const updateShippingOrder = ({ payload }) => fetch.post('/haierp1/shippingOrder/update', { data: payload }).catch(e => e);
 // 发货单详情表单查询
 const queryShippingOrderDetail = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDeliveryForm', { data: payload }).catch(e => e);
 
@@ -193,6 +194,17 @@ export default {
         });
       }
     },
+    * updateShippingOrder({ payload, callback }, { call, put }) {
+      const data = yield call(updateShippingOrder, { payload });
+      if (data.success) {
+        message.success('修改发货单完成');
+        if (callback) callback();
+        yield put({
+          type: 'queryShippingOrderList',
+          payload: {},
+        });
+      }
+    },
     * querySalesName({ payload }, { call, put }) {
       const data = yield call(querySalesName, { payload });
       if (data.success) {
@@ -233,7 +245,6 @@ export default {
       const data = yield call(multiDelivery, { payload });
       if (data.success) {
         message.success('批量发货完成');
-        console.log(location); // 这里要跳转页面
         if (callback) callback();
         yield put({
           type: 'queryShippingOrderList',

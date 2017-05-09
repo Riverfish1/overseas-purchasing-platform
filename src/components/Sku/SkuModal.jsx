@@ -129,9 +129,8 @@ class SkuModal extends Component {
     const list = proSearchList.data || productsList;
     // 获取初始化的图片列表
     let defaultPicList = [];
-    console.log(skuModalData);
     if (skuModalData.skuPic) {
-      const picObj = JSON.parse(skuModalData.skuPic);
+      const picObj = JSON.parse(skuModalData.skuPic.replace('&quot;'));
       defaultPicList = picObj.picList || [];
     }
     // 操作加号
@@ -147,12 +146,8 @@ class SkuModal extends Component {
       title: skuModalData.skuCode ? '修改' : '添加',
       maskClosable: false,
       closable: true,
-      onOk() {
-        p.handleSubmit();
-      },
-      onCancel() {
-        p.closeModal();
-      },
+      onOk() { p.handleSubmit(); },
+      onCancel() { p.closeModal(); },
     };
     const formItemLayout = {
       labelCol: { span: 11 },

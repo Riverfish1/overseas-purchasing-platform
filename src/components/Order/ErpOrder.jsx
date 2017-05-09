@@ -17,6 +17,7 @@ class ErpOrder extends Component {
       visible: false,
       needSplitId: '',
       deliveryModalVisible: false,
+      type: 'add', // 发货的判断
     };
   }
   handleSubmit(e) {
@@ -75,7 +76,7 @@ class ErpOrder extends Component {
     const p = this;
     const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { isNotSelected, visible, deliveryModalVisible, checkId } = p.state;
+    const { isNotSelected, visible, deliveryModalVisible, checkId, type } = p.state;
 
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -282,7 +283,7 @@ class ErpOrder extends Component {
             </Col>
           </Row>
         </Modal>
-        <DeliveryModal visible={deliveryModalVisible} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} />
+        <DeliveryModal visible={deliveryModalVisible} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
         <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} scroll={{ x: '130%' }} bordered />
       </div>
     );

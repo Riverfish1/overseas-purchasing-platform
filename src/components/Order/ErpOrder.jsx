@@ -141,7 +141,7 @@ class ErpOrder extends Component {
       { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 150 },
       { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: 220 },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
-      { title: '备注', dataIndex: 'remarks', key: 'remarks', width: 100, render(text) { return text || '-'; } },
+      { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',

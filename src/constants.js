@@ -71,13 +71,13 @@ export const navigation = [
   { key: routerCfg.PURCHASE, name: '采购管理', icon: 'appstore-o',
     child: [
       { key: routerCfg.PURCHASE_LIST, name: '采购管理' },
-      // { key: routerCfg.CHECK,
-      //   name: '盘点管理',
-      //   child: [
-      //     { key: routerCfg.JOURNAL, name: '流水管理' },
-      //     { key: routerCfg.RECEIPT, name: '小票管理' },
-      //   ],
-      // },
+      { key: routerCfg.CHECK,
+        name: '盘点管理',
+        child: [
+          { key: routerCfg.JOURNAL, name: '流水管理' },
+          { key: routerCfg.RECEIPT, name: '小票管理' },
+        ],
+      },
       { key: routerCfg.PURCHASE_STORAGE, name: '采购入库管理' },
     ],
   },

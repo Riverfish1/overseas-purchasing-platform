@@ -4,6 +4,7 @@ import { Modal, message, Input, Upload, Row, Col, Select, DatePicker, Form, Icon
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
+import check from '../../utils/checkLib';
 import SkuTable from './SkuTable';
 import styles from './Products.less';
 
@@ -139,14 +140,32 @@ class ProductsModal extends Component {
     this.setState({ previewVisible: false });
   }
 
-  checkImg(rules, values, callback) {
-    callback();
+  checkImg(rules, values, cb) {
+    cb();
   }
 
-  checkMainPicNum(rules, value, callback) {
+  checkTel(rules, value, cb) {
+    if (!check.phone(value)) cb('请输入正确的手机号码');
+    cb();
+  }
+
+  checkEndDate(rules, value, cb) {
+    const { getFieldValue } = this.props.form;
+    if (!getFieldValue('startDate')) cb('请先填写开始时间');
+    cb();
+  }
+
+  disabledEndDate(endDate) {
+    const { getFieldValue } = this.props.form;
+    const startDate = getFieldValue('startDate');
+    if (!startDate) return false;
+    return endDate < startDate;
+  }
+
+  checkMainPicNum(rules, value, cb) {
     if (this.props.form.getFieldValue('mainPic').length > 0 && !value) {
-      callback(new Error('请选择主图'));
-    } else callback();
+      cb(new Error('请选择主图'));
+    } else cb();
   }
 
   handleBrandBlur(value) {
@@ -377,7 +396,7 @@ class ProductsModal extends Component {
                     })(
                       <Select placeholder="请选择是否身份证">
                         <Option value="1">是</Option>
-                        <Option value="2">否</Option>
+                        <Option value="0">否</Option>
                       </Select>,
                     )}
                   </FormItem>
@@ -403,8 +422,9 @@ class ProductsModal extends Component {
                   >
                     {getFieldDecorator('endDate', {
                       initialValue: (productData.endDateStr && moment(modalValues.data.endDateStr, 'YYYY-MM-DD')) || undefined,
+                      rules: [{ validator: this.checkEndDate.bind(this) }],
                     })(
-                      <DatePicker format="YYYY-MM-DD" />,
+                      <DatePicker format="YYYY-MM-DD" disabledDate={this.disabledEndDate.bind(this)} />,
                     )}
                   </FormItem>
                 </Col>
@@ -456,7 +476,7 @@ class ProductsModal extends Component {
                   >
                     {getFieldDecorator('contactTel', {
                       initialValue: toString(productData.contactTel),
-                      rules: [{ message: '请输入联系电话' }],
+                      rules: [{ validator: this.checkTel.bind(this) }],
                     })(
                       <Input placeholder="请输入联系电话" />,
                     )}

@@ -16,8 +16,8 @@ import ErpOrder from './components/Order/ErpOrder';
 import ShippingOrder from './components/Order/ShippingOrder';
 import Purchase from './components/Purchase/Purchase'; // 采购管理
 import PurchaseStorage from './components/Purchase/PurchaseStorage'; // 采购入库管理
-// import Journal from './components/Check/Journal'; // 流水管理
-// import Receipt from './components/Check/Receipt'; // 小票管理
+import Journal from './components/Check/Journal'; // 流水管理
+import Receipt from './components/Check/Receipt'; // 小票管理
 import Agency from './components/Agency/Agency';
 import AgencyType from './components/Agency/AgencyType';
 import Inventory from './components/Inventory/Inventory';
@@ -66,8 +66,8 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.SALE}/${routerCfg.SHIPPING_ORDER}`} component={ShippingOrder} />
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} component={Purchase} />
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_STORAGE}`} component={PurchaseStorage} />
-        {/* <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.JOURNAL}`} component={Journal} /> */}
-        {/* <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.RECEIPT}`} component={Receipt} /> */}
+        <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.JOURNAL}`} component={Journal} />
+        <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.RECEIPT}`} component={Receipt} />
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_LIST}`} component={Agency} />
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_TYPE}`} component={AgencyType} />
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} component={Inventory} />
@@ -79,6 +79,8 @@ function RouterConfig({ history }) {
         <Redirect from={`/${routerCfg.PURCHASE}`} to={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} />
         <Redirect from={`/${routerCfg.PERSON}`} to={`/${routerCfg.PERSON}/${routerCfg.AGENCY_LIST}`} />
         <Redirect from={`/${routerCfg.INVENTORY}`} to={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} />
+        {/* 二级导航重定向 */}
+        <Redirect from={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}`} to={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.JOURNAL}`} />
       </Route>
     </Router>
   );

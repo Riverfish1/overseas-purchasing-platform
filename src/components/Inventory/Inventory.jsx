@@ -26,11 +26,11 @@ class Inventory extends Component {
       wrapperCol: { span: 14 },
     };
     const columns = [
-      { title: 'sku代码', key: 'skuCode', dataIndex: 'skuCode' },
+      { title: 'SKU代码', key: 'skuCode', dataIndex: 'skuCode' },
       { title: '商品名称', key: 'itemName', dataIndex: 'itemName' },
       { title: '商品图片', key: 'skuPic', dataIndex: 'skuPic' },
       { title: '仓库名称', key: 'warehouseName', dataIndex: 'warehouseName' },
-      { title: 'upc', key: 'upc', dataIndex: 'upc' },
+      { title: 'UPC', key: 'upc', dataIndex: 'upc' },
       { title: '实际库存', key: 'inventory', dataIndex: 'inventory' },
       { title: '虚拟库存', key: 'virtualInv', dataIndex: 'virtualInv' },
       { title: '在途库存', key: 'transInv', dataIndex: 'transInv' },
@@ -41,6 +41,12 @@ class Inventory extends Component {
     const paginationProps = {
       total,
       pageSize: 10,
+      onChange(page) {
+        p.props.dispatch({
+          type: 'inventory/queryList',
+          payload: { pageIndex: page },
+        });
+      },
     };
     return (
       <div>
@@ -58,21 +64,21 @@ class Inventory extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="sku代码"
+                label="SKU代码"
                 {...formItemLayout}
               >
                 {getFieldDecorator('skuCode', {})(
-                  <Input placeholder="请输入sku代码" />,
+                  <Input placeholder="请输入SKU代码" />,
                 )}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
-                label="upc"
+                label="UPC"
                 {...formItemLayout}
               >
                 {getFieldDecorator('upc', {})(
-                  <Input placeholder="请输入upc" />,
+                  <Input placeholder="请输入UPC" />,
                 )}
               </FormItem>
             </Col>

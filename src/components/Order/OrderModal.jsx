@@ -305,8 +305,8 @@ class ProductsModal extends Component {
                 labelCol={{ span: 3 }}
                 wrapperCol={{ span: 18 }}
               >
-                {getFieldDecorator('remarks', {
-                  initialValue: orderData.remarks,
+                {getFieldDecorator('remark', {
+                  initialValue: orderData.remark,
                 })(
                   <Input placeholder="请输入备注信息" size="large" style={{ marginLeft: 3, width: 646 }} />)}
               </FormItem>

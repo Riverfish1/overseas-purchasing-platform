@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Form, Table, Row, Col, Button, Modal, Input, Popconfirm, DatePicker, Select } from 'antd';
+import { Form, Table, Row, Col, Button, Modal, Input, Popconfirm, Select } from 'antd';
 import { connect } from 'dva';
-import moment from 'moment';
+
+import check from '../../utils/checkLib';
 import isNull from '../../utils/isNull';
 
 const FormItem = Form.Item;
@@ -44,28 +45,52 @@ class Resource extends Component {
   handleDelete(r) {
     this.props.dispatch({ type: 'permission/deleteUser', payload: { id: r.id } });
   }
+  checkPhone(rules, value, cb) {
+    if (!check.phone(value)) cb('请输入正确的手机号码');
+    cb();
+  }
   render() {
     const p = this;
-    const { userList = [], total, form, userModal = {} } = this.props;
+    const { userList = [], total, form, userModal = {}, orgList = [], roleList = [] } = this.props;
     const { visible, title } = this.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 14 },
     };
+    const _roleIds = [];
+    if (userModal.rolesList) {
+      userModal.rolesList.forEach((el) => {
+        if (el && el.id) _roleIds.push(el.id.toString());
+      });
+    }
     const columns = [
       { title: '登录名', key: 'loginName', dataIndex: 'loginName' },
       { title: '姓名', key: 'name', dataIndex: 'name' },
       { title: '所属部门', key: 'organizationName', dataIndex: 'organizationName' },
       { title: '创建时间', key: 'createTime', dataIndex: 'createTime' },
-      { title: '性别', key: 'sex', dataIndex: 'sex' },
+      { title: '性别',
+        key: 'sex',
+        dataIndex: 'sex',
+        render(t) {
+          if (t === 1) return '男';
+          return '女';
+        },
+      },
       { title: '年龄', key: 'age', dataIndex: 'age' },
       { title: '手机号', key: 'phone', dataIndex: 'phone' },
       { title: '角色',
-        key: 'roleList',
-        dataIndex: 'roleList',
+        key: 'rolesList',
+        dataIndex: 'rolesList',
         render(t) {
-          return t && t[0] && t[0].name;
+          const role = [];
+          if (t && t[0]) {
+            t.forEach((el) => {
+              role.push(el.name);
+            });
+          }
+          console.log(role);
+          return role.join(', ');
         },
       },
       { title: '用户类型',
@@ -129,16 +154,6 @@ class Resource extends Component {
           <Form>
             <Row>
               <Col span={12}>
-                <FormItem label="用户名" {...formItemLayout}>
-                  {getFieldDecorator('name', {
-                    rules: [{ required: true, message: '请输入用户名' }],
-                    initialValue: userModal.name,
-                  })(
-                    <Input placeholder="请输入用户名" />,
-                  )}
-                </FormItem>
-              </Col>
-              <Col span={12}>
                 <FormItem label="登录名" {...formItemLayout}>
                   {getFieldDecorator('loginName', {
                     rules: [{ required: true, message: '请输入登录名' }],
@@ -149,19 +164,39 @@ class Resource extends Component {
                 </FormItem>
               </Col>
               <Col span={12}>
+                <FormItem label="姓名" {...formItemLayout}>
+                  {getFieldDecorator('name', {
+                    rules: [{ required: true, message: '请输入姓名' }],
+                    initialValue: userModal.name,
+                  })(
+                    <Input placeholder="请输入姓名" />,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label="密码" {...formItemLayout}>
+                  {getFieldDecorator('password', {
+                    rules: [{ required: true, message: '请输入密码' }],
+                    initialValue: userModal.password,
+                  })(
+                    <Input type="password" placeholder="请输入密码" />,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
                 <FormItem label="性别" {...formItemLayout}>
                   {getFieldDecorator('sex', {
                     rules: [{ required: true, message: '请选择性别' }],
-                    initialValue: !isNull(userModal.sex) ? userModal.sex.toString() : '1',
+                    initialValue: !isNull(userModal.sex) ? userModal.sex.toString() : undefined,
                   })(
                     <Select placeholder="请选择性别">
                       <Option value="1">男</Option>
-                      <Option value="0">女</Option>
+                      <Option value="2">女</Option>
                     </Select>,
                   )}
                 </FormItem>
               </Col>
-              {/* <Col span={12}>
+              <Col span={12}>
                 <FormItem label="年龄" {...formItemLayout}>
                   {getFieldDecorator('age', {
                     rules: [{ required: true, message: '请输入年龄' }],
@@ -170,11 +205,48 @@ class Resource extends Component {
                     <Input placeholder="请输入年龄" />,
                   )}
                 </FormItem>
-              </Col> */}
+              </Col>
+              <Col span={12}>
+                <FormItem label="用户类别" {...formItemLayout}>
+                  {getFieldDecorator('userType', {
+                    rules: [{ required: true, message: '请输入用户类别' }],
+                    initialValue: typeof (userModal.userType) === 'number' ? userModal.userType.toString() : undefined,
+                  })(
+                    <Select placeholder="请输入用户类别">
+                      <Option value="1">用户</Option>
+                      <Option value="0">管理员</Option>
+                    </Select>,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label="部门" {...formItemLayout}>
+                  {getFieldDecorator('organizationId', {
+                    rules: [{ required: true, message: '请选择部门' }],
+                    initialValue: userModal.organizationId ? userModal.organizationId.toString() : undefined,
+                  })(
+                    <Select placeholder="请选择部门">
+                      {orgList.map(el => <Option key={el.id} value={el.id.toString()}>{el.name}</Option>)}
+                    </Select>,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label="角色" {...formItemLayout}>
+                  {getFieldDecorator('roleIds', {
+                    rules: [{ required: true, message: '请选择角色' }],
+                    initialValue: _roleIds,
+                  })(
+                    <Select placeholder="请选择角色" mode="multiple">
+                      {roleList.map(el => <Option key={el.id} value={el.id.toString()}>{el.name}</Option>)}
+                    </Select>,
+                  )}
+                </FormItem>
+              </Col>
               <Col span={12}>
                 <FormItem label="手机号" {...formItemLayout}>
                   {getFieldDecorator('phone', {
-                    rules: [{ required: true, message: '请输入手机号' }],
+                    rules: [{ validator: this.checkPhone.bind(this) }],
                     initialValue: userModal.phone,
                   })(
                     <Input placeholder="请输入手机号" />,
@@ -185,51 +257,12 @@ class Resource extends Component {
                 <FormItem label="状态" {...formItemLayout}>
                   {getFieldDecorator('status', {
                     rules: [{ required: true, message: '请选择状态' }],
-                    initialValue: !isNull(userModal.status) ? userModal.status.toString() : '1',
+                    initialValue: !isNull(userModal.status) ? userModal.status.toString() : undefined,
                   })(
                     <Select placeholder="请选择状态">
-                      <Option value="1">正常</Option>
-                      <Option value="0">禁用</Option>
+                      <Option value="0">正常</Option>
+                      <Option value="1">停用</Option>
                     </Select>,
-                  )}
-                </FormItem>
-              </Col>
-              {/* <Col span={12}>
-                <FormItem label="用户类别" {...formItemLayout}>
-                  {getFieldDecorator('userType', {
-                    rules: [{ required: true, message: '请输入用户类别' }],
-                    initialValue: userModal.userType,
-                  })(
-                    <Input placeholder="请输入用户类别" />,
-                  )}
-                </FormItem>
-              </Col> */}
-              <Col span={12}>
-                <FormItem label="所属机构ID" {...formItemLayout}>
-                  {getFieldDecorator('organizationId', {
-                    rules: [{ required: true, message: '请输入所属机构ID' }],
-                    initialValue: userModal.organizationId,
-                  })(
-                    <Input placeholder="请输入所属机构ID" />,
-                  )}
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="角色ID" {...formItemLayout}>
-                  {getFieldDecorator('roleIds', {
-                    rules: [{ required: true, message: '请输入角色ID' }],
-                    initialValue: userModal.roleIds,
-                  })(
-                    <Input placeholder="请输入角色ID" />,
-                  )}
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="创建时间" {...formItemLayout}>
-                  {getFieldDecorator('createTime', {
-                    initialValue: userModal.createTime ? moment(userModal.createTime) : undefined,
-                  })(
-                    <DatePicker style={{ width: '100%' }} showTime />,
                   )}
                 </FormItem>
               </Col>
@@ -241,8 +274,8 @@ class Resource extends Component {
 }
 
 function mapStateToProps(state) {
-  const { userList, userTotal, userModal } = state.permission;
-  return { userList, total: userTotal, userModal };
+  const { userList, userTotal, userModal, orgList, roleList } = state.permission;
+  return { userList, total: userTotal, userModal, orgList, roleList };
 }
 
 export default connect(mapStateToProps)(Form.create()(Resource));

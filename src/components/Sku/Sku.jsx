@@ -20,14 +20,10 @@ class Sku extends Component {
   handleSubmit(e) {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
-      if (err) {
-        return;
-      }
+      if (err) return;
       this.props.dispatch({
         type: 'sku/querySkuList',
-        payload: {
-          ...fieldsValue,
-        },
+        payload: { ...fieldsValue, pageIndex: 1 },
       });
     });
   }

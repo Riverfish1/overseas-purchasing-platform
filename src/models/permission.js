@@ -62,6 +62,8 @@ export default {
         if (pathname === '/permission/user') {
           setTimeout(() => {
             dispatch({ type: 'queryUserList', payload: {} });
+            dispatch({ type: 'queryOrgList', payload: {} });
+            dispatch({ type: 'queryRoleList', payload: {} });
           }, 0);
         }
         if (pathname === '/permission/organization') {

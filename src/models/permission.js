@@ -2,7 +2,7 @@ import { message } from 'antd';
 
 import fetch from '../utils/request';
 
-const queryResourceList = ({ payload }) => fetch.post('/haierp1/resourceHai/queryList', { data: payload }).catch(e => e);
+const queryResourceList = ({ payload }) => fetch.post('/haierp1/resourceHai/queryTree', { data: payload }).catch(e => e); // queryList
 const addResource = ({ payload }) => fetch.post('/haierp1/resourceHai/add', { data: payload }).catch(e => e);
 const updateResource = ({ payload }) => fetch.post('/haierp1/resourceHai/update', { data: payload }).catch(e => e);
 const deleteResource = ({ payload }) => fetch.post('/haierp1/resourceHai/delete', { data: payload }).catch(e => e);
@@ -29,6 +29,7 @@ export default {
     resourceList: [],
     resourceTotal: 1,
     resourceCurrentPage: 1,
+    resourceExpandedKeys: [],
     resourceModal: {},
     roleList: [],
     roleTotal: 1,
@@ -317,7 +318,19 @@ export default {
   },
   reducers: {
     updateResourceList(state, { payload }) {
-      return { ...state, resourceList: payload.data, resourceTotal: payload.totalCount };
+      const expandedKeys = [];
+      function iter(list) {
+        list.forEach((el) => {
+          expandedKeys.push(el.id);
+          if (el.childList && el.childList.length > 0) {
+            el.children = el.childList;
+            iter(el.children);
+          }
+          delete el.childList;
+        });
+      }
+      iter(payload.data);
+      return { ...state, resourceList: payload.data, resourceExpandedKeys: expandedKeys, resourceTotal: payload.totalCount };
     },
     saveResourceCurrentPage(state, { payload }) {
       return { ...state, resourceCurrentPage: payload.pageIndex };

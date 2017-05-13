@@ -45,7 +45,7 @@ class Resource extends Component {
   }
   render() {
     const p = this;
-    const { resourceList = [], total, form, resourceModal = {} } = this.props;
+    const { resourceList = [], resourceExpandedKeys, total, form, resourceModal = {} } = this.props;
     const { visible, title } = this.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
@@ -79,13 +79,14 @@ class Resource extends Component {
         },
       },
     ];
-    const paginationProps = {
-      total,
-      pageSize: 10,
-      onChange(pageIndex) {
-        p.props.dispatch({ type: 'permission/queryResourceList', payload: { pageIndex } });
-      },
-    };
+    console.log(resourceList);
+    // const paginationProps = {
+    //   total,
+    //   pageSize: 10,
+    //   onChange(pageIndex) {
+    //     p.props.dispatch({ type: 'permission/queryResourceList', payload: { pageIndex } });
+    //   },
+    // };
     return (
       <div>
         <Row>
@@ -95,7 +96,7 @@ class Resource extends Component {
         </Row>
         <Row>
           <Col>
-            <Table columns={columns} dataSource={resourceList} rowKey={r => r.id} pagination={paginationProps} bordered />
+            <Table columns={columns} dataSource={resourceList} rowKey={r => r.id} pagination={false} expandedRowKeys={resourceExpandedKeys} />
           </Col>
         </Row>
         <Modal
@@ -224,8 +225,8 @@ class Resource extends Component {
 }
 
 function mapStateToProps(state) {
-  const { resourceList, resourceTotal, resourceModal } = state.permission;
-  return { resourceList, total: resourceTotal, resourceModal };
+  const { resourceList, resourceTotal, resourceExpandedKeys, resourceModal } = state.permission;
+  return { resourceList, total: resourceTotal, resourceExpandedKeys, resourceModal };
 }
 
 export default connect(mapStateToProps)(Form.create()(Resource));

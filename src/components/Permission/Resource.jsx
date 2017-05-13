@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Form, Table, Row, Col, Button, Modal, Input, Popconfirm, Select, DatePicker } from 'antd';
+import { Form, Table, Row, Col, Button, Modal, Input, Popconfirm, Select, TreeSelect } from 'antd';
 import { connect } from 'dva';
-import moment from 'moment';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -33,19 +32,23 @@ class Resource extends Component {
     this.setState({ visible: false });
     this.props.form.resetFields();
   }
-  showModal() {
-    this.setState({ visible: true, title: '新增' });
-  }
-  handleQuery(r) {
-    this.setState({ visible: true, title: '修改' });
-    this.props.dispatch({ type: 'permission/queryResource', payload: { id: r.id } });
+  showModal(type, r) {
+    switch (type) {
+      case 'add':
+        this.setState({ visible: true, title: '新增' }); break;
+      case 'update':
+        this.setState({ visible: true, title: '修改' });
+        this.props.dispatch({ type: 'permission/queryResource', payload: { id: r.id } });
+        break;
+      default: return false;
+    }
   }
   handleDelete(r) {
     this.props.dispatch({ type: 'permission/deleteResource', payload: { id: r.id } });
   }
   render() {
     const p = this;
-    const { resourceList = [], resourceExpandedKeys, total, form, resourceModal = {} } = this.props;
+    const { resourceList = [], resourceExpandedKeys, form, resourceModal = {} } = this.props;
     const { visible, title } = this.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
@@ -56,21 +59,31 @@ class Resource extends Component {
       { title: '资源名称', key: 'name', dataIndex: 'name' },
       { title: '资源路径', key: 'url', dataIndex: 'url' },
       { title: '打开方式', key: 'openMode', dataIndex: 'openMode' },
-      { title: '父级资源ID', key: 'pid', dataIndex: 'pid' },
-      { title: '状态', key: 'status', dataIndex: 'status' },
-      { title: '图标', key: 'icon', dataIndex: 'icon' },
-      { title: '资源类别', key: 'resourceType', dataIndex: 'resourceType' },
-      { title: '资源编码', key: 'resCode', dataIndex: 'resCode' },
       { title: '排序', key: 'seq', dataIndex: 'seq' },
-      { title: '创建时间', key: 'createTime', dataIndex: 'createTime' },
-      { title: '资源介绍', key: 'description', dataIndex: 'description' },
+      { title: '图标', key: 'iconCls', dataIndex: 'iconCls' },
+      { title: '资源类型',
+        key: 'resourceType',
+        dataIndex: 'resourceType',
+        render(t) {
+          if (t === 0) return '菜单';
+          else if (t === 1) return '按钮';
+        },
+      },
+      { title: '资源编码', key: 'resCode', dataIndex: 'resCode' },
+      { title: '状态',
+        key: 'status',
+        dataIndex: 'status',
+        render(t) {
+          return t === 0 ? '正常' : '停用';
+        },
+      },
       { title: '操作',
         key: 'oper',
         dataIndex: 'oper',
         render(t, r) {
           return (
             <div>
-              <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.handleQuery.bind(p, r)}>修改</a>
+              <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.showModal.bind(p, 'update', r)}>修改</a>
               <Popconfirm title="确定删除？" onConfirm={p.handleDelete.bind(p, r)}>
                 <a href="javascript:void(0)">删除</a>
               </Popconfirm>
@@ -79,24 +92,23 @@ class Resource extends Component {
         },
       },
     ];
-    console.log(resourceList);
-    // const paginationProps = {
-    //   total,
-    //   pageSize: 10,
-    //   onChange(pageIndex) {
-    //     p.props.dispatch({ type: 'permission/queryResourceList', payload: { pageIndex } });
-    //   },
-    // };
     return (
       <div>
         <Row>
           <Col style={{ paddingBottom: '15px' }}>
-            <Button type="primary" size="large" onClick={this.showModal.bind(this)}>增加资源</Button>
+            <Button type="primary" size="large" onClick={this.showModal.bind(this, 'add')}>增加资源</Button>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Table columns={columns} dataSource={resourceList} rowKey={r => r.id} pagination={false} expandedRowKeys={resourceExpandedKeys} />
+            <Table
+              columns={columns}
+              dataSource={resourceList}
+              rowKey={r => r.id}
+              pagination={false}
+              expandedRowKeys={resourceExpandedKeys}
+              bordered
+            />
           </Col>
         </Row>
         <Modal
@@ -119,42 +131,15 @@ class Resource extends Component {
                 </FormItem>
               </Col>
               <Col span={12}>
-                <FormItem label="资源类别" {...formItemLayout}>
+                <FormItem label="资源类型" {...formItemLayout}>
                   {getFieldDecorator('resourceType', {
-                    rules: [{ required: true, message: '请输入资源类别' }],
-                    initialValue: resourceModal.resourceType,
+                    rules: [{ required: true, message: '请输入资源类型' }],
+                    initialValue: typeof (resourceModal.resourceType) === 'number' ? resourceModal.resourceType.toString() : undefined,
                   })(
-                    <Input placeholder="请输入资源类别" />,
-                  )}
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="资源编码" {...formItemLayout}>
-                  {getFieldDecorator('code', {
-                    rules: [{ required: true, message: '请输入资源编码' }],
-                    initialValue: resourceModal.code,
-                  })(
-                    <Input placeholder="请输入资源编码" />,
-                  )}
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="排序" {...formItemLayout}>
-                  {getFieldDecorator('seq', {
-                    rules: [{ required: true, message: '请输入排序' }],
-                    initialValue: resourceModal.seq,
-                  })(
-                    <Input placeholder="请输入排序" />,
-                  )}
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="状态" {...formItemLayout}>
-                  {getFieldDecorator('status', {
-                    rules: [{ required: true, message: '请输入状态' }],
-                    initialValue: resourceModal.status,
-                  })(
-                    <Input placeholder="请输入状态" />,
+                    <Select placeholder="请输入资源类型" >
+                      <Option key="0" value="0">菜单</Option>
+                      <Option key="1" value="1">按钮</Option>
+                    </Select>,
                   )}
                 </FormItem>
               </Col>
@@ -173,47 +158,62 @@ class Resource extends Component {
                     initialValue: resourceModal.openMode || undefined,
                   })(
                     <Select placeholder="请选择打开方式" >
-                      <Option value="ajax">ajax</Option>
-                      <Option value="iframe">iframe</Option>
+                      <Option key="ajax" value="ajax">ajax</Option>
+                      <Option key="iframe" value="iframe">iframe</Option>
                     </Select>,
                   )}
                 </FormItem>
               </Col>
               <Col span={12}>
-                <FormItem label="父级资源ID" {...formItemLayout}>
-                  {getFieldDecorator('pid', {
-                    initialValue: resourceModal.pid,
-                  })(
-                    <Input placeholder="请输入父级资源ID" />,
-                  )}
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="资源介绍" {...formItemLayout}>
-                  {getFieldDecorator('description', {
-                    initialValue: resourceModal.description,
-                  })(
-                    <Input placeholder="请输入资源介绍" />,
-                  )}
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="创建时间" {...formItemLayout}>
-                  {getFieldDecorator('createTime', {
-                    initialValue: resourceModal.createTime ? moment(resourceModal.createTime) : undefined,
-                  })(
-                    <DatePicker style={{ width: '100%' }} showTime />,
-                  )}
-                </FormItem>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
                 <FormItem label="资源图标" {...formItemLayout}>
-                  {getFieldDecorator('icon', {
-                    initialValue: resourceModal.icon,
+                  {getFieldDecorator('iconCls', {
+                    initialValue: resourceModal.iconCls,
                   })(
                     <Input placeholder="请输入资源图标" />,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label="排序" {...formItemLayout}>
+                  {getFieldDecorator('seq', {
+                    rules: [{ required: true, message: '请输入排序' }],
+                    initialValue: resourceModal.seq,
+                  })(
+                    <Input placeholder="请输入排序" />,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label="状态" {...formItemLayout}>
+                  {getFieldDecorator('status', {
+                    rules: [{ required: true, message: '请输入状态' }],
+                    initialValue: typeof (resourceModal.status) === 'number' ? resourceModal.status.toString() : undefined,
+                  })(
+                    <Select placeholder="请输入状态" >
+                      <Option key="0" value="0">正常</Option>
+                      <Option key="1" value="1">停用</Option>
+                    </Select>,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label="资源编码" {...formItemLayout}>
+                  {getFieldDecorator('code', {
+                    initialValue: resourceModal.code,
+                  })(
+                    <Input placeholder="请输入资源编码" />,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label="父级资源" {...formItemLayout}>
+                  {getFieldDecorator('pid', {
+                    initialValue: (resourceModal.pid && resourceModal.pid.toString()) || undefined,
+                  })(
+                    <TreeSelect
+                      placeholder="请输入父级资源"
+                      treeData={resourceList}
+                    />,
                   )}
                 </FormItem>
               </Col>
@@ -225,8 +225,8 @@ class Resource extends Component {
 }
 
 function mapStateToProps(state) {
-  const { resourceList, resourceTotal, resourceExpandedKeys, resourceModal } = state.permission;
-  return { resourceList, total: resourceTotal, resourceExpandedKeys, resourceModal };
+  const { resourceList, resourceExpandedKeys, resourceModal } = state.permission;
+  return { resourceList, resourceExpandedKeys, resourceModal };
 }
 
 export default connect(mapStateToProps)(Form.create()(Resource));

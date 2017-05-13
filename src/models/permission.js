@@ -22,6 +22,8 @@ const addOrg = ({ payload }) => fetch.post('/haierp1/organizationHai/add', { dat
 const updateOrg = ({ payload }) => fetch.post('/haierp1/organizationHai/update', { data: payload }).catch(e => e);
 const deleteOrg = ({ payload }) => fetch.post('/haierp1/organizationHai/delete', { data: payload }).catch(e => e);
 const queryOrg = ({ payload }) => fetch.post('/haierp1/organizationHai/query', { data: payload }).catch(e => e);
+// 角色授权
+const authRole = ({ payload }) => fetch.post('/haierp1/roleHai/updateGrant', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'permission',
@@ -187,6 +189,16 @@ export default {
       const data = yield call(updateRole, { payload });
       if (data.success) {
         message.success('修改角色成功');
+        yield put({
+          type: 'queryRoleList',
+          payload: {},
+        });
+      }
+    },
+    * authRole({ payload }, { call, put }) {
+      const data = yield call(authRole, { payload });
+      if (data.success) {
+        message.success('授权成功');
         yield put({
           type: 'queryRoleList',
           payload: {},

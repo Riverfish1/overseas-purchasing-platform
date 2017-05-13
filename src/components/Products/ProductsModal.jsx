@@ -169,8 +169,23 @@ class ProductsModal extends Component {
     if (!data.length) form.setFieldsValue({ brand: undefined });
   }
 
+  interator(arr, value, data = []) {
+    const p = this;
+    arr.forEach((el) => {
+      console.log(el.id.toString(), value);
+      if (el.id.toString() === value) data.push(el);
+      else if (el.children.length) p.interator(el.children, value, data);
+    });
+    console.log(data);
+    return data;
+  }
+
   chooseCate(rules, value, cb) {
-    // if (value !== 3) cb('只能选择最后一级类目');
+    const { tree } = this.props;
+    console.log(value);
+    const data = this.interator(tree, value);
+    console.log(data);
+    if (data[0].level !== 3) cb('只能选择最后一级类目');
     cb();
   }
 

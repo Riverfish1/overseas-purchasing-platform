@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Form, Table, Row, Col, Button, Modal, Input, Popconfirm, DatePicker } from 'antd';
+import { Form, Table, Row, Col, Button, Modal, Input, InputNumber, Popconfirm, Select } from 'antd';
 import { connect } from 'dva';
-import moment from 'moment';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 class Organization extends Component {
   constructor(props) {
@@ -52,12 +52,12 @@ class Organization extends Component {
       wrapperCol: { span: 10 },
     };
     const columns = [
-      { title: '组织名', key: 'name', dataIndex: 'name' },
-      { title: '地址', key: 'address', dataIndex: 'address' },
       { title: '编号', key: 'code', dataIndex: 'code' },
-      { title: '图标', key: 'icon', dataIndex: 'pid' },
+      { title: '部门名称', key: 'name', dataIndex: 'name' },
       { title: '排序', key: 'seq', dataIndex: 'seq' },
+      { title: '图标', key: 'iconCls', dataIndex: 'iconCls' },
       { title: '创建时间', key: 'createTime', dataIndex: 'createTime' },
+      { title: '地址', key: 'address', dataIndex: 'address' },
       { title: '操作',
         key: 'oper',
         dataIndex: 'oper',
@@ -84,7 +84,7 @@ class Organization extends Component {
       <div>
         <Row>
           <Col style={{ paddingBottom: '15px' }}>
-            <Button type="primary" size="large" onClick={this.showModal.bind(this)}>增加机构</Button>
+            <Button type="primary" size="large" onClick={this.showModal.bind(this)}>增加部门</Button>
           </Col>
         </Row>
         <Row>
@@ -101,67 +101,61 @@ class Organization extends Component {
           <Form>
             <Row>
               <Col>
-                <FormItem label="组织名" {...formItemLayout}>
+                <FormItem label="部门名称" {...formItemLayout}>
                   {getFieldDecorator('name', {
-                    rules: [{ required: true, message: '请输入组织名' }],
+                    rules: [{ required: true, message: '请输入部门名称' }],
                     initialValue: orgModal.name,
                   })(
-                    <Input placeholder="请输入组织名" />,
+                    <Input placeholder="请输入部门名称" />,
                   )}
                 </FormItem>
               </Col>
               <Col>
-                <FormItem label="组织编号" {...formItemLayout}>
+                <FormItem label="编号" {...formItemLayout}>
                   {getFieldDecorator('code', {
-                    rules: [{ required: true, message: '请输入组织编号' }],
+                    rules: [{ required: true, message: '请输入编号' }],
                     initialValue: orgModal.code,
                   })(
-                    <Input placeholder="请输入组织编号" />,
+                    <Input placeholder="请输入编号" />,
                   )}
                 </FormItem>
               </Col>
               <Col>
                 <FormItem label="排序" {...formItemLayout}>
                   {getFieldDecorator('seq', {
+                    rules: [{ required: true, message: '请输入排序' }],
                     initialValue: orgModal.seq,
                   })(
-                    <Input placeholder="请输入排序" />,
-                  )}
-                </FormItem>
-              </Col>
-              <Col>
-                <FormItem label="组织地址" {...formItemLayout}>
-                  {getFieldDecorator('address', {
-                    initialValue: orgModal.address,
-                  })(
-                    <Input placeholder="请输入组织地址" />,
-                  )}
-                </FormItem>
-              </Col>
-              <Col>
-                <FormItem label="父级主键" {...formItemLayout}>
-                  {getFieldDecorator('pid', {
-                    initialValue: orgModal.pid,
-                  })(
-                    <Input placeholder="请输入父级主键" />,
-                  )}
-                </FormItem>
-              </Col>
-              <Col>
-                <FormItem label="创建时间" {...formItemLayout}>
-                  {getFieldDecorator('createTime', {
-                    initialValue: orgModal.createTime ? moment(orgModal.createTime) : undefined,
-                  })(
-                    <DatePicker style={{ width: '100%' }} showTime />,
+                    <InputNumber placeholder="请输入排序" />,
                   )}
                 </FormItem>
               </Col>
               <Col>
                 <FormItem label="图标" {...formItemLayout}>
-                  {getFieldDecorator('icon', {
-                    initialValue: orgModal.icon,
+                  {getFieldDecorator('iconCls', {
+                    initialValue: orgModal.iconCls,
                   })(
                     <Input placeholder="请输入图标" />,
+                  )}
+                </FormItem>
+              </Col>
+              <Col>
+                <FormItem label="地址" {...formItemLayout}>
+                  {getFieldDecorator('address', {
+                    initialValue: orgModal.address,
+                  })(
+                    <Input placeholder="请输入地址" />,
+                  )}
+                </FormItem>
+              </Col>
+              <Col>
+                <FormItem label="上级部门" {...formItemLayout}>
+                  {getFieldDecorator('pid', {
+                    initialValue: orgModal.pid ? orgModal.pid.toString() : undefined,
+                  })(
+                    <Select placeholder="请选择上级部门">
+                      {orgList.map(el => <Option key={el.id} value={el.id.toString()}>{el.name}</Option>)}
+                    </Select>,
                   )}
                 </FormItem>
               </Col>

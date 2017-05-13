@@ -54,17 +54,36 @@ class Resource extends Component {
       wrapperCol: { span: 14 },
     };
     const columns = [
-      { title: '用户名', key: 'name', dataIndex: 'name' },
       { title: '登录名', key: 'loginName', dataIndex: 'loginName' },
+      { title: '姓名', key: 'name', dataIndex: 'name' },
+      { title: '所属部门', key: 'organizationName', dataIndex: 'organizationName' },
+      { title: '创建时间', key: 'createTime', dataIndex: 'createTime' },
       { title: '性别', key: 'sex', dataIndex: 'sex' },
       { title: '年龄', key: 'age', dataIndex: 'age' },
       { title: '手机号', key: 'phone', dataIndex: 'phone' },
-      { title: '用户类别', key: 'userType', dataIndex: 'userType' },
-      { title: '用户状态', key: 'status', dataIndex: 'status' },
-      { title: '所属机构ID', key: 'organizationId', dataIndex: 'organizationId' },
-      { title: '机构名称', key: 'organizationName', dataIndex: 'organizationName' },
-      { title: '角色ID', key: 'roleIds', dataIndex: 'roleIds' },
-      { title: '创建时间', key: 'createTime', dataIndex: 'createTime' },
+      { title: '角色',
+        key: 'roleList',
+        dataIndex: 'roleList',
+        render(t) {
+          return t && t[0] && t[0].name;
+        },
+      },
+      { title: '用户类型',
+        key: 'userType',
+        dataIndex: 'userType',
+        render(t) {
+          if (t === 0) return '管理员';
+          return '用户';
+        },
+      },
+      { title: '状态',
+        key: 'status',
+        dataIndex: 'status',
+        render(t) {
+          if (t === 0) return '正常';
+          return '停用';
+        },
+      },
       { title: '操作',
         key: 'oper',
         dataIndex: 'oper',

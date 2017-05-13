@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Table, Row, Col, Button, Modal, Input, Popconfirm } from 'antd';
+import { Form, Table, Row, Col, Button, Modal, Input, Popconfirm, message } from 'antd';
 import { connect } from 'dva';
 
 const FormItem = Form.Item;
@@ -10,6 +10,9 @@ class Role extends Component {
     this.state = {
       visible: false,
       title: '',
+      authModalVisible: false, // 授权的modal
+      roleId: '', // 授权要传的角色id
+      resourceIds: [], // 授权要传的资源ID
     };
   }
   handleSubmit() {
@@ -30,44 +33,76 @@ class Role extends Component {
     this.setState({ visible: false });
     this.props.form.resetFields();
   }
-  showModal() {
-    this.setState({ visible: true, title: '新增' });
-  }
-  handleQuery(r) {
-    this.setState({ visible: true, title: '修改' });
-    this.props.dispatch({ type: 'permission/queryRole', payload: { id: r.id } });
+  showModal(type, r) {
+    switch (type) {
+      case 'add':
+        this.setState({ visible: true, title: '新增' }); break;
+      case 'update':
+        this.setState({ visible: true, title: '修改' });
+        this.props.dispatch({ type: 'permission/queryRole', payload: { id: r.id } });
+        break;
+      default: return false;
+    }
   }
   handleDelete(r) {
     this.props.dispatch({ type: 'permission/deleteRole', payload: { id: r.id } });
   }
+  showAuthModal(r) {
+    this.props.dispatch({ type: 'permission/queryResourceList', payload: {} });
+    this.setState({ authModalVisible: true, roleId: r.id });
+  }
+  handleAuth() {
+    const { roleId, resourceIds } = this.state;
+    if (!resourceIds.length) {
+      message.error('请选择需要授权的资源');
+      return;
+    }
+    this.props.dispatch({
+      type: 'permission/authRole',
+      payload: { id: roleId, resourceIds: JSON.stringify(resourceIds) },
+    });
+    this.setState({ authModalVisible: false });
+  }
   render() {
     const p = this;
-    const { roleList = [], total, form, roleModal = {} } = this.props;
-    const { visible, title } = this.state;
+    const { resourceList = [], roleList = [], total, form, roleModal = {} } = this.props;
+    const { visible, title, authModalVisible } = this.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 10 },
     };
     const columns = [
+      { title: '角色id', key: 'id', dataIndex: 'id' },
       { title: '角色名称', key: 'name', dataIndex: 'name' },
       { title: '排序', key: 'seq', dataIndex: 'seq' },
-      { title: '状态', key: 'status', dataIndex: 'status' },
       { title: '角色介绍', key: 'description', dataIndex: 'description' },
+      { title: '状态',
+        key: 'status',
+        dataIndex: 'status',
+        render(t) {
+          if (t === 0) return '正常';
+          return '停用';
+        },
+      },
       { title: '操作',
         key: 'oper',
         dataIndex: 'oper',
         render(t, r) {
           return (
             <div>
-              <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.handleQuery.bind(p, r)}>修改</a>
+              <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.showModal.bind(p, 'update', r)}>修改</a>
               <Popconfirm title="确定删除" onConfirm={p.handleDelete.bind(p, r)}>
-                <a href="javascript:void(0)">删除</a>
+                <a href="javascript:void(0)" style={{ marginRight: 10 }} >删除</a>
               </Popconfirm>
+              <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.showAuthModal.bind(p, r)}>授权</a>
             </div>
           );
         },
       },
+    ];
+    const authColumns = [
+      { title: '系统资源', key: 'name', dataIndex: 'name' },
     ];
     const paginationProps = {
       total,
@@ -76,11 +111,20 @@ class Role extends Component {
         p.props.dispatch({ type: 'permission/queryRoleList', payload: { pageIndex } });
       },
     };
+    const rowSelection = {
+      onChange(selectedRowKeys, selectedRows) {
+        const checkId = [];
+        selectedRows.forEach((el) => {
+          checkId.push(el.id);
+        });
+        p.setState({ resourceIds: checkId });
+      },
+    };
     return (
       <div>
         <Row>
           <Col style={{ paddingBottom: '15px' }}>
-            <Button type="primary" size="large" onClick={this.showModal.bind(this)}>增加角色</Button>
+            <Button type="primary" size="large" onClick={this.showModal.bind(this, 'add')}>增加角色</Button>
           </Col>
         </Row>
         <Row>
@@ -138,13 +182,28 @@ class Role extends Component {
             </Row>
           </Form>
         </Modal>
+        <Modal
+          visible={authModalVisible}
+          title="授权"
+          onOk={this.handleAuth.bind(this)}
+          onCancel={() => this.setState({ authModalVisible: false })}
+        >
+          <Table
+            columns={authColumns}
+            dataSource={resourceList}
+            rowSelection={rowSelection}
+            rowKey={r => r.id}
+            pagination={false}
+            bordered
+          />
+        </Modal>
       </div>);
   }
 }
 
 function mapStateToProps(state) {
-  const { roleList, roleTotal, roleModal } = state.permission;
-  return { roleList, total: roleTotal, roleModal };
+  const { roleList, roleTotal, roleModal, resourceList } = state.permission;
+  return { roleList, total: roleTotal, roleModal, resourceList };
 }
 
 export default connect(mapStateToProps)(Form.create()(Role));

@@ -49,7 +49,7 @@ export const navigation = [
       { key: routerCfg.RESOURCE, name: '资源管理' },
       { key: routerCfg.ROLE, name: '角色管理' },
       { key: routerCfg.USER, name: '用户管理' },
-      { key: routerCfg.ORGANIZATION, name: '机构管理' },
+      { key: routerCfg.ORGANIZATION, name: '部门管理' },
     ],
   },
   { key: routerCfg.PRODUCTS, name: '商品管理', icon: 'bars',

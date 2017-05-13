@@ -255,14 +255,14 @@ class SkuModal extends Component {
             </Col>
             <Col span={7}>
               <FormItem
-                label="upc"
+                label="UPC"
                 {...formItemLayout}
               >
                 {getFieldDecorator('upc', {
                   initialValue: toString(skuModalData.upc),
-                  rules: [{ required: true, message: '请填写upc码' }],
+                  rules: [{ required: true, message: '请填写UPC' }],
                 })(
-                  <Input placeholder="请输入upc" />,
+                  <Input placeholder="请输入UPC" />,
                 )}
               </FormItem>
             </Col>

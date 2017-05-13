@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect, Modal } from 'antd';
+import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect, Modal, Popover } from 'antd';
 import ProductsModal from './ProductsModal';
 
 const FormItem = Form.Item;
@@ -13,7 +13,6 @@ class Products extends Component {
     super();
     this.state = {
       modalVisible: false,
-      previewVisible: false,
       previewImage: '',
       isNotSelected: true,
     };
@@ -47,7 +46,6 @@ class Products extends Component {
 
   updateModal(id) {
     const p = this;
-    console.log(id);
     this.setState({
       modalVisible: true,
     }, () => {
@@ -70,13 +68,8 @@ class Products extends Component {
 
   handleBigPic(value) {
     this.setState({
-      previewVisible: true,
       previewImage: value,
     });
-  }
-
-  handleCancel() {
-    this.setState({ previewVisible: false });
   }
 
   batchAction(batchType) {
@@ -131,11 +124,14 @@ class Products extends Component {
     const p = this;
     const { form, currentPage, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
     const { getFieldDecorator, resetFields } = form;
-    const { previewImage, previewVisible, isNotSelected } = this.state;
+    const { previewImage, isNotSelected } = this.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
+    const content = (
+      <img role="presentation" src={previewImage} style={{ width: 400 }} />
+    );
     const columns = [
       {
         title: '商品名称', dataIndex: 'name', key: 'name',
@@ -156,7 +152,10 @@ class Products extends Component {
           } catch (e) {
             return '-';
           }
-          return <img role="presentation" onClick={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" style={{ cursor: 'pointer' }} />;
+          return (
+            <Popover title={null} content={content}>
+              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />
+            </Popover>);
         },
       },
       {
@@ -343,9 +342,6 @@ class Products extends Component {
           brands={brands}
           tree={tree}
         />
-        <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
-          <img alt="example" style={{ width: '100%' }} src={previewImage} />
-        </Modal>
       </div>
     );
   }

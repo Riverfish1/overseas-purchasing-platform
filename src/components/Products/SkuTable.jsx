@@ -325,7 +325,7 @@ class SkuTable extends Component {
           },
         },
         {
-          title: 'upc码',
+          title: 'UPC',
           dataIndex: 'upc',
           key: 'upc',
           width: '10%',
@@ -378,7 +378,6 @@ class SkuTable extends Component {
           key: 'packageLevelId',
           width: '15%',
           render(t, r) {
-            console.log(t);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_packageLevelId`, {
@@ -456,7 +455,7 @@ class SkuTable extends Component {
         </Select>
         <div><Input placeholder="请输入颜色" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.color = c; }} /></div>
         <div><Input placeholder="请输入售价" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.salePrice = c; }} /></div>
-        <div><Input placeholder="请输入重量" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.weight = c; }} /></div>
+        <div><Input placeholder="请输入重量(kg)" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.weight = c; }} /></div>
         <div><Cascader options={packageScales} placeholder="请选择包装规格" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.packageLevelId = c; }} /></div>
         <div style={{ marginTop: 10, minHeight: 100 }}>
           <Upload {...batchUploadProps} ref={(c) => { this.batchPic = c; }}>

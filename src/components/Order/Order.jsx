@@ -190,7 +190,7 @@ class Order extends Component {
 
     const skuColumns = [
       {
-        title: '商品SKU',
+        title: 'SKU代码',
         dataIndex: 'skuCode',
         key: 'skuCode',
         render(text) { return text || '-'; },

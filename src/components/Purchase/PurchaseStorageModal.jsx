@@ -231,8 +231,8 @@ class PurchaseModal extends Component {
     };
 
     const columnsTaskList = [
-      { title: '商品SKU', dataIndex: 'skuCode', key: 'skuCode' },
-      { title: '条码', dataIndex: 'upc', key: 'upc' },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode' },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc' },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
       { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 44, render(t) { return t ? <img alt="" src={t} width="32" height="32" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color' },
@@ -242,8 +242,8 @@ class PurchaseModal extends Component {
     ];
 
     const columnsStorageList = [
-      { title: '商品SKU', dataIndex: 'skuCode', key: 'skuCode' },
-      { title: '条码', dataIndex: 'upc', key: 'upc' },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode' },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc' },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
       { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 44, render(t) { return t ? <img alt="" src={t} width="32" height="32" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color' },

@@ -5,6 +5,7 @@ const comfirmJournal = ({ payload }) => fetch.post('/haierp1/taskPurchase/confir
 const queryJournal = ({ payload }) => fetch.post('/haierp1/taskPurchase/query', { data: payload }).catch(e => e);
 const createReceipt = ({ payload }) => fetch.post('/haierp1/taskPurchase/createReceipt', { data: payload }).catch(e => e);
 const queryReceiptList = ({ payload }) => fetch.post('/haierp1/receipt/queryReceiptList', { data: payload }).catch(e => e);
+const confirmPreStock = ({ payload }) => fetch.post('/haierp1/receipt/confirm', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'check',
@@ -62,6 +63,15 @@ export default {
       const data = yield call(queryReceiptList, { payload });
       if (data.success) {
         yield put({ type: 'updateReceiptList', payload: data });
+      }
+    },
+    * confirmPreStock({ payload }, { call, put }) {
+      const data = yield call(confirmPreStock, { payload });
+      if (data.success) {
+        yield put({
+          type: 'queryReceiptList',
+          payload: {},
+        });
       }
     },
   },

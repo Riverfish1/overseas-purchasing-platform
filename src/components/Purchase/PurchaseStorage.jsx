@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Table, Input, Button, Row, Col, Select, DatePicker, Form, Popconfirm, Modal } from 'antd';
 import PurchaseStorageModal from './PurchaseStorageModal';
-import styles from './Purchase.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -141,7 +140,7 @@ class PurchaseStorage extends Component {
     };
 
     return (
-      <div className={styles.normal}>
+      <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">

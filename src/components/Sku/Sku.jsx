@@ -97,12 +97,13 @@ class Sku extends Component {
       wrapperCol: { span: 14 },
     };
     const columns = [
-      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode' },
-      { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
-      { title: '商品代码', dataIndex: 'itemCode', key: 'itemCode' },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 100 },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 200 },
+      { title: '商品代码', dataIndex: 'itemCode', key: 'itemCode', width: 100 },
       { title: '品牌',
         dataIndex: 'brand',
         key: 'brand',
+        width: 100,
         render(text) {
           return text || '-';
         },
@@ -111,7 +112,7 @@ class Sku extends Component {
         title: 'sku图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
-        width: 66,
+        width: 100,
         render(text) {
           let imgUrl = '';
           try {
@@ -127,12 +128,13 @@ class Sku extends Component {
           );
         },
       },
-      { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', render(text) { return text || '-'; } },
-      { title: '尺寸', dataIndex: 'scale', key: 'scale', render(text) { return text || '-'; } },
-      { title: '颜色', dataIndex: 'color', key: 'color', render(text) { return text || '-'; } },
-      { title: '销售价格(元)', dataIndex: 'salePrice', key: 'salePrice', render(text) { return text || '-'; } },
+      { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 80, render(text) { return text || '-'; } },
+      { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 50, render(text) { return text || '-'; } },
+      { title: '颜色', dataIndex: 'color', key: 'color', width: 100, render(text) { return text || '-'; } },
+      { title: '销售价格(元)', dataIndex: 'salePrice', key: 'salePrice', width: 100, render(text) { return text || '-'; } },
       { title: '库存',
         key: 'inve',
+        width: 100,
         render(t, r) {
           return (
             <div>
@@ -145,9 +147,9 @@ class Sku extends Component {
           );
         },
       },
-      { title: '重量(kg)', dataIndex: 'weight', key: 'weight', render(text) { return text || '-'; } },
-      { title: '运费', dataIndex: 'freightStr', key: 'freightStr', render(text) { return text || '-'; } },
-      { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; } },
+      { title: '重量(kg)', dataIndex: 'weight', key: 'weight', width: 80, render(text) { return text || '-'; } },
+      { title: '运费', dataIndex: 'freightStr', key: 'freightStr', width: 60, render(text) { return text || '-'; } },
+      { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', width: 100, render(text) { return text || '-'; } },
       {
         title: '操作',
         dataIndex: 'oper',

@@ -3,7 +3,6 @@ import { Modal, message, Upload, Icon, Input, Select, Row, Col, DatePicker, Form
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import ProductTable from './ProductTable';
-import styles from './Purchase.less';
 
 moment.locale('zh-cn');
 
@@ -54,7 +53,7 @@ class PurchaseModal extends Component {
             uploadMainPic.push({
               type: el.type,
               uid: `i_${index}`,
-              url: el.url,
+              url: el.url || el.response.data,
             });
           });
           values.imageUrl = JSON.stringify({ picList: uploadMainPic });
@@ -145,7 +144,7 @@ class PurchaseModal extends Component {
     }
     const modalProps = {
       visible,
-      width: 1200,
+      width: 1000,
       wrapClassName: 'modalStyle',
       okText: '保存',
       title,
@@ -318,7 +317,7 @@ class PurchaseModal extends Component {
                   rules: [{ validator: this.checkImg.bind(this) }],
                 })(
                   <Upload {...uploadProps}>
-                    <Icon type="plus" className={styles.uploadPlus} />
+                    <Icon type="plus" className="uploadPlus" />
                     <div className="ant-upload-text">上传图片</div>
                   </Upload>,
                 )}

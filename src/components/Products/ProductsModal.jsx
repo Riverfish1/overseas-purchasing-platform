@@ -76,7 +76,6 @@ class ProductsModal extends Component {
 
       // 检验sku是否填写
       p.getSkuValue((skuList) => {
-        console.log(skuList);
         const values = {
           ...fieldsValue,
           startDate: fieldsValue.startDate && fieldsValue.startDate.format('YYYY-MM-DD'),
@@ -85,12 +84,10 @@ class ProductsModal extends Component {
         };
 
         // 处理图片
-        console.log(values.mainPic);
         if (values.mainPic) {
           const uploadMainPic = [];
           const mainPicNum = values.mainPicNum;
           values.mainPic.forEach((el, index) => {
-            console.log(el);
             uploadMainPic.push({
               type: el.type,
               uid: `i_${index}`,
@@ -104,8 +101,6 @@ class ProductsModal extends Component {
         const detailInfo = editor && editor.$txt && editor.$txt.html();
         const lastDetailInfo = modalValues && modalValues.data && modalValues.data.detail;
         values.detail = detailInfo ? encodeURIComponent(detailInfo) : lastDetailInfo || '';
-
-        console.log(values);
         if (modalValues && modalValues.data) {
           dispatch({
             type: 'products/updateProducts',

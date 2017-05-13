@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
+import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Popconfirm, Popover } from 'antd';
 import PurchaseModal from './PurchaseModal';
 
 const FormItem = Form.Item;
@@ -83,14 +83,9 @@ class Purchase extends Component {
     });
   }
 
-  handleCancel() {
-    this.setState({ previewVisible: false });
-  }
-
   handleBigPic(value) {
     if (value) {
       this.setState({
-        previewVisible: true,
         previewImage: value,
       });
     }
@@ -100,11 +95,14 @@ class Purchase extends Component {
     const p = this;
     const { form, list = [], total, purchaseValues = {}, buyer = [], skuList = [], dispatch } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
-    const { title, previewImage, previewVisible } = p.state;
+    const { title, previewImage } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
+    const content = (
+      <img role="presentation" src={previewImage} style={{ width: 400 }} />
+    );
     const columnsList = [
       { title: '任务单号', dataIndex: 'taskOrderNo', key: 'taskOrderNo' },
       { title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle' },
@@ -116,7 +114,10 @@ class Purchase extends Component {
         dataIndex: 'imageUrl',
         key: 'imageUrl',
         render(t) {
-          return t ? <img role="presentation" onClick={p.handleBigPic.bind(p, t)} src={t} width="50" height="50" style={{ cursor: 'pointer' }} /> : '-';
+          return (
+            <Popover title={null} content={content}>
+              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, t)} src={t} width="50" height="50" />
+            </Popover>);
         },
       },
       { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime' },
@@ -236,9 +237,6 @@ class Purchase extends Component {
             />
           </Col>
         </Row>
-        <Modal visible={previewVisible} title="预览图片" footer={null} onCancel={this.handleCancel.bind(this)}>
-          <img alt="example" style={{ width: '100%' }} src={previewImage} />
-        </Modal>
         <PurchaseModal
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}

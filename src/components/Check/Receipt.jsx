@@ -1,27 +1,49 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table } from 'antd';
+import { Table, Row, Col, Button } from 'antd';
 
 class Receipt extends Component {
-  handlePreStock(r) {
-    console.log(r);
+  constructor(props) {
+    super(props);
+    this.state = {
+      isNotSelected: true,
+      checkId: [],
+    };
+  }
+  handlePreStock() {
+    const { checkId } = this.state;
+    this.props.dispatch({
+      type: 'check/confirmPreStock',
+      payload: { receiptIds: JSON.stringify(checkId) },
+    });
   }
   render() {
     const p = this;
     const { receiptList = [] } = this.props;
+    const { isNotSelected } = this.state;
+    const rowSelection = {
+      onChange(selectedRowKeys, selectedRows) {
+        const listId = [];
+        if (selectedRows.length) p.setState({ isNotSelected: false });
+        else p.setState({ isNotSelected: true });
+        selectedRows.forEach((el) => {
+          listId.push(el.id);
+        });
+        p.setState({ checkId: listId });
+      },
+    };
     const columns = [
       { title: '小票单号', dataIndex: 'receiptNo', key: 'receiptNo' },
       { title: '总价', dataIndex: 'totalPrice', key: 'totalPrice' },
-      { title: '操作',
-        key: 'oper',
-        render(t, r) {
-          return <a onClick={p.handlePreStock.bind(p, r)}>小票确认预入库</a>;
-        },
-      },
     ];
     return (
       <div>
-        <Table columns={columns} dataSource={receiptList} pagination={false} rowKey={record => record.id} />
+        <Row className="operBtn">
+          <Col span={2} push={22}>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.handlePreStock.bind(p)}>确认入库</Button>
+          </Col>
+        </Row>
+        <Table columns={columns} rowSelection={rowSelection} dataSource={receiptList} pagination={false} rowKey={record => record.id} bordered />
       </div>
     );
   }

@@ -460,7 +460,7 @@ class ProductTable extends Component {
           title: <font color="#00f">任务开始时间</font>,
           dataIndex: 'taskStartTime',
           key: 'taskStartTime',
-          width: '10%',
+          width: '12%',
           render(t, r) {
             return (
               <FormItem>
@@ -478,7 +478,7 @@ class ProductTable extends Component {
           title: <font color="#00f">任务结束时间</font>,
           dataIndex: 'taskEndTime',
           key: 'taskEndTime',
-          width: '10%',
+          width: '12%',
           render(t, r) {
             console.log(r);
             return (
@@ -541,10 +541,10 @@ class ProductTable extends Component {
     return (
       <div>
         <Row style={{ paddingBottom: 10 }}>
-          <Col span={20}>
+          <Col span={21}>
             <span>采购明细信息（<font color="#00f">蓝色列可编辑</font>）</span>
           </Col>
-          <Col span={4}>
+          <Col span={3}>
             <Button type="primary" onClick={p.addProduct.bind(p)}>添加商品</Button>
           </Col>
         </Row>

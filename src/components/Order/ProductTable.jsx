@@ -311,7 +311,7 @@ class ProductTable extends Component {
     const modalTableProps = {
       columns: [
         {
-          title: <font color="#00f">商品SKU</font>,
+          title: <font color="#00f">SKU代码</font>,
           dataIndex: 'skuCode',
           key: 'skuCode',
           width: '20%',

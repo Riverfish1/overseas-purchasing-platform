@@ -111,10 +111,8 @@ class Products extends Component {
 
   chooseCate(rules, value, cb) {
     const { tree } = this.props;
-    console.log(value);
     const data = this.interator(tree, value);
-    console.log(data);
-    if (data[0].level !== 3) cb('只能选择最后一级类目');
+    if (data && data[0] && data[0].level !== 3) cb('只能选择最后一级类目');
     cb();
   }
 

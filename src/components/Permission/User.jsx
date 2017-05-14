@@ -89,7 +89,6 @@ class Resource extends Component {
               role.push(el.name);
             });
           }
-          console.log(role);
           return role.join(', ');
         },
       },

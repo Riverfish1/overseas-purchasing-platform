@@ -128,18 +128,29 @@ class Products extends Component {
     const content = (
       <img role="presentation" src={previewImage} style={{ width: 400 }} />
     );
+    const yzBasicUrl = 'https://h5.youzan.com/v2/goods/';
     const columns = [
-      {
-        title: '商品名称', dataIndex: 'name', key: 'name',
+      { title: '商品名称', dataIndex: 'name', key: 'name', width: 200 },
+      { title: '商品代码', dataIndex: 'itemCode', key: 'itemCode', width: 150 },
+      { title: '商品状态',
+        dataIndex: 'status',
+        key: 'status',
+        width: 80,
+        render(t) {
+          switch (t) {
+            case 0: return '新建';
+            case 1: return '上架';
+            case 2: return '下架';
+            case 3: return '同步';
+            case -1: return '删除';
+            default: return false;
+          }
+        },
       },
-      {
-        title: '商品代码', dataIndex: 'itemCode', key: 'itemCode',
-      },
-      {
-        title: '商品图片',
+      { title: '商品图片',
         dataIndex: 'mainPic',
         key: 'mainPic',
-        width: 66,
+        width: 150,
         render(text) {
           let imgUrl = '';
           try {
@@ -154,19 +165,16 @@ class Products extends Component {
             </Popover>);
         },
       },
-      {
-        title: '商品品牌',
+      { title: '商品品牌',
         dataIndex: 'brand',
         key: 'brand',
-        render(text) {
-          return text || '-';
-        },
+        width: 100,
+        render(text) { return text || '-'; },
       },
-      {
-        title: '销售类型', dataIndex: 'saleType', key: 'saleType', render(text) { return <span>{text === '0' ? '代购' : '现货' }</span>; },
-      },
-      {
-        title: '商品类目',
+      { title: '有赞链接', dataIndex: 'outerAlias', key: 'outerAlias', width: 200, render(t) { return t ? <a href={`${yzBasicUrl}${t}`}>{`${yzBasicUrl}${t}`}</a> : '-'; } },
+      { title: '销售类型', dataIndex: 'saleType', key: 'saleType', width: 80, render(text) { return <span>{text === '0' ? '代购' : '现货' }</span>; } },
+      { title: '商品类目',
+        width: 100,
         dataIndex: 'categoryId',
         key: 'categoryId',
         render(text) {
@@ -186,17 +194,10 @@ class Products extends Component {
           return <span>{cate}</span>;
         },
       },
-      {
-        title: '采购地点', dataIndex: 'buySite', key: 'buySite', render(text) { return text || '-'; },
-      },
-      {
-        title: '开始销售时间', dataIndex: 'startDate', key: 'startDate', render(text) { return text ? text.split(' ')[0] : '-'; },
-      },
-      {
-        title: '结束销售时间', dataIndex: 'endDate', key: 'endDate', render(text) { return text ? text.split(' ')[0] : '-'; },
-      },
-      {
-        title: '操作',
+      { title: '采购地点', dataIndex: 'buySite', key: 'buySite', width: 80, render(text) { return text || '-'; } },
+      { title: '开始销售时间', dataIndex: 'startDate', key: 'startDate', width: 150, render(text) { return text ? text.split(' ')[0] : '-'; } },
+      { title: '结束销售时间', dataIndex: 'endDate', key: 'endDate', width: 150, render(text) { return text ? text.split(' ')[0] : '-'; } },
+      { title: '操作',
         dataIndex: 'oper',
         key: 'oper',
         width: 50,
@@ -328,6 +329,7 @@ class Products extends Component {
               rowKey={record => record.id}
               pagination={paginationProps}
               rowSelection={rowSelection}
+              scroll={{ x: '130%' }}
             />
           </Col>
         </Row>

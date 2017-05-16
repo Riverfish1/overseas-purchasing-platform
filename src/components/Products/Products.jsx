@@ -133,7 +133,7 @@ class Products extends Component {
         key: 'name',
         width: 200,
         render(t, r) {
-          return <a href={`${yzBasicUrl}${r.outerAlias}`} rel="noopener noreferrer" target="_blank">{t}</a>;
+          return r.outerAlias ? <a href={`${yzBasicUrl}${r.outerAlias}`} rel="noopener noreferrer" target="_blank">{t}</a> : <span>{t}</span>;
         },
       },
       { title: '商品代码', dataIndex: 'itemCode', key: 'itemCode', width: 100 },

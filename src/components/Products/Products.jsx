@@ -101,11 +101,9 @@ class Products extends Component {
   interator(arr, value, data = []) {
     const p = this;
     arr.forEach((el) => {
-      console.log(el.id.toString(), value);
       if (el.id.toString() === value) data.push(el);
       else if (el.children.length) p.interator(el.children, value, data);
     });
-    console.log(data);
     return data;
   }
 
@@ -130,12 +128,19 @@ class Products extends Component {
     );
     const yzBasicUrl = 'https://h5.youzan.com/v2/goods/';
     const columns = [
-      { title: '商品名称', dataIndex: 'name', key: 'name', width: 200 },
-      { title: '商品代码', dataIndex: 'itemCode', key: 'itemCode', width: 150 },
+      { title: '商品名称',
+        dataIndex: 'name',
+        key: 'name',
+        width: 200,
+        render(t, r) {
+          return <a href={`${yzBasicUrl}${r.outerAlias}`} rel="noopener noreferrer" target="_blank">{t}</a>;
+        },
+      },
+      { title: '商品代码', dataIndex: 'itemCode', key: 'itemCode', width: 100 },
       { title: '商品状态',
         dataIndex: 'status',
         key: 'status',
-        width: 80,
+        width: 60,
         render(t) {
           switch (t) {
             case 0: return '新建';
@@ -150,7 +155,7 @@ class Products extends Component {
       { title: '商品图片',
         dataIndex: 'mainPic',
         key: 'mainPic',
-        width: 150,
+        width: 80,
         render(text) {
           let imgUrl = '';
           try {
@@ -171,32 +176,19 @@ class Products extends Component {
         width: 100,
         render(text) { return text || '-'; },
       },
-      { title: '有赞链接', dataIndex: 'outerAlias', key: 'outerAlias', width: 200, render(t) { return t ? <a href={`${yzBasicUrl}${t}`}>{`${yzBasicUrl}${t}`}</a> : '-'; } },
-      { title: '销售类型', dataIndex: 'saleType', key: 'saleType', width: 80, render(text) { return <span>{text === '0' ? '代购' : '现货' }</span>; } },
+      { title: '销售类型', dataIndex: 'saleType', key: 'saleType', width: 80, render(text) { return <span>{text === 0 ? '代购' : '现货' }</span>; } },
       { title: '商品类目',
         width: 100,
         dataIndex: 'categoryId',
         key: 'categoryId',
-        render(text) {
-          let cate = '-';
-          tree.forEach((item) => {
-            if (item.id === text) {
-              cate = item.name;
-            }
-            if (item.children) {
-              item.children.forEach((key) => {
-                if (key.id === text) {
-                  cate = key.name;
-                }
-              });
-            }
-          });
-          return <span>{cate}</span>;
+        render(t) {
+          const cate = p.interator(tree, t && t.toString()) || [];
+          return <span>{cate[0] ? cate[0].name : '-'}</span>;
         },
       },
       { title: '采购地点', dataIndex: 'buySite', key: 'buySite', width: 80, render(text) { return text || '-'; } },
-      { title: '开始销售时间', dataIndex: 'startDate', key: 'startDate', width: 150, render(text) { return text ? text.split(' ')[0] : '-'; } },
-      { title: '结束销售时间', dataIndex: 'endDate', key: 'endDate', width: 150, render(text) { return text ? text.split(' ')[0] : '-'; } },
+      { title: '开始销售时间', dataIndex: 'startDate', key: 'startDate', width: 80, render(text) { return text ? text.split(' ')[0] : '-'; } },
+      { title: '结束销售时间', dataIndex: 'endDate', key: 'endDate', width: 80, render(text) { return text ? text.split(' ')[0] : '-'; } },
       { title: '操作',
         dataIndex: 'oper',
         key: 'oper',

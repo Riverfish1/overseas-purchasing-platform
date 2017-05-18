@@ -92,12 +92,6 @@ class Products extends Component {
     });
   }
 
-  handleBrandBlur(value) {
-    const { brands, form } = this.props;
-    const data = brands.filter(brand => value === brand.name);
-    if (!data.length) form.setFieldsValue({ brand: undefined });
-  }
-
   interator(arr, value, data = []) {
     const p = this;
     arr.forEach((el) => {
@@ -273,7 +267,7 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {})(
-                  <Select placeholder="请选择品牌" onBlur={this.handleBrandBlur.bind(this)} combobox>
+                  <Select placeholder="请选择品牌" combobox>
                     {brands && brands.map(item => <Option key={item.name}>{item.name}</Option>)}
                   </Select>)}
               </FormItem>

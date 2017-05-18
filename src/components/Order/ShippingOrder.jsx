@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Form, Table, Row, Col, Input, Select, Button } from 'antd';
 
-import DeliveryModal from './component/DeliveryModal';
+import InvoiceModal from './component/InvoiceModal';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -13,8 +13,7 @@ class ShippingOrder extends Component {
     super(props);
     this.state = {
       visible: false,
-      checkId: [],
-      erpOrderDetail: {},
+      data: {}, // 修改的record
       type: 'update',
     };
   }
@@ -29,9 +28,9 @@ class ShippingOrder extends Component {
     });
   }
   updateModal(r) { // 修改发货单
-    this.setState({ visible: true, erpOrderDetail: r, checkId: r.id });
+    this.setState({ visible: true, data: r });
   }
-  closeDeliveryModal() {
+  closeModal() {
     this.props.dispatch({
       type: 'order/saveErpOrderDetail',
       payload: {},
@@ -42,7 +41,7 @@ class ShippingOrder extends Component {
     const p = this;
     const { shippingOrderList, form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { visible, checkId, erpOrderDetail, type } = p.state;
+    const { visible, data } = p.state;
 
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -58,9 +57,9 @@ class ShippingOrder extends Component {
         key: 'status',
         render(text) {
           switch (text) {
-            case 0: return '未发货';
-            case 3: return '已发货';
-            case -1: return '已关闭';
+            case 0: return '新建';
+            case 1: return '已发货';
+            case 2: return '已收获';
             default: return '-';
           }
         },
@@ -71,10 +70,10 @@ class ShippingOrder extends Component {
         dataIndex: 'operator',
         key: 'operator',
         width: 200,
-        render(text, record) {
+        render(text, r) {
           return (
             <div>
-              <a href="javascript:void(0)" onClick={p.updateModal.bind(p, record)}>修改</a>
+              <a href="javascript:void(0)" onClick={p.updateModal.bind(p, r)}>修改</a>
             </div>);
         },
       },
@@ -157,7 +156,12 @@ class ShippingOrder extends Component {
         <Row style={{ marginTop: 20 }}>
           <Table columns={columns} dataSource={shippingOrderList} rowKey={r => r.id} bordered />
         </Row>
-        <DeliveryModal visible={visible} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
+        <InvoiceModal
+          visible={visible}
+          data={data}
+          closeModal={this.closeModal.bind(this)}
+          dispatch={dispatch}
+        />
       </div>
     );
   }

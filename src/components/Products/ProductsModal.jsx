@@ -140,13 +140,13 @@ class ProductsModal extends Component {
   }
 
   checkTel(rules, value, cb) {
-    if (!check.phone(value)) cb('请输入正确的手机号码');
+    if (value && !check.phone(value)) cb('请输入正确的手机号码');
     cb();
   }
 
   checkEndDate(rules, value, cb) {
     const { getFieldValue } = this.props.form;
-    if (!getFieldValue('startDate')) cb('请先填写开始时间');
+    if (!getFieldValue('startDate') && value) cb('请先填写开始时间');
     cb();
   }
 
@@ -163,29 +163,22 @@ class ProductsModal extends Component {
     } else cb();
   }
 
-  handleBrandBlur(value) {
-    const { brands, form } = this.props;
-    const data = brands.filter(brand => value === brand.name);
-    if (!data.length) form.setFieldsValue({ brand: undefined });
-  }
-
   interator(arr, value, data = []) {
     const p = this;
     arr.forEach((el) => {
-      console.log(el.id.toString(), value);
       if (el.id.toString() === value) data.push(el);
       else if (el.children.length) p.interator(el.children, value, data);
     });
-    console.log(data);
     return data;
   }
 
   chooseCate(rules, value, cb) {
     const { tree } = this.props;
-    console.log(value);
-    const data = this.interator(tree, value);
-    console.log(data);
-    if (data[0].level !== 3) cb('只能选择最后一级类目');
+    if (!value) cb('请选择类目');
+    else {
+      const data = this.interator(tree, value) || [];
+      if (data[0] && data[0].level !== 3) cb('只能选择最后一级类目');
+    }
     cb();
   }
 
@@ -249,7 +242,6 @@ class ProductsModal extends Component {
             // 添加文件预览
             const newFile = info.file;
             newFile.url = info.file.response.data;
-            console.log(info.fileList);
           } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }
         } else if (info.file.status === 'error') { message.error(`${info.file.name} 上传失败`); }
         // 主图选项增删联动
@@ -338,7 +330,7 @@ class ProductsModal extends Component {
                   >
                     {getFieldDecorator('categoryId', {
                       initialValue: toString(productData.categoryId, 'SELECT'),
-                      rules: [{ validator: this.chooseCate.bind(this) }],
+                      rules: [{ required: true, validator: this.chooseCate.bind(this) }],
                     })(
                       <TreeSelect placeholder="请选择所属类目" treeData={tree} />,
                     )}
@@ -353,7 +345,7 @@ class ProductsModal extends Component {
                       initialValue: toString(productData.brand, 'SELECT'),
                       rules: [{ required: true, message: '请输入品牌' }],
                     })(
-                      <Select placeholder="请输入品牌" onBlur={this.handleBrandBlur.bind(this)} combobox>
+                      <Select placeholder="请输入品牌" combobox>
                         {brands && brands.map(item => <Option key={item.id.toString()} value={item.name}>{item.name}</Option>)}
                       </Select>,
                     )}

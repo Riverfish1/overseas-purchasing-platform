@@ -106,9 +106,10 @@ class ErpOrder extends Component {
         width: 50,
         render(text) {
           switch (text) {
-            case 0: return '未发货';
-            case 3: return '已发货';
-            case -1: return '已关闭';
+            case 0: return '新建';
+            case 1: return '确认';
+            case 2: return '已发货';
+            case -1: return '关闭';
             default: return '-';
           }
         },

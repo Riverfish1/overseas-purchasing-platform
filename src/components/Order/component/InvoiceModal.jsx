@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, Row, Col, Alert, Table, Cascader } from 'antd';
+import { Form, Input, Modal, Row, Col, Cascader, Select } from 'antd';
 
 import divisions from '../../../utils/divisions.json';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 
-class DeliveryModal extends Component {
+class InvoiceModal extends Component {
   handleSubmit() {
     const p = this;
-    const { form, dispatch, ids } = this.props;
+    const { form, dispatch, data } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
       if (values.address) {
@@ -18,13 +19,11 @@ class DeliveryModal extends Component {
         delete values.address;
       }
       console.log(values);
-      values.erpOrderId = JSON.stringify(ids);
+      values.id = data.id;
       dispatch({
-        type: 'order/multiDelivery',
+        type: 'order/updateShippingOrder',
         payload: { ...values },
-        callback() {
-          p.handleCancel();
-        },
+        callback() { p.handleCancel(); },
       });
     });
   }
@@ -42,16 +41,6 @@ class DeliveryModal extends Component {
       wrapperCol: { span: 16 },
     };
 
-    const columns = [
-      { title: '订单号', dataIndex: 'orderNo', key: 'orderNo' },
-      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo' },
-      { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
-      { title: '颜色', dataIndex: 'color', key: 'color' },
-      { title: '尺寸', dataIndex: 'scale', key: 'scale' },
-      { title: '数量', dataIndex: 'quantity', key: 'quantity' },
-      { title: '仓库', dataIndex: 'warehouseName', key: 'warehouseName' },
-    ];
-
     const initialAddress = [];
     initialAddress.push(data.receiverState);
     initialAddress.push(data.receiverCity);
@@ -67,14 +56,6 @@ class DeliveryModal extends Component {
           width={900}
         >
           <Form>
-            {data.info && <Row>
-              <Alert
-                message={data.info}
-                type="warning"
-                closable
-              />
-              <div style={{ height: 10 }} />
-            </Row>}
             <Row>
               <Col span={12}>
                 <FormItem
@@ -101,8 +82,6 @@ class DeliveryModal extends Component {
                   )}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <FormItem
                   label="联系电话"
@@ -127,8 +106,68 @@ class DeliveryModal extends Component {
                     <Input placeholder="请输入详细地址" />)}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
+              <Col span={12}>
+                <FormItem
+                  label="物流运单号"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('logisticNo', {
+                    initialValue: data.logisticNo,
+                  })(
+                    <Input placeholder="请输入物流运单号" />,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem
+                  label="物流公司名称"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('LogisticCompany', {
+                    initialValue: data.LogisticCompany,
+                  })(
+                    <Input placeholder="请输入物流公司名称" />,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem
+                  label="运单状态"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('status', {
+                    initialValue: data.status,
+                  })(
+                    <Select placeholder="请选择运单状态" >
+                      <Option value={0} key="0">新建</Option>
+                      <Option value={1} key="1">已发货</Option>
+                      <Option value={2} key="2">已收货</Option>
+                    </Select>,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem
+                  label="运费"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('freight', {
+                    initialValue: data.freight,
+                  })(
+                    <Input placeholder="请输入运费" />)}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem
+                  label="邮编"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('postcode', {
+                    initialValue: data.postcode,
+                  })(
+                    <Input placeholder="请输入邮编" />)}
+                </FormItem>
+              </Col>
               <Col span={12}>
                 <FormItem
                   label="身份证号"
@@ -152,9 +191,6 @@ class DeliveryModal extends Component {
                 </FormItem>
               </Col>
             </Row>
-            <Row>
-              <Table columns={columns} dataSource={data.erpOrderList || []} rowKey={r => r.erpNo} pagination={false} bordered />
-            </Row>
           </Form>
         </Modal>
       </div>
@@ -162,4 +198,4 @@ class DeliveryModal extends Component {
   }
 }
 
-export default Form.create()(DeliveryModal);
+export default Form.create()(InvoiceModal);

@@ -100,7 +100,7 @@ class ProductsModal extends Component {
         // 处理图文详情
         const detailInfo = editor && editor.$txt && editor.$txt.html();
         const lastDetailInfo = modalValues && modalValues.data && modalValues.data.detail;
-        values.detail = detailInfo ? encodeURIComponent(detailInfo) : lastDetailInfo || '';
+        values.detail = detailInfo ? encodeURIComponent(detailInfo) : lastDetailInfo ? encodeURIComponent(lastDetailInfo) : '';
         if (modalValues && modalValues.data) {
           dispatch({
             type: 'products/updateProducts',

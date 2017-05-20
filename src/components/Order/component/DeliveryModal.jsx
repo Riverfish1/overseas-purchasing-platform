@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Input, Modal, Row, Col, Alert, Table, Cascader } from 'antd';
 
 import divisions from '../../../utils/divisions.json';
+import check from '../../../utils/checkLib';
 
 const FormItem = Form.Item;
 
@@ -32,6 +33,15 @@ class DeliveryModal extends Component {
     const { form, closeModal } = this.props;
     form.resetFields();
     closeModal();
+  }
+  checkPhone(rules, value, cb) {
+    if (value && !check.phone(value)) cb('请输入正确的手机号码');
+    cb();
+  }
+  checkIdCard(rules, value, cb) {
+    if (!value) cb();
+    else if (check.idcard(value)) cb();
+    else cb(new Error('请填写正确的身份证号'));
   }
   render() {
     const p = this;
@@ -110,7 +120,7 @@ class DeliveryModal extends Component {
                 >
                   {getFieldDecorator('telephone', {
                     initialValue: data.telephone,
-                    rules: [{ required: true, message: '请输入联系电话' }],
+                    rules: [{ validator: this.checkPhone.bind(this) }],
                   })(
                     <Input placeholder="请输入联系电话" />)}
                 </FormItem>
@@ -136,6 +146,7 @@ class DeliveryModal extends Component {
                 >
                   {getFieldDecorator('idCard', {
                     initialValue: data.idCard,
+                    rules: [{ validator: this.checkIdCard.bind(this) }],
                   })(
                     <Input placeholder="请输入身份证号" />)}
                 </FormItem>

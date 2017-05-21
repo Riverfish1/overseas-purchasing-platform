@@ -325,6 +325,35 @@ class Order extends Component {
             </Col>
           </Row>
           <Row gutter={20} style={{ width: 800 }}>
+            <Col span="8">
+              <FormItem
+                label="UPC代码"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('upc', {})(
+                  <Input placeholder="请输入UPC代码" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="商品名称"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('itemName', {})(
+                  <Input placeholder="请输入商品名称" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="SKU代码"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('skuCode', {})(
+                  <Input placeholder="请输入SKU代码" />)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col style={{ marginLeft: 6 }}>
               <FormItem
                 label="订单时间范围"

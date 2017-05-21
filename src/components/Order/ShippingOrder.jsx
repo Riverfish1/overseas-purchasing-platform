@@ -39,7 +39,7 @@ class ShippingOrder extends Component {
   }
   render() {
     const p = this;
-    const { shippingOrderList, form, dispatch } = p.props;
+    const { shippingOrderList, deliveryCompanyList = [], form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { visible, data } = p.state;
 
@@ -102,7 +102,11 @@ class ShippingOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('logisticCompany', {})(
-                  <Input placeholder="请输入" />,
+                  <Select placeholder="请选择物流公司名称" >
+                    {deliveryCompanyList.map(v => (
+                      <Option value={v.name} key={v.name}>{v.name}</Option>
+                    ))}
+                  </Select>,
                 )}
               </FormItem>
             </Col>
@@ -159,6 +163,7 @@ class ShippingOrder extends Component {
         <InvoiceModal
           visible={visible}
           data={data}
+          deliveryCompanyList={deliveryCompanyList}
           closeModal={this.closeModal.bind(this)}
           dispatch={dispatch}
         />
@@ -168,8 +173,8 @@ class ShippingOrder extends Component {
 }
 
 function mapStateToProps(state) {
-  const { shippingOrderList } = state.order;
-  return { shippingOrderList };
+  const { shippingOrderList, deliveryCompanyList } = state.order;
+  return { shippingOrderList, deliveryCompanyList };
 }
 
 export default connect(mapStateToProps)(Form.create()(ShippingOrder));

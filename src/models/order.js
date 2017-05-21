@@ -20,6 +20,8 @@ const queryShippingOrderList = ({ payload }) => fetch.post('/haierp1/shippingOrd
 const updateShippingOrder = ({ payload }) => fetch.post('/haierp1/shippingOrder/update', { data: payload }).catch(e => e);
 // 发货单详情表单查询
 const queryShippingOrderDetail = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDeliveryForm', { data: payload }).catch(e => e);
+// 查询物流公司
+const queryDeliveryCompanyList = ({ payload }) => fetch.post('/haierp1/shippingOrder/queryLogisticCompany', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'order',
@@ -39,6 +41,8 @@ export default {
     shippingOrderList: [],
     shippingCurrentPage: 1,
     shippingOrderTotal: 1,
+    // 物流公司列表
+    deliveryCompanyList: [],
   },
   reducers: {
     saveOrderList(state, { payload }) {
@@ -72,6 +76,9 @@ export default {
     },
     saveShippingOrderList(state, { payload }) {
       return { ...state, shippingOrderList: payload.data, shippingOrderTotal: payload.totalCount };
+    },
+    saveDeliveryCompanyList(state, { payload }) {
+      return { ...state, deliveryCompanyList: payload.data };
     },
   },
   effects: {
@@ -259,6 +266,15 @@ export default {
         success({ success: true });
       }
     },
+    * queryDeliveryCompanyList(params, { call, put }) {
+      const data = yield call(queryDeliveryCompanyList, {});
+      if (data.success) {
+        yield put({
+          type: 'saveDeliveryCompanyList',
+          payload: data,
+        });
+      }
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -277,6 +293,7 @@ export default {
         if (pathname === '/sale/shippingOrder') {
           setTimeout(() => {
             dispatch({ type: 'queryShippingOrderList', payload: query });
+            dispatch({ type: 'queryDeliveryCompanyList', payload: query });
           }, 0);
         }
       });

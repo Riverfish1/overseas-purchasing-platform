@@ -22,19 +22,22 @@ class Order extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
-      if (err) {
-        return;
-      }
-      if (fieldsValue.orderTime) {
-        fieldsValue.startOrderTime = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
-        fieldsValue.endOrderTime = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
-        delete fieldsValue.orderTime;
-      }
-      delete fieldsValue.action;
-      this.props.dispatch({
-        type: 'order/queryOrderList',
-        payload: { ...fieldsValue, pageIndex: 1 },
+    // 清除多选
+    this.setState({ checkId: [] }, () => {
+      this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
+        if (err) {
+          return;
+        }
+        if (fieldsValue.orderTime) {
+          fieldsValue.startOrderTime = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
+          fieldsValue.endOrderTime = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
+          delete fieldsValue.orderTime;
+        }
+        delete fieldsValue.action;
+        this.props.dispatch({
+          type: 'order/queryOrderList',
+          payload: { ...fieldsValue, pageIndex: 1 },
+        });
       });
     });
   }

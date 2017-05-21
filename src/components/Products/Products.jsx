@@ -20,20 +20,23 @@ class Products extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (err) return;
-      if (values.saleDate) {
-        values.startDate = new Date(values.saleDate[0]).format('yyyy-MM-dd');
-        values.endDate = new Date(values.saleDate[1]).format('yyyy-MM-dd');
-        delete values.saleDate;
-      }
-      this.props.dispatch({
-        type: 'products/saveSearchValues',
-        payload: { ...values },
-      });
-      this.props.dispatch({
-        type: 'products/queryItemList',
-        payload: { ...values, pageIndex: 1 },
+    // 清除多选
+    this.setState({ checkId: [] }, () => {
+      this.props.form.validateFieldsAndScroll((err, values) => {
+        if (err) return;
+        if (values.saleDate) {
+          values.startDate = new Date(values.saleDate[0]).format('yyyy-MM-dd');
+          values.endDate = new Date(values.saleDate[1]).format('yyyy-MM-dd');
+          delete values.saleDate;
+        }
+        this.props.dispatch({
+          type: 'products/saveSearchValues',
+          payload: { ...values },
+        });
+        this.props.dispatch({
+          type: 'products/queryItemList',
+          payload: { ...values, pageIndex: 1 },
+        });
       });
     });
   }

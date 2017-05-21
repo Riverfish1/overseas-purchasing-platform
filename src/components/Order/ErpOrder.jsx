@@ -22,11 +22,14 @@ class ErpOrder extends Component {
   }
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      this.props.dispatch({
-        type: 'order/queryErpOrderList',
-        payload: { ...fieldsValue, pageIndex: 1 },
+    // 清除多选
+    this.setState({ checkId: [] }, () => {
+      this.props.form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        this.props.dispatch({
+          type: 'order/queryErpOrderList',
+          payload: { ...fieldsValue, pageIndex: 1 },
+        });
       });
     });
   }

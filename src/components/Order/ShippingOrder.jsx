@@ -51,7 +51,7 @@ class ShippingOrder extends Component {
       { title: '发货单号', dataIndex: 'shippingNo', key: 'shippingNo', render(text) { return text || '-'; } },
       { title: '物流订单号', dataIndex: 'logisticNo', key: 'logisticNo', render(text) { return text || '-'; } },
       { title: '物流公司名称', dataIndex: 'logisticCompany', key: 'logisticCompany', render(text) { return text || '-'; } },
-      { title: 'erp订单编号', dataIndex: 'erpNo', key: 'erpNo', render(text) { return text || '-'; } },
+      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', render(text) { return text || '-'; } },
       { title: '运单状态',
         dataIndex: 'status',
         key: 'status',
@@ -59,7 +59,7 @@ class ShippingOrder extends Component {
           switch (text) {
             case 0: return '新建';
             case 1: return '已发货';
-            case 2: return '已收获';
+            case 2: return '已收货';
             default: return '-';
           }
         },
@@ -89,9 +89,9 @@ class ShippingOrder extends Component {
               >
                 {getFieldDecorator('status', {})(
                   <Select placeholder="请选择" allowClear>
-                    <Option value="0">未发货</Option>
-                    <Option value="3">已发货</Option>
-                    <Option value="-1">已关闭</Option>
+                    <Option value="0">新建</Option>
+                    <Option value="1">已发货</Option>
+                    <Option value="2">已收货</Option>
                   </Select>,
                 )}
               </FormItem>

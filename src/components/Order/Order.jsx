@@ -122,7 +122,8 @@ class Order extends Component {
         render(text) {
           switch (text) {
             case 0: return '新建';
-            case 1: return '已确定';
+            case 1: return '确认';
+            case 2: return '已发货';
             case -1: return '已关闭';
             default: return '-';
           }
@@ -284,7 +285,7 @@ class Order extends Component {
                   <Select placeholder="请选择订单状态">
                     <Option value="10">全部</Option>
                     <Option value="0">新建</Option>
-                    <Option value="1">已确定</Option>
+                    <Option value="2">已发货</Option>
                     <Option value="-1">已关闭</Option>
                   </Select>,
                 )}

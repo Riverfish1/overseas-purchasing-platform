@@ -19,6 +19,7 @@ class ProductsModal extends Component {
     this.state = {
       previewVisible: false,
       previewImage: '',
+      salesName: '',
     };
 
     // skuTable改写父级方法
@@ -28,7 +29,9 @@ class ProductsModal extends Component {
 
   handleSubmit() {
     const p = this;
-    const { form, dispatch, modalValues } = p.props;
+    const { form, dispatch, modalValues = {} } = p.props;
+    const { salesName } = this.state;
+    console.log(salesName);
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
       if (fieldsValue.address) {
@@ -37,8 +40,9 @@ class ProductsModal extends Component {
         fieldsValue.receiverDistrict = fieldsValue.address[2];
         delete fieldsValue.address;
       }
+      fieldsValue.salesName = salesName;
       p.getSkuValue((orderDetailList) => {
-        if (modalValues && modalValues.data) {
+        if (modalValues.data) {
           dispatch({
             type: 'order/updateOrder',
             payload: { ...fieldsValue, id: modalValues.data.id, outerOrderDetailList: JSON.stringify(orderDetailList) },
@@ -93,16 +97,17 @@ class ProductsModal extends Component {
     }
   }
 
-  checkImg(rules, values, callback) {
-    callback();
-  }
+  checkImg(rules, values, cb) { cb(); }
 
-  // queryItemSkus(param) {
-  //   const { modalValues = {} } = this.props;
-  //   modalValues.data && modalValues.data.itemSkus.map(item => {
-  //     return item[param];
-  //   });
-  // }
+  handleChangeSeller(id) {
+    const p = this;
+    const { agencyList } = this.props;
+    agencyList.forEach((el) => {
+      if (el.id.toString() === id.toString()) {
+        p.setState({ salesName: el.userName });
+      }
+    });
+  }
 
   handleDelete(id) {
     const { skuList } = this.state;
@@ -160,12 +165,14 @@ class ProductsModal extends Component {
                 label="销售"
                 {...formItemLayout}
               >
-                {getFieldDecorator('salesName', {
-                  initialValue: orderData.salesName || undefined,
+                {getFieldDecorator('salesId', {
+                  initialValue: orderData.salesId ? orderData.salesId.toString() : undefined,
                   rules: [{ required: true, message: '请选择销售' }],
                 })(
-                  <Select placeholder="请选择销售" >
-                    {agencyList.map(el => <Option key={el.id} value={el.userName}>{el.userName}</Option>)}
+                  <Select placeholder="请选择销售" onChange={this.handleChangeSeller.bind(this)} >
+                    {agencyList.map((el) => {
+                      return <Option key={el.id} value={el.id && el.id.toString()}>{el.userName}</Option>;
+                    })}
                   </Select>,
                 )}
               </FormItem>

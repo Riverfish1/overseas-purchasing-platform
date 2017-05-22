@@ -22,19 +22,22 @@ class Order extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
-      if (err) {
-        return;
-      }
-      if (fieldsValue.orderTime) {
-        fieldsValue.startOrderTime = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
-        fieldsValue.endOrderTime = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
-        delete fieldsValue.orderTime;
-      }
-      delete fieldsValue.action;
-      this.props.dispatch({
-        type: 'order/queryOrderList',
-        payload: { ...fieldsValue, pageIndex: 1 },
+    // 清除多选
+    this.setState({ checkId: [] }, () => {
+      this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
+        if (err) {
+          return;
+        }
+        if (fieldsValue.orderTime) {
+          fieldsValue.startOrderTime = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
+          fieldsValue.endOrderTime = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
+          delete fieldsValue.orderTime;
+        }
+        delete fieldsValue.action;
+        this.props.dispatch({
+          type: 'order/queryOrderList',
+          payload: { ...fieldsValue, pageIndex: 1 },
+        });
       });
     });
   }
@@ -122,7 +125,8 @@ class Order extends Component {
         render(text) {
           switch (text) {
             case 0: return '新建';
-            case 1: return '已确定';
+            case 1: return '确认';
+            case 2: return '已发货';
             case -1: return '已关闭';
             default: return '-';
           }
@@ -284,7 +288,7 @@ class Order extends Component {
                   <Select placeholder="请选择订单状态">
                     <Option value="10">全部</Option>
                     <Option value="0">新建</Option>
-                    <Option value="1">已确定</Option>
+                    <Option value="2">已发货</Option>
                     <Option value="-1">已关闭</Option>
                   </Select>,
                 )}
@@ -317,6 +321,35 @@ class Order extends Component {
               >
                 {getFieldDecorator('salesName', {})(
                   <Input placeholder="请输入客户名称" />)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={20} style={{ width: 800 }}>
+            <Col span="8">
+              <FormItem
+                label="UPC代码"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('upc', {})(
+                  <Input placeholder="请输入UPC代码" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="商品名称"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('itemName', {})(
+                  <Input placeholder="请输入商品名称" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="SKU代码"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('skuCode', {})(
+                  <Input placeholder="请输入SKU代码" />)}
               </FormItem>
             </Col>
           </Row>

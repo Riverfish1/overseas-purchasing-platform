@@ -39,7 +39,7 @@ class ShippingOrder extends Component {
   }
   render() {
     const p = this;
-    const { shippingOrderList, form, dispatch } = p.props;
+    const { shippingOrderList, deliveryCompanyList = [], form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { visible, data } = p.state;
 
@@ -51,7 +51,7 @@ class ShippingOrder extends Component {
       { title: '发货单号', dataIndex: 'shippingNo', key: 'shippingNo', render(text) { return text || '-'; } },
       { title: '物流订单号', dataIndex: 'logisticNo', key: 'logisticNo', render(text) { return text || '-'; } },
       { title: '物流公司名称', dataIndex: 'logisticCompany', key: 'logisticCompany', render(text) { return text || '-'; } },
-      { title: 'erp订单编号', dataIndex: 'erpNo', key: 'erpNo', render(text) { return text || '-'; } },
+      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', render(text) { return text || '-'; } },
       { title: '运单状态',
         dataIndex: 'status',
         key: 'status',
@@ -59,7 +59,7 @@ class ShippingOrder extends Component {
           switch (text) {
             case 0: return '新建';
             case 1: return '已发货';
-            case 2: return '已收获';
+            case 2: return '已收货';
             default: return '-';
           }
         },
@@ -89,9 +89,9 @@ class ShippingOrder extends Component {
               >
                 {getFieldDecorator('status', {})(
                   <Select placeholder="请选择" allowClear>
-                    <Option value="0">未发货</Option>
-                    <Option value="3">已发货</Option>
-                    <Option value="-1">已关闭</Option>
+                    <Option value="0">新建</Option>
+                    <Option value="1">已发货</Option>
+                    <Option value="2">已收货</Option>
                   </Select>,
                 )}
               </FormItem>
@@ -102,7 +102,11 @@ class ShippingOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('logisticCompany', {})(
-                  <Input placeholder="请输入" />,
+                  <Select placeholder="请选择物流公司名称" >
+                    {deliveryCompanyList.map(v => (
+                      <Option value={v.name} key={v.name}>{v.name}</Option>
+                    ))}
+                  </Select>,
                 )}
               </FormItem>
             </Col>
@@ -159,6 +163,7 @@ class ShippingOrder extends Component {
         <InvoiceModal
           visible={visible}
           data={data}
+          deliveryCompanyList={deliveryCompanyList}
           closeModal={this.closeModal.bind(this)}
           dispatch={dispatch}
         />
@@ -168,8 +173,8 @@ class ShippingOrder extends Component {
 }
 
 function mapStateToProps(state) {
-  const { shippingOrderList } = state.order;
-  return { shippingOrderList };
+  const { shippingOrderList, deliveryCompanyList } = state.order;
+  return { shippingOrderList, deliveryCompanyList };
 }
 
 export default connect(mapStateToProps)(Form.create()(ShippingOrder));

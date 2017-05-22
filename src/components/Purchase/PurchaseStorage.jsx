@@ -34,24 +34,27 @@ class PurchaseStorage extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (err) {
-        return;
-      }
-      if (values.orderDate) {
-        values.startTime = new Date(values.orderDate[0]).format('yyyy-MM-dd');
-        values.endTime = new Date(values.orderDate[1]).format('yyyy-MM-dd');
-        delete values.orderDate;
-      }
-      if (values.storageDate) {
-        values.putInStart = new Date(values.storageDate[0]).format('yyyy-MM-dd');
-        values.putInEnd = new Date(values.storageDate[1]).format('yyyy-MM-dd');
-        delete values.storageDate;
-      }
-      console.log(values);
-      this.props.dispatch({
-        type: 'purchaseStorage/queryPurchaseStorageList',
-        payload: { ...values, pageIndex: 1 },
+    // 清除多选
+    this.setState({ selectedRowKeys: [] }, () => {
+      this.props.form.validateFieldsAndScroll((err, values) => {
+        if (err) {
+          return;
+        }
+        if (values.orderDate) {
+          values.startTime = new Date(values.orderDate[0]).format('yyyy-MM-dd');
+          values.endTime = new Date(values.orderDate[1]).format('yyyy-MM-dd');
+          delete values.orderDate;
+        }
+        if (values.storageDate) {
+          values.putInStart = new Date(values.storageDate[0]).format('yyyy-MM-dd');
+          values.putInEnd = new Date(values.storageDate[1]).format('yyyy-MM-dd');
+          delete values.storageDate;
+        }
+        console.log(values);
+        this.props.dispatch({
+          type: 'purchaseStorage/queryPurchaseStorageList',
+          payload: { ...values, pageIndex: 1 },
+        });
       });
     });
   }

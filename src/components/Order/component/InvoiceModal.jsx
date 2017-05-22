@@ -44,7 +44,7 @@ class InvoiceModal extends Component {
   }
   render() {
     const p = this;
-    const { visible, form, data } = this.props;
+    const { visible, deliveryCompanyList, form, data } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -133,10 +133,14 @@ class InvoiceModal extends Component {
                   label="物流公司名称"
                   {...formItemLayout}
                 >
-                  {getFieldDecorator('LogisticCompany', {
-                    initialValue: data.LogisticCompany,
+                  {getFieldDecorator('logisticCompany', {
+                    initialValue: data.logisticCompany,
                   })(
-                    <Input placeholder="请输入物流公司名称" />,
+                    <Select placeholder="请选择物流公司名称" >
+                      {deliveryCompanyList.map(v => (
+                        <Option value={v.name} key={v.name}>{v.name}</Option>
+                      ))}
+                    </Select>,
                   )}
                 </FormItem>
               </Col>

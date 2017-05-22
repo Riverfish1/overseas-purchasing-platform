@@ -22,11 +22,14 @@ class ErpOrder extends Component {
   }
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      this.props.dispatch({
-        type: 'order/queryErpOrderList',
-        payload: { ...fieldsValue, pageIndex: 1 },
+    // 清除多选
+    this.setState({ checkId: [] }, () => {
+      this.props.form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        this.props.dispatch({
+          type: 'order/queryErpOrderList',
+          payload: { ...fieldsValue, pageIndex: 1 },
+        });
       });
     });
   }
@@ -109,7 +112,7 @@ class ErpOrder extends Component {
             case 0: return '新建';
             case 1: return '确认';
             case 2: return '已发货';
-            case -1: return '关闭';
+            case -1: return '已关闭';
             default: return '-';
           }
         },
@@ -206,8 +209,8 @@ class ErpOrder extends Component {
               >
                 {getFieldDecorator('status', {})(
                   <Select placeholder="请选择" allowClear>
-                    <Option value="0">未发货</Option>
-                    <Option value="3">已发货</Option>
+                    <Option value="0">新建</Option>
+                    <Option value="2">已发货</Option>
                     <Option value="-1">已关闭</Option>
                   </Select>,
                 )}

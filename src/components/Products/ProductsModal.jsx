@@ -58,7 +58,8 @@ class ProductsModal extends Component {
 
           // 赋值
           const { modalValues } = this.props;
-          editor.$txt.html(modalValues && modalValues.data && decodeURIComponent(modalValues.data.detail || ''));
+          //editor.$txt.html(modalValues && modalValues.data && decodeURIComponent(modalValues.data.detail || ''));
+          editor.$txt.html(modalValues && modalValues.data && modalValues.data.detail);
         }, 0);
         /* eslint-enable */
       }

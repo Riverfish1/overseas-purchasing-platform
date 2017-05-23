@@ -332,7 +332,7 @@ class SkuTable extends Component {
           render(t, r) {
             return (
               <FormItem>
-                {getFieldDecorator(`r_${r.key}_upc`, { initialValue: t || '', rules: [{ required: true, message: '该项必填' }] })(
+                {getFieldDecorator(`r_${r.key}_upc`, { initialValue: t || '' })(
                   <Input placeholder="请填写" />)}
               </FormItem>
             );

@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Button, Input } from 'antd';
+import { Form, Table, Row, Col, Button, Input, Popover } from 'antd';
 
 const FormItem = Form.Item;
 
 class Inventory extends Component {
-
+  constructor() {
+    super();
+    this.state = {
+      previewImage: null,
+    };
+  }
   handleSubmit(e) {
     e.preventDefault();
     const { form, dispatch } = this.props;
@@ -17,18 +22,47 @@ class Inventory extends Component {
       });
     });
   }
+  handleBigPic(value) {
+    this.setState({
+      previewVisible: true,
+      previewImage: value,
+    });
+  }
   render() {
     const p = this;
     const { list = [], total, form } = this.props;
+    const { previewImage } = this.state;
     const { getFieldDecorator, resetFields } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
+    const content = (
+      <img role="presentation" src={previewImage} style={{ width: 400 }} />
+    );
     const columns = [
       { title: 'SKU代码', key: 'skuCode', dataIndex: 'skuCode' },
       { title: '商品名称', key: 'itemName', dataIndex: 'itemName' },
-      { title: '商品图片', key: 'skuPic', dataIndex: 'skuPic' },
+      {
+        title: '商品图片',
+        key: 'skuPic',
+        dataIndex: 'skuPic',
+        width: 100,
+        render(text) {
+          let imgUrl = '';
+          try {
+            const imgObj = JSON.parse(text);
+            imgUrl = imgObj.picList[0].url;
+          } catch (e) {
+            return '-';
+          }
+          return (
+            <Popover title={null} content={content}>
+              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />
+            </Popover>
+          );
+        },
+      },
       { title: '仓库名称', key: 'warehouseName', dataIndex: 'warehouseName' },
       { title: 'UPC', key: 'upc', dataIndex: 'upc' },
       { title: '实际库存', key: 'inventory', dataIndex: 'inventory' },

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Modal, message, Input, Upload, Row, Col, Select, DatePicker, Form, Icon, TreeSelect, Tabs } from 'antd';
+import { Modal, message, Input, Upload, Row, Col, Select, DatePicker, Form, Icon, TreeSelect, Tabs, InputNumber } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
@@ -486,8 +486,20 @@ class ProductsModal extends Component {
                   </FormItem>
                 </Col>
               </Row>
-              <Row>
-                <Col>
+              <Row gutter={10}>
+                <Col span={7}>
+                  <FormItem
+                    label="运费"
+                    {...formItemLayout}
+                  >
+                    {getFieldDecorator('freight', {
+                      initialValue: toString(productData.freight),
+                    })(
+                      <InputNumber min={0} step={0.01} placeholder="请输入运费" />,
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={14}>
                   <FormItem
                     label="备注"
                     labelCol={{ span: 3 }}

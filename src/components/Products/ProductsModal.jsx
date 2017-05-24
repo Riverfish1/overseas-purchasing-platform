@@ -126,7 +126,10 @@ class ProductsModal extends Component {
     setTimeout(() => {
       this.clearSkuValue();
       // 清理编辑器
-      if (editor) editor.destroy();
+      if (editor) {
+        editor.$txt.html('');
+        editor.destroy();
+      }
       editor = null;
       this.setState({ activeTab: '1' });
     }, 100);

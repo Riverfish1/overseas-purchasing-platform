@@ -99,22 +99,8 @@ class SkuTable extends Component {
     const lastId = skuLen < 1 ? 0 : skuData[skuData.length - 1].key;
     const newId = parseInt(lastId, 10) + 1;
     // 处理图片
-    const pic = {};
-    if (obj.batchFileList) {
-      obj.batchFileList.forEach((el) => {
-        const list = [];
-        if (el.response && el.response.success) {
-          list.push({
-            uid: el.uid,
-            url: el.response.data,
-            type: el.type,
-          });
-        }
-        pic.picList = list;
-      });
-    }
-    console.log(obj);
-    // 处理图片结束
+    const pic = this.dealSkuPic(obj.batchFileList);
+    
     const newItem = {
       // id: newId,
       key: newId,
@@ -127,23 +113,28 @@ class SkuTable extends Component {
       virtualInv: typeof obj.virtualInv === 'string' ? obj.virtualInv : '',
       skuPic: JSON.stringify(pic),
     };
-    if (skuData.length) {
-      skuData.forEach((el) => {
-        console.log(newItem, el);
-        if (el.color === newItem.color && (!newItem.scale || el.scale === newItem.scale)) {
-          if (newItem.salePrice) el.salePrice = newItem.salePrice;
-          if (newItem.weight) el.weight = newItem.weight;
-          if (newItem.virtualInv) el.virtualInv = newItem.virtualInv;
-          if (JSON.parse(newItem.packageLevelId).length) el.packageLevelId = newItem.packageLevelId;
-          if (JSON.parse(newItem.skuPic).picList) el.skuPic = newItem.skuPic;
-        } else if (newItem.scale && el.color !== newItem.color) {
-          skuData.push(newItem);
-        }
-      });
-    }
-    if (!skuData.length && newItem.scale) skuData.push(newItem);
+    skuData.push(newItem);
     this.setState({ skuData });
   }
+  //处理图片
+  dealSkuPic(batchFileList) {
+  	const pic = {};
+    if (batchFileList) {
+      	batchFileList.forEach((el) => {
+        const list = [];
+        if (el.response && el.response.success) {
+          list.push({
+            uid: el.uid,
+            url: el.response.data,
+            type: el.type,
+          });
+        }
+        pic.picList = list;
+      });
+    }
+    return pic;
+  }
+  
   delItem(key) {
     console.log(key);
     const { skuData } = this.state;
@@ -166,15 +157,36 @@ class SkuTable extends Component {
       const virtualInv = this.virtualInv.refs.input.value;
       const packageLevelId = this.packageLevelId.state.value;
       const batchFileList = this.batchPic.state.fileList;
-      if (batchSelected.length) {
-        batchSelected.forEach((el) => {
-          const obj = { scale: el, salePrice, color, batchFileList, weight, virtualInv, packageLevelId };
-          this.addItem(obj);
-        });
-      } else {
-        const obj = { scale: undefined, salePrice, color, batchFileList, weight, virtualInv, packageLevelId };
-        this.addItem(obj);
+      
+      const { skuData } = this.state;
+      let isUpdate = false;
+      //判断是否是修改
+      if(skuData.length) {
+      	const temColor = typeof color === 'string' ? color : '';
+      	const tempSalePrice = typeof salePrice === 'string' ? salePrice : '';
+      	const tempVirtualInv = typeof virtualInv === 'string' ? virtualInv : '';
+      	const temWeight = typeof weight === 'string' ? weight : '';
+      	const temPackageLevelId = packageLevelId ? JSON.stringify(packageLevelId) : [];
+      	const pic = this.dealSkuPic(batchFileList);
+      	const tempSkuPic = JSON.stringify(pic);
+      	skuData.forEach((el) => {
+      		//颜色没填，或者填的颜色已在现有sku中存在了，就认定是修改
+      		if((temColor!==''&&temColor===el.color) || temColor==='') {
+      			if(tempSalePrice) el.salePrice = tempSalePrice;
+      			if(tempVirtualInv) el.virtualInv = tempVirtualInv;
+      			if(temWeight) el.weight = temWeight;
+      			if(packageLevelId.length) el.packageLevelId = temPackageLevelId;
+      			if(pic.picList) el.skuPic = tempSkuPic;
+      			isUpdate = true;
+      		}
+      	});
       }
+      if(!isUpdate) {
+		batchSelected.forEach((el) => {
+			const obj = { scale: el, salePrice, color, batchFileList, weight, virtualInv, packageLevelId };
+			this.addItem(obj);
+		});
+	  }
       this.setState({ batchSkuSort: '', batchSelected: [] });
       this.salePrice.refs.input.value = '';
       this.color.refs.input.value = '';

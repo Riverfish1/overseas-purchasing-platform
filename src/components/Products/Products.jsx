@@ -187,9 +187,9 @@ class Products extends Component {
       { title: '开始销售时间', dataIndex: 'startDate', key: 'startDate', width: 80, render(text) { return text ? text.split(' ')[0] : '-'; } },
       { title: '结束销售时间', dataIndex: 'endDate', key: 'endDate', width: 80, render(text) { return text ? text.split(' ')[0] : '-'; } },
       { title: '操作',
-        dataIndex: 'oper',
         key: 'oper',
         width: 50,
+        fixed: 'right',
         render(text, record) {
           return (
             <a onClick={p.updateModal.bind(p, record.id)}>修改</a>

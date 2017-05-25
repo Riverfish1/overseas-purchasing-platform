@@ -115,18 +115,18 @@ class SkuTable extends Component {
         pic.picList = list;
       });
     }
-    console.log(pic);
+    console.log(obj);
     // 处理图片结束
     const newItem = {
       // id: newId,
       key: newId,
       scale: typeof obj.scale === 'string' ? obj.scale : '',
       color: typeof obj.color === 'string' ? obj.color : '',
-      virtualInv: '',
       packageLevelId: obj.packageLevelId ? JSON.stringify(obj.packageLevelId) : [],
       skuCode: '',
       salePrice: typeof obj.salePrice === 'string' ? obj.salePrice : '',
       weight: typeof obj.weight === 'string' ? obj.weight : '',
+      virtualInv: typeof obj.virtualInv === 'string' ? obj.virtualInv : '',
       skuPic: JSON.stringify(pic),
     };
     skuData.push(newItem);
@@ -152,17 +152,19 @@ class SkuTable extends Component {
       const salePrice = this.salePrice.refs.input.value;
       const color = this.color.refs.input.value;
       const weight = this.weight.refs.input.value;
+      const virtualInv = this.virtualInv.refs.input.value;
       const packageLevelId = this.packageLevelId.state.value;
       console.log(packageLevelId);
       const batchFileList = this.batchPic.state.fileList;
       batchSelected.forEach((el) => {
-        const obj = { scale: el, salePrice, color, batchFileList, weight, packageLevelId };
+        const obj = { scale: el, salePrice, color, batchFileList, weight, virtualInv, packageLevelId };
         this.addItem(obj);
       });
       this.setState({ batchSkuSort: '', batchSelected: [] });
       this.salePrice.refs.input.value = '';
       this.color.refs.input.value = '';
       this.weight.refs.input.value = '';
+      this.virtualInv.refs.input.value = '';
       this.packageLevelId.state.value = [];
       this.setState({ batchFileList: [] });
     }
@@ -175,6 +177,7 @@ class SkuTable extends Component {
     this.salePrice.refs.input.value = '';
     this.color.refs.input.value = '';
     this.weight.refs.input.value = '';
+    this.virtualInv.refs.input.value = '';
     this.packageLevelId.state.value = [];
     this.setState({ batchFileList: [] });
   }
@@ -456,6 +459,7 @@ class SkuTable extends Component {
         <div><Input placeholder="请输入颜色" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.color = c; }} /></div>
         <div><Input placeholder="请输入售价" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.salePrice = c; }} /></div>
         <div><Input placeholder="请输入重量(kg)" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.weight = c; }} /></div>
+        <div><Input placeholder="请输入虚拟库存" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.virtualInv = c; }} /></div>
         <div><Cascader options={packageScales} placeholder="请选择包装规格" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.packageLevelId = c; }} /></div>
         <div style={{ marginTop: 10, minHeight: 100 }}>
           <Upload {...batchUploadProps} ref={(c) => { this.batchPic = c; }}>

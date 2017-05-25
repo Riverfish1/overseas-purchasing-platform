@@ -46,9 +46,7 @@ class SkuTable extends Component {
     const { form } = this.props;
     const skuList = [];
     form.validateFieldsAndScroll((err, fieldsSku) => {
-      if (err) {
-        return;
-      }
+      if (err) return;
       let count = 1;
       const keys = Object.keys(fieldsSku);
       while (Object.prototype.hasOwnProperty.call(fieldsSku, `r_${count}_virtualInv`)) {
@@ -129,8 +127,21 @@ class SkuTable extends Component {
       virtualInv: typeof obj.virtualInv === 'string' ? obj.virtualInv : '',
       skuPic: JSON.stringify(pic),
     };
-    skuData.push(newItem);
-    console.log(skuData);
+    if (skuData.length) {
+      skuData.forEach((el) => {
+        console.log(newItem, el);
+        if (el.color === newItem.color && (!newItem.scale || el.scale === newItem.scale)) {
+          if (newItem.salePrice) el.salePrice = newItem.salePrice;
+          if (newItem.weight) el.weight = newItem.weight;
+          if (newItem.virtualInv) el.virtualInv = newItem.virtualInv;
+          if (JSON.parse(newItem.packageLevelId).length) el.packageLevelId = newItem.packageLevelId;
+          if (JSON.parse(newItem.skuPic).picList) el.skuPic = newItem.skuPic;
+        } else if (newItem.scale && el.color !== newItem.color) {
+          skuData.push(newItem);
+        }
+      });
+    }
+    if (!skuData.length && newItem.scale) skuData.push(newItem);
     this.setState({ skuData });
   }
   delItem(key) {
@@ -154,12 +165,16 @@ class SkuTable extends Component {
       const weight = this.weight.refs.input.value;
       const virtualInv = this.virtualInv.refs.input.value;
       const packageLevelId = this.packageLevelId.state.value;
-      console.log(packageLevelId);
       const batchFileList = this.batchPic.state.fileList;
-      batchSelected.forEach((el) => {
-        const obj = { scale: el, salePrice, color, batchFileList, weight, virtualInv, packageLevelId };
+      if (batchSelected.length) {
+        batchSelected.forEach((el) => {
+          const obj = { scale: el, salePrice, color, batchFileList, weight, virtualInv, packageLevelId };
+          this.addItem(obj);
+        });
+      } else {
+        const obj = { scale: undefined, salePrice, color, batchFileList, weight, virtualInv, packageLevelId };
         this.addItem(obj);
-      });
+      }
       this.setState({ batchSkuSort: '', batchSelected: [] });
       this.salePrice.refs.input.value = '';
       this.color.refs.input.value = '';
@@ -171,9 +186,7 @@ class SkuTable extends Component {
     this.setState({ batchSkuAddVisible });
   }
   handleCloseBatch() {
-    this.setState({
-      batchSkuAddVisible: false,
-    });
+    this.setState({ batchSkuAddVisible: false });
     this.salePrice.refs.input.value = '';
     this.color.refs.input.value = '';
     this.weight.refs.input.value = '';
@@ -458,8 +471,8 @@ class SkuTable extends Component {
         </Select>
         <div><Input placeholder="请输入颜色" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.color = c; }} /></div>
         <div><Input placeholder="请输入售价" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.salePrice = c; }} /></div>
-        <div><Input placeholder="请输入重量(kg)" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.weight = c; }} /></div>
         <div><Input placeholder="请输入虚拟库存" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.virtualInv = c; }} /></div>
+        <div><Input placeholder="请输入重量(kg)" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.weight = c; }} /></div>
         <div><Cascader options={packageScales} placeholder="请选择包装规格" style={{ marginTop: 10, width: 200 }} ref={(c) => { this.packageLevelId = c; }} /></div>
         <div style={{ marginTop: 10, minHeight: 100 }}>
           <Upload {...batchUploadProps} ref={(c) => { this.batchPic = c; }}>

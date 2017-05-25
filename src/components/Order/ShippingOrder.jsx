@@ -48,13 +48,14 @@ class ShippingOrder extends Component {
       wrapperCol: { span: 14 },
     };
     const columns = [
-      { title: '发货单号', dataIndex: 'shippingNo', key: 'shippingNo', render(text) { return text || '-'; } },
-      { title: '物流订单号', dataIndex: 'logisticNo', key: 'logisticNo', render(text) { return text || '-'; } },
-      { title: '物流公司名称', dataIndex: 'logisticCompany', key: 'logisticCompany', render(text) { return text || '-'; } },
-      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', render(text) { return text || '-'; } },
+      { title: '发货单号', dataIndex: 'shippingNo', key: 'shippingNo', width: 120, render(text) { return text || '-'; } },
+      { title: '物流订单号', dataIndex: 'logisticNo', key: 'logisticNo', width: 100, render(text) { return text || '-'; } },
+      { title: '物流公司名称', dataIndex: 'logisticCompany', width: 100, key: 'logisticCompany', render(text) { return text || '-'; } },
+      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 200, render(text) { return text || '-'; } },
       { title: '运单状态',
         dataIndex: 'status',
         key: 'status',
+        width: 80,
         render(text) {
           switch (text) {
             case 0: return '新建';
@@ -64,12 +65,12 @@ class ShippingOrder extends Component {
           }
         },
       },
-      { title: '收件人', dataIndex: 'receiver', key: 'receiver', render(text) { return text || '-'; } },
-      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', render(text) { return text || '-'; } },
+      { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 100, render(text) { return text || '-'; } },
+      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 100, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
-        width: 200,
+        width: 50,
         render(text, r) {
           return (
             <div>

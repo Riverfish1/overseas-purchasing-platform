@@ -189,7 +189,6 @@ class Products extends Component {
       { title: '操作',
         key: 'oper',
         width: 50,
-        fixed: 'right',
         render(text, record) {
           return (
             <a onClick={p.updateModal.bind(p, record.id)}>修改</a>
@@ -275,13 +274,11 @@ class Products extends Component {
                   </Select>)}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={20} style={{ width: 800, marginLeft: -6 }}>
-            <Col>
+            <Col span={16}>
               <FormItem
                 label="销售时间范围"
                 {...formItemLayout}
-                labelCol={{ span: 3 }}
+                labelCol={{ span: 6 }}
               >
                 {getFieldDecorator('saleDate')(<RangePicker />)}
               </FormItem>
@@ -318,7 +315,6 @@ class Products extends Component {
               rowKey={record => record.id}
               pagination={paginationProps}
               rowSelection={rowSelection}
-              scroll={{ x: '130%' }}
             />
           </Col>
         </Row>

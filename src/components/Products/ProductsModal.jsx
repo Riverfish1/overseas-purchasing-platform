@@ -505,7 +505,7 @@ class ProductsModal extends Component {
                 <Col span={14}>
                   <FormItem
                     label="备注"
-                    labelCol={{ span: 3 }}
+                    labelCol={{ span: 5 }}
                     wrapperCol={{ span: 11 }}
                     style={{ marginRight: '-20px' }}
                   >

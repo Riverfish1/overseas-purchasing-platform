@@ -19,26 +19,25 @@ class AgencyModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userId: '',
       typeId: '',
     };
   }
 
   handleSubmit() {
     const { form, modalValues } = this.props;
-    const { userId, typeId } = this.state;
+    const { typeId } = this.state;
     form.validateFieldsAndScroll((err, values) => {
       if (err) return;
       if (modalValues.data) {
         console.log(modalValues.data);
         this.props.dispatch({
           type: 'agency/updateAgency',
-          payload: { ...values, userId: modalValues.data.userId, typeId: modalValues.data.typeId, id: modalValues.data.id },
+          payload: { ...values, typeId: typeId || modalValues.data.typeId, id: modalValues.data.id }, // userId: modalValues.data.userId,
         });
       } else {
         this.props.dispatch({
           type: 'agency/addAgency',
-          payload: { ...values, userId, typeId },
+          payload: { ...values, typeId }, //  userId,
         });
       }
       this.closeModal();
@@ -48,6 +47,7 @@ class AgencyModal extends Component {
   closeModal() {
     const { form, close } = this.props;
     form.resetFields();
+    this.setState({ typeId: '' });
     close(false);
   }
 

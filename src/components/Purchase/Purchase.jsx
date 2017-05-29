@@ -107,7 +107,7 @@ class Purchase extends Component {
       { title: '任务单号', dataIndex: 'taskOrderNo', key: 'taskOrderNo' },
       { title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle' },
       { title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc' },
-      { title: '任务分配人', dataIndex: 'ownerName', key: 'ownerName' },
+      // { title: '任务分配人', dataIndex: 'ownerName', key: 'ownerName' },
       // { title: '分配者ID', dataIndex: 'ownerId', key: 'ownerId' },
       { title: '买手', dataIndex: 'buyerName', key: 'buyerName', render(text) { return text || '-'; } },
       { title: '图片',
@@ -115,9 +115,10 @@ class Purchase extends Component {
         key: 'imageUrl',
         render(t) {
           return (
-            <Popover title={null} content={content}>
+            t ? <Popover title={null} content={content}>
               <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, t)} src={t} width="50" height="50" />
-            </Popover>);
+            </Popover> : '-'
+          );
         },
       },
       { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime' },

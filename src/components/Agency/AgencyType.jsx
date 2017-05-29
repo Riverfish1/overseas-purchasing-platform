@@ -20,7 +20,7 @@ class AgencyType extends Component {
       if (err) {
         return;
       }
-      if (agencyTypeValues) {
+      if (agencyTypeValues && Object.keys(agencyTypeValues).length > 0) {
         dispatch({
           type: 'agency/updateAgencyType',
           payload: { ...fieldsValue, id: agencyTypeValues.id, pageIndex: 1 },

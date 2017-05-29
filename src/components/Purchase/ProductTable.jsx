@@ -52,6 +52,7 @@ class ProductTable extends Component {
         skuSingle.taskStartTime = moment(skuSingle.taskStartTime).format('YYYY-MM-DD');
         skuSingle.taskEndTime = moment(skuSingle.taskEndTime).format('YYYY-MM-DD');
         if (!skuSingle.id) delete skuSingle.id;
+        if (skuSingle.skuPic) delete skuSingle.skuPic;
         skuList.push(skuSingle);
         count += 1;
       }
@@ -103,9 +104,11 @@ class ProductTable extends Component {
           if (el.key.toString() === key.toString()) {
             el.skuId = value.id;
             el.skuCode = value.skuCode;
+            el.skuPic = value.skuPic ? JSON.parse(value.skuPic).picList[0].url : '';
           }
         });
         this.setState({ skuData }, () => {
+          console.log(value);
           form.setFieldsValue({
             [`r_${key}_skuId`]: value.id,
             [`r_${key}_skuCode`]: value.skuCode,
@@ -176,8 +179,11 @@ class ProductTable extends Component {
   checkCount(type, r, rules, value, cb) {
     const { getFieldValue } = this.props.form;
     switch (type) {
-      case 'count':
-        if (getFieldValue(`r_${r.key}_taskMaxCount`) && getFieldValue(`r_${r.key}_taskMaxCount`) < value) cb('参考采购数量必须小于参考最大采购数量'); else cb(); break;
+      case 'count': {
+        if (!getFieldValue(`r_${r.key}_count`)) {
+          cb('此项必填');
+        } else if (getFieldValue(`r_${r.key}_taskMaxCount`) && getFieldValue(`r_${r.key}_taskMaxCount`) < value) cb('参考采购数量必须小于参考最大采购数量'); else cb(); break;
+      }
       case 'taskMaxCount':
         if (getFieldValue(`r_${r.key}_count`) && getFieldValue(`r_${r.key}_count`) > value) cb('参考最大采购数量必须大于参考采购数量'); else cb(); break;
       default: cb();
@@ -341,6 +347,19 @@ class ProductTable extends Component {
                   </Popover>,
                 )}
               </FormItem>
+            );
+          },
+        },
+        {
+          title: <font color="#00f">图片</font>,
+          dataIndex: 'skuPic',
+          key: 'skuPic',
+          width: '8.5%',
+          render(t) {
+            return (
+              t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+                <img role="presentation" src={t} width={60} height={60} />
+              </Popover> : '-'
             );
           },
         },

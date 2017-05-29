@@ -30,9 +30,10 @@ class AgencyModal extends Component {
     form.validateFieldsAndScroll((err, values) => {
       if (err) return;
       if (modalValues.data) {
+        console.log(modalValues.data);
         this.props.dispatch({
           type: 'agency/updateAgency',
-          payload: { ...values, userId: modalValues.data.userId, typeId: modalValues.data.typeId, id: modalValues.id },
+          payload: { ...values, userId: modalValues.data.userId, typeId: modalValues.data.typeId, id: modalValues.data.id },
         });
       } else {
         this.props.dispatch({
@@ -59,8 +60,8 @@ class AgencyModal extends Component {
           typeCode: item.code,
         });
         p.setState({
-          userId: item.id,
-          // typeId: item.typeId,
+          // userId: item.id,
+          typeId: item.id,
         });
       }
     });
@@ -118,8 +119,8 @@ class AgencyModal extends Component {
                 label="用户名称"
                 {...formItemLayout}
               >
-                {getFieldDecorator('userName', {
-                  initialValue: toString(agencyData.userName),
+                {getFieldDecorator('name', {
+                  initialValue: toString(agencyData.name),
                   rules: [{ required: true, message: '请输入用户名称' }],
                 })(
                   <Input placeholder="请输入用户名称" />,
@@ -148,7 +149,7 @@ class AgencyModal extends Component {
                   initialValue: toString(agencyData.typeCode),
                   rules: [{ required: true, message: '请选择销售名称' }],
                 })(
-                  <Input placeholder="请选择销售名称" disabled={true} />,
+                  <Input placeholder="请选择销售名称" disabled />,
                 )}
               </FormItem>
             </Col>

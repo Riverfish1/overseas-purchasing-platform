@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm } from 'antd';
+import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm, Popover } from 'antd';
 import OrderModal from './OrderModal';
 
 const FormItem = Form.Item;
@@ -198,6 +198,20 @@ class Order extends Component {
         dataIndex: 'skuCode',
         key: 'skuCode',
         render(text) { return text || '-'; },
+      },
+      {
+        title: '图片',
+        dataIndex: 'skuPic',
+        key: 'skuPic',
+        width: 80,
+        render(text) {
+          const t = text ? JSON.parse(text).picList[0].url : '';
+          return (
+            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+              <img role="presentation" src={t} width={60} height={60} />
+            </Popover> : '-'
+          );
+        },
       },
       {
         title: '颜色',

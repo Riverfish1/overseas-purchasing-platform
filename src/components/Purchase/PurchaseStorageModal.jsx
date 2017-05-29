@@ -174,7 +174,7 @@ class PurchaseModal extends Component {
     const input = dom.refs.input;
     const value = input.value;
     if (value) {
-      fetch.post('/haierp1/itemSku/queryItemSkuList', { data: { upc: value } }).then((res) => {
+      fetch.post('/haierp1/itemSku/queryBySkuCodeOrUpc', { data: { code: value } }).then((res) => {
         if (res.data && res.data.length > 0) {
           res.data[0].skuId = generateRandomSkuId(res.data[0].id);
           const { storageList } = p.state;
@@ -245,7 +245,7 @@ class PurchaseModal extends Component {
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode' },
       { title: 'UPC', dataIndex: 'upc', key: 'upc' },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
-      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 44, render(t) { return t ? <img alt="" src={t} width="32" height="32" /> : '无'; } },
+      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 44, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="32" height="32" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color' },
       { title: '规格', dataIndex: 'scale', key: 'scale' },
       { title: '数量',

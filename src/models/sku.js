@@ -17,6 +17,7 @@ export default {
     skuTotal: 0,
     skuData: {},
     currentPage: 1,
+    pageSize: 20,
     packageScales: [],
     scaleTypes: [],
   },
@@ -29,6 +30,9 @@ export default {
     },
     saveCurrentPage(state, { payload }) {
       return { ...state, currentPage: payload.pageIndex };
+    },
+    savePageSize(state, { payload }) {
+      return { ...state, pageSize: payload.pageSize };
     },
     savePackageScales(state, { payload }) {
       // 预处理数据
@@ -87,11 +91,16 @@ export default {
     },
     * querySkuList({ payload = {} }, { call, put, select }) { // SKU管理列表
       let pageIndex = yield select(({ sku }) => sku.currentPage);
-      if (payload && payload.pageIndex) {
+      let pageSize = yield select(({ sku }) => sku.pageSize);
+      if (payload.pageIndex) {
         pageIndex = payload.pageIndex;
         yield put({ type: 'saveCurrentPage', payload });
       }
-      const data = yield call(querySkuList, { payload: { ...payload, pageIndex } });
+      if (payload.pageSize) {
+        pageSize = payload.pageSize;
+        yield put({ type: 'savePageSize', payload });
+      }
+      const data = yield call(querySkuList, { payload: { ...payload, pageIndex, pageSize } });
       console.log('querySkuList success', data);
       if (data.success) {
         yield put({

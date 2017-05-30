@@ -178,7 +178,7 @@ class ProductTable extends Component {
 
   render() {
     const p = this;
-    const { form, skuList = [], parent, buyer = [], total, currentPage } = p.props;
+    const { form, skuList = [], parent, buyer = [], total, currentPage, pageSize } = p.props;
     const { skuData, previewImage, previewVisible } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
@@ -210,16 +210,32 @@ class ProductTable extends Component {
           p[`r_${key}_skuCode`].refs.input.click();
         }, 0);
       }
-      console.log(currentPage);
+
       const paginationProps = {
-        pageSize: 10,
+        defaultPageSize: 20,
+        pageSize,
+        showSizeChanger: true,
         total: skuTotal,
         current: currentPage,
+        showQuickJumper: true,
+        pageSizeOptions: ['20', '30', '50', '100'],
+        onShowSizeChange(current, size) {
+          p.props.dispatch({
+            type: 'sku/querySkuList',
+            payload: {
+              pageIndex: current,
+              pageSize: size,
+              skuCode: skuCode.refs.input.value,
+              itemName: itemName.refs.input.value,
+            },
+          });
+        },
         onChange(page) {
           p.props.dispatch({
             type: 'sku/querySkuList',
             payload: {
               pageIndex: page,
+              pageSize,
               skuCode: skuCode.refs.input.value,
               itemName: itemName.refs.input.value,
             },
@@ -558,11 +574,12 @@ class ProductTable extends Component {
 }
 
 function mapStateToProps(state) {
-  const { skuList, skuTotal, currentPage } = state.sku;
+  const { skuList, skuTotal, currentPage, pageSize } = state.sku;
   return {
     skuList,
     total: skuTotal,
     currentPage,
+    pageSize,
   };
 }
 

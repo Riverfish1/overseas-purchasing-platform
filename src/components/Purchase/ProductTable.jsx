@@ -19,6 +19,7 @@ class ProductTable extends Component {
       skuSearchList: {},
       previewImage: '',
       previewVisible: false,
+      total: 1,
     };
   }
 
@@ -129,7 +130,7 @@ class ProductTable extends Component {
           if (status !== 'ERROR') {
             const { skuSearchList } = p.state;
             skuSearchList[key] = status.data || [];
-            p.setState({ skuSearchList });
+            p.setState({ skuSearchList, total: status.totalCount });
           }
           // 搜索始终进行
           if (searchQueue.length > 0) {
@@ -207,15 +208,15 @@ class ProductTable extends Component {
 
     function renderSkuPopover(list, key, skuTotal) {
       let skuCode = null;
-      let name = null;
+      let itemName = null;
 
       function handleEmpty() {
         skuCode.refs.input.value = '';
-        name.refs.input.value = '';
+        itemName.refs.input.value = '';
       }
 
       function doSearch() {
-        p.handleSearch(key, { skuCode: skuCode.refs.input.value, name: name.refs.input.value });
+        p.handleSearch(key, { skuCode: skuCode.refs.input.value, itemName: itemName.refs.input.value });
       }
 
       function updateValue(selectedSkuCode) {
@@ -292,7 +293,7 @@ class ProductTable extends Component {
                 <Input
                   size="default"
                   placeholder="请输入商品名称"
-                  ref={(c) => { name = c; }}
+                  ref={(c) => { itemName = c; }}
                 />
               </FormItem>
             </Col>

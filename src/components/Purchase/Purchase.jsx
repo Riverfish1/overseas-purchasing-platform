@@ -113,10 +113,17 @@ class Purchase extends Component {
       { title: '图片',
         dataIndex: 'imageUrl',
         key: 'imageUrl',
-        render(t) {
+        render(text) {
+          let imgUrl = '';
+          try {
+            const imgObj = JSON.parse(text);
+            imgUrl = imgObj.picList[0].url;
+          } catch (e) {
+            return '-';
+          }
           return (
             <Popover title={null} content={content}>
-              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, t)} src={t} width="50" height="50" />
+              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />
             </Popover>);
         },
       },

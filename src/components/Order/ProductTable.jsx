@@ -50,6 +50,7 @@ class ProductTable extends Component {
         if (!skuSingle.skuCode) {
           skuSingle.skuCode = p[`r_${count}_skuCode_dom`].refs.input.value;
         }
+        if (skuSingle.skuPic) delete skuSingle.skuPic;
         skuList.push(skuSingle);
         count += 1;
       }
@@ -130,6 +131,7 @@ class ProductTable extends Component {
             el.freight = value.freightStr;
             el.salePrice = value.salePrice || 0;
             el.quantity = value.quantity || 1;
+            el.skuPic = value.skuPic ? JSON.parse(value.skuPic).picList[0].url : '';
           }
         });
         this.setState({ skuData }, () => {
@@ -343,6 +345,19 @@ class ProductTable extends Component {
           key: 'itemName',
           width: '14%',
           render(text) { return text || '-'; },
+        },
+        {
+          title: '商品图片',
+          dataIndex: 'skuPic',
+          key: 'skuPic',
+          width: '8.5%',
+          render(t) {
+            return (
+              t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+                <img role="presentation" src={t} width={60} height={60} />
+              </Popover> : '-'
+            );
+          },
         },
         {
           title: '颜色',

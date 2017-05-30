@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, message, Upload, Icon, Input, Select, Row, Col, DatePicker, Form } from 'antd';
+import { Modal, message, Upload, Icon, Input, Row, Col, DatePicker, Form } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import ProductTable from './ProductTable';
@@ -7,7 +7,7 @@ import ProductTable from './ProductTable';
 moment.locale('zh-cn');
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+// const Option = Select.Option;
 
 function toString(str, type) {
   if (typeof str !== 'undefined' && str !== null) {
@@ -144,7 +144,7 @@ class PurchaseModal extends Component {
     }
     const modalProps = {
       visible,
-      width: 1000,
+      width: 1100,
       wrapClassName: 'modalStyle',
       okText: '保存',
       title,
@@ -215,6 +215,17 @@ class PurchaseModal extends Component {
             </Col>
             <Col span={7}>
               <FormItem
+                label="采购单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('purOrderNo', {
+                  initialValue: toString(purchaseData.purOrderNo),
+                })(
+                  <Input placeholder="请输入采购单号" />)}
+              </FormItem>
+            </Col>
+            {/* <Col span={7}>
+              <FormItem
                 label="任务分配人"
                 {...formItemLayout}
               >
@@ -227,20 +238,9 @@ class PurchaseModal extends Component {
                   </Select>,
                 )}
               </FormItem>
-            </Col>
+            </Col> */}
           </Row>
           <Row gutter={10}>
-            <Col span={7}>
-              <FormItem
-                label="采购单号"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('purOrderNo', {
-                  initialValue: toString(purchaseData.purOrderNo),
-                })(
-                  <Input placeholder="请输入采购单号" />)}
-              </FormItem>
-            </Col>
             <Col span={7}>
               <FormItem
                 label="任务开始时间"

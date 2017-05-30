@@ -104,7 +104,7 @@ class ProductsModal extends Component {
     const { agencyList } = this.props;
     agencyList.forEach((el) => {
       if (el.id.toString() === id.toString()) {
-        p.setState({ salesName: el.userName });
+        p.setState({ salesName: el.name });
       }
     });
   }
@@ -171,7 +171,7 @@ class ProductsModal extends Component {
                 })(
                   <Select placeholder="请选择销售" onChange={this.handleChangeSeller.bind(this)} >
                     {agencyList.map((el) => {
-                      return <Option key={el.id} value={el.id && el.id.toString()}>{el.userName}</Option>;
+                      return <Option key={el.id} value={el.id && el.id.toString()}>{el.name}</Option>;
                     })}
                   </Select>,
                 )}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Input, Select, Button, Modal } from 'antd';
+import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover } from 'antd';
 
 import DeliveryModal from './component/DeliveryModal';
 
@@ -100,6 +100,20 @@ class ErpOrder extends Component {
       { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 100 },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 150 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150 },
+      {
+        title: '图片',
+        dataIndex: 'skuPic',
+        key: 'skuPic',
+        width: 80,
+        render(text) {
+          const t = text ? JSON.parse(text).picList[0].url : '';
+          return (
+            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+              <img role="presentation" src={t} width={60} height={60} />
+            </Popover> : '-'
+          );
+        },
+      },
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 100 },
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 100 },
       { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },

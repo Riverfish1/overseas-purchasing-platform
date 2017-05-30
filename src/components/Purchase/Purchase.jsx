@@ -46,11 +46,6 @@ class Purchase extends Component {
     this.setState({
       modalVisible: true,
       title: '新增',
-    }, () => {
-      this.props.dispatch({
-        type: 'sku/querySkuList',
-        payload: {},
-      });
     });
   }
 
@@ -62,14 +57,11 @@ class Purchase extends Component {
       title: '修改',
     }, () => {
       p.props.dispatch({ type: 'purchase/queryPurchase', payload: { id } });
-      p.props.dispatch({ type: 'sku/querySkuList', payload: {} });
     });
   }
 
   closeModal(modalVisible) {
-    this.setState({
-      modalVisible,
-    });
+    this.setState({ modalVisible });
     this.props.dispatch({
       type: 'purchase/savePurchase',
       payload: {},
@@ -93,7 +85,7 @@ class Purchase extends Component {
 
   render() {
     const p = this;
-    const { form, list = [], total, purchaseValues = {}, buyer = [], skuList = [], dispatch } = p.props;
+    const { form, list = [], total, purchaseValues = {}, buyer = [], dispatch } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
     const { title, previewImage } = p.state;
     const formItemLayout = {
@@ -250,7 +242,6 @@ class Purchase extends Component {
           modalValues={purchaseValues}
           title={title}
           buyer={buyer}
-          skuList={skuList}
           dispatch={dispatch}
         />
       </div>
@@ -259,13 +250,12 @@ class Purchase extends Component {
 }
 
 function mapStateToProps(state) {
-  const { list, total, purchaseValues, buyer, skuList } = state.purchase;
+  const { list, total, purchaseValues, buyer } = state.purchase;
   return {
     list,
     total,
     purchaseValues,
     buyer,
-    skuList,
   };
 }
 

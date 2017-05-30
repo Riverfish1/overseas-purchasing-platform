@@ -325,7 +325,7 @@ class ProductTable extends Component {
                     title="搜索SKU"
                     trigger="click"
                   >
-                    <Input placeholder="请搜索" ref={(c) => { p[`r_${r.key}_skuCode`] = c; }} value={t || undefined} />
+                    <Input onFocus={p.handleSearch.bind(p, r.key, {})} placeholder="请搜索" ref={(c) => { p[`r_${r.key}_skuCode`] = c; }} value={t || undefined} />
                   </Popover>,
                 )}
               </FormItem>

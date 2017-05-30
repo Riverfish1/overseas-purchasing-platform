@@ -121,6 +121,7 @@ class PurchaseModal extends Component {
           item.transQuantity = el.transQuantity || 0;
           item.price = el.price;
           item.shelfNo = el.shelfNo;
+          item.taskDailyDetailId = el.taskDetailId;
           return item;
         }
       }));

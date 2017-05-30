@@ -239,7 +239,11 @@ class ProductTable extends Component {
         onChange(page) {
           p.props.dispatch({
             type: 'sku/querySkuList',
-            payload: { pageIndex: page },
+            payload: {
+              pageIndex: page,
+              skuCode: skuCode.refs.input.value,
+              itemName: itemName.refs.input.value,
+            },
           });
         },
       };

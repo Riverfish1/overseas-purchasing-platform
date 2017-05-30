@@ -114,10 +114,10 @@ class Order extends Component {
       wrapperCol: { span: 14 },
     };
     const columnsList = [
-      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 100 },
-      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 200, render(text) { return text || '-'; } },
-      { title: '客户', dataIndex: 'salesName', key: 'salesName', width: 50, render(text) { return text || '-'; } },
-      { title: '订单时间', dataIndex: 'orderTime', key: 'orderTime', width: 200, render(text) { return text ? text.slice(0, 10) : '-'; } },
+      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 150 },
+      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },
+      { title: '客户', dataIndex: 'salesName', key: 'salesName', width: 80, render(text) { return text || '-'; } },
+      { title: '订单时间', dataIndex: 'orderTime', key: 'orderTime', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
@@ -132,7 +132,7 @@ class Order extends Component {
           }
         },
       },
-      { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 60 },
+      { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 80 },
       { title: '收件人地址',
         dataIndex: 'address',
         key: 'address',

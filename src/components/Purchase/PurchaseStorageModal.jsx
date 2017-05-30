@@ -369,7 +369,7 @@ class PurchaseModal extends Component {
             <Col span="12">
               <div className={styles.blockTitle}>入库明细</div>
               <Row style={{ margin: '10px 0' }}>
-                <Col span="12"><Input placeholder="输入或扫描UPC码添加" size="large" ref={(c) => { this.upcInput = c; }} /></Col>
+                <Col span="12"><Input placeholder="输入SKU代码或UPC码添加" size="large" ref={(c) => { this.upcInput = c; }} /></Col>
                 <Col span="6" style={{ marginLeft: 10 }}><Button type="primary" size="large" onClick={this.queryUpc.bind(this)}>添加</Button></Col>
               </Row>
               <Table columns={columnsStorageList} bordered scroll={{ x: '130%' }} dataSource={storageList} rowKey="skuId" pagination={false} />

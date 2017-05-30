@@ -221,13 +221,6 @@ export default {
         });
       }
     },
-    * searchSku({ payload }, { call }) {
-      const param = {};
-      if (payload.keyword.skuCode) { param.skuCode = payload.keyword.skuCode; }
-      if (payload.keyword.itemName) { param.itemName = payload.keyword.itemName; }
-      const data = yield call(querySkuList, { payload: param });
-      payload.callback(data.success ? data : 'ERROR');
-    },
     * confirmOrder({ payload }, { call, put }) {
       const data = yield call(confirmOrder, { payload });
       if (data.success) {

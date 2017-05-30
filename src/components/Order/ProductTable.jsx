@@ -145,7 +145,7 @@ class ProductTable extends Component {
   handleSearch(key, value) {
     this.props.dispatch({
       type: 'sku/querySkuList',
-      payload: { ...value },
+      payload: { ...value, pageIndex: 1 },
     });
   }
 
@@ -158,7 +158,7 @@ class ProductTable extends Component {
 
   render() {
     const p = this;
-    const { form, skuList = [], parent, total } = p.props;
+    const { form, skuList = [], parent, total, currentPage } = p.props;
     const { skuData } = p.state;
     const { getFieldDecorator } = form;
 
@@ -194,6 +194,7 @@ class ProductTable extends Component {
       const paginationProps = {
         pageSize: 10,
         total: skuTotal,
+        current: currentPage,
         onChange(page) {
           p.props.dispatch({
             type: 'sku/querySkuList',
@@ -413,10 +414,11 @@ class ProductTable extends Component {
 }
 
 function mapStateToProps(state) {
-  const { skuList, skuTotal } = state.sku;
+  const { skuList, skuTotal, currentPage } = state.sku;
   return {
     skuList,
     total: skuTotal,
+    currentPage,
   };
 }
 

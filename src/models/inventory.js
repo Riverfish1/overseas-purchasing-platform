@@ -1,12 +1,13 @@
 import fetch from '../utils/request';
 
 const queryInventoryList = ({ payload }) => fetch.post('/haierp1/inventory/area/queryList', { data: payload }).catch(e => e);
+const transTo = ({ payload }) => fetch.post('/haierp1/inventory/area/transTo', { data: payload }).catch(e => e);
 // 仓库管理
 const queryWareList = ({ payload }) => fetch.get('/haierp1/warehouse/queryWarehouses', { data: payload }).catch(e => e);
 const addWare = ({ payload }) => fetch.get('/haierp1/warehouse/add', { data: payload }).catch(e => e);
 const updateWare = ({ payload }) => fetch.get('/haierp1/warehouse/update', { data: payload }).catch(e => e);
 const queryWare = ({ payload }) => fetch.get('/haierp1/warehouse/query', { data: payload }).catch(e => e);
-
+// 在途入仓
 export default {
   namespace: 'inventory',
   state: {
@@ -78,6 +79,12 @@ export default {
       const data = yield call(updateWare, { payload });
       if (data.success) {
         yield put({ type: 'queryWareList', payload: {} });
+      }
+    },
+    * transTo({ payload }, { call, put }) {
+      const data = yield call(transTo, { payload });
+      if (data.success) {
+        yield put({ type: 'queryInventoryList', payload: {} });
       }
     },
   },

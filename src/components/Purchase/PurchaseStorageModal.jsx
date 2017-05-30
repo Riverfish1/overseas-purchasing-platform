@@ -310,7 +310,7 @@ class PurchaseModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('id', {
-                  initialValue: toString(purchaseStorageData.id),
+                  initialValue: toString(purchaseStorageData.stoOrderNo),
                 })(
                   <Input placeholder="自动生成" disabled />)}
               </FormItem>

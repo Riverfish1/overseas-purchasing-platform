@@ -4,17 +4,12 @@ import { Input, InputNumber, Button, Form, Table, Row, Col, Popover, Popconfirm,
 
 const FormItem = Form.Item;
 
-let searchQueue = [];
-
 class ProductTable extends Component {
   constructor() {
     super();
     this.state = {
       skuData: [],
-      skuSearchList: {},
-      total: 1,
     };
-    this.skuSearchInputs = {};
   }
 
   componentWillReceiveProps(...args) {
@@ -34,9 +29,7 @@ class ProductTable extends Component {
     const skuList = [];
     form.validateFields((err, fieldsSku) => {
       console.log(err, fieldsSku);
-      if (err) {
-        return;
-      }
+      if (err) return;
       let count = 1;
       const keys = Object.keys(fieldsSku);
       while (Object.prototype.hasOwnProperty.call(fieldsSku, `r_${count}_skuCode`)) {
@@ -89,12 +82,10 @@ class ProductTable extends Component {
   }
 
   handleSelect(key, skuCode) {
-    console.log('selected');
-
     const { form, skuList } = this.props;
-    const { skuSearchList, skuData } = this.state;
+    const { skuData } = this.state;
 
-    const source = skuSearchList[key] || skuList;
+    const source = skuList;
 
     // 先判断当前列表是否有相同的skuCode，有的话数量+1
     let isDuplicate = false;
@@ -152,35 +143,15 @@ class ProductTable extends Component {
   }
 
   handleSearch(key, value) {
-    const p = this;
-    if (searchQueue.length > 0) {
-      searchQueue.push(value);
-      return;
-    }
     this.props.dispatch({
-      type: 'order/searchSku',
-      payload: {
-        keyword: value,
-        callback(status) {
-          if (status !== 'ERROR') {
-            const { skuSearchList } = p.state;
-            skuSearchList[key] = status.data || [];
-            p.setState({ skuSearchList, total: status.totalCount });
-          }
-          // 搜索始终进行
-          if (searchQueue.length > 0) {
-            const keyword = searchQueue[searchQueue.length - 1];
-            searchQueue = [];
-            p.handleSearch(key, keyword);
-          }
-        },
-      },
+      type: 'sku/querySkuList',
+      payload: { ...value },
     });
   }
 
   clearValue() {
     const { form } = this.props;
-    this.setState({ skuData: [], skuSearchList: {} }, () => {
+    this.setState({ skuData: [] }, () => {
       form.resetFields();
     });
   }
@@ -188,7 +159,7 @@ class ProductTable extends Component {
   render() {
     const p = this;
     const { form, skuList = [], parent, total } = p.props;
-    const { skuData, skuSearchList } = p.state;
+    const { skuData } = p.state;
     const { getFieldDecorator } = form;
 
     const formItemLayout = {
@@ -316,15 +287,12 @@ class ProductTable extends Component {
 
     const modalTableProps = {
       columns: [
-        {
-          title: <font color="#00f">SKU代码</font>,
+        { title: <font color="#00f">SKU代码</font>,
           dataIndex: 'skuCode',
           key: 'skuCode',
           width: '20%',
           render(text, r) {
-            console.log(text);
-            const list = skuSearchList[r.key] || skuList;
-            const skuTotal = skuSearchList[r.key] ? p.state.total : total;
+            console.log(text, r);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuCode`, {
@@ -332,7 +300,7 @@ class ProductTable extends Component {
                   rules: [{ required: true, message: '请选择SKU' }],
                 })(
                   <Popover
-                    content={renderSkuPopover(list, r.key, skuTotal)}
+                    content={renderSkuPopover(skuList, r.key, total)}
                     title="搜索SKU"
                     trigger="click"
                   >

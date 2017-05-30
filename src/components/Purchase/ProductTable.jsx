@@ -16,10 +16,8 @@ class ProductTable extends Component {
     super();
     this.state = {
       skuData: [],
-      skuSearchList: {},
       previewImage: '',
       previewVisible: false,
-      total: 1,
     };
   }
 
@@ -95,9 +93,9 @@ class ProductTable extends Component {
     console.log('selected');
 
     const { form, skuList } = this.props;
-    const { skuSearchList, skuData } = this.state;
+    const { skuData } = this.state;
 
-    const source = skuSearchList[key] || skuList;
+    const source = skuList;
 
     source.forEach((value) => {
       if (value.skuCode.toString() === skuCode.toString()) {
@@ -120,35 +118,15 @@ class ProductTable extends Component {
   }
 
   handleSearch(key, value) {
-    const p = this;
-    if (searchQueue.length > 0) {
-      searchQueue.push(value);
-      return;
-    }
     this.props.dispatch({
-      type: 'order/searchSku',
-      payload: {
-        keyword: value,
-        callback(status) {
-          if (status !== 'ERROR') {
-            const { skuSearchList } = p.state;
-            skuSearchList[key] = status.data || [];
-            p.setState({ skuSearchList, total: status.totalCount });
-          }
-          // 搜索始终进行
-          if (searchQueue.length > 0) {
-            const keyword = searchQueue[searchQueue.length - 1];
-            searchQueue = [];
-            p.handleSearch(key, keyword);
-          }
-        },
-      },
+      type: 'sku/querySkuList',
+      payload: { ...value },
     });
   }
 
   clearValue() {
     const { form } = this.props;
-    this.setState({ skuData: [], skuSearchList: {} }, () => {
+    this.setState({ skuData: [] }, () => {
       form.resetFields();
     });
   }
@@ -201,7 +179,7 @@ class ProductTable extends Component {
   render() {
     const p = this;
     const { form, skuList = [], parent, buyer = [], total } = p.props;
-    const { skuData, skuSearchList, previewImage, previewVisible } = p.state;
+    const { skuData, previewImage, previewVisible } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 8 },
@@ -335,8 +313,6 @@ class ProductTable extends Component {
           key: 'skuCode',
           width: '10%',
           render(t, r) {
-            const list = skuSearchList[r.key] || skuList;
-            const skuTotal = skuSearchList[r.key] ? p.state.total : total;
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuCode`, {
@@ -344,7 +320,7 @@ class ProductTable extends Component {
                   rules: [{ required: true, message: '该项必填' }],
                 })(
                   <Popover
-                    content={renderSkuPopover(list, r.key, skuTotal)}
+                    content={renderSkuPopover(skuList, r.key, total)}
                     title="搜索SKU"
                     trigger="click"
                   >

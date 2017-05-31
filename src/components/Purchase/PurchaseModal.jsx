@@ -26,6 +26,7 @@ class PurchaseModal extends Component {
       previewImage: '',
       certFileList: '',
       defaultBuyer: undefined,
+      defaultEndTime: undefined,
     };
 
     // skuTable改写父级方法
@@ -135,10 +136,14 @@ class PurchaseModal extends Component {
     this.setState({ defaultBuyer });
   }
 
+  handleChangeEndTime(defaultEndTime) {
+    this.setState({ defaultEndTime });
+  }
+
   render() {
     const p = this;
     const { form, title, visible, modalValues = {}, buyer = [] } = p.props;
-    const { previewVisible, previewImage, defaultBuyer } = p.state;
+    const { previewVisible, previewImage, defaultBuyer, defaultEndTime } = p.state;
     const purchaseData = (modalValues && modalValues.data) || {};
     const { getFieldDecorator } = form;
     let picList = [];
@@ -264,7 +269,7 @@ class PurchaseModal extends Component {
                   initialValue: purchaseData.taskEndTime ? moment(purchaseData.taskEndTime, 'YYYY-MM-DD HH:mm:ss') : undefined,
                   rules: [{ required: true, message: '该项必填' }],
                 })(
-                  <DatePicker disabledDate={this.disabledEndDate.bind(this)} style={{ width: '100%' }} />,
+                  <DatePicker onChange={this.handleChangeEndTime.bind(this)} disabledDate={this.disabledEndDate.bind(this)} style={{ width: '100%' }} />,
                 )}
               </FormItem>
             </Col>
@@ -330,7 +335,7 @@ class PurchaseModal extends Component {
             </Col>
           </Row>
           <Row>
-            <ProductTable defaultBuyer={defaultBuyer} data={purchaseData.taskDetailList} parent={this} buyer={buyer} />
+            <ProductTable defaultBuyer={defaultBuyer} defaultEndTime={defaultEndTime} data={purchaseData.taskDetailList} parent={this} buyer={buyer} />
           </Row>
         </Form>
       </Modal>

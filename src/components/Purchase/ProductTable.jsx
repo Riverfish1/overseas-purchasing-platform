@@ -192,7 +192,7 @@ class ProductTable extends Component {
 
   render() {
     const p = this;
-    const { form, skuList = [], parent, buyer = [], defaultBuyer, total, currentPage, pageSize } = p.props;
+    const { form, skuList = [], parent, buyer = [], defaultBuyer, defaultEndTime, total, currentPage, pageSize } = p.props;
     const { skuData, previewImage, previewVisible } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
@@ -541,7 +541,7 @@ class ProductTable extends Component {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskEndTime`, {
-                  initialValue: t ? moment(t, 'YYYY-MM-DD') : undefined,
+                  initialValue: t ? moment(t, 'YYYY-MM-DD') : defaultEndTime,
                   rules: [{ required: true, message: '该项必填' }],
                 })(
                   <DatePicker disabledDate={p.disabledEndTime.bind(p, r.key)} />,

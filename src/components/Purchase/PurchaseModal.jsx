@@ -228,7 +228,7 @@ class PurchaseModal extends Component {
                   <Input placeholder="请输入采购单号" />)}
               </FormItem>
             </Col>
-            <Col span={7}>
+            {/* <Col span={7}>
               <FormItem
                 label="默认买手"
                 {...formItemLayout}
@@ -239,7 +239,7 @@ class PurchaseModal extends Component {
                   })}
                 </Select>
               </FormItem>
-            </Col>
+            </Col>*/}
           </Row>
           <Row gutter={10}>
             <Col span={7}>

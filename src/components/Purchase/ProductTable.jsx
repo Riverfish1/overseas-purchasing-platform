@@ -395,11 +395,17 @@ class ProductTable extends Component {
           key: 'skuPic',
           width: '8.5%',
           render(t) {
-            return (
-              t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
-                <img role="presentation" src={t} width={60} height={60} />
-              </Popover> : '-'
-            );
+            const picObj = JSON.parse(t);
+            const picList = picObj.picList;
+            if (picList.length) {
+              const imgUrl = picList[0].url;
+              return (
+                <Popover title={null} content={<img role="presentation" src={imgUrl} style={{ width: 400 }} />}>
+                  <img role="presentation" src={imgUrl} width={60} height={60} />
+                </Popover>
+              );
+            }
+            return '-';
           },
         },
         { title: <font color="#00f">买手</font>,

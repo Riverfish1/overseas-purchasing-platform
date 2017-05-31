@@ -89,6 +89,10 @@ export default {
         yield put({ type: 'queryPurchaseList', payload: {} });
       }
     },
+    * exportPurchase({ payload }, { put }) {
+      window.open(`http://${location.host}/haierp1/purchase/taskDailyExport?id=${payload.id}`);
+      yield put({ type: 'queryPurchaseList', payload: {} });
+    },
   },
   reducers: {
     updatePurchaseList(state, { payload }) {

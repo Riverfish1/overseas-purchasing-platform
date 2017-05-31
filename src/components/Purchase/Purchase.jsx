@@ -83,6 +83,13 @@ class Purchase extends Component {
     }
   }
 
+  exportPurchase(id) { // 导出采购单
+    this.props.dispatch({
+      type: 'purchase/exportPurchase',
+      payload: { id },
+    });
+  }
+
   render() {
     const p = this;
     const { form, list = [], total, purchaseValues = {}, buyer = [], dispatch } = p.props;
@@ -126,13 +133,14 @@ class Purchase extends Component {
         dataIndex: 'operator',
         key: 'operator',
         width: 160,
-        render(text, record) {
+        render(t, r) {
           return (
             <div>
-              <a href="javascript:void(0)" style={{ margin: '0 10px 0 0' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
-              <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, record)} >
-                <a href="javascript:void(0)" >删除</a>
+              <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.updateModal.bind(p, r.id)}>修改</a>
+              <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, r)} >
+                <a style={{ marginRight: 10 }} href="javascript:void(0)" >删除</a>
               </Popconfirm>
+              <a href="javascript:void(0)" onClick={p.exportPurchase.bind(p, r.id)}>导出</a>
             </div>);
         },
       },

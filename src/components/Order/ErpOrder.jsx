@@ -58,7 +58,7 @@ class ErpOrder extends Component {
           payload: {
             orderIds: JSON.stringify(p.state.checkId),
             callback() {
-              p.setState({ isNotSelected: true });
+              p.setState({ isNotSelected: true, checkId: [] }); // 取消选择 checkId
               dispatch({
                 type: 'order/queryErpOrderList',
                 payload: {},
@@ -96,7 +96,7 @@ class ErpOrder extends Component {
       type: 'order/saveErpOrderDetail',
       payload: {},
     });
-    this.setState({ deliveryModalVisible: false });
+    this.setState({ deliveryModalVisible: false, checkId: [] }); // 取消选择 checkId
   }
   render() {
     const p = this;
@@ -110,6 +110,7 @@ class ErpOrder extends Component {
     };
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
+        console.log(selectedRowKeys);
         const listId = [];
         if (selectedRows.length) p.setState({ isNotSelected: false });
         else p.setState({ isNotSelected: true });
@@ -118,6 +119,7 @@ class ErpOrder extends Component {
         });
         p.setState({ checkId: listId });
       },
+      selectedRowKeys: p.state.checkId,
     };
     const columns = [
       { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 100 },

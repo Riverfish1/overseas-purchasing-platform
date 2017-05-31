@@ -3,7 +3,6 @@ import fetch from '../utils/request';
 
 const addOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/add', { data: payload }).catch(e => e);
 const updateOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/update', { data: payload }).catch(e => e);
-const querySkuList = ({ payload }) => fetch.post('/haierp1/itemSku/queryItemSkuList', { data: payload }).catch(e => e);
 const deleteOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/delete', { data: payload }).catch(e => e);
 const queryOrderList = ({ payload }) => fetch.post('/haierp1/outerOrder/queryOuterOrderList', { data: payload }).catch(e => e);
 const queryOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/query', { data: payload }).catch(e => e);
@@ -12,6 +11,8 @@ const confirmOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/confirm', 
 const closeOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/close', { data: payload }).catch(e => e);
 // erp
 const queryErpOrderList = ({ payload }) => fetch.post('/haierp1/erpOrder/query', { data: payload }).catch(e => e);
+// 订单关闭
+const closeErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/close', { data: payload }).catch(e => e);
 const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/split', { data: payload }).catch(e => e);
 // 批量发货
 const multiDelivery = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDelivery', { data: payload }).catch(e => e);
@@ -173,6 +174,13 @@ export default {
           type: 'saveErpOrderList',
           payload: data,
         });
+      }
+    },
+    * closeErpOrder({ payload }, { call }) {
+      const data = yield call(closeErpOrder, { payload: { orderIds: payload.orderIds } });
+      if (data.success) {
+        message.success('关闭成功');
+        if (payload.callback) payload.callback();
       }
     },
     * queryErpOrderDetail({ payload }, { call, put }) {

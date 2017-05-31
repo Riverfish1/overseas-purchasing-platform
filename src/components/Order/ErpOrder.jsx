@@ -41,8 +41,31 @@ class ErpOrder extends Component {
       payload: {
         erpOrderId: this.state.checkId,
         callback() {
-          p.setState({ deliveryModalVisible: true });
+          p.setState({ deliveryModalVisible: true, isNotSelected: true });
         },
+      },
+    });
+  }
+  closeErpOrder() { // 子订单关闭
+    const p = this;
+    const { dispatch } = this.props;
+    Modal.confirm({
+      title: '关闭',
+      content: '确定要关闭吗？',
+      onOk: () => {
+        dispatch({
+          type: 'order/closeErpOrder',
+          payload: {
+            orderIds: JSON.stringify(p.state.checkId),
+            callback() {
+              p.setState({ isNotSelected: true });
+              dispatch({
+                type: 'order/queryErpOrderList',
+                payload: {},
+              });
+            },
+          },
+        });
       },
     });
   }
@@ -100,8 +123,7 @@ class ErpOrder extends Component {
       { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 100 },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 150 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150 },
-      {
-        title: '图片',
+      { title: '图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
         width: 80,
@@ -142,7 +164,9 @@ class ErpOrder extends Component {
             case 1: return '部分备货';
             case 2: return '部分在途备货';
             case 3: return '全部在途备货';
-            case 4: return '已备货';
+            case 4: return '混合备货完成';
+            case 9: return '已释放';
+            case 10: return '已备货';
             default: return '-';
           }
         },
@@ -160,7 +184,7 @@ class ErpOrder extends Component {
       { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: 220 },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
       { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
-      { title: '操作',
+      /* { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
         width: 100,
@@ -170,7 +194,7 @@ class ErpOrder extends Component {
               <a href="javascript:void(0)" onClick={() => { p.setState({ visible: true, needSplitId: r.id }); }} >订单拆分</a>
             </div>);
         },
-      },
+      },*/
     ];
     const pagination = {
       total: erpOrderTotal,
@@ -241,7 +265,9 @@ class ErpOrder extends Component {
                     <Option value="1">部分备货</Option>
                     <Option value="2">部分在途备货</Option>
                     <Option value="3">全部在途备货</Option>
-                    <Option value="4">已备货</Option>
+                    <Option value="4">混合备货完成</Option>
+                    <Option value="9">已释放</Option>
+                    <Option value="10">已备货</Option>
                   </Select>,
                 )}
               </FormItem>
@@ -284,8 +310,11 @@ class ErpOrder extends Component {
           </Row>
         </Form>
         <Row>
-          <Col className="operBtn" style={{ textAlign: 'right' }}>
+          <Col span={22} className="operBtn">
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>发货</Button>
+          </Col>
+          <Col span={2} className="operBtn">
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.closeErpOrder.bind(p)}>关闭</Button>
           </Col>
         </Row>
         <Modal

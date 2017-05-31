@@ -9,8 +9,6 @@ moment.locale('zh-cn');
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-let searchQueue = [];
-
 class ProductTable extends Component {
   constructor() {
     super();
@@ -110,7 +108,7 @@ class ProductTable extends Component {
           if (el.key.toString() === key.toString()) {
             el.skuId = value.id;
             el.skuCode = value.skuCode;
-            el.skuPic = value.skuPic ? JSON.parse(value.skuPic).picList[0].url : '';
+            el.skuPic = value.skuPic;
           }
         });
         this.setState({ skuData }, () => {
@@ -395,15 +393,17 @@ class ProductTable extends Component {
           key: 'skuPic',
           width: '8.5%',
           render(t) {
-            const picObj = JSON.parse(t);
-            const picList = picObj.picList;
-            if (picList.length) {
-              const imgUrl = picList[0].url;
-              return (
-                <Popover title={null} content={<img role="presentation" src={imgUrl} style={{ width: 400 }} />}>
-                  <img role="presentation" src={imgUrl} width={60} height={60} />
-                </Popover>
-              );
+            if (t) {
+              const picObj = JSON.parse(t);
+              const picList = picObj.picList;
+              if (picList.length) {
+                const imgUrl = picList[0].url;
+                return (
+                  <Popover title={null} content={<img role="presentation" src={imgUrl} style={{ width: 400 }} />}>
+                    <img role="presentation" src={imgUrl} width={60} height={60} />
+                  </Popover>
+                );
+              }
             }
             return '-';
           },

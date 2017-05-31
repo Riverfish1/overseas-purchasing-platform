@@ -18,6 +18,7 @@ class ProductTable extends Component {
       skuData: [],
       previewImage: '',
       previewVisible: false,
+      selectedSku: [],
     };
   }
 
@@ -63,24 +64,30 @@ class ProductTable extends Component {
     });
   }
 
-  addProduct() {
+  addProduct(num) {
     const { skuData } = this.state;
     const skuLen = skuData.length;
     const lastId = skuLen < 1 ? 0 : skuData[skuData.length - 1].key;
-    const newId = parseInt(lastId, 10) + 1;
-    const newItem = {
-      id: '',
-      key: newId,
-      skuCode: '',
-      skuId: '',
-      itemName: '',
-      color: '',
-      scale: '',
-      salePrice: '',
-      freight: '',
-      quantity: '',
-    };
-    skuData.push(newItem);
+    const looptime = typeof num === 'number' ? num : 1;
+
+    let currentId = parseInt(lastId, 10);
+    for (let i = 0; i < looptime; i += 1) {
+      currentId += 1;
+      const newId = currentId;
+      const newItem = {
+        id: '',
+        key: newId,
+        skuCode: '',
+        skuId: '',
+        itemName: '',
+        color: '',
+        scale: '',
+        salePrice: '',
+        freight: '',
+        quantity: '',
+      };
+      skuData.push(newItem);
+    }
     this.setState({ skuData });
   }
 
@@ -118,9 +125,11 @@ class ProductTable extends Component {
   }
 
   handleSearch(key, value) {
-    this.props.dispatch({
-      type: 'sku/querySkuList',
-      payload: { ...value, pageIndex: 1 },
+    this.setState({ selectedSku: [] }, () => {
+      this.props.dispatch({
+        type: 'sku/querySkuList',
+        payload: { ...value, pageIndex: 1 },
+      });
     });
   }
 
@@ -176,6 +185,13 @@ class ProductTable extends Component {
     return value.valueOf() < startTime.valueOf();
   }
 
+  clearSelectedSku(visible) {
+    console.log('sku popover visible: ', visible);
+    if (!visible) {
+      this.setState({ selectedSku: [] });
+    }
+  }
+
   render() {
     const p = this;
     const { form, skuList = [], parent, buyer = [], defaultBuyer, total, currentPage, pageSize } = p.props;
@@ -211,6 +227,23 @@ class ProductTable extends Component {
         }, 0);
       }
 
+      function batchSelectSku() {
+        const { selectedSku } = p.state;
+        p.addProduct(selectedSku.length - 1);
+        setTimeout(() => {
+          selectedSku.forEach((sku, index) => {
+            if (index === 0) {
+              setTimeout(() => { updateValue(sku.skuCode); }, 0);
+              return;
+            }
+            p.handleSelect(key + index, sku.skuCode);
+          });
+          setTimeout(() => {
+            p.clearSelectedSku();
+          }, 0);
+        }, 0);
+      }
+
       const paginationProps = {
         defaultPageSize: 20,
         pageSize,
@@ -241,6 +274,13 @@ class ProductTable extends Component {
             },
           });
         },
+      };
+
+      const rowSelection = {
+        onChange: (selectedRowKeys, selectedRows) => {
+          p.setState({ selectedSku: selectedRows });
+        },
+        selectedRowKeys: p.state.selectedSku.map(sku => sku.id),
       };
 
       const columns = [
@@ -302,17 +342,19 @@ class ProductTable extends Component {
                 />
               </FormItem>
             </Col>
-            <Col className="listBtnGroup" span="7" style={{ paddingTop: 2 }}>
+            <Col className="listBtnGroup" span="10" style={{ paddingTop: 2 }}>
               <Button type="primary" onClick={doSearch}>查询</Button>
               <Button type="ghost" onClick={handleEmpty}>清空</Button>
             </Col>
           </Row>
           <Row>
+            <Button type="primary" onClick={batchSelectSku} style={{ position: 'absolute', bottom: 10, left: 0 }} disabled={p.state.selectedSku.length === 0}>批量添加</Button>
             <Table
               columns={columns}
               dataSource={list}
               size="small"
               bordered
+              rowSelection={rowSelection}
               rowKey={record => record.id}
               pagination={paginationProps}
               scroll={{ y: 500 }}
@@ -339,6 +381,7 @@ class ProductTable extends Component {
                     content={renderSkuPopover(skuList, r.key, total)}
                     title="搜索SKU"
                     trigger="click"
+                    onVisibleChange={p.clearSelectedSku.bind(p)}
                   >
                     <Input onFocus={p.handleSearch.bind(p, r.key, {})} placeholder="请搜索" ref={(c) => { p[`r_${r.key}_skuCode`] = c; }} value={t || undefined} />
                   </Popover>,

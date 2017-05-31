@@ -10,7 +10,7 @@ class AgencyType extends Component {
     super();
     this.state = {
       visible: false,
-      title: '', // modal的title
+      title: '-', // modal的title
     };
   }
 
@@ -47,12 +47,14 @@ class AgencyType extends Component {
       type: 'agency/saveAgencyType',
       payload: {},
     });
+    this.props.form.resetFields();
   }
 
   handleQuery(record) {
     const p = this;
     p.setState({
       visible: true,
+      title: '修改',
     }, () => {
       p.props.dispatch({
         type: 'agency/queryAgencyType',

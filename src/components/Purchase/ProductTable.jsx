@@ -178,7 +178,7 @@ class ProductTable extends Component {
 
   render() {
     const p = this;
-    const { form, skuList = [], parent, buyer = [], total, currentPage, pageSize } = p.props;
+    const { form, skuList = [], parent, buyer = [], defaultBuyer, total, currentPage, pageSize } = p.props;
     const { skuData, previewImage, previewVisible } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
@@ -324,8 +324,7 @@ class ProductTable extends Component {
 
     const modalTableProps = {
       columns: [
-        {
-          title: <font color="#00f">商品SKU</font>,
+        { title: <font color="#00f">商品SKU</font>,
           dataIndex: 'skuCode',
           key: 'skuCode',
           width: '10%',
@@ -348,8 +347,7 @@ class ProductTable extends Component {
             );
           },
         },
-        {
-          title: <font color="#00f">图片</font>,
+        { title: <font color="#00f">图片</font>,
           dataIndex: 'skuPic',
           key: 'skuPic',
           width: '8.5%',
@@ -361,16 +359,16 @@ class ProductTable extends Component {
             );
           },
         },
-        {
-          title: <font color="#00f">买手</font>,
+        { title: <font color="#00f">买手</font>,
           dataIndex: 'buyerId',
           key: 'buyerId',
           width: '8.5%',
           render(t, r) {
+            console.log(t);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_buyerId`, {
-                  initialValue: t ? t.toString() : undefined,
+                  initialValue: t ? t.toString() : defaultBuyer,
                   rules: [{ required: true, message: '该项必选' }],
                 })(
                   <Select placeholder="请选择" optionLabelProp="title">
@@ -381,8 +379,7 @@ class ProductTable extends Component {
             );
           },
         },
-        {
-          title: <font color="#00f">参考采购价</font>,
+        { title: <font color="#00f">参考采购价</font>,
           dataIndex: 'taskPrice',
           key: 'taskPrice',
           width: '8.5%',
@@ -399,8 +396,7 @@ class ProductTable extends Component {
             );
           },
         },
-        {
-          title: <font color="#00f">参考最大采购价</font>,
+        { title: <font color="#00f">参考最大采购价</font>,
           dataIndex: 'taskMaxPrice',
           key: 'taskMaxPrice',
           width: '8.5%',
@@ -417,8 +413,7 @@ class ProductTable extends Component {
             );
           },
         },
-        {
-          title: <font color="#00f">采购方式</font>,
+        { title: <font color="#00f">采购方式</font>,
           dataIndex: 'mode',
           key: 'mode',
           width: '8.5%',
@@ -438,8 +433,7 @@ class ProductTable extends Component {
             );
           },
         },
-        {
-          title: <font color="#00f">采购数量</font>,
+        { title: <font color="#00f">采购数量</font>,
           dataIndex: 'count',
           key: 'count',
           width: '8.5%',
@@ -455,8 +449,7 @@ class ProductTable extends Component {
               </FormItem>);
           },
         },
-        {
-          title: <font color="#00f">参考最大采购数量</font>,
+        { title: <font color="#00f">参考最大采购数量</font>,
           dataIndex: 'taskMaxCount',
           key: 'taskMaxCount',
           width: '8.5%',
@@ -473,8 +466,7 @@ class ProductTable extends Component {
             );
           },
         },
-        {
-          title: <font color="#00f">任务开始时间</font>,
+        { title: <font color="#00f">任务开始时间</font>,
           dataIndex: 'taskStartTime',
           key: 'taskStartTime',
           width: '12%',
@@ -491,8 +483,7 @@ class ProductTable extends Component {
             );
           },
         },
-        {
-          title: <font color="#00f">任务结束时间</font>,
+        { title: <font color="#00f">任务结束时间</font>,
           dataIndex: 'taskEndTime',
           key: 'taskEndTime',
           width: '12%',
@@ -510,8 +501,7 @@ class ProductTable extends Component {
             );
           },
         },
-        {
-          title: <font color="#00f">说明</font>,
+        { title: <font color="#00f">说明</font>,
           dataIndex: 'remark',
           key: 'remark',
           width: '8.5%',
@@ -541,8 +531,7 @@ class ProductTable extends Component {
             );
           },
         },
-        {
-          title: '操作',
+        { title: '操作',
           key: 'operator',
           render(t, record) {
             return (<Popconfirm title="确定删除?" onConfirm={p.handleDelete.bind(p, record.key)}>

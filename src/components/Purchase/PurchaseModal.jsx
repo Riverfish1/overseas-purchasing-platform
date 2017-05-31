@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, message, Upload, Icon, Input, Row, Col, DatePicker, Form } from 'antd';
+import { Modal, message, Upload, Icon, Input, Row, Col, DatePicker, Form, Select } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import ProductTable from './ProductTable';
@@ -7,7 +7,7 @@ import ProductTable from './ProductTable';
 moment.locale('zh-cn');
 
 const FormItem = Form.Item;
-// const Option = Select.Option;
+const Option = Select.Option;
 
 function toString(str, type) {
   if (typeof str !== 'undefined' && str !== null) {
@@ -25,6 +25,7 @@ class PurchaseModal extends Component {
       previewVisible: false,
       previewImage: '',
       certFileList: '',
+      defaultBuyer: undefined,
     };
 
     // skuTable改写父级方法
@@ -125,16 +126,19 @@ class PurchaseModal extends Component {
   disabledEndDate(endDate) {
     const { form } = this.props;
     const startDate = form.getFieldValue('taskStartTime');
-    if (!endDate || !startDate) {
-      return false;
-    }
+    if (!endDate || !startDate) return false;
     return startDate.valueOf() > endDate.valueOf();
+  }
+
+  handleChangeBuyer(defaultBuyer) {
+    console.log(defaultBuyer);
+    this.setState({ defaultBuyer });
   }
 
   render() {
     const p = this;
     const { form, title, visible, modalValues = {}, buyer = [] } = p.props;
-    const { previewVisible, previewImage } = p.state;
+    const { previewVisible, previewImage, defaultBuyer } = p.state;
     const purchaseData = (modalValues && modalValues.data) || {};
     const { getFieldDecorator } = form;
     let picList = [];
@@ -224,21 +228,18 @@ class PurchaseModal extends Component {
                   <Input placeholder="请输入采购单号" />)}
               </FormItem>
             </Col>
-            {/* <Col span={7}>
+            <Col span={7}>
               <FormItem
-                label="任务分配人"
+                label="默认买手"
                 {...formItemLayout}
               >
-                {getFieldDecorator('buyerId', {
-                  initialValue: toString(purchaseData.buyerId, 'SELECT'),
-                  rules: [{ required: true, message: '请选择用户' }],
-                })(
-                  <Select placeholder="请输入用户" optionLabelProp="title">
-                    {buyer.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
-                  </Select>,
-                )}
+                <Select placeholder="请选择买手" optionLabelProp="title" >
+                  {buyer.map((el) => {
+                    return <Option onChange={this.handleChangeBuyer.bind(this)} key={el.id} title={el.name}>{el.name}</Option>;
+                  })}
+                </Select>
               </FormItem>
-            </Col> */}
+            </Col>
           </Row>
           <Row gutter={10}>
             <Col span={7}>
@@ -329,7 +330,7 @@ class PurchaseModal extends Component {
             </Col>
           </Row>
           <Row>
-            <ProductTable data={purchaseData.taskDetailList} parent={this} buyer={buyer} />
+            <ProductTable defaultBuyer={defaultBuyer} data={purchaseData.taskDetailList} parent={this} buyer={buyer} />
           </Row>
         </Form>
       </Modal>

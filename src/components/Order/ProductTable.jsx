@@ -9,6 +9,7 @@ class ProductTable extends Component {
     super();
     this.state = {
       skuData: [],
+      popoverVisible: false,
     };
   }
 
@@ -321,7 +322,7 @@ class ProductTable extends Component {
                     title="搜索SKU"
                     trigger="click"
                   >
-                    <Input placeholder="请选择SKU" value={text || undefined} ref={(c) => { p[`r_${r.key}_skuCode_dom`] = c; }} />
+                    <Input onFocus={p.handleSearch.bind(p, r.key, {})} placeholder="请选择SKU" value={text || undefined} ref={(c) => { p[`r_${r.key}_skuCode_dom`] = c; }} />
                   </Popover>,
                 )}
               </FormItem>

@@ -113,17 +113,14 @@ class Purchase extends Component {
         dataIndex: 'imageUrl',
         key: 'imageUrl',
         render(text) {
-          let imgUrl = '';
-          try {
-            const imgObj = JSON.parse(text);
-            imgUrl = imgObj.picList[0].url;
-          } catch (e) {
-            return '-';
+          if (text) {
+            return (
+              <Popover title={null} content={content}>
+                <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, text)} src={text} width="50" height="50" />
+              </Popover>
+            );
           }
-          return (
-            <Popover title={null} content={content}>
-              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />
-            </Popover>);
+          return '-';
         },
       },
       { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime' },

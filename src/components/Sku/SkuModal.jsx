@@ -233,7 +233,6 @@ class SkuModal extends Component {
               >
                 {getFieldDecorator('scale', {
                   initialValue: toString(skuModalData.scale),
-                  rules: [{ required: true, message: '请填写尺寸' }],
                 })(
                   <Input placeholder="请输入尺寸" />,
                 )}
@@ -260,7 +259,6 @@ class SkuModal extends Component {
               >
                 {getFieldDecorator('upc', {
                   initialValue: toString(skuModalData.upc),
-                  rules: [{ required: true, message: '请填写UPC' }],
                 })(
                   <Input placeholder="请输入UPC" />,
                 )}
@@ -301,7 +299,6 @@ class SkuModal extends Component {
               >
                 {getFieldDecorator('color', {
                   initialValue: toString(skuModalData.color),
-                  rules: [{ required: true, message: '请填写颜色' }],
                 })(
                   <Input placeholder="请输入颜色" />,
                 )}
@@ -314,7 +311,6 @@ class SkuModal extends Component {
               >
                 {getFieldDecorator('brand', {
                   initialValue: toString(skuModalData.brand, 'SELECT'),
-                  rules: [{ required: true, message: '请选择品牌' }],
                 })(
                   <Select placeholder="请选择品牌" combobox>
                     {brands.map(item => <Option key={item.id} value={item.name}>{item.name}</Option>)}

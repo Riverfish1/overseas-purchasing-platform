@@ -225,11 +225,12 @@ class ProductTable extends Component {
       };
 
       const columns = [
-        { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: '9%' },
+        { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: '10%' },
         { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: '14%' },
-        { title: '品牌', dataIndex: 'brand', key: 'brand', width: '12%' },
+        { title: '品牌', dataIndex: 'brand', key: 'brand', width: '8%' },
         { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: '8%', render(text) { return text || '-'; } },
-        { title: '尺寸', dataIndex: 'scale', key: 'scale', width: '10%', render(text) { return text || '-'; } },
+        { title: '尺寸', dataIndex: 'scale', key: 'scale', width: '6%', render(text) { return text || '-'; } },
+        { title: '价格', dataIndex: 'salePrice', key: 'salePrice', width: '6%', render(text) { return text || '-'; } },
         { title: '图片',
           dataIndex: 'skuPic',
           key: 'skuPic',

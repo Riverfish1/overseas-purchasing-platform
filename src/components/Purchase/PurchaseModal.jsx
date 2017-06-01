@@ -26,6 +26,7 @@ class PurchaseModal extends Component {
       previewImage: '',
       certFileList: '',
       defaultBuyer: undefined,
+      defaultStartTime: undefined,
       defaultEndTime: undefined,
     };
 
@@ -84,6 +85,7 @@ class PurchaseModal extends Component {
     // 清理skuTable
     setTimeout(() => {
       this.clearSkuValue();
+      this.setState({ defaultBuyer: undefined, defaultStartTime: undefined, defaultEndTime: undefined });
     }, 100);
   }
 
@@ -136,6 +138,10 @@ class PurchaseModal extends Component {
     this.setState({ defaultBuyer });
   }
 
+  handleChangeStartTime(defaultStartTime) {
+    this.setState({ defaultStartTime });
+  }
+
   handleChangeEndTime(defaultEndTime) {
     this.setState({ defaultEndTime });
   }
@@ -143,7 +149,7 @@ class PurchaseModal extends Component {
   render() {
     const p = this;
     const { form, title, visible, modalValues = {}, buyer = [] } = p.props;
-    const { previewVisible, previewImage, defaultBuyer, defaultEndTime } = p.state;
+    const { previewVisible, previewImage, defaultBuyer, defaultStartTime, defaultEndTime } = p.state;
     const purchaseData = (modalValues && modalValues.data) || {};
     const { getFieldDecorator } = form;
     let picList = [];
@@ -256,7 +262,7 @@ class PurchaseModal extends Component {
                   initialValue: purchaseData.taskStartTime ? moment(purchaseData.taskStartTime, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
                   rules: [{ required: true, message: '该项必填' }],
                 })(
-                  <DatePicker disabledDate={this.disabledStartDate.bind(this)} style={{ width: '100%' }} />,
+                  <DatePicker onChange={this.handleChangeStartTime.bind(this)} disabledDate={this.disabledStartDate.bind(this)} style={{ width: '100%' }} />,
                 )}
               </FormItem>
             </Col>
@@ -335,7 +341,7 @@ class PurchaseModal extends Component {
             </Col>
           </Row>
           <Row>
-            <ProductTable defaultBuyer={defaultBuyer} defaultEndTime={defaultEndTime} data={purchaseData.taskDetailList} parent={this} buyer={buyer} />
+            <ProductTable defaultBuyer={defaultBuyer} defaultStartTime={defaultStartTime} defaultEndTime={defaultEndTime} data={purchaseData.taskDetailList} parent={this} buyer={buyer} />
           </Row>
         </Form>
       </Modal>

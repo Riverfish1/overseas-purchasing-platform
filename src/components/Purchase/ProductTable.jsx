@@ -192,7 +192,7 @@ class ProductTable extends Component {
 
   render() {
     const p = this;
-    const { form, skuList = [], parent, buyer = [], defaultBuyer, defaultEndTime, total, currentPage, pageSize } = p.props;
+    const { form, skuList = [], parent, buyer = [], defaultBuyer, defaultStartTime, defaultEndTime, total, currentPage, pageSize } = p.props;
     const { skuData, previewImage, previewVisible } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
@@ -521,10 +521,11 @@ class ProductTable extends Component {
           key: 'taskStartTime',
           width: '12%',
           render(t, r) {
+            console.log(t, defaultStartTime);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskStartTime`, {
-                  initialValue: t ? moment(t, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
+                  initialValue: t ? moment(t, 'YYYY-MM-DD') : (defaultStartTime || moment(new Date(), 'YYYY-MM-DD')),
                   rules: [{ required: true, message: '该项必填' }],
                 })(
                   <DatePicker />,

@@ -258,7 +258,7 @@ class ProductTable extends Component {
       ];
 
       return (
-        <div style={{ width: 560 }}>
+        <div style={{ width: 800 }}>
           <Row gutter={20} style={{ width: 720 }}>
             <Col span="7">
               <FormItem
@@ -334,41 +334,49 @@ class ProductTable extends Component {
           title: '商品名称',
           dataIndex: 'itemName',
           key: 'itemName',
-          width: '14%',
+          width: '20%',
           render(text) { return text || '-'; },
         },
         {
           title: '商品图片',
           dataIndex: 'skuPic',
           key: 'skuPic',
-          width: '8.5%',
-          render(t) {
-            return (
-              t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
-                <img role="presentation" src={t} width={60} height={60} />
-              </Popover> : '-'
-            );
+          width: '12%',
+          render(text) {
+            let imgUrl = '';
+            try {
+              const imgObj = JSON.parse(text);
+              imgUrl = imgObj.picList[0].url;
+              const picContent = <img src={imgUrl} role="presentation" style={{ height: 600 }} />;
+              return (
+                <Popover title="主图预览" content={picContent}>
+                  <img src={imgUrl} role="presentation" width="60" />
+                </Popover>
+              );
+            } catch (e) {
+              return '-';
+            }
           },
         },
         {
           title: '颜色',
           dataIndex: 'color',
           key: 'color',
-          width: '14%',
+          width: '10%',
           render(text) { return text || '-'; },
         },
         {
           title: '尺寸',
           dataIndex: 'scale',
           key: 'scale',
-          width: '14%',
+          width: '10%',
           render(text) { return text || '-'; },
         },
         {
           title: <font color="#00f">销售价</font>,
           dataIndex: 'salePrice',
           key: 'salePrice',
-          width: '14%',
+          width: '10%',
           render(text, r) {
             return (
               <FormItem>
@@ -389,7 +397,7 @@ class ProductTable extends Component {
           title: <font color="#00f">数量</font>,
           dataIndex: 'quantity',
           key: 'quantity',
-          width: '14%',
+          width: '10%',
           render(text, r) {
             return (
               <FormItem>

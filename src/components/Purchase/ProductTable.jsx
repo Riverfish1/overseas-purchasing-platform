@@ -287,6 +287,7 @@ class ProductTable extends Component {
         { title: '品牌', dataIndex: 'brand', key: 'brand', width: '12%' },
         { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: '8%', render(text) { return text || '-'; } },
         { title: '尺寸', dataIndex: 'scale', key: 'scale', width: '10%', render(text) { return text || '-'; } },
+        { title: '价格', dataIndex: 'salePrice', key: 'salePrice', width: '6%', render(text) { return text || '-'; } },
         { title: '图片',
           dataIndex: 'skuPic',
           key: 'skuPic',
@@ -314,7 +315,7 @@ class ProductTable extends Component {
       ];
 
       return (
-        <div style={{ width: 680 }}>
+        <div style={{ width: 800 }}>
           <Row gutter={20} style={{ width: 720 }}>
             <Col span="7">
               <FormItem

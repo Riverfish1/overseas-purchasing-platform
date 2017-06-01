@@ -3,16 +3,18 @@ import { connect } from 'dva';
 import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover } from 'antd';
 
 import DeliveryModal from './component/DeliveryModal';
+import ErpOrderModal from './ErpOrderModal';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-
 
 class ErpOrder extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isNotSelected: true,
+      modalVisible: false,
+      title: '',
       checkId: [], // 发货时传的ID
       visible: false,
       needSplitId: '',
@@ -87,6 +89,16 @@ class ErpOrder extends Component {
       },
     });
   }
+  showModal(id, e) {
+    e.stopPropagation();
+    const p = this;
+    p.setState({
+      modalVisible: true,
+      title: '修改',
+    }, () => {
+      p.props.dispatch({ type: 'order/queryErpOrder', payload: { id } });
+    });
+  }
   handleCancel() {
     this.num.refs.input.value = '';
     this.setState({ visible: false });
@@ -98,11 +110,21 @@ class ErpOrder extends Component {
     });
     this.setState({ deliveryModalVisible: false, checkId: [] }); // 取消选择 checkId
   }
+  closeModal(modalVisible) {
+    this.setState({
+      modalVisible,
+    });
+    this.props.dispatch({
+      type: 'order/saveErpOrder',
+      payload: {},
+    });
+  }
   render() {
     const p = this;
-    const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch } = p.props;
+    const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {} } = p.props;
+    console.log(erpOrderValues);
     const { getFieldDecorator, resetFields } = form;
-    const { isNotSelected, visible, deliveryModalVisible, checkId, type } = p.state;
+    const { isNotSelected, visible, deliveryModalVisible, checkId, type, modalVisible, title } = p.state;
 
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -130,7 +152,8 @@ class ErpOrder extends Component {
         key: 'skuPic',
         width: 80,
         render(text) {
-          const t = text ? JSON.parse(text).picList[0].url : '';
+          const picList = JSON.parse(text).picList;
+          const t = picList.length ? JSON.parse(text).picList[0].url : '';
           return (
             t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
               <img role="presentation" src={t} width={60} height={60} />
@@ -186,17 +209,18 @@ class ErpOrder extends Component {
       { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: 220 },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
       { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
-      /* { title: '操作',
+      { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
         width: 100,
         render(t, r) {
           return (
             <div>
-              <a href="javascript:void(0)" onClick={() => { p.setState({ visible: true, needSplitId: r.id }); }} >订单拆分</a>
+              {/* <a href="javascript:void(0)" onClick={() => { p.setState({ visible: true, needSplitId: r.id }); }} >订单拆分</a>*/}
+              <a href="javascript:void(0)" onClick={p.showModal.bind(p, r.id)} >修改</a>
             </div>);
         },
-      },*/
+      },
     ];
     const pagination = {
       total: erpOrderTotal,
@@ -303,6 +327,31 @@ class ErpOrder extends Component {
                   <Input placeholder="请输入" />)}
               </FormItem>
             </Col>
+            <Col span="8">
+              <FormItem
+                label="收件人"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('receiver', {})(
+                  <Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={20} style={{ width: 800 }}>
+            <Col span="8">
+              <FormItem
+                label="销售人员"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('salesName', {})(
+                  <Select placeholder="请选择销售" >
+                    {agencyList.map((el) => {
+                      return <Option key={el.id} value={el.name}>{el.name}</Option>;
+                    })}
+                  </Select>,
+                )}
+              </FormItem>
+            </Col>
           </Row>
           <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">
@@ -334,14 +383,23 @@ class ErpOrder extends Component {
         </Modal>
         <DeliveryModal visible={deliveryModalVisible} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
         <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} scroll={{ x: '130%' }} bordered />
+        <ErpOrderModal
+          visible={modalVisible}
+          close={this.closeModal.bind(this)}
+          modalValues={erpOrderValues}
+          agencyList={agencyList}
+          title={title}
+          dispatch={dispatch}
+        />
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { erpOrderList, erpOrderTotal, erpOrderDetail } = state.order;
-  return { erpOrderList, erpOrderTotal, erpOrderDetail };
+  const { erpOrderList, erpOrderTotal, erpOrderDetail, erpOrderValues } = state.order;
+  const { list } = state.agency;
+  return { erpOrderList, erpOrderTotal, erpOrderDetail, agencyList: list, erpOrderValues };
 }
 
 export default connect(mapStateToProps)(Form.create()(ErpOrder));

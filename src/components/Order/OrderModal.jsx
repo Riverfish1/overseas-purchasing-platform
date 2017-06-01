@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'dva';
 import { Modal, Cascader, Input, Row, Col, DatePicker, Form, Select } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -12,7 +11,7 @@ moment.locale('zh-cn');
 const Option = Select.Option;
 const FormItem = Form.Item;
 
-class ProductsModal extends Component {
+class OrderModal extends Component {
 
   constructor(props) {
     super(props);
@@ -31,7 +30,6 @@ class ProductsModal extends Component {
     const p = this;
     const { form, dispatch, modalValues = {} } = p.props;
     const { salesName } = this.state;
-    console.log(salesName);
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
       if (fieldsValue.address) {
@@ -328,11 +326,4 @@ class ProductsModal extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { salesName } = state.order;
-  return {
-    salesName,
-  };
-}
-
-export default connect(mapStateToProps)(Form.create()(ProductsModal));
+export default Form.create()(OrderModal);

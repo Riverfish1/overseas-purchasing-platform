@@ -106,9 +106,9 @@ class Order extends Component {
 
   render() {
     const p = this;
-    const { form, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, salesName = [], agencyList = [] } = p.props;
+    const { form, dispatch, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, agencyList = [] } = p.props;
     const { getFieldDecorator, getFieldsValue, resetFields } = form;
-    const { title, visible, isNotSelected } = p.state;
+    const { title, visible, isNotSelected, modalVisible } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -420,12 +420,12 @@ class Order extends Component {
           />
         </Modal>
         <OrderModal
-          visible={this.state.modalVisible}
+          visible={modalVisible}
           close={this.closeModal.bind(this)}
           modalValues={orderValues}
           agencyList={agencyList}
-          salesName={salesName}
           title={title}
+          dispatch={dispatch}
         />
       </div>
     );
@@ -433,7 +433,7 @@ class Order extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList, orderTotal, currentPage, orderValues, orderSkuSnip, salesName } = state.order;
+  const { orderList, orderTotal, currentPage, orderValues, orderSkuSnip } = state.order;
   const { list } = state.agency;
   return {
     orderList,
@@ -441,7 +441,6 @@ function mapStateToProps(state) {
     currentPage,
     orderValues,
     orderSkuSnip,
-    salesName,
     agencyList: list,
   };
 }

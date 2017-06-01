@@ -6,11 +6,14 @@ const updateOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/update', { 
 const deleteOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/delete', { data: payload }).catch(e => e);
 const queryOrderList = ({ payload }) => fetch.post('/haierp1/outerOrder/queryOuterOrderList', { data: payload }).catch(e => e);
 const queryOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/query', { data: payload }).catch(e => e);
-const querySalesName = ({ payload }) => fetch.post('/haierp1/outerOrder/querySalesName', { data: payload }).catch(e => e);
 const confirmOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/confirm', { data: payload }).catch(e => e);
 const closeOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/close', { data: payload }).catch(e => e);
 // erp
 const queryErpOrderList = ({ payload }) => fetch.post('/haierp1/erpOrder/query', { data: payload }).catch(e => e);
+// erp订单查询
+const queryErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/queryById', { data: payload }).catch(e => e);
+// erp订单修改
+const updateErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/update', { data: payload }).catch(e => e);
 // 订单关闭
 const closeErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/close', { data: payload }).catch(e => e);
 const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/split', { data: payload }).catch(e => e);
@@ -32,12 +35,12 @@ export default {
     orderSkuSnip: {},
     currentPage: 1,
     orderValues: {},
-    salesName: [],
     // erp
     erpOrderList: [],
     erpCurrentPage: 1,
     erpOrderTotal: 1,
     erpOrderDetail: {},
+    erpOrderValues: {},
     // 发货单
     shippingOrderList: [],
     shippingCurrentPage: 1,
@@ -58,15 +61,15 @@ export default {
     saveOrderSkuSnip(state, { payload }) {
       return { ...state, orderSkuSnip: payload };
     },
-    saveSalesName(state, { payload }) {
-      return { ...state, salesName: payload };
-    },
     // erp
     saveErpCurrentPage(state, { payload }) {
       return { ...state, erpCurrentPage: payload.pageIndex };
     },
     saveErpOrderList(state, { payload }) {
       return { ...state, erpOrderList: payload.data, erpOrderTotal: payload.totalCount };
+    },
+    saveErpOrder(state, { payload }) {
+      return { ...state, erpOrderValues: payload };
     },
     saveErpOrderDetail(state, { payload }) {
       return { ...state, erpOrderDetail: payload.data || {} };
@@ -176,6 +179,25 @@ export default {
         });
       }
     },
+    * queryErpOrder({ payload }, { call, put }) {
+      const data = yield call(queryErpOrder, { payload });
+      if (data.success) {
+        yield put({
+          type: 'saveErpOrder',
+          payload: data,
+        });
+      }
+    },
+    * updateErpOrder({ payload }, { call, put }) {
+      const data = yield call(updateErpOrder, { payload });
+      if (data.success) {
+        message.success('修改成功');
+        yield put({
+          type: 'queryErpOrderList',
+          payload: {},
+        });
+      }
+    },
     * closeErpOrder({ payload }, { call }) {
       const data = yield call(closeErpOrder, { payload: { orderIds: payload.orderIds } });
       if (data.success) {
@@ -217,15 +239,6 @@ export default {
         yield put({
           type: 'queryShippingOrderList',
           payload: {},
-        });
-      }
-    },
-    * querySalesName({ payload }, { call, put }) {
-      const data = yield call(querySalesName, { payload });
-      if (data.success) {
-        yield put({
-          type: 'saveSalesName',
-          payload: data,
         });
       }
     },
@@ -289,6 +302,7 @@ export default {
         if (pathname === '/sale/erpOrder') {
           setTimeout(() => {
             dispatch({ type: 'queryErpOrderList', payload: query });
+            dispatch({ type: 'agency/queryAgencyList', payload: query });
           }, 0);
         }
         if (pathname === '/sale/shippingOrder') {

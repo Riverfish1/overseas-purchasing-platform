@@ -7,6 +7,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 let firstLoad = true;
+let firstLoadData = true;
 
 function toString(str, type) {
   if (typeof str !== 'undefined' && str !== null) {
@@ -36,10 +37,15 @@ class PurchaseModal extends Component {
     this.state = { selectedRowKeys: [], storageList: [] };
   }
 
-  componentWillReceiveProps({ purchaseStorageData }) {
-    if (purchaseStorageData.purchaseStorageDetailList && firstLoad) {
+  componentWillReceiveProps(...args) {
+    const { purchaseStorageData, dispatch } = args[0];
+    if (purchaseStorageData && purchaseStorageData.purchaseStorageDetailList && firstLoad) {
       this.setState({ storageList: purchaseStorageData.purchaseStorageDetailList });
       firstLoad = false;
+    }
+    if (purchaseStorageData && purchaseStorageData.buyerId && firstLoadData) {
+      dispatch({ type: 'purchaseStorage/queryBuyerTaskList', payload: { buyerId: purchaseStorageData.buyerId } });
+      firstLoadData = false;
     }
   }
 
@@ -167,6 +173,7 @@ class PurchaseModal extends Component {
     dispatch({ type: 'purchaseStorage/updateBuyerTaskList', payload: { data: [] } });
     this.setState({ selectedRowKeys: [], storageList: [] });
     firstLoad = true;
+    firstLoadData = true;
   }
 
   queryUpc() {
@@ -239,7 +246,7 @@ class PurchaseModal extends Component {
       { title: '颜色', dataIndex: 'color', key: 'color' },
       { title: '规格', dataIndex: 'scale', key: 'scale' },
       { title: '采购数', dataIndex: 'count', key: 'count', width: 60 },
-      { title: '已入库数', dataIndex: 'storageCount', key: 'storageCount', width: 70, render(t) { return t || 0; } },
+      { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
     ];
 
     const columnsStorageList = [

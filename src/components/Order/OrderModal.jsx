@@ -18,7 +18,6 @@ class OrderModal extends Component {
     this.state = {
       previewVisible: false,
       previewImage: '',
-      salesName: '',
     };
 
     // skuTable改写父级方法
@@ -28,17 +27,23 @@ class OrderModal extends Component {
 
   handleSubmit() {
     const p = this;
-    const { form, dispatch, modalValues = {} } = p.props;
-    const { salesName } = this.state;
+    const { form, dispatch, modalValues = {}, agencyList = [] } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
+      console.log(fieldsValue);
+      let salesName = '';
+      agencyList.forEach((el) => {
+        if (el.id.toString() === fieldsValue.salesId) {
+          salesName = el.name;
+        }
+      });
+      fieldsValue.salesName = salesName;
       if (fieldsValue.address) {
         fieldsValue.receiverState = fieldsValue.address[0];
         fieldsValue.receiverCity = fieldsValue.address[1];
         fieldsValue.receiverDistrict = fieldsValue.address[2];
         delete fieldsValue.address;
       }
-      fieldsValue.salesName = salesName;
       p.getSkuValue((orderDetailList) => {
         if (modalValues.data) {
           dispatch({
@@ -96,16 +101,6 @@ class OrderModal extends Component {
   }
 
   checkImg(rules, values, cb) { cb(); }
-
-  handleChangeSeller(id) {
-    const p = this;
-    const { agencyList } = this.props;
-    agencyList.forEach((el) => {
-      if (el.id.toString() === id.toString()) {
-        p.setState({ salesName: el.name });
-      }
-    });
-  }
 
   handleDelete(id) {
     const { skuList } = this.state;
@@ -167,7 +162,7 @@ class OrderModal extends Component {
                   initialValue: orderData.salesId ? orderData.salesId.toString() : undefined,
                   rules: [{ required: true, message: '请选择销售' }],
                 })(
-                  <Select placeholder="请选择销售" onChange={this.handleChangeSeller.bind(this)} >
+                  <Select placeholder="请选择销售" >
                     {agencyList.map((el) => {
                       return <Option key={el.id} value={el.id && el.id.toString()}>{el.name}</Option>;
                     })}

@@ -7,7 +7,6 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 let firstLoad = true;
-let firstLoadData = true;
 
 function toString(str, type) {
   if (typeof str !== 'undefined' && str !== null) {
@@ -34,18 +33,19 @@ class PurchaseModal extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { selectedRowKeys: [], storageList: [] };
+    this.state = {
+      selectedRowKeys: [],
+      storageList: [],
+      id: undefined,
+    };
   }
 
   componentWillReceiveProps(...args) {
     const { purchaseStorageData, dispatch } = args[0];
     if (purchaseStorageData && purchaseStorageData.purchaseStorageDetailList && firstLoad) {
-      this.setState({ storageList: purchaseStorageData.purchaseStorageDetailList });
-      firstLoad = false;
-    }
-    if (purchaseStorageData && purchaseStorageData.buyerId && firstLoadData) {
+      this.setState({ storageList: purchaseStorageData.purchaseStorageDetailList, id: purchaseStorageData.id });
       dispatch({ type: 'purchaseStorage/queryBuyerTaskList', payload: { buyerId: purchaseStorageData.buyerId } });
-      firstLoadData = false;
+      firstLoad = false;
     }
   }
 
@@ -134,7 +134,8 @@ class PurchaseModal extends Component {
 
       if (!hasError) {
         console.log(fieldsValue);
-        if (!fieldsValue.id) delete fieldsValue.id;
+        fieldsValue.id = p.state.id;
+        delete fieldsValue.stoOrderNo;
         if (type === 'save') {
           dispatch({
             type: fieldsValue.id ? 'purchaseStorage/saveStorage' : 'purchaseStorage/addStorage',
@@ -173,7 +174,6 @@ class PurchaseModal extends Component {
     dispatch({ type: 'purchaseStorage/updateBuyerTaskList', payload: { data: [] } });
     this.setState({ selectedRowKeys: [], storageList: [] });
     firstLoad = true;
-    firstLoadData = true;
   }
 
   queryUpc() {
@@ -239,23 +239,23 @@ class PurchaseModal extends Component {
     };
 
     const columnsTaskList = [
-      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode' },
-      { title: 'UPC', dataIndex: 'upc', key: 'upc' },
-      { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 50 },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
       { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 44, render(t) { return t ? <img alt="" src={t} width="32" height="32" /> : '无'; } },
-      { title: '颜色', dataIndex: 'color', key: 'color' },
-      { title: '规格', dataIndex: 'scale', key: 'scale' },
+      { title: '颜色', dataIndex: 'color', key: 'color', width: 40 },
+      { title: '规格', dataIndex: 'scale', key: 'scale', width: 44 },
       { title: '采购数', dataIndex: 'count', key: 'count', width: 60 },
       { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
     ];
 
     const columnsStorageList = [
-      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode' },
-      { title: 'UPC', dataIndex: 'upc', key: 'upc' },
-      { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 50 },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
       { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 44, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="32" height="32" /> : '无'; } },
-      { title: '颜色', dataIndex: 'color', key: 'color' },
-      { title: '规格', dataIndex: 'scale', key: 'scale' },
+      { title: '颜色', dataIndex: 'color', key: 'color', width: 50 },
+      { title: '规格', dataIndex: 'scale', key: 'scale', width: 50 },
       { title: '数量',
         dataIndex: 'quantity',
         key: 'quantity',
@@ -316,7 +316,7 @@ class PurchaseModal extends Component {
                 label="入库单号"
                 {...formItemLayout}
               >
-                {getFieldDecorator('id', {
+                {getFieldDecorator('stoOrderNo', {
                   initialValue: toString(purchaseStorageData.stoOrderNo),
                 })(
                   <Input placeholder="自动生成" disabled />)}
@@ -372,7 +372,7 @@ class PurchaseModal extends Component {
               <Row style={{ margin: '10px 0' }}>
                 <Col><Button type="primary" size="large" style={{ float: 'right' }} onClick={this.sendToRight.bind(this)} disabled={selectedRowKeys.length < 1}>移到右边</Button></Col>
               </Row>
-              <Table columns={columnsTaskList} bordered scroll={{ x: '110%' }} dataSource={filteredBuyerTask} rowKey="skuId" rowSelection={rowSelection} pagination={false} />
+              <Table columns={columnsTaskList} bordered scroll={{ x: '130%' }} dataSource={filteredBuyerTask} rowKey={r => r.id} rowSelection={rowSelection} pagination={false} />
             </Col>
             <Col span="12">
               <div className={styles.blockTitle}>入库明细</div>
@@ -380,7 +380,7 @@ class PurchaseModal extends Component {
                 <Col span="12"><Input placeholder="输入SKU代码或UPC码添加" size="large" ref={(c) => { this.upcInput = c; }} /></Col>
                 <Col span="6" style={{ marginLeft: 10 }}><Button type="primary" size="large" onClick={this.queryUpc.bind(this)}>添加</Button></Col>
               </Row>
-              <Table columns={columnsStorageList} bordered scroll={{ x: '130%' }} dataSource={storageList} rowKey="skuId" pagination={false} />
+              <Table columns={columnsStorageList} bordered scroll={{ x: '130%' }} dataSource={storageList} rowKey={r => r.id} pagination={false} />
             </Col>
           </Row>
         </Form>

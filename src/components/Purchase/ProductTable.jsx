@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Input, DatePicker, InputNumber, Modal, Select, Button, Form, Table, Row, Col, Popconfirm, Popover } from 'antd';
+import { Input, DatePicker, InputNumber, Modal, Select, Button, Form, Table, Row, Col, Popconfirm, Popover, Tabs } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
@@ -8,12 +8,13 @@ moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const TabPane = Tabs.TabPane;
 
 class ProductTable extends Component {
   constructor() {
     super();
     this.state = {
-      skuData: [],
+      skuData: undefined,
       previewImage: '',
       previewVisible: false,
       selectedSku: [],
@@ -21,7 +22,7 @@ class ProductTable extends Component {
   }
 
   componentWillReceiveProps(...args) {
-    if (args[0].data && args[0].data.length > 0 && this.state.skuData.length === 0) {
+    if (args[0].data && args[0].data.length > 0 && this.state.skuData === undefined) {
       this.setState({
         skuData: args[0].data.map((el, index) => {
           el.key = index + 1;
@@ -63,8 +64,9 @@ class ProductTable extends Component {
   }
 
   addProduct(num) {
-    const { skuData } = this.state;
-    const skuLen = skuData.length;
+    let { skuData } = this.state;
+    if (!skuData) skuData = [];
+    const skuLen = skuData ? skuData.length : 0;
     const lastId = skuLen < 1 ? 0 : skuData[skuData.length - 1].key;
     const looptime = typeof num === 'number' ? num : 1;
 
@@ -98,7 +100,8 @@ class ProductTable extends Component {
     console.log('selected');
 
     const { form, skuList } = this.props;
-    const { skuData } = this.state;
+    let { skuData } = this.state;
+    if (!skuData) skuData = [];
 
     const source = skuList;
 
@@ -133,7 +136,7 @@ class ProductTable extends Component {
 
   clearValue() {
     const { form } = this.props;
-    this.setState({ skuData: [] }, () => {
+    this.setState({ skuData: undefined }, () => {
       form.resetFields();
     });
   }
@@ -207,6 +210,8 @@ class ProductTable extends Component {
     function renderSkuPopover(list, key, skuTotal) {
       let skuCode = null;
       let itemName = null;
+      let startOrderTime = null;
+      let endOrderTime = null;
 
       function handleEmpty() {
         skuCode.refs.input.value = '';
@@ -215,6 +220,11 @@ class ProductTable extends Component {
 
       function doSearch() {
         p.handleSearch(key, { skuCode: skuCode.refs.input.value, itemName: itemName.refs.input.value });
+      }
+
+      function doSearchOrder() {
+        console.log(startOrderTime, endOrderTime);
+        // p.handleSearch(key, { startOrderTime: startOrderTime.refs.input.value, endOrderTime: itemName.refs.input.value });
       }
 
       function updateValue(selectedSkuCode) {
@@ -316,36 +326,70 @@ class ProductTable extends Component {
 
       return (
         <div style={{ width: 800 }}>
-          <Row gutter={20} style={{ width: 720 }}>
-            <Col span="7">
-              <FormItem
-                label="SKU代码"
-                {...formItemLayout}
-              >
-                <Input
-                  size="default"
-                  placeholder="请输入SKU代码"
-                  ref={(c) => { skuCode = c; }}
-                />
-              </FormItem>
-            </Col>
-            <Col span="7">
-              <FormItem
-                label="商品名称"
-                {...formItemLayout}
-              >
-                <Input
-                  size="default"
-                  placeholder="请输入商品名称"
-                  ref={(c) => { itemName = c; }}
-                />
-              </FormItem>
-            </Col>
-            <Col className="listBtnGroup" span="10" style={{ paddingTop: 2 }}>
-              <Button type="primary" onClick={doSearch}>查询</Button>
-              <Button type="ghost" onClick={handleEmpty}>清空</Button>
-            </Col>
-          </Row>
+          <Tabs size="small">
+            <TabPane tab="按商品查询" key="1">
+              <Row gutter={20} style={{ width: 720 }}>
+                <Col span="7">
+                  <FormItem
+                    label="SKU代码"
+                    {...formItemLayout}
+                  >
+                    <Input
+                      size="default"
+                      placeholder="请输入SKU代码"
+                      ref={(c) => { skuCode = c; }}
+                    />
+                  </FormItem>
+                </Col>
+                <Col span="7">
+                  <FormItem
+                    label="商品名称"
+                    {...formItemLayout}
+                  >
+                    <Input
+                      size="default"
+                      placeholder="请输入商品名称"
+                      ref={(c) => { itemName = c; }}
+                    />
+                  </FormItem>
+                </Col>
+                <Col className="listBtnGroup" span="10" style={{ paddingTop: 2 }}>
+                  <Button type="primary" onClick={doSearch}>查询</Button>
+                  <Button type="ghost" onClick={handleEmpty}>清空</Button>
+                </Col>
+              </Row>
+            </TabPane>
+            <TabPane tab="按订单查询" key="2">
+              <Row gutter={20} style={{ width: 720 }}>
+                <Col span="7">
+                  <FormItem
+                    label="开始时间"
+                    {...formItemLayout}
+                  >
+                    <DatePicker
+                      placeholder="请选择开始时间"
+                      ref={(c) => { startOrderTime = c; }}
+                    />
+                  </FormItem>
+                </Col>
+                <Col span="7">
+                  <FormItem
+                    label="结束时间"
+                    {...formItemLayout}
+                  >
+                    <DatePicker
+                      placeholder="请选择结束时间"
+                      ref={(c) => { endOrderTime = c; }}
+                    />
+                  </FormItem>
+                </Col>
+                <Col className="listBtnGroup" span="10" style={{ paddingTop: 2 }}>
+                  <Button type="primary" onClick={doSearchOrder}>查询</Button>
+                  <Button type="ghost" onClick={handleEmpty}>清空</Button>
+                </Col>
+              </Row>
+            </TabPane>
+          </Tabs>
           <Row>
             <Button type="primary" onClick={batchSelectSku} style={{ position: 'absolute', bottom: 10, left: 0 }} disabled={p.state.selectedSku.length === 0}>批量添加</Button>
             <Table

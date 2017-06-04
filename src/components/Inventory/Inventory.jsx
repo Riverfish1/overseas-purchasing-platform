@@ -65,11 +65,12 @@ class Inventory extends Component {
       },
       { title: '仓库名称', key: 'warehouseName', dataIndex: 'warehouseName' },
       { title: 'UPC', key: 'upc', dataIndex: 'upc' },
-      { title: '实际库存', key: 'inventory', dataIndex: 'inventory' },
+      { title: '可售库存', key: 'totalAvailableInv', dataIndex: 'totalAvailableInv' },
+      { title: '现货库存', key: 'inventory', dataIndex: 'inventory' },
+      { title: '现货占用', key: 'lockedInv', dataIndex: 'lockedInv' },
       // { title: '虚拟库存', key: 'virtualInv', dataIndex: 'virtualInv' },
       { title: '在途库存', key: 'transInv', dataIndex: 'transInv' },
-      { title: '可售库存', key: 'availableInv', dataIndex: 'availableInv' },
-      { title: '占用库存', key: 'lockedInv', dataIndex: 'lockedInv' },
+      { title: '在途占用', key: 'lockedTransInv', dataIndex: 'lockedTransInv' },
       { title: '货架号', key: 'positionNo', dataIndex: 'positionNo' },
     ];
     const paginationProps = {

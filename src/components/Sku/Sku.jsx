@@ -150,12 +150,13 @@ class Sku extends Component {
         render(t, r) {
           return (
             <div>
+              可售库存：{r.totalAvailableInv}<br />
               虚拟库存：{r.virtualInv}<br />
-              虚拟锁定：{r.lockedVirtualInv}<br />
-              可用库存：{r.availableInv}<br />
-              占用库存：{r.lockedInv}<br />
+              虚拟预扣：{r.lockedVirtualInv}<br />
               现货库存：{r.inventory}<br />
-              在途库存：{r.transInv}
+              现货占用：{r.lockedInv}<br />
+              在途库存：{r.transInv}<br />
+              在途占用：{r.lockedTransInv}
             </div>
           );
         },

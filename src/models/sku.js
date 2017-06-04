@@ -4,12 +4,13 @@ import fetch from '../utils/request';
 const addSku = ({ payload }) => fetch.post('/haierp1/itemSku/add', { data: payload }).catch(e => e);
 const updateSku = ({ payload }) => fetch.post('/haierp1/itemSku/update', { data: payload }).catch(e => e);
 const querySku = ({ payload }) => fetch.post('/haierp1/itemSku/query', { data: payload }).catch(e => e);
-const querySkuList = ({ payload }) => fetch.post('/haierp1/itemSku/queryItemSkuList', { data: payload }).catch(e => e);
+// const querySkuList = ({ payload }) => fetch.post('/haierp1/itemSku/queryItemSkuList', { data: payload }).catch(e => e);
 const querySkuList2 = ({ payload }) => fetch.post('/haierp1/purchase/queryItemSkuList', { data: payload }).catch(e => e);
 const deleteSku = ({ payload }) => fetch.post('/haierp1/itemSku/delete', { data: payload }).catch(e => e);
 const queryPackageScales = () => fetch.post('/haierp1/freight/getPackageScaleList').catch(e => e);
 const queryScaleTypes = () => fetch.post('/haierp1/itemSku/scaleTypeList').catch(e => e);
 const queryItemList = ({ payload }) => fetch.post('/haierp1/item/queryItemList', { data: payload }).catch(e => e);
+const lockVirtualInv = ({ payload }) => fetch.post('/itemSku/lockedVirtualInv', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'sku',
@@ -56,6 +57,16 @@ export default {
     },
   },
   effects: {
+    * lockVirtualInv({ payload }, { call, put }) { // 新建SKU
+      const data = yield call(lockVirtualInv, { payload });
+      if (data.success) {
+        message.success('锁定库存成功');
+        yield put({
+          type: 'querySkuList',
+          payload: {},
+        });
+      }
+    },
     * addSku({ payload }, { call, put }) { // 新建SKU
       const data = yield call(addSku, { payload });
       if (data.success) {

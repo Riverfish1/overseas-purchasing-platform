@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Button, Row, Col, Form, Input, Popconfirm, Popover, Select, TreeSelect } from 'antd';
+import { Table, Button, Row, Col, Form, Input, InputNumber, Popconfirm, Popover, Select, TreeSelect, Modal } from 'antd';
 import SkuModal from './SkuModal';
 
 const FormItem = Form.Item;
@@ -76,6 +76,22 @@ class Sku extends Component {
     this.setState({
       previewVisible: true,
       previewImage: value,
+    });
+  }
+
+  updateLockedSku(record) {
+    console.log(record);
+    if (!record.lockedNum) {
+      Modal.warning({ title: '请输入锁定库存数量' });
+      return;
+    }
+    this.props.dispatch({
+      type: 'sku/lockVirtualInv',
+      payload: {
+        lockedVirtualInv: record.lockedNum,
+        itemId: record.itemId,
+        id: record.id,
+      },
     });
   }
 
@@ -159,6 +175,17 @@ class Sku extends Component {
               <Popconfirm title="确定删除此类目？" onConfirm={p.handleDelete.bind(p, record.id)}>
                 <a href="javascript:void(0)" >删除</a>
               </Popconfirm>
+              <Popover
+                content={<div>
+                  <div>商品名称：{record.itemName}</div>
+                  <div style={{ paddingTop: 6 }}>锁定数量：<InputNumber placeholder="请输入" min={1} step={1} onChange={(v) => { record.lockedNum = v; }} /></div>
+                  <Button size="small" type="primary" style={{ marginTop: 6 }} onClick={p.updateLockedSku.bind(p, record)}>保存</Button>
+                </div>}
+                title="锁定库存"
+                trigger="click"
+              >
+                <a href="javascript:void(0)" style={{ marginRight: 10 }}>锁定</a>
+              </Popover>,
             </div>);
         },
       },

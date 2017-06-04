@@ -414,7 +414,6 @@ class ProductTable extends Component {
           key: 'buyerId',
           width: '8.5%',
           render(t, r) {
-            console.log(t);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_buyerId`, {
@@ -521,7 +520,6 @@ class ProductTable extends Component {
           key: 'taskStartTime',
           width: '12%',
           render(t, r) {
-            console.log(t, defaultStartTime);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskStartTime`, {

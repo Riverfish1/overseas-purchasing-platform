@@ -134,7 +134,6 @@ class PurchaseModal extends Component {
   }
 
   handleChangeBuyer(defaultBuyer) {
-    console.log(defaultBuyer);
     this.setState({ defaultBuyer });
   }
 
@@ -144,6 +143,23 @@ class PurchaseModal extends Component {
 
   handleChangeEndTime(defaultEndTime) {
     this.setState({ defaultEndTime });
+  }
+
+  checkStartTime = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && value < form.getFieldValue('taskStartTime')) {
+      callback('结束时间需要晚于开始时间');
+    } else {
+      callback();
+    }
+  }
+
+  checkEndTime = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value) {
+      form.validateFields(['taskEndTime'], { force: true });
+    }
+    callback();
   }
 
   render() {
@@ -212,6 +228,9 @@ class PurchaseModal extends Component {
       wrapperCol: { span: 13 },
     };
 
+    const taskStartTime = purchaseData.taskStartTime ? moment(purchaseData.taskStartTime, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD');
+    const taskEndTime = purchaseData.taskEndTime ? moment(purchaseData.taskEndTime, 'YYYY-MM-DD HH:mm:ss') : undefined;
+
     return (
       <Modal {...modalProps}>
         <Form onSubmit={p.handleSubmit.bind(p)}>
@@ -259,11 +278,12 @@ class PurchaseModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('taskStartTime', {
-                  initialValue: purchaseData.taskStartTime ? moment(purchaseData.taskStartTime, 'YYYY-MM-DD') : moment(new Date(), 'YYYY-MM-DD'),
-                  rules: [{ required: true, message: '该项必填' }],
+                  initialValue: taskStartTime,
+                  rules: [{ required: true, message: '该项必填' }, { validator: this.checkEndTime }],
                 })(
-                  <DatePicker onChange={this.handleChangeStartTime.bind(this)} disabledDate={this.disabledStartDate.bind(this)} style={{ width: '100%' }} />,
+                  <DatePicker onChange={this.handleChangeStartTime.bind(this)} style={{ width: '100%' }} />,
                 )}
+                {/* disabledDate={this.disabledStartDate.bind(this)} */}
               </FormItem>
             </Col>
             <Col span={7}>
@@ -272,8 +292,8 @@ class PurchaseModal extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('taskEndTime', {
-                  initialValue: purchaseData.taskEndTime ? moment(purchaseData.taskEndTime, 'YYYY-MM-DD HH:mm:ss') : undefined,
-                  rules: [{ required: true, message: '该项必填' }],
+                  initialValue: taskEndTime,
+                  rules: [{ required: true, message: '该项必填' }, { validator: this.checkStartTime }],
                 })(
                   <DatePicker onChange={this.handleChangeEndTime.bind(this)} disabledDate={this.disabledEndDate.bind(this)} style={{ width: '100%' }} />,
                 )}
@@ -341,7 +361,7 @@ class PurchaseModal extends Component {
             </Col>
           </Row>
           <Row>
-            <ProductTable defaultBuyer={defaultBuyer} defaultStartTime={defaultStartTime} defaultEndTime={defaultEndTime} data={purchaseData.taskDetailList} parent={this} buyer={buyer} />
+            <ProductTable defaultBuyer={defaultBuyer} defaultStartTime={defaultStartTime || taskStartTime} defaultEndTime={defaultEndTime || taskEndTime} data={purchaseData.taskDetailList} parent={this} buyer={buyer} />
           </Row>
         </Form>
       </Modal>

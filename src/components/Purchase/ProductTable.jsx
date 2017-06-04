@@ -10,6 +10,17 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
 
+function getDatePickerWrapper() {
+  const wrappers = document.querySelectorAll('.ant-popover');
+  let dom = null;
+  wrappers.forEach((el) => {
+    if (!el.className.match('ant-popover-hidden')) dom = el;
+  });
+  return dom;
+}
+
+let latestSearch = {};
+
 class ProductTable extends Component {
   constructor() {
     super();
@@ -18,6 +29,7 @@ class ProductTable extends Component {
       previewImage: '',
       previewVisible: false,
       selectedSku: [],
+      timeQuery: {},
     };
   }
 
@@ -127,6 +139,7 @@ class ProductTable extends Component {
 
   handleSearch(key, value) {
     this.setState({ selectedSku: [] }, () => {
+      latestSearch = { ...value };
       this.props.dispatch({
         type: 'sku/querySkuList',
         payload: { ...value, pageIndex: 1 },
@@ -193,6 +206,15 @@ class ProductTable extends Component {
     }
   }
 
+  changeTimeQuery(key, param, value) {
+    const { timeQuery } = this.state;
+    if (!timeQuery[key]) {
+      timeQuery[key] = {};
+    }
+    timeQuery[key][param] = value;
+    this.setState({ timeQuery });
+  }
+
   render() {
     const p = this;
     const { form, skuList = [], parent, buyer = [], defaultBuyer, defaultStartTime, defaultEndTime, total, currentPage, pageSize } = p.props;
@@ -210,8 +232,6 @@ class ProductTable extends Component {
     function renderSkuPopover(list, key, skuTotal) {
       let skuCode = null;
       let itemName = null;
-      let startOrderTime = null;
-      let endOrderTime = null;
 
       function handleEmpty() {
         skuCode.refs.input.value = '';
@@ -219,12 +239,12 @@ class ProductTable extends Component {
       }
 
       function doSearch() {
-        p.handleSearch(key, { skuCode: skuCode.refs.input.value, itemName: itemName.refs.input.value });
+        p.handleSearch(key, { skuCode: skuCode.refs.input.value, itemName: itemName.refs.input.value, isOrderQuery: 0 });
       }
 
       function doSearchOrder() {
-        console.log(startOrderTime, endOrderTime);
-        // p.handleSearch(key, { startOrderTime: startOrderTime.refs.input.value, endOrderTime: itemName.refs.input.value });
+        const { startOrderTime, endOrderTime } = p.state.timeQuery[key] || {};
+        p.handleSearch(key, { startOrderTime: new Date(startOrderTime).format('yyyy-MM-dd'), endOrderTime: new Date(endOrderTime).format('yyyy-MM-dd'), isOrderQuery: 1 });
       }
 
       function updateValue(selectedSkuCode) {
@@ -266,8 +286,9 @@ class ProductTable extends Component {
             payload: {
               pageIndex: current,
               pageSize: size,
-              skuCode: skuCode.refs.input.value,
-              itemName: itemName.refs.input.value,
+              ...latestSearch,
+              // skuCode: skuCode.refs.input.value,
+              // itemName: itemName.refs.input.value,
             },
           });
         },
@@ -277,8 +298,9 @@ class ProductTable extends Component {
             payload: {
               pageIndex: page,
               pageSize,
-              skuCode: skuCode.refs.input.value,
-              itemName: itemName.refs.input.value,
+              ...latestSearch,
+              // skuCode: skuCode.refs.input.value,
+              // itemName: itemName.refs.input.value,
             },
           });
         },
@@ -368,7 +390,9 @@ class ProductTable extends Component {
                   >
                     <DatePicker
                       placeholder="请选择开始时间"
-                      ref={(c) => { startOrderTime = c; }}
+                      getCalendarContainer={getDatePickerWrapper}
+                      value={p.state.timeQuery[key] && p.state.timeQuery[key].startOrderTime}
+                      onChange={p.changeTimeQuery.bind(p, key, 'startOrderTime')}
                     />
                   </FormItem>
                 </Col>
@@ -379,13 +403,14 @@ class ProductTable extends Component {
                   >
                     <DatePicker
                       placeholder="请选择结束时间"
-                      ref={(c) => { endOrderTime = c; }}
+                      getCalendarContainer={getDatePickerWrapper}
+                      value={p.state.timeQuery[key] && p.state.timeQuery[key].endOrderTime}
+                      onChange={p.changeTimeQuery.bind(p, key, 'endOrderTime')}
                     />
                   </FormItem>
                 </Col>
                 <Col className="listBtnGroup" span="10" style={{ paddingTop: 2 }}>
                   <Button type="primary" onClick={doSearchOrder}>查询</Button>
-                  <Button type="ghost" onClick={handleEmpty}>清空</Button>
                 </Col>
               </Row>
             </TabPane>

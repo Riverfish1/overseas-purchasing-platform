@@ -66,7 +66,7 @@ class Inventory extends Component {
       { title: '仓库名称', key: 'warehouseName', dataIndex: 'warehouseName' },
       { title: 'UPC', key: 'upc', dataIndex: 'upc' },
       { title: '实际库存', key: 'inventory', dataIndex: 'inventory' },
-      { title: '虚拟库存', key: 'virtualInv', dataIndex: 'virtualInv' },
+      // { title: '虚拟库存', key: 'virtualInv', dataIndex: 'virtualInv' },
       { title: '在途库存', key: 'transInv', dataIndex: 'transInv' },
       { title: '可售库存', key: 'availableInv', dataIndex: 'availableInv' },
       { title: '占用库存', key: 'lockedInv', dataIndex: 'lockedInv' },

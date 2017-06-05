@@ -244,7 +244,14 @@ class ProductTable extends Component {
 
       function doSearchOrder() {
         const { startOrderTime, endOrderTime } = p.state.timeQuery[key] || {};
-        p.handleSearch(key, { startOrderTime: new Date(startOrderTime).format('yyyy-MM-dd'), endOrderTime: new Date(endOrderTime).format('yyyy-MM-dd'), isOrderQuery: 1 });
+        const params = {};
+        if (startOrderTime) {
+          params.startOrderTime = new Date(startOrderTime).format('yyyy-MM-dd');
+        }
+        if (endOrderTime) {
+          params.endOrderTime = new Date(endOrderTime).format('yyyy-MM-dd');
+        }
+        p.handleSearch(key, { ...params, isOrderQuery: 1 });
       }
 
       function updateValue(selectedSkuCode) {

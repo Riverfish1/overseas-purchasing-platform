@@ -321,16 +321,14 @@ class ProductTable extends Component {
       };
 
       const columns = [
-        { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: '9%' },
-        { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: '14%' },
-        { title: '品牌', dataIndex: 'brand', key: 'brand', width: '12%' },
-        { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: '8%', render(text) { return text || '-'; } },
-        { title: '尺寸', dataIndex: 'scale', key: 'scale', width: '10%', render(text) { return text || '-'; } },
-        { title: '价格', dataIndex: 'salePrice', key: 'salePrice', width: '6%', render(text) { return text || '-'; } },
+        { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 84 },
+        { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 130 },
+        { title: '品牌', dataIndex: 'brand', key: 'brand', width: 112 },
+        { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 75, render(text) { return text || '-'; } },
         { title: '图片',
           dataIndex: 'skuPic',
           key: 'skuPic',
-          width: '14%',
+          width: 80,
           render(text) { // 需要解决返回的skuPic的格式的问题
             let imgUrl = '';
             try {
@@ -347,14 +345,20 @@ class ProductTable extends Component {
             }
           },
         },
-        { title: '颜色', dataIndex: 'color', key: 'color', width: '8%', render(text) { return text || '-'; } },
-        { title: '虚拟库存', dataIndex: 'virtualInv', key: 'virtualInv', width: '8%', render(text) { return text || '-'; } },
-        { title: '重量(kg)', dataIndex: 'weight', key: 'weight', width: '8%', render(text) { return text || '-'; } },
-        { title: '操作', dataIndex: 'oper', key: 'oper', width: '8%', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
+        { title: '颜色', dataIndex: 'color', key: 'color', width: 60, render(text) { return text || '-'; } },
+        { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 60, render(text) { return text || '-'; } },
+        // { title: '价格', dataIndex: 'salePrice', key: 'salePrice', width: '6%', render(text) { return text || '-'; } },
+        { title: '订单所需库存', dataIndex: 'saleNeed', key: 'saleNeed', width: 60, render(text) { return text || '-'; } },
+        { title: '当前采购数量', dataIndex: 'purchaseNeed', key: 'purchaseNeed', width: 60, render(text) { return text || '-'; } },
+        { title: '实际库存', dataIndex: 'inventory', key: 'inventory', width: 45, render(text) { return text || '-'; } },
+        { title: '在途库存', dataIndex: 'transInv', key: 'transInv', width: 45, render(text) { return text || '-'; } },
+        { title: '占用库存', dataIndex: 'lockedInv', key: 'lockedInv', width: 45, render(text) { return text || '-'; } },
+        // { title: '重量(kg)', dataIndex: 'weight', key: 'weight', width: '8%', render(text) { return text || '-'; } },
+        { title: '操作', dataIndex: 'oper', key: 'oper', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
       ];
 
       return (
-        <div style={{ width: 800 }}>
+        <div style={{ width: 970 }}>
           <Tabs size="small">
             <TabPane tab="按商品查询" key="1">
               <Row gutter={20} style={{ width: 720 }}>
@@ -453,6 +457,7 @@ class ProductTable extends Component {
                   rules: [{ required: true, message: '该项必填' }],
                 })(
                   <Popover
+                    overlayStyle={{ width: 1000 }}
                     content={renderSkuPopover(skuList, r.key, total)}
                     title="搜索SKU"
                     trigger="click"

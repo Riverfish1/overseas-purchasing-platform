@@ -179,7 +179,7 @@ class Sku extends Component {
               <Popover
                 content={<div>
                   <div>商品名称：{record.itemName}</div>
-                  <div style={{ paddingTop: 6 }}>锁定数量：<InputNumber placeholder="请输入" min={1} step={1} onChange={(v) => { record.lockedNum = v; }} /></div>
+                  <div style={{ paddingTop: 6 }}>锁定数量：<InputNumber placeholder="请输入" step={1} onChange={(v) => { record.lockedNum = v; }} /></div>
                   <Button size="small" type="primary" style={{ marginTop: 6 }} onClick={p.updateLockedSku.bind(p, record)}>保存</Button>
                 </div>}
                 title="锁定库存"

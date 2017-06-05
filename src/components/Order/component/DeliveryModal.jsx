@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, Row, Col, Alert, Table, Cascader } from 'antd';
+import { Form, Input, Modal, Row, Col, Alert, Table, Cascader, Select } from 'antd';
 
 import divisions from '../../../utils/divisions.json';
 import check from '../../../utils/checkLib';
@@ -45,7 +45,7 @@ class DeliveryModal extends Component {
   }
   render() {
     const p = this;
-    const { visible, form, data } = this.props;
+    const { visible, form, data, deliveryCompanyList } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -141,6 +141,76 @@ class DeliveryModal extends Component {
             <Row>
               <Col span={12}>
                 <FormItem
+                  label="物流运单号"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('logisticNo', {
+                    initialValue: data.logisticNo,
+                  })(
+                    <Input placeholder="请输入物流运单号" />,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem
+                  label="物流公司名称"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('logisticCompany', {
+                    initialValue: data.logisticCompany || undefined,
+                  })(
+                    <Select placeholder="请选择物流公司名称" >
+                      {deliveryCompanyList.map(v => (
+                        <Option value={v.name} key={v.name}>{v.name}</Option>
+                      ))}
+                    </Select>,
+                  )}
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <FormItem
+                  label="运单状态"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('status', {
+                    initialValue: data.status || 0,
+                  })(
+                    <Select placeholder="请选择运单状态" >
+                      <Option value={0} key="0">新建</Option>
+                      <Option value={1} key="1">已发货</Option>
+                      <Option value={2} key="2">已收货</Option>
+                    </Select>,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem
+                  label="运费"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('freight', {
+                    initialValue: data.freight,
+                  })(
+                    <Input placeholder="请输入运费" />)}
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <FormItem
+                  label="邮编"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('postcode', {
+                    initialValue: data.postcode,
+                  })(
+                    <Input placeholder="请输入邮编" />)}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem
                   label="身份证号"
                   {...formItemLayout}
                 >
@@ -151,6 +221,8 @@ class DeliveryModal extends Component {
                     <Input placeholder="请输入身份证号" />)}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="备注"

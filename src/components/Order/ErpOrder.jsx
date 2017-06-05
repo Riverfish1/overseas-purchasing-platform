@@ -121,7 +121,7 @@ class ErpOrder extends Component {
   }
   render() {
     const p = this;
-    const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {} } = p.props;
+    const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [] } = p.props;
     console.log(erpOrderValues);
     const { getFieldDecorator, resetFields } = form;
     const { isNotSelected, visible, deliveryModalVisible, checkId, type, modalVisible, title } = p.state;
@@ -381,7 +381,7 @@ class ErpOrder extends Component {
             </Col>
           </Row>
         </Modal>
-        <DeliveryModal visible={deliveryModalVisible} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
+        <DeliveryModal visible={deliveryModalVisible} deliveryCompanyList={deliveryCompanyList} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
         <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} scroll={{ x: '130%' }} bordered />
         <ErpOrderModal
           visible={modalVisible}
@@ -397,9 +397,9 @@ class ErpOrder extends Component {
 }
 
 function mapStateToProps(state) {
-  const { erpOrderList, erpOrderTotal, erpOrderDetail, erpOrderValues } = state.order;
+  const { erpOrderList, erpOrderTotal, erpOrderDetail, erpOrderValues, deliveryCompanyList } = state.order;
   const { list } = state.agency;
-  return { erpOrderList, erpOrderTotal, erpOrderDetail, agencyList: list, erpOrderValues };
+  return { erpOrderList, erpOrderTotal, erpOrderDetail, agencyList: list, erpOrderValues, deliveryCompanyList };
 }
 
 export default connect(mapStateToProps)(Form.create()(ErpOrder));

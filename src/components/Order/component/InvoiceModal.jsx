@@ -92,6 +92,8 @@ class InvoiceModal extends Component {
                   )}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="联系电话"
@@ -116,6 +118,8 @@ class InvoiceModal extends Component {
                     <Input placeholder="请输入详细地址" />)}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="物流运单号"
@@ -134,7 +138,7 @@ class InvoiceModal extends Component {
                   {...formItemLayout}
                 >
                   {getFieldDecorator('logisticCompany', {
-                    initialValue: data.logisticCompany,
+                    initialValue: data.logisticCompany || undefined,
                   })(
                     <Select placeholder="请选择物流公司名称" >
                       {deliveryCompanyList.map(v => (
@@ -144,13 +148,15 @@ class InvoiceModal extends Component {
                   )}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="运单状态"
                   {...formItemLayout}
                 >
                   {getFieldDecorator('status', {
-                    initialValue: data.status,
+                    initialValue: data.status || 0,
                   })(
                     <Select placeholder="请选择运单状态" >
                       <Option value={0} key="0">新建</Option>
@@ -171,6 +177,8 @@ class InvoiceModal extends Component {
                     <Input placeholder="请输入运费" />)}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="邮编"
@@ -194,6 +202,8 @@ class InvoiceModal extends Component {
                     <Input placeholder="请输入身份证号" />)}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="备注"

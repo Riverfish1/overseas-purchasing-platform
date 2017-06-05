@@ -303,6 +303,7 @@ export default {
           setTimeout(() => {
             dispatch({ type: 'queryErpOrderList', payload: query });
             dispatch({ type: 'agency/queryAgencyList', payload: query });
+            dispatch({ type: 'queryDeliveryCompanyList', payload: query });
           }, 0);
         }
         if (pathname === '/sale/shippingOrder') {

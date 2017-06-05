@@ -56,7 +56,8 @@ class PurchaseModal extends Component {
   sendToRight() {
     const storageList = this.state.storageList;
     this.state.selectedRowKeys.forEach((key) => {
-      const res = this.props.buyerTaskList.filter(el => el.skuId === key);
+      const realKey = key.split('__')[0];
+      const res = this.props.buyerTaskList.filter(el => el.skuId.toString() === realKey.toString());
       if (res.length > 0) storageList.push(res[0]);
     });
     this.setState({ storageList, selectedRowKeys: [] });
@@ -372,7 +373,7 @@ class PurchaseModal extends Component {
               <Row style={{ margin: '10px 0' }}>
                 <Col><Button type="primary" size="large" style={{ float: 'right' }} onClick={this.sendToRight.bind(this)} disabled={selectedRowKeys.length < 1}>移到右边</Button></Col>
               </Row>
-              <Table columns={columnsTaskList} bordered scroll={{ x: '130%' }} dataSource={filteredBuyerTask} rowKey={r => r.id} rowSelection={rowSelection} pagination={false} />
+              <Table columns={columnsTaskList} bordered scroll={{ x: '130%' }} dataSource={filteredBuyerTask} rowKey={r => `${r.skuId}__${r.taskDetailId}`} rowSelection={rowSelection} pagination={false} />
             </Col>
             <Col span="12">
               <div className={styles.blockTitle}>入库明细</div>

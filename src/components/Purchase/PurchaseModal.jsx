@@ -40,6 +40,7 @@ class PurchaseModal extends Component {
     const { form, dispatch, modalValues } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
+      delete fieldsValue.defaultBuyer;
       p.getSkuValue((detailList) => {
         console.log(detailList);
         const values = {
@@ -263,11 +264,13 @@ class PurchaseModal extends Component {
                 label="默认买手"
                 {...formItemLayout}
               >
-                <Select placeholder="请选择买手" optionLabelProp="title" onChange={this.handleChangeBuyer.bind(this)}>
-                  {buyer.map((el) => {
-                    return <Option key={el.id} title={el.name}>{el.name}</Option>;
-                  })}
-                </Select>
+                {getFieldDecorator('defaultBuyer', {})(
+                  <Select placeholder="请选择买手" optionLabelProp="title" onChange={this.handleChangeBuyer.bind(this)}>
+                    {buyer.map((el) => {
+                      return <Option key={el.id} title={el.name}>{el.name}</Option>;
+                    })}
+                  </Select>,
+                )}
               </FormItem>
             </Col>
           </Row>

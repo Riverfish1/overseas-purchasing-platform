@@ -10,7 +10,7 @@ const deleteSku = ({ payload }) => fetch.post('/haierp1/itemSku/delete', { data:
 const queryPackageScales = () => fetch.post('/haierp1/freight/getPackageScaleList').catch(e => e);
 const queryScaleTypes = () => fetch.post('/haierp1/itemSku/scaleTypeList').catch(e => e);
 const queryItemList = ({ payload }) => fetch.post('/haierp1/item/queryItemList', { data: payload }).catch(e => e);
-const lockVirtualInv = ({ payload }) => fetch.post('/itemSku/lockedVirtualInv', { data: payload }).catch(e => e);
+const lockVirtualInv = ({ payload }) => fetch.post('/haierp1/itemSku/lockedVirtualInv', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'sku',

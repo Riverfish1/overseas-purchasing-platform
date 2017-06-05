@@ -175,18 +175,18 @@ class Sku extends Component {
               <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
               <Popconfirm title="确定删除此类目？" onConfirm={p.handleDelete.bind(p, record.id)}>
                 <a href="javascript:void(0)" >删除</a>
-              </Popconfirm>
+              </Popconfirm>&nbsp;&nbsp;
               <Popover
                 content={<div>
                   <div>商品名称：{record.itemName}</div>
-                  <div style={{ paddingTop: 6 }}>锁定数量：<InputNumber placeholder="请输入" min={1} step={1} onChange={(v) => { record.lockedNum = v; }} /></div>
+                  <div style={{ paddingTop: 6 }}>锁定数量：<InputNumber placeholder="请输入" step={1} onChange={(v) => { record.lockedNum = v; }} /></div>
                   <Button size="small" type="primary" style={{ marginTop: 6 }} onClick={p.updateLockedSku.bind(p, record)}>保存</Button>
                 </div>}
                 title="锁定库存"
                 trigger="click"
               >
                 <a href="javascript:void(0)" style={{ marginRight: 10 }}>锁定</a>
-              </Popover>,
+              </Popover>
             </div>);
         },
       },

@@ -14,6 +14,8 @@ class Sku extends Component {
       modalVisible: false,
       previewVisible: false,
       previewImage: '',
+      lockedNumGroup: {},
+      lockedPopoverVisible: {},
     };
   }
 
@@ -79,19 +81,30 @@ class Sku extends Component {
     });
   }
 
+  toggleLockedPopoverVisible(record) {
+    const { lockedPopoverVisible } = this.state;
+    lockedPopoverVisible[record.id] = !lockedPopoverVisible[record.id];
+    this.setState({ lockedPopoverVisible });
+  }
+
   updateLockedSku(record) {
-    console.log(record);
-    if (!record.lockedNum) {
+    const { lockedNumGroup } = this.state;
+    const num = lockedNumGroup[record.id];
+    if (!num) {
       Modal.warning({ title: '请输入锁定库存数量' });
       return;
     }
-    this.props.dispatch({
-      type: 'sku/lockVirtualInv',
-      payload: {
-        lockedVirtualInv: record.lockedNum,
-        itemId: record.itemId,
-        id: record.id,
-      },
+    this.toggleLockedPopoverVisible(record);
+    lockedNumGroup[record.id] = undefined;
+    this.setState({ lockedNumGroup }, () => {
+      this.props.dispatch({
+        type: 'sku/lockVirtualInv',
+        payload: {
+          lockedVirtualInv: num,
+          itemId: record.itemId,
+          id: record.id,
+        },
+      });
     });
   }
 
@@ -179,11 +192,13 @@ class Sku extends Component {
               <Popover
                 content={<div>
                   <div>商品名称：{record.itemName}</div>
-                  <div style={{ paddingTop: 6 }}>锁定数量：<InputNumber placeholder="请输入" step={1} onChange={(v) => { record.lockedNum = v; }} /></div>
+                  <div style={{ paddingTop: 6 }}>锁定数量：<InputNumber placeholder="请输入" step={1} value={p.state.lockedNumGroup[record.id] || undefined} onChange={(v) => { p.state.lockedNumGroup[record.id] = v; p.setState({ lockedNumGroup: p.state.lockedNumGroup }); }} /></div>
                   <Button size="small" type="primary" style={{ marginTop: 6 }} onClick={p.updateLockedSku.bind(p, record)}>保存</Button>
                 </div>}
                 title="锁定库存"
                 trigger="click"
+                visible={p.state.lockedPopoverVisible[record.id] || false}
+                onVisibleChange={p.toggleLockedPopoverVisible.bind(p, record)}
               >
                 <a href="javascript:void(0)" style={{ marginRight: 10 }}>锁定</a>
               </Popover>

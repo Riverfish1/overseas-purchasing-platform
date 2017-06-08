@@ -16,7 +16,7 @@ const queryErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/queryById',
 const updateErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/update', { data: payload }).catch(e => e);
 // 订单关闭
 const closeErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/close', { data: payload }).catch(e => e);
-const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/split', { data: payload }).catch(e => e);
+const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/splitErpOrder', { data: payload }).catch(e => e);
 // 批量发货
 const multiDelivery = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDelivery', { data: payload }).catch(e => e);
 // 发货单查询
@@ -273,11 +273,14 @@ export default {
         });
       }
     },
-    * splitOrder({ payload, success }, { call }) {
+    * splitOrder({ payload, success }, { call, put }) {
       const data = yield call(splitOrder, { payload });
       if (data.success) {
-        message.success('拆分成功');
-        success({ success: true });
+        message.success('订单拆分成功');
+        yield put({
+          type: 'queryErpOrderList',
+          payload: {},
+        });
       }
     },
     * queryDeliveryCompanyList(params, { call, put }) {

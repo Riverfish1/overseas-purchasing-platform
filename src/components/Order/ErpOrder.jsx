@@ -4,6 +4,7 @@ import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover } from 'an
 
 import DeliveryModal from './component/DeliveryModal';
 import ErpOrderModal from './ErpOrderModal';
+import SplitOrder from './component/SplitOrder';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -16,7 +17,6 @@ class ErpOrder extends Component {
       modalVisible: false,
       title: '',
       checkId: [], // 发货时传的ID
-      visible: false,
       needSplitId: '',
       deliveryModalVisible: false,
       type: 'add', // 发货的判断
@@ -71,24 +71,6 @@ class ErpOrder extends Component {
       },
     });
   }
-  splitOrder() {
-    const p = this;
-    console.log(p);
-    const num = p.num.refs.input.value;
-    this.props.dispatch({
-      type: 'order/splitOrder',
-      payload: { id: p.state.needSplitId, num },
-      success(data) {
-        if (data.success) {
-          p.handleCancel();
-          p.props.dispatch({
-            type: 'order/queryErpOrderList',
-            payload: {},
-          });
-        }
-      },
-    });
-  }
   showModal(id, e) {
     e.stopPropagation();
     const p = this;
@@ -98,10 +80,6 @@ class ErpOrder extends Component {
     }, () => {
       p.props.dispatch({ type: 'order/queryErpOrder', payload: { id } });
     });
-  }
-  handleCancel() {
-    this.num.refs.input.value = '';
-    this.setState({ visible: false });
   }
   closeDeliveryModal() {
     this.props.dispatch({
@@ -124,7 +102,7 @@ class ErpOrder extends Component {
     const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [] } = p.props;
     console.log(erpOrderValues);
     const { getFieldDecorator, resetFields } = form;
-    const { isNotSelected, visible, deliveryModalVisible, checkId, type, modalVisible, title } = p.state;
+    const { isNotSelected, deliveryModalVisible, checkId, type, modalVisible, title } = p.state;
 
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -212,11 +190,12 @@ class ErpOrder extends Component {
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
-        width: 100,
+        width: 110,
+        fixed: 'right',
         render(t, r) {
           return (
             <div>
-              {/* <a href="javascript:void(0)" onClick={() => { p.setState({ visible: true, needSplitId: r.id }); }} >订单拆分</a>*/}
+              <SplitOrder dispatch={dispatch} record={r} />
               <a href="javascript:void(0)" onClick={p.showModal.bind(p, r.id)} >修改</a>
             </div>);
         },
@@ -368,19 +347,6 @@ class ErpOrder extends Component {
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.closeErpOrder.bind(p)}>关闭</Button>
           </Col>
         </Row>
-        <Modal
-          visible={visible}
-          title="拆分"
-          onOk={p.splitOrder.bind(p)}
-          onCancel={p.handleCancel.bind(p)}
-        >
-          <Row>
-            <Col span={2} offset={3} style={{ marginTop: 5 }}>数量：</Col>
-            <Col span={12}>
-              <Input style={{ width: '100%' }} ref={(c) => { this.num = c; }} placeholder="请输入需要拆分的数量" />
-            </Col>
-          </Row>
-        </Modal>
         <DeliveryModal visible={deliveryModalVisible} deliveryCompanyList={deliveryCompanyList} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
         <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} scroll={{ x: '130%' }} bordered />
         <ErpOrderModal

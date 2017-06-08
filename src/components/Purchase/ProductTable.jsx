@@ -350,9 +350,10 @@ class ProductTable extends Component {
         // { title: '价格', dataIndex: 'salePrice', key: 'salePrice', width: '6%', render(text) { return text || '-'; } },
         { title: '订单所需库存', dataIndex: 'saleNeed', key: 'saleNeed', width: 60, render(text) { return text || '-'; } },
         { title: '当前采购数量', dataIndex: 'purchaseNeed', key: 'purchaseNeed', width: 60, render(text) { return text || '-'; } },
-        { title: '实际库存', dataIndex: 'inventory', key: 'inventory', width: 45, render(text) { return text || '-'; } },
+        { title: '现货库存', dataIndex: 'inventory', key: 'inventory', width: 45, render(text) { return text || '-'; } },
         { title: '在途库存', dataIndex: 'transInv', key: 'transInv', width: 45, render(text) { return text || '-'; } },
-        { title: '占用库存', dataIndex: 'lockedInv', key: 'lockedInv', width: 45, render(text) { return text || '-'; } },
+        { title: '现货占用', dataIndex: 'lockedInv', key: 'lockedInv', width: 45, render(text) { return text || '-'; } },
+        { title: '在途占用', dataIndex: 'lockedTransInv', key: 'lockedTransInv', width: 45, render(text) { return text || '-'; } },
         // { title: '重量(kg)', dataIndex: 'weight', key: 'weight', width: '8%', render(text) { return text || '-'; } },
         { title: '操作', dataIndex: 'oper', key: 'oper', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
       ];

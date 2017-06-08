@@ -1,7 +1,10 @@
+import { message } from 'antd';
 import fetch from '../utils/request';
 
 const queryInventoryList = ({ payload }) => fetch.post('/haierp1/inventory/area/queryList', { data: payload }).catch(e => e);
 const transTo = ({ payload }) => fetch.post('/haierp1/inventory/area/transTo', { data: payload }).catch(e => e);
+const checkIn = ({ payload }) => fetch.post('/haierp1/inventory/inventoryCheckIn', { data: payload }).catch(e => e);
+const checkOut = ({ payload }) => fetch.post('/haierp1/inventory/inventoryCheckOut', { data: payload }).catch(e => e);
 // 仓库管理
 const queryWareList = ({ payload }) => fetch.get('/haierp1/warehouse/queryWarehouses', { data: payload }).catch(e => e);
 const addWare = ({ payload }) => fetch.get('/haierp1/warehouse/add', { data: payload }).catch(e => e);
@@ -84,7 +87,22 @@ export default {
     * transTo({ payload }, { call, put }) {
       const data = yield call(transTo, { payload });
       if (data.success) {
-        yield put({ type: 'queryInventoryList', payload: {} });
+        message.success('操作成功');
+        yield put({ type: 'queryList', payload: {} });
+      }
+    },
+    * checkIn({ payload }, { call, put }) {
+      const data = yield call(checkIn, { payload });
+      if (data.success) {
+        message.success('操作成功');
+        yield put({ type: 'queryList', payload: {} });
+      }
+    },
+    * checkOut({ payload }, { call, put }) {
+      const data = yield call(checkOut, { payload });
+      if (data.success) {
+        message.success('操作成功');
+        yield put({ type: 'queryList', payload: {} });
       }
     },
   },

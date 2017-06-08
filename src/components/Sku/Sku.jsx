@@ -181,7 +181,7 @@ class Sku extends Component {
         title: '操作',
         dataIndex: 'oper',
         key: 'oper',
-        width: 80,
+        width: 110,
         render(text, record) {
           return (
             <div>

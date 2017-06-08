@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Form, Table, Row, Col, Button, Input, Popover } from 'antd';
 
+import TransTo from './components/trans-to';
+import CheckIn from './components/check-in';
+import CheckOut from './components/check-out';
+
 const FormItem = Form.Item;
 
 class Inventory extends Component {
@@ -30,7 +34,7 @@ class Inventory extends Component {
   }
   render() {
     const p = this;
-    const { list = [], total, form } = this.props;
+    const { list = [], total, form, dispatch } = this.props;
     const { previewImage } = this.state;
     const { getFieldDecorator, resetFields } = form;
     const formItemLayout = {
@@ -72,6 +76,21 @@ class Inventory extends Component {
       { title: '在途库存', key: 'transInv', dataIndex: 'transInv' },
       { title: '在途占用', key: 'lockedTransInv', dataIndex: 'lockedTransInv' },
       { title: '货架号', key: 'positionNo', dataIndex: 'positionNo' },
+      {
+        title: '操作',
+        dataIndex: 'oper',
+        key: 'oper',
+        width: 184,
+        render(text, record) {
+          return (
+            <div>
+              <TransTo dispatch={dispatch} record={record} />
+              <CheckIn dispatch={dispatch} record={record} />
+              <CheckOut dispatch={dispatch} record={record} />
+            </div>
+          );
+        },
+      },
     ];
     const paginationProps = {
       total,

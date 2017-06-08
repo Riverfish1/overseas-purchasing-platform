@@ -4,7 +4,7 @@ import fetch from '../utils/request';
 const addSku = ({ payload }) => fetch.post('/haierp1/itemSku/add', { data: payload }).catch(e => e);
 const updateSku = ({ payload }) => fetch.post('/haierp1/itemSku/update', { data: payload }).catch(e => e);
 const querySku = ({ payload }) => fetch.post('/haierp1/itemSku/query', { data: payload }).catch(e => e);
-// const querySkuList = ({ payload }) => fetch.post('/haierp1/itemSku/queryItemSkuList', { data: payload }).catch(e => e);
+const querySkuList = ({ payload }) => fetch.post('/haierp1/itemSku/queryItemSkuList', { data: payload }).catch(e => e);
 const querySkuList2 = ({ payload }) => fetch.post('/haierp1/purchase/queryItemSkuList', { data: payload }).catch(e => e);
 const deleteSku = ({ payload }) => fetch.post('/haierp1/itemSku/delete', { data: payload }).catch(e => e);
 const queryPackageScales = () => fetch.post('/haierp1/freight/getPackageScaleList').catch(e => e);
@@ -102,6 +102,26 @@ export default {
       }
     },
     * querySkuList({ payload = {} }, { call, put, select }) { // SKU管理列表
+      let pageIndex = yield select(({ sku }) => sku.currentPage);
+      let pageSize = yield select(({ sku }) => sku.pageSize);
+      if (payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({ type: 'saveCurrentPage', payload });
+      }
+      if (payload.pageSize) {
+        pageSize = payload.pageSize;
+        yield put({ type: 'savePageSize', payload });
+      }
+      const data = yield call(querySkuList, { payload: { ...payload, pageIndex, pageSize } });
+      console.log('querySkuList success', data);
+      // if (data.success) {
+      yield put({
+        type: 'saveItemSkuList',
+        payload: data,
+      });
+      // }
+    },
+    * querySkuList2({ payload = {} }, { call, put, select }) { // SKU管理列表
       let pageIndex = yield select(({ sku }) => sku.currentPage);
       let pageSize = yield select(({ sku }) => sku.pageSize);
       if (payload.pageIndex) {

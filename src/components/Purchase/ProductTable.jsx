@@ -124,6 +124,7 @@ class ProductTable extends Component {
             el.skuId = value.id;
             el.skuCode = value.skuCode;
             el.skuPic = value.skuPic;
+            el.purchaseNeed = value.purchaseNeed || undefined;
           }
         });
         this.setState({ skuData }, () => {
@@ -131,6 +132,7 @@ class ProductTable extends Component {
           form.setFieldsValue({
             [`r_${key}_skuId`]: value.id,
             [`r_${key}_skuCode`]: value.skuCode,
+            [`r_${key}_count`]: value.purchaseNeed,
           });
         });
       }
@@ -141,7 +143,7 @@ class ProductTable extends Component {
     this.setState({ selectedSku: [] }, () => {
       latestSearch = { ...value };
       this.props.dispatch({
-        type: 'sku/querySkuList',
+        type: 'sku/querySkuList2',
         payload: { ...value, pageIndex: 1 },
       });
     });
@@ -289,7 +291,7 @@ class ProductTable extends Component {
         pageSizeOptions: ['20', '30', '50', '100'],
         onShowSizeChange(current, size) {
           p.props.dispatch({
-            type: 'sku/querySkuList',
+            type: 'sku/querySkuList2',
             payload: {
               pageIndex: current,
               pageSize: size,
@@ -301,7 +303,7 @@ class ProductTable extends Component {
         },
         onChange(page) {
           p.props.dispatch({
-            type: 'sku/querySkuList',
+            type: 'sku/querySkuList2',
             payload: {
               pageIndex: page,
               pageSize,

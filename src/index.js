@@ -6,6 +6,7 @@ import 'moment/locale/zh-cn';
 import models from './models';
 import fetch from './utils/request';
 import utilRegister from './utils';
+import { setNavigation } from './constants';
 import './index.html';
 import './index.less';
 
@@ -31,6 +32,12 @@ message.config({
 
 // 注册辅助方法
 utilRegister();
+
+// 获取权限缓存
+const permissionCache = localStorage.getItem('HAIERP_LAST_PERMISSION');
+if (permissionCache) {
+  setNavigation(JSON.parse(permissionCache));
+}
 
 // 1. Initialize
 const app = dva({

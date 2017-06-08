@@ -1,6 +1,31 @@
 /* eslint-disable object-property-newline */
 export const API_URL = 'http://118.178.126.143/haierp1/haiLogin';
 
+// 后端权限码映射
+export const backendCfg = {
+  products: 'item',
+  productsList: 'item_list',
+  skuList: 'item_skulist',
+  packageScale: 'item_scale',
+  packageLevel: 'item_level',
+  sale: 'sale',
+  orderList: 'sale_outerorder',
+  erpOrder: 'sale_erporder',
+  shippingOrder: 'sale_shippingorder',
+  purchase: 'purchase',
+  purchaseList: 'purchase_task',
+  purchaseStorage: 'purchase_storage',
+  person: 'seller',
+  agencyType: 'seller_type',
+  agencyList: 'seller_list',
+  inventory: 'inventory',
+  inventoryList: 'inventory_list',
+  warehouse: 'inventory_warehouse',
+
+  // 内置
+  overview: 'overview',
+};
+
 // 路由字符串常量配置
 export const routerCfg = {
   // 登录
@@ -42,7 +67,7 @@ export const routerCfg = {
   WAREHOUSE: 'warehouse', // 仓库管理
 };
 
-export const navigation = [
+export const originalNavigation = [
   { key: routerCfg.OVERVIEW, name: '总览', icon: 'laptop' },
   // { key: routerCfg.PERMISSION, name: '权限管理', icon: 'team',
   //   child: [
@@ -94,3 +119,8 @@ export const navigation = [
     ],
   },
 ];
+
+let navigation = [];
+
+export function getNavigation() { return navigation; }
+export function setNavigation(data) { navigation = data; }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu, Icon } from 'antd';
 import { Link } from 'dva/router';
-import { routerCfg, navigation } from '../../constants';
+import { routerCfg, getNavigation } from '../../constants';
 import styles from './style.less';
 
 export default class Header extends React.Component {
@@ -15,7 +15,7 @@ export default class Header extends React.Component {
           mode="horizontal"
           selectedKeys={[pathname.split('/')[1] || 'overview']}
         >
-          {navigation.map((item) => {
+          {getNavigation().map((item) => {
             return (
               <Menu.Item
                 key={item.key}

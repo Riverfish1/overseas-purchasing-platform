@@ -1,32 +1,11 @@
 import React, { Component } from 'react';
 import { Menu, Icon } from 'antd';
 import { Link } from 'dva/router';
-import { navigation } from '../../constants';
+import { getNavigation } from '../../constants';
 import styles from './style.less';
 
-const topMenus = navigation.map(item => item.key);
-
-const getMenus = (menuArray, siderFold, pPath) => {
-  const parentPath = pPath || '/';
-  return menuArray.map((item) => {
-    if (item.child) {
-      return (
-        <Menu.SubMenu key={item.key} title={<span>{item.icon ? <Icon type={item.icon} /> : ''}{siderFold && topMenus.indexOf(item.key) >= 0 ? '' : item.name}</span>}>
-          {getMenus(item.child, siderFold, `${parentPath + item.key}/`)}
-        </Menu.SubMenu>
-      );
-    } else {
-      return (
-        <Menu.Item key={item.key}>
-          <Link to={parentPath + item.key}>
-            {item.icon ? <Icon type={item.icon} /> : ''}
-            {siderFold && topMenus.indexOf(item.key) >= 0 ? '' : item.name}
-          </Link>
-        </Menu.Item>
-      );
-    }
-  });
-};
+let topMenus = [];
+let getMenus = () => {};
 
 class Menus extends Component {
   constructor() {
@@ -38,6 +17,30 @@ class Menus extends Component {
   }
   componentDidMount() {
     setTimeout(() => {
+      topMenus = getNavigation().map(item => item.key);
+
+      getMenus = (menuArray, siderFold, pPath) => {
+        const parentPath = pPath || '/';
+        return menuArray.map((item) => {
+          if (item.child) {
+            return (
+              <Menu.SubMenu key={item.key} title={<span>{item.icon ? <Icon type={item.icon} /> : ''}{siderFold && topMenus.indexOf(item.key) >= 0 ? '' : item.name}</span>}>
+                {getMenus(item.child, siderFold, `${parentPath + item.key}/`)}
+              </Menu.SubMenu>
+            );
+          } else {
+            return (
+              <Menu.Item key={item.key}>
+                <Link to={parentPath + item.key}>
+                  {item.icon ? <Icon type={item.icon} /> : ''}
+                  {siderFold && topMenus.indexOf(item.key) >= 0 ? '' : item.name}
+                </Link>
+              </Menu.Item>
+            );
+          }
+        });
+      };
+
       const { location } = this.props;
       const parent = location.pathname.split('/')[1];
       this.changeOpenKeys(parent ? [parent] : []);
@@ -51,7 +54,7 @@ class Menus extends Component {
     const { /* navOpenKeys, */siderFold } = this.state;
     let navArr = [];
     let navParentPath = '/';
-    navigation.forEach((nav) => {
+    getNavigation().forEach((nav) => {
       if (nav.key === (location.pathname.split('/')[1] || 'overview')) {
         if (nav.child) navArr = nav.child;
         navParentPath = `/${nav.key}/`;

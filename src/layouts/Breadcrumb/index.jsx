@@ -1,27 +1,28 @@
 import React, { PropTypes } from 'react';
 import { Breadcrumb, Icon } from 'antd';
 import styles from './style.less';
-import { navigation, routerCfg } from '../../constants';
-
-const pathSet = [];
-const getPathSet = (menuArray, pPath) => {
-  const parentPath = pPath || '/';
-  menuArray.forEach((item) => {
-    pathSet[(parentPath + item.key).replace(/\//g, '-').hyphenToHump()] = {
-      path: parentPath + item.key,
-      name: item.name,
-      icon: item.icon || '',
-      clickable: item.clickable === undefined,
-    };
-    if (item.child) {
-      getPathSet(item.child, `${parentPath + item.key}/`);
-    }
-  });
-};
-
-getPathSet(navigation);
+import { getNavigation, routerCfg } from '../../constants';
 
 function Bread({ location }) {
+  // 生成移到后面
+  const pathSet = [];
+  const getPathSet = (menuArray, pPath) => {
+    const parentPath = pPath || '/';
+    menuArray.forEach((item) => {
+      pathSet[(parentPath + item.key).replace(/\//g, '-').hyphenToHump()] = {
+        path: parentPath + item.key,
+        name: item.name,
+        icon: item.icon || '',
+        clickable: item.clickable === undefined,
+      };
+      if (item.child) {
+        getPathSet(item.child, `${parentPath + item.key}/`);
+      }
+    });
+  };
+
+  getPathSet(getNavigation());
+
   const pathNames = [];
   location.pathname.substr(1).split('/').forEach((item, key) => {
     if (key > 0) {

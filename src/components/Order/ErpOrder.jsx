@@ -5,6 +5,7 @@ import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover } from 'an
 import DeliveryModal from './component/DeliveryModal';
 import ErpOrderModal from './ErpOrderModal';
 import SplitOrder from './component/SplitOrder';
+import RecordList from './component/RecordList';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -196,6 +197,7 @@ class ErpOrder extends Component {
           return (
             <div>
               <SplitOrder dispatch={dispatch} record={r} />
+              <RecordList dispatch={dispatch} record={r} />
               <a href="javascript:void(0)" onClick={p.showModal.bind(p, r.id)} >修改</a>
             </div>);
         },

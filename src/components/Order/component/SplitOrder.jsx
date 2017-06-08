@@ -43,7 +43,7 @@ export default class extends Component {
         visible={this.state.visible}
         onVisibleChange={this.toggleVisible.bind(this)}
       >
-        <a href="javascript:void(0)" style={{ marginRight: 10 }}>订单拆分</a>
+        <a href="javascript:void(0)" style={{ marginRight: 10 }}>拆单</a>
       </Popover>
     );
   }

@@ -2,6 +2,7 @@ import { message } from 'antd';
 import fetch from '../utils/request';
 
 const queryInventoryList = ({ payload }) => fetch.post('/haierp1/inventory/area/queryList', { data: payload }).catch(e => e);
+const queryInventoryRecordList = ({ payload }) => fetch.post('/haierp1/inventory/record/queryList', { data: payload }).catch(e => e);
 const transTo = ({ payload }) => fetch.post('/haierp1/inventory/area/transTo', { data: payload }).catch(e => e);
 const checkIn = ({ payload }) => fetch.post('/haierp1/inventory/inventoryCheckIn', { data: payload }).catch(e => e);
 const checkOut = ({ payload }) => fetch.post('/haierp1/inventory/inventoryCheckOut', { data: payload }).catch(e => e);
@@ -53,6 +54,12 @@ export default {
           type: 'updateList',
           payload: data,
         });
+      }
+    },
+    * queryRecordList({ payload, success }, { call }) {
+      const data = yield call(queryInventoryRecordList, { payload });
+      if (data.success) {
+        if (success) success(data);
       }
     },
     * queryWareList({ payload }, { call, put, select }) {

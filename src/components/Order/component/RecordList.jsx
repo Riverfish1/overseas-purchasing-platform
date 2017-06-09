@@ -48,7 +48,7 @@ export default class extends Component {
       { title: '订单所需数量', dataIndex: 'quantity', key: 'quantity' },
       { title: '配货数量', dataIndex: 'booked', key: 'booked' },
       { title: '配货方式', dataIndex: 'inventoryType', key: 'inventoryType', render: t => (t === 'INVENTORY' ? '现货' : t === 'TRANS_INV' ? '在途' : '-') },
-      { title: '仓库ID', dataIndex: 'inventoryAreaId', key: 'inventoryAreaId' },
+      { title: '库位ID', dataIndex: 'inventoryAreaId', key: 'inventoryAreaId' },
       { title: '发货仓库', dataIndex: 'warehouseName', key: 'warehouseName' },
       { title: '货架号', dataIndex: 'positionNo', key: 'positionNo' },
     ];

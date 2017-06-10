@@ -114,7 +114,7 @@ class Agency extends Component {
     const listPaginationProps = {
       total,
       current: currentPage,
-      pageSize: 10,
+      pageSize: 20,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
       },

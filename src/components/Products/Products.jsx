@@ -199,7 +199,7 @@ class Products extends Component {
 
     const paginationProps = {
       total: productsTotal,
-      pageSize: 10,
+      pageSize: 20,
       current: currentPage,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);

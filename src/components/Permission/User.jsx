@@ -125,7 +125,7 @@ class Resource extends Component {
     ];
     const paginationProps = {
       total,
-      pageSize: 10,
+      pageSize: 20,
       onChange(pageIndex) {
         p.props.dispatch({ type: 'permission/queryUserList', payload: { pageIndex } });
       },

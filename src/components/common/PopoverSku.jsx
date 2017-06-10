@@ -27,7 +27,7 @@ class PopoverSku extends Component {
       wrapperCol: { span: 16 },
     };
     const paginationProps = {
-      pageSize: 10,
+      pageSize: 20,
       total: skuTotal,
       onChange(page) {
         p.props.dispatch({

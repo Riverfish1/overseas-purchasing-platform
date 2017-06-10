@@ -133,7 +133,7 @@ class PackageLevel extends Component {
     };
     const paginationProps = {
       total: levelTotal,
-      pageSize: 10,
+      pageSize: 20,
       onChange(page) {
         p.props.dispatch({
           type: 'pack/queryPackageLevelList',

@@ -176,7 +176,7 @@ class Order extends Component {
     const listPaginationProps = {
       total: orderTotal,
       current: currentPage,
-      pageSize: 10,
+      pageSize: 20,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
       },

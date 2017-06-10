@@ -65,7 +65,7 @@ class Warehouse extends Component {
     ];
     const paginationProps = {
       total,
-      pageSize: 10,
+      pageSize: 20,
     };
     return (
       <div>

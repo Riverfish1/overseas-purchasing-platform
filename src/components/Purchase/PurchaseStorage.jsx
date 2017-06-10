@@ -40,16 +40,16 @@ class PurchaseStorage extends Component {
         if (err) {
           return;
         }
-        if (values.orderDate) {
+        if (values.orderDate && values.orderDate[0] && values.orderDate[1]) {
           values.startTime = new Date(values.orderDate[0]).format('yyyy-MM-dd');
           values.endTime = new Date(values.orderDate[1]).format('yyyy-MM-dd');
-          delete values.orderDate;
         }
-        if (values.storageDate) {
+        if (values.storageDate && values.storageDate[0] && values.storageDate[1]) {
           values.putInStart = new Date(values.storageDate[0]).format('yyyy-MM-dd');
           values.putInEnd = new Date(values.storageDate[1]).format('yyyy-MM-dd');
-          delete values.storageDate;
         }
+        delete values.orderDate;
+        delete values.storageDate;
         console.log(values);
         this.props.dispatch({
           type: 'purchaseStorage/queryPurchaseStorageList',

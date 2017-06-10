@@ -28,11 +28,11 @@ class Order extends Component {
         if (err) {
           return;
         }
-        if (fieldsValue.orderTime) {
+        if (fieldsValue.orderTime && fieldsValue.orderTime[0] && fieldsValue.orderTime[1]) {
           fieldsValue.startOrderTime = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
           fieldsValue.endOrderTime = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
-          delete fieldsValue.orderTime;
         }
+        delete fieldsValue.orderTime;
         delete fieldsValue.action;
         this.props.dispatch({
           type: 'order/queryOrderList',

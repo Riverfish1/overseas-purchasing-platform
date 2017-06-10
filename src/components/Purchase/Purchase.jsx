@@ -25,16 +25,16 @@ class Purchase extends Component {
       if (err) {
         return;
       }
-      if (fieldsValue.taskStart) {
+      if (fieldsValue.taskStart && fieldsValue.taskStart[0] && fieldsValue.taskStart[1]) {
         fieldsValue.taskStart1 = new Date(fieldsValue.taskStart[0]).format('yyyy-MM-dd');
         fieldsValue.taskStart2 = new Date(fieldsValue.taskStart[1]).format('yyyy-MM-dd');
-        delete fieldsValue.taskStart;
       }
-      if (fieldsValue.taskEnd) {
+      if (fieldsValue.taskEnd && fieldsValue.taskEnd[0] && fieldsValue.taskEnd[1]) {
         fieldsValue.taskEnd1 = new Date(fieldsValue.taskEnd[0]).format('yyyy-MM-dd');
         fieldsValue.taskEnd2 = new Date(fieldsValue.taskEnd[1]).format('yyyy-MM-dd');
-        delete fieldsValue.taskEnd;
       }
+      delete fieldsValue.taskStart;
+      delete fieldsValue.taskEnd;
       this.props.dispatch({
         type: 'purchase/queryPurchaseList',
         payload: { ...fieldsValue, pageIndex: 1 },

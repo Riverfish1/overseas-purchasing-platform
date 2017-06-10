@@ -26,6 +26,11 @@ const updateShippingOrder = ({ payload }) => fetch.post('/haierp1/shippingOrder/
 const queryShippingOrderDetail = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDeliveryForm', { data: payload }).catch(e => e);
 // 查询物流公司
 const queryDeliveryCompanyList = ({ payload }) => fetch.post('/haierp1/shippingOrder/queryLogisticCompany', { data: payload }).catch(e => e);
+// 分配库存
+const lockErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/lockErpOrder', { data: payload }).catch(e => e);
+// 释放库存
+const releaseInventory = ({ payload }) => fetch.post('/haierp1/erpOrder/releaseInventory', { data: payload }).catch(e => e);
+
 
 export default {
   namespace: 'order',
@@ -294,6 +299,26 @@ export default {
     },
     exportPdf({ payload }) {
       window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExport?shippingOrderIds=${payload}`);
+    },
+    * lockErpOrder(payload, { call, put }) {
+      const data = yield call(lockErpOrder, payload);
+      if (data.success) {
+        message.success('分配库存成功');
+        yield put({
+          type: 'queryErpOrderList',
+          payload: {},
+        });
+      }
+    },
+    * releaseInventory(payload, { call, put }) {
+      const data = yield call(releaseInventory, payload);
+      if (data.success) {
+        message.success('释放库存成功');
+        yield put({
+          type: 'queryErpOrderList',
+          payload: {},
+        });
+      }
     },
   },
   subscriptions: {

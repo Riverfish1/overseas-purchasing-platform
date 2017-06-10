@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover } from 'antd';
+import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, Popconfirm } from 'antd';
 
 import DeliveryModal from './component/DeliveryModal';
 import ErpOrderModal from './ErpOrderModal';
@@ -97,6 +97,14 @@ class ErpOrder extends Component {
       type: 'order/saveErpOrder',
       payload: {},
     });
+  }
+  handleInventory(type, id) {
+    if (type === 'lock') {
+      this.props.dispatch({ type: 'order/lockErpOrder', payload: { id } });
+    }
+    if (type === 'release') {
+      this.props.dispatch({ type: 'order/releaseInventory', payload: { id } });
+    }
   }
   render() {
     const p = this;
@@ -199,6 +207,12 @@ class ErpOrder extends Component {
               <SplitOrder dispatch={dispatch} record={r} />
               <RecordList dispatch={dispatch} record={r} />
               <a href="javascript:void(0)" onClick={p.showModal.bind(p, r.id)} >修改</a>
+              <Popconfirm title="确定分配库存吗？" onConfirm={p.handleInventory.bind(p, 'lock', r.id)}>
+                <a href="javascript:void(0)" style={{ marginLeft: '10px' }} >分配库存</a>
+              </Popconfirm>
+              <Popconfirm title="确定释放库存吗？" onConfirm={p.handleInventory.bind(p, 'release', r.id)}>
+                <a href="javascript:void(0)" style={{ marginLeft: '10px' }} >释放库存</a>
+              </Popconfirm>
             </div>);
         },
       },

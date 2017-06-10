@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Modal, message, Input, Upload, Row, Col, Select, DatePicker, Form, Icon, TreeSelect, Tabs, InputNumber } from 'antd';
+import { Modal, message, Input, Upload, Row, Col, Select, DatePicker, Form, Icon, TreeSelect, Tabs, InputNumber, Radio } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
@@ -13,6 +13,7 @@ moment.locale('zh-cn');
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
+const RadioGroup = Radio.Group;
 
 let editor = null;
 
@@ -499,6 +500,21 @@ class ProductsModal extends Component {
                       initialValue: toString(productData.freight),
                     })(
                       <InputNumber min={0} step={0.01} placeholder="请输入运费" />,
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={7}>
+                  <FormItem
+                    label="物流方式"
+                    {...formItemLayout}
+                  >
+                    {getFieldDecorator('logisticType', {
+                      initialValue: toString(productData.logisticType || 0),
+                    })(
+                      <RadioGroup>
+                        <Radio value="0">直邮</Radio>
+                        <Radio value="1">拼邮</Radio>
+                      </RadioGroup>,
                     )}
                   </FormItem>
                 </Col>

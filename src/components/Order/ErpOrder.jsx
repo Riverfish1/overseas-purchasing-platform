@@ -207,15 +207,18 @@ class ErpOrder extends Component {
         render(t, r) {
           return (
             <div>
-              <SplitOrder dispatch={dispatch} record={r} />
-              <RecordList dispatch={dispatch} record={r} />
-              <a href="javascript:void(0)" onClick={p.showModal.bind(p, r.id)} >修改</a>
+              {r.status === 0 && r.quantity > 1 && <SplitOrder dispatch={dispatch} record={r} />}
+              {r.stockStatus !== 0 && r.stockStatus !== 9 && <RecordList dispatch={dispatch} record={r} />}
+              {r.status === 0 && <a href="javascript:void(0)" onClick={p.showModal.bind(p, r.id)} >修改</a>}
+              {r.status === 0 && [0, 1, 2, 9].indexOf(r.stockStatus) > -1 &&
               <Popconfirm title="确定分配库存吗？" onConfirm={p.handleInventory.bind(p, 'lock', r.id)}>
                 <a href="javascript:void(0)" style={{ marginLeft: '10px' }} >分配库存</a>
-              </Popconfirm>
+              </Popconfirm>}
+              {r.status === 0 && [0, 9].indexOf(r.stockStatus) === -1 &&
               <Popconfirm title="确定释放库存吗？" onConfirm={p.handleInventory.bind(p, 'release', r.id)}>
                 <a href="javascript:void(0)" style={{ marginLeft: '10px' }} >释放库存</a>
-              </Popconfirm>
+              </Popconfirm>}
+              {r.status !== 0 && <span style={{ color: '#ccc' }}>暂无</span>}
             </div>);
         },
       },

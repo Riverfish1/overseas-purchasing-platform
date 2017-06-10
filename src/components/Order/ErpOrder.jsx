@@ -140,6 +140,7 @@ class ErpOrder extends Component {
         key: 'skuPic',
         width: 80,
         render(text) {
+        	  if(!text) {return '-';}
           const picList = JSON.parse(text).picList;
           const t = picList.length ? JSON.parse(text).picList[0].url : '';
           return (

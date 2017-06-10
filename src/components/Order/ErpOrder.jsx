@@ -108,7 +108,7 @@ class ErpOrder extends Component {
   }
   render() {
     const p = this;
-    const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [] } = p.props;
+    const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
     console.log(erpOrderValues);
     const { getFieldDecorator, resetFields } = form;
     const { isNotSelected, deliveryModalVisible, checkId, type, modalVisible, title } = p.state;
@@ -152,6 +152,8 @@ class ErpOrder extends Component {
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 100 },
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 100 },
       { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },
+      { title: '物流状态', dataIndex: 'logisticType', key: 'logisticType', width: 60, render(text) { return text ? (text === 0 || text === '0') ? '直邮' : '拼邮' : '-'; } },
+      { title: '仓库名', dataIndex: 'warehouseName', key: 'warehouseName', render(text) { return text || '-'; } },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
@@ -220,6 +222,7 @@ class ErpOrder extends Component {
     ];
     const pagination = {
       total: erpOrderTotal,
+      pageSize: 20,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
       },
@@ -345,6 +348,41 @@ class ErpOrder extends Component {
                 )}
               </FormItem>
             </Col>
+            <Col span="8">
+              <FormItem
+                label="备货状态"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('logisticType', {})(
+                  <Select placeholder="请选择" allowClear>
+                    <Option value="0">直邮</Option>
+                    <Option value="1">拼邮</Option>
+                  </Select>,
+                )}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="手机号码"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('telephone', {})(
+                  <Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={20} style={{ width: 800 }}>
+            <Col span="8">
+              <FormItem
+                label="仓库"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('warehouseId', {})(
+                  <Select placeholder="请选择仓库" optionLabelProp="title" combobox>
+                    {wareList.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
+                  </Select>)}
+              </FormItem>
+            </Col>
           </Row>
           <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">
@@ -379,7 +417,8 @@ class ErpOrder extends Component {
 function mapStateToProps(state) {
   const { erpOrderList, erpOrderTotal, erpOrderDetail, erpOrderValues, deliveryCompanyList } = state.order;
   const { list } = state.agency;
-  return { erpOrderList, erpOrderTotal, erpOrderDetail, agencyList: list, erpOrderValues, deliveryCompanyList };
+  const { wareList } = state.inventory;
+  return { erpOrderList, erpOrderTotal, erpOrderDetail, agencyList: list, erpOrderValues, deliveryCompanyList, wareList };
 }
 
 export default connect(mapStateToProps)(Form.create()(ErpOrder));

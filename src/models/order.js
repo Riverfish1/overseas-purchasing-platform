@@ -335,6 +335,7 @@ export default {
             dispatch({ type: 'queryErpOrderList', payload: query });
             dispatch({ type: 'agency/queryAgencyList', payload: query });
             dispatch({ type: 'queryDeliveryCompanyList', payload: query });
+            dispatch({ type: 'inventory/queryWareList', payload: {} });
           }, 0);
         }
         if (pathname === '/sale/shippingOrder') {

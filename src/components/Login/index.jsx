@@ -24,7 +24,6 @@ class Login extends Component {
     });
   }
   submitLogin(payload) {
-    console.log(payload);
     this.props.dispatch({
       type: 'session/login',
       payload,

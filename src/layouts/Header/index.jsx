@@ -1,11 +1,16 @@
 import React from 'react';
 import { Menu, Icon } from 'antd';
+import { connect } from 'dva';
 import { Link } from 'dva/router';
 import { routerCfg, getNavigation } from '../../constants';
 import styles from './style.less';
 
-export default class Header extends React.Component {
+class Header extends React.Component {
+  logout() {
+    this.props.dispatch({ type: 'session/logout' });
+  }
   render() {
+    const { session } = this.props;
     const { pathname } = this.props.location;
     return (
       <header className={styles.header}>
@@ -29,11 +34,18 @@ export default class Header extends React.Component {
           })}
         </Menu>
         <span className={styles.user}>
-          <span className={styles.mr10}><Icon type="user" /> admin</span>
+          <span className={styles.mr10}><Icon type="user" /> { session.username }</span>
           {/* <span className={styles.mr10}><Icon type="lock" /> <Link to="/lock">修改密码</Link></span> */}
-          <span><Icon type="logout" /> <Link to={`/${routerCfg.LOGIN}`}>安全退出</Link></span>
+          <span><Icon type="logout" /> <span onClick={this.logout.bind(this)}><Link to={`/${routerCfg.LOGIN}`}>安全退出</Link></span></span>
         </span>
       </header>
     );
   }
 }
+
+
+function mapStateToProps({ session }) {
+  return { session };
+}
+
+export default connect(mapStateToProps)(Header);

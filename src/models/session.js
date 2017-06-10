@@ -3,15 +3,25 @@ import { backendCfg, routerCfg, setNavigation, originalNavigation } from '../con
 import fetch from '../utils/request';
 
 const login = ({ payload }) => fetch.post('/haierp1/haiLogin/login', { data: payload }).catch(e => e);
+const logout = ({ payload }) => fetch.post('/haierp1/logout', { data: payload }).catch(e => e);
 const queryPermissions = () => fetch.post('/haierp1/user/resCodes').catch(e => e);
 
 export default {
   namespace: 'session',
   state: {
+    username: localStorage.getItem('HAIERP_LAST_USERNAME'),
     dataSource: [],
   },
+  reducers: {
+    updateUsername(state, { payload }) {
+      return { ...state, username: payload };
+    },
+  },
   effects: {
-    * login(payload, { call }) {
+    * logout(payload, { call }) {
+      yield call(logout, payload);
+    },
+    * login(payload, { call, put }) {
       const data = yield call(login, payload);
       if (data.success) {
         const permissionData = yield call(queryPermissions);
@@ -43,6 +53,11 @@ export default {
 
           localStorage.setItem('HAIERP_LAST_LOGIN', new Date().getTime());
           localStorage.setItem('HAIERP_LAST_PERMISSION', JSON.stringify(newNavigation));
+          localStorage.setItem('HAIERP_LAST_USERNAME', payload.payload.username);
+
+          // 更新用户名
+          yield put({ type: 'updateUsername', payload: payload.payload.username });
+
           window.redirector(`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`);
         }
       } else message.error(data.data);

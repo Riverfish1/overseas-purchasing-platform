@@ -80,7 +80,7 @@ class DeliveryModal extends Component {
             {data.info && <Row>
               <Alert
                 message={data.info}
-                type="warning"
+                type="error"
                 closable
               />
               <div style={{ height: 10 }} />

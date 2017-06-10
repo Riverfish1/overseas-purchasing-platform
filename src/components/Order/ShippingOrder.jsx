@@ -19,13 +19,13 @@ class ShippingOrder extends Component {
       isNotSelected: true,
     };
   }
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit(e, page) {
+    if (e) e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (err) return;
       this.props.dispatch({
         type: 'order/queryShippingOrderList',
-        payload: { ...values },
+        payload: { ...values, pageIndex: typeof page === 'number' ? page : 1 },
       });
     });
   }
@@ -49,7 +49,7 @@ class ShippingOrder extends Component {
   }
   render() {
     const p = this;
-    const { shippingOrderList, deliveryCompanyList = [], form, dispatch } = p.props;
+    const { shippingOrderList, shippingOrderTotal, deliveryCompanyList = [], form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { visible, data, isNotSelected } = p.state;
 
@@ -65,6 +65,13 @@ class ShippingOrder extends Component {
         p.setState({ checkId: listId });
       },
       selectedRowKeys: p.state.checkId,
+    };
+
+    const pagination = {
+      total: shippingOrderTotal,
+      onChange(pageIndex) {
+        p.handleSubmit(null, pageIndex);
+      },
     };
 
     const formItemLayout = {
@@ -188,7 +195,7 @@ class ShippingOrder extends Component {
           </Col>
         </Row>
         <Row>
-          <Table columns={columns} dataSource={shippingOrderList} rowKey={r => r.id} rowSelection={rowSelection} bordered />
+          <Table columns={columns} dataSource={shippingOrderList} rowKey={r => r.id} rowSelection={rowSelection} pagination={pagination} bordered />
         </Row>
         <InvoiceModal
           visible={visible}
@@ -203,8 +210,8 @@ class ShippingOrder extends Component {
 }
 
 function mapStateToProps(state) {
-  const { shippingOrderList, deliveryCompanyList } = state.order;
-  return { shippingOrderList, deliveryCompanyList };
+  const { shippingOrderList, deliveryCompanyList, shippingOrderTotal } = state.order;
+  return { shippingOrderList, deliveryCompanyList, shippingOrderTotal };
 }
 
 export default connect(mapStateToProps)(Form.create()(ShippingOrder));

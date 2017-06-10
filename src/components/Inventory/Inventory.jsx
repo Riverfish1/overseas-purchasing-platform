@@ -15,14 +15,14 @@ class Inventory extends Component {
       previewImage: null,
     };
   }
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit(e, page) {
+    if (e) e.preventDefault();
     const { form, dispatch } = this.props;
     form.validateFieldsAndScroll((err, values) => {
       if (err) return;
       dispatch({
         type: 'inventory/queryList',
-        payload: { ...values, pageIndex: 1 },
+        payload: { ...values, pageIndex: typeof page === 'number' ? page : 1 },
       });
     });
   }
@@ -95,11 +95,8 @@ class Inventory extends Component {
     const paginationProps = {
       total,
       pageSize: 10,
-      onChange(page) {
-        p.props.dispatch({
-          type: 'inventory/queryList',
-          payload: { pageIndex: page },
-        });
+      onChange(pageIndex) {
+        p.handleSubmit(null, pageIndex);
       },
     };
     return (

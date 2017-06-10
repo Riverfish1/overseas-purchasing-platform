@@ -20,8 +20,8 @@ class Order extends Component {
     };
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit(e, page) {
+    if (e) e.preventDefault();
     // 清除多选
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
@@ -36,7 +36,7 @@ class Order extends Component {
         delete fieldsValue.action;
         this.props.dispatch({
           type: 'order/queryOrderList',
-          payload: { ...fieldsValue, pageIndex: 1 },
+          payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
         });
       });
     });
@@ -107,7 +107,7 @@ class Order extends Component {
   render() {
     const p = this;
     const { form, dispatch, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, agencyList = [] } = p.props;
-    const { getFieldDecorator, getFieldsValue, resetFields } = form;
+    const { getFieldDecorator, resetFields } = form;
     const { title, visible, isNotSelected, modalVisible } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -177,18 +177,8 @@ class Order extends Component {
       total: orderTotal,
       current: currentPage,
       pageSize: 10,
-      onChange(page) {
-        const values = getFieldsValue();
-        const payload = {};
-        Object.keys(values).forEach((key) => {
-          if (values[key]) {
-            payload[key] = values[key];
-          }
-        });
-        p.props.dispatch({
-          type: 'order/queryOrderList',
-          payload: { ...payload, pageIndex: page },
-        });
+      onChange(pageIndex) {
+        p.handleSubmit(null, pageIndex);
       },
     };
 

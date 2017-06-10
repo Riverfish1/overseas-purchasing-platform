@@ -13,7 +13,7 @@ class AgencyType extends Component {
       title: '-', // modal的title
     };
   }
-
+  // 这里的提交是新增或修改 不是分页， TODO: 分页
   handleSubmit() {
     const { agencyTypeValues, dispatch } = this.props;
     this.props.form.validateFieldsAndScroll((err, fieldsValue) => {

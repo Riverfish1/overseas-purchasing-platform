@@ -32,8 +32,8 @@ class PurchaseStorage extends Component {
     });
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit(e, page) {
+    if (e) e.preventDefault();
     // 清除多选
     this.setState({ selectedRowKeys: [] }, () => {
       this.props.form.validateFieldsAndScroll((err, values) => {
@@ -53,7 +53,7 @@ class PurchaseStorage extends Component {
         console.log(values);
         this.props.dispatch({
           type: 'purchaseStorage/queryPurchaseStorageList',
-          payload: { ...values, pageIndex: 1 },
+          payload: { ...values, pageIndex: typeof page === 'number' ? page : 1 },
         });
       });
     });
@@ -127,18 +127,8 @@ class PurchaseStorage extends Component {
     const paginationProps = {
       total,
       pageSize: 10,
-      onChange(page) {
-        const values = getFieldsValue();
-        const payload = {};
-        Object.keys(values).forEach((key) => {
-          if (values[key]) {
-            payload[key] = values[key];
-          }
-        });
-        p.props.dispatch({
-          type: 'purchaseStorage/queryPurchaseStorageList',
-          payload: { ...payload, pageIndex: page },
-        });
+      onChange(pageIndex) {
+        p.handleSubmit(null, pageIndex);
       },
     };
 

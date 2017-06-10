@@ -17,15 +17,15 @@ class Agency extends Component {
     };
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit(e, page) {
+    if (e) e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }
       this.props.dispatch({
         type: 'agency/queryAgencyList',
-        payload: { ...fieldsValue, pageIndex: 1 },
+        payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
       });
     });
   }
@@ -79,7 +79,7 @@ class Agency extends Component {
   render() {
     const p = this;
     const { form, list = [], typeList = [], total, currentPage, agencyValues = {}, dispatch } = p.props;
-    const { getFieldsValue, getFieldDecorator, resetFields } = form;
+    const { getFieldDecorator, resetFields } = form;
     const { title } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -115,18 +115,8 @@ class Agency extends Component {
       total,
       current: currentPage,
       pageSize: 10,
-      onChange(page) {
-        const values = getFieldsValue();
-        const payload = {};
-        Object.keys(values).forEach((key) => {
-          if (values[key]) {
-            payload[key] = values[key];
-          }
-        });
-        p.props.dispatch({
-          type: 'order/queryOrderList',
-          payload: { ...payload, pageIndex: page },
-        });
+      onChange(pageIndex) {
+        p.handleSubmit(null, pageIndex);
       },
     };
 

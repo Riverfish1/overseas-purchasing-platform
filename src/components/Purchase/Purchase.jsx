@@ -19,8 +19,8 @@ class Purchase extends Component {
     };
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit(e, page) {
+    if (e) e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
@@ -37,7 +37,7 @@ class Purchase extends Component {
       delete fieldsValue.taskEnd;
       this.props.dispatch({
         type: 'purchase/queryPurchaseList',
-        payload: { ...fieldsValue, pageIndex: 1 },
+        payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
       });
     });
   }
@@ -93,7 +93,7 @@ class Purchase extends Component {
   render() {
     const p = this;
     const { form, list = [], total, purchaseValues = {}, buyer = [], dispatch } = p.props;
-    const { getFieldDecorator, getFieldsValue, resetFields } = form;
+    const { getFieldDecorator, resetFields } = form;
     const { title, previewImage } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -146,18 +146,8 @@ class Purchase extends Component {
     const paginationProps = {
       total,
       pageSize: 10,
-      onChange(page) {
-        const values = getFieldsValue();
-        const payload = {};
-        Object.keys(values).forEach((key) => {
-          if (values[key]) {
-            payload[key] = values[key];
-          }
-        });
-        p.props.dispatch({
-          type: 'purchase/queryPurchaseList',
-          payload: { ...payload, pageIndex: page },
-        });
+      onChange(pageIndex) {
+        p.handleSubmit(null, pageIndex);
       },
     };
     return (

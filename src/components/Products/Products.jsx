@@ -18,8 +18,8 @@ class Products extends Component {
     };
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit(e, page) {
+    if (e) e.preventDefault();
     // 清除多选
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFieldsAndScroll((err, values) => {
@@ -35,7 +35,7 @@ class Products extends Component {
         });
         this.props.dispatch({
           type: 'products/queryItemList',
-          payload: { ...values, pageIndex: 1 },
+          payload: { ...values, pageIndex: typeof page === 'number' ? page : 1 },
         });
       });
     });
@@ -202,15 +202,7 @@ class Products extends Component {
       pageSize: 10,
       current: currentPage,
       onChange(pageIndex) {
-        const values = p.props.form.getFieldsValue();
-        const payload = {};
-        Object.keys(values).forEach((key) => {
-          if (values[key]) payload[key] = values[key];
-        });
-        p.props.dispatch({
-          type: 'products/queryItemList',
-          payload: { ...payload, pageIndex },
-        });
+        p.handleSubmit(null, pageIndex);
       },
     };
 

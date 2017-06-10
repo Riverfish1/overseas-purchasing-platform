@@ -23,15 +23,15 @@ class ErpOrder extends Component {
       type: 'add', // 发货的判断
     };
   }
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit(e, page) {
+    if (e) e.preventDefault();
     // 清除多选
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFields((err, fieldsValue) => {
         if (err) return;
         this.props.dispatch({
           type: 'order/queryErpOrderList',
-          payload: { ...fieldsValue, pageIndex: 1 },
+          payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
         });
       });
     });
@@ -205,11 +205,8 @@ class ErpOrder extends Component {
     ];
     const pagination = {
       total: erpOrderTotal,
-      onChange(page) {
-        dispatch({
-          type: 'order/queryErpOrderList',
-          payload: { pageIndex: page },
-        });
+      onChange(pageIndex) {
+        p.handleSubmit(null, pageIndex);
       },
     };
     return (

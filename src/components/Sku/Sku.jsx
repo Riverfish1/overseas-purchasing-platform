@@ -19,13 +19,13 @@ class Sku extends Component {
     };
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit(e, page) {
+    if (e) e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) return;
       this.props.dispatch({
         type: 'sku/querySkuList',
-        payload: { ...fieldsValue, pageIndex: 1 },
+        payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
       });
     });
   }
@@ -212,10 +212,7 @@ class Sku extends Component {
       pageSize: 20,
       current: currentPage,
       onChange(pageIndex) {
-        p.props.dispatch({
-          type: 'sku/querySkuList',
-          payload: { pageIndex },
-        });
+        p.handleSubmit(null, pageIndex);
       },
     };
 

@@ -133,6 +133,7 @@ class ErpOrder extends Component {
     const columns = [
       { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 100 },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 150 },
+      { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150 },
       { title: '图片',
         dataIndex: 'skuPic',
@@ -193,8 +194,8 @@ class ErpOrder extends Component {
         },
       },
       { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 150 },
-      { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: 220 },
-      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
+      // { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: 220 },
+      // { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
       { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',

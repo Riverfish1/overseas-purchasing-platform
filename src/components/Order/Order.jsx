@@ -117,7 +117,7 @@ class Order extends Component {
       { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 150 },
       { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },
       { title: '客户', dataIndex: 'salesName', key: 'salesName', width: 80, render(text) { return text || '-'; } },
-      { title: '订单时间', dataIndex: 'orderTime', key: 'orderTime', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
+      { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
@@ -142,7 +142,7 @@ class Order extends Component {
         },
       },
       { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 200 },
-      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
+      // { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
       { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
@@ -360,7 +360,7 @@ class Order extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col style={{ marginLeft: 6 }}>
               <FormItem
-                label="订单时间范围"
+                label="销售时间范围"
                 labelCol={{ span: 3 }}
               >
                 {getFieldDecorator('orderTime', {})(<RangePicker />)}

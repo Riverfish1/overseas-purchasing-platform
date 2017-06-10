@@ -15,6 +15,8 @@ class ShippingOrder extends Component {
       visible: false,
       data: {}, // 修改的record
       type: 'update',
+      checkId: [],
+      isNotSelected: true,
     };
   }
   handleSubmit(e) {
@@ -37,11 +39,33 @@ class ShippingOrder extends Component {
     });
     this.setState({ visible: false });
   }
+  exportPdf() {
+    const { checkId } = this.state;
+    this.props.dispatch({
+      type: 'order/exportPdf',
+      payload: JSON.stringify(checkId),
+    });
+    this.setState({ checkId: [] });
+  }
   render() {
     const p = this;
     const { shippingOrderList, deliveryCompanyList = [], form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { visible, data } = p.state;
+    const { visible, data, isNotSelected } = p.state;
+
+    const rowSelection = {
+      onChange(selectedRowKeys, selectedRows) {
+        console.log(selectedRowKeys);
+        const listId = [];
+        if (selectedRows.length) p.setState({ isNotSelected: false });
+        else p.setState({ isNotSelected: true });
+        selectedRows.forEach((el) => {
+          listId.push(el.id);
+        });
+        p.setState({ checkId: listId });
+      },
+      selectedRowKeys: p.state.checkId,
+    };
 
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -158,8 +182,13 @@ class ShippingOrder extends Component {
             </Col>
           </Row>
         </Form>
-        <Row style={{ marginTop: 20 }}>
-          <Table columns={columns} dataSource={shippingOrderList} rowKey={r => r.id} bordered />
+        <Row>
+          <Col className="operBtn">
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={this.exportPdf.bind(this)}>导出发货单</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Table columns={columns} dataSource={shippingOrderList} rowKey={r => r.id} rowSelection={rowSelection} bordered />
         </Row>
         <InvoiceModal
           visible={visible}

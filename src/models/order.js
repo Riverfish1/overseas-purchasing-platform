@@ -292,6 +292,9 @@ export default {
         });
       }
     },
+    exportPdf({ payload }) {
+      window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExport?shippingOrderIds=${payload}`);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {

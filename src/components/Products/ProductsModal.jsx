@@ -505,7 +505,7 @@ class ProductsModal extends Component {
                 </Col>
                 <Col span={7}>
                   <FormItem
-                    label="物流方式"
+                    label="发货方式"
                     {...formItemLayout}
                   >
                     {getFieldDecorator('logisticType', {

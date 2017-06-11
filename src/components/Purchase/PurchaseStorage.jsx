@@ -89,7 +89,7 @@ class PurchaseStorage extends Component {
     const p = this;
     const { form, list = [], total, buyer = [], wareList = [], showModal, editInfo = {}, buyerTaskList = [] } = p.props;
     const { selectedRowKeys } = p.state;
-    const { getFieldDecorator, getFieldsValue } = form;
+    const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },

@@ -261,7 +261,12 @@ class Products extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('brand', {})(
-                  <Select placeholder="请选择品牌" combobox>
+                  <Select
+                    placeholder="请输入品牌"
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >
                     {brands && brands.map(item => <Option key={item.name}>{item.name}</Option>)}
                   </Select>)}
               </FormItem>

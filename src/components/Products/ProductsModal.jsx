@@ -350,7 +350,12 @@ class ProductsModal extends Component {
                       initialValue: toString(productData.brand, 'SELECT'),
                       rules: [{ required: true, message: '请输入品牌' }],
                     })(
-                      <Select placeholder="请输入品牌" combobox>
+                      <Select
+                        placeholder="请输入品牌"
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      >
                         {brands && brands.map(item => <Option key={item.id.toString()} value={item.name}>{item.name}</Option>)}
                       </Select>,
                     )}

@@ -123,7 +123,7 @@ class ProductTable extends Component {
             el.freight = value.freightStr;
             el.salePrice = value.salePrice || 0;
             el.quantity = value.quantity || 1;
-            el.skuPic = value.skuPic ? JSON.parse(value.skuPic).picList[0].url : '';
+            el.skuPic = value.skuPic;
           }
         });
         this.setState({ skuData }, () => {
@@ -343,6 +343,7 @@ class ProductTable extends Component {
           key: 'skuPic',
           width: '12%',
           render(text) {
+            console.log(text);
             let imgUrl = '';
             try {
               const imgObj = JSON.parse(text);

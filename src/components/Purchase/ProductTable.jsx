@@ -4,20 +4,13 @@ import { Input, DatePicker, InputNumber, Modal, Select, Button, Form, Table, Row
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
+import fetch from '../../utils/request';
+
 moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
-
-function getDatePickerWrapper() {
-  const wrappers = document.querySelectorAll('.ant-popover');
-  let dom = null;
-  wrappers.forEach((el) => {
-    if (!el.className.match('ant-popover-hidden')) dom = el;
-  });
-  return dom;
-}
 
 let latestSearch = {};
 
@@ -30,6 +23,7 @@ class ProductTable extends Component {
       previewVisible: false,
       selectedSku: [],
       timeQuery: {},
+      skuSearchType: 'product', // 是按产品查询还是订单查询
     };
   }
 
@@ -140,7 +134,7 @@ class ProductTable extends Component {
   }
 
   handleSearch(key, value) {
-    this.setState({ selectedSku: [] }, () => {
+    this.setState({ selectedSku: [], skuSearchType: 'product' }, () => {
       latestSearch = { ...value };
       this.props.dispatch({
         type: 'sku/querySkuList2',
@@ -220,7 +214,7 @@ class ProductTable extends Component {
   render() {
     const p = this;
     const { form, skuList = [], parent, buyer = [], defaultBuyer, defaultStartTime, defaultEndTime, total, currentPage, pageSize } = p.props;
-    const { skuData, previewImage, previewVisible } = p.state;
+    const { skuData, previewImage, previewVisible, skuSearchType } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 8 },
@@ -242,6 +236,7 @@ class ProductTable extends Component {
 
       function doSearch() {
         p.handleSearch(key, { skuCode: skuCode.refs.input.value, itemName: itemName.refs.input.value, isOrderQuery: 0 });
+        p.setState({ skuSearchType: 'product' });
       }
 
       function doSearchOrder() {
@@ -254,11 +249,16 @@ class ProductTable extends Component {
           params.endOrderTime = new Date(endOrderTime).format('yyyy-MM-dd');
         }
         p.handleSearch(key, { ...params, isOrderQuery: 1 });
+        p.setState({ skuSearchType: 'order' });
       }
 
-      function updateValue(selectedSkuCode) {
-        console.log(key, selectedSkuCode);
-        p.handleSelect(key, selectedSkuCode);
+      function updateValue(sku) {
+        console.log(key, sku);
+        if (skuSearchType === 'order' && sku.purchaseNeed <= 0) {
+          message.info('不能选择当前采购数量等于或者小于0的sku');
+          return;
+        }
+        p.handleSelect(key, sku.skuCode);
         setTimeout(() => {
           p[`r_${key}_skuCode`].refs.input.click();
         }, 0);
@@ -266,19 +266,29 @@ class ProductTable extends Component {
 
       function batchSelectSku() {
         const { selectedSku } = p.state;
-        p.addProduct(selectedSku.length - 1);
         setTimeout(() => {
-          selectedSku.forEach((sku, index) => {
-            if (index === 0) {
-              setTimeout(() => { updateValue(sku.skuCode); }, 0);
-              return;
+          for (let i = 0; i < selectedSku.length; i += 1) {
+            if (skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0) {
+              message.info('不能选择当前采购数量等于或者小于0的sku');
+              break;
             }
-            p.handleSelect(key + index, sku.skuCode);
-          });
+            if (i === 0) {
+              setTimeout(() => { updateValue(selectedSku[i]); }, 0);
+            } else {
+              p.addProduct(1);
+              p.handleSelect(key + i, selectedSku[i].skuCode);
+            }
+          }
           setTimeout(() => {
             p.clearSelectedSku();
           }, 0);
         }, 0);
+      }
+
+      function createTaskOrder() {
+        fetch.get('/haierp1/purchase/createTaskDailyOrder').then((res) => {
+          if (res.success) message.success('计算成功');
+        });
       }
 
       const paginationProps = {
@@ -357,7 +367,7 @@ class ProductTable extends Component {
         { title: '现货占用', dataIndex: 'lockedInv', key: 'lockedInv', width: 45, render(text) { return text || '-'; } },
         { title: '在途占用', dataIndex: 'lockedTransInv', key: 'lockedTransInv', width: 45, render(text) { return text || '-'; } },
         // { title: '重量(kg)', dataIndex: 'weight', key: 'weight', width: '8%', render(text) { return text || '-'; } },
-        { title: '操作', dataIndex: 'oper', key: 'oper', render(t, r) { return <a onClick={() => { updateValue(r.skuCode); }}>选择</a>; } },
+        { title: '操作', dataIndex: 'oper', key: 'oper', render(t, r) { return <a onClick={() => { updateValue(r); }}>选择</a>; } },
       ];
 
       return (
@@ -396,35 +406,12 @@ class ProductTable extends Component {
               </Row>
             </TabPane>
             <TabPane tab="按订单查询" key="2">
-              <Row gutter={20} style={{ width: 720 }}>
-                <Col span="7">
-                  <FormItem
-                    label="开始时间"
-                    {...formItemLayout}
-                  >
-                    <DatePicker
-                      placeholder="请选择开始时间"
-                      getCalendarContainer={getDatePickerWrapper}
-                      value={p.state.timeQuery[key] && p.state.timeQuery[key].startOrderTime}
-                      onChange={p.changeTimeQuery.bind(p, key, 'startOrderTime')}
-                    />
-                  </FormItem>
-                </Col>
-                <Col span="7">
-                  <FormItem
-                    label="结束时间"
-                    {...formItemLayout}
-                  >
-                    <DatePicker
-                      placeholder="请选择结束时间"
-                      getCalendarContainer={getDatePickerWrapper}
-                      value={p.state.timeQuery[key] && p.state.timeQuery[key].endOrderTime}
-                      onChange={p.changeTimeQuery.bind(p, key, 'endOrderTime')}
-                    />
-                  </FormItem>
-                </Col>
-                <Col className="listBtnGroup" span="10" style={{ paddingTop: 2 }}>
+              <Row gutter={20} style={{ width: '100%', marginBottom: 10 }}>
+                <Col className="listBtnGroup" span="2" style={{ paddingTop: 2 }}>
                   <Button type="primary" onClick={doSearchOrder}>查询</Button>
+                </Col>
+                <Col span="12">
+                  <Button onClick={createTaskOrder}>根据当前订单重新计算采购值</Button>
                 </Col>
               </Row>
             </TabPane>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Input, DatePicker, InputNumber, Modal, Select, Button, Form, Table, Row, Col, Popconfirm, Popover, Tabs } from 'antd';
+import { Input, DatePicker, InputNumber, Modal, Select, Button, Form, Table, Row, Col, Popconfirm, Popover, Tabs, message } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
@@ -67,10 +67,10 @@ class ProductTable extends Component {
         skuList.push(skuSingle);
         count += 1;
       }
-      // if (skuList.length < 1) {
-      //   message.error('请至少填写一项商品信息');
-      //   return;
-      // }
+      if (skuList.length < 1) {
+        message.error('请至少填写一项SKU信息');
+        return;
+      }
       if (callback) callback(skuList);
     });
   }
@@ -577,7 +577,7 @@ class ProductTable extends Component {
                   initialValue: t,
                   rules: [{ validator: p.checkCount.bind(p, 'count', r) }],
                 })(
-                  <InputNumber step={1} min={1} placeholder="请输入" />,
+                  <InputNumber step={1} placeholder="请输入" />,
                 )}
               </FormItem>);
           },

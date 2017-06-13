@@ -159,7 +159,7 @@ export default {
       }
       if (payload.startGmt) payload.startGmt = payload.startGmt.format('YYYY-MM-DD');
       if (payload.endGmt) payload.endGmt = payload.endGmt.format('YYYY-MM-DD');
-      if (!payload.status) payload.status = 0;
+      if (!payload.status) payload.status = 10;
       const data = yield call(queryOrderList, { payload: { ...payload, pageIndex } });
       if (data.success) {
         yield put({

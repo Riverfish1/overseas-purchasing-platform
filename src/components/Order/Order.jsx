@@ -58,7 +58,15 @@ class Order extends Component {
     const { checkId } = this.state;
     switch (type) {
       case 'confirm': dispatch({ type: 'order/confirmOrder', payload: { orderIds: JSON.stringify(checkId) } }); break;
-      case 'close': dispatch({ type: 'order/closeOrder', payload: { orderIds: JSON.stringify(checkId) } }); break;
+      case 'close':
+        Modal.confirm({
+          title: '关闭订单',
+          content: '确认要关闭此订单吗？',
+          onOk() {
+            dispatch({ type: 'order/closeOrder', payload: { orderIds: JSON.stringify(checkId) } });
+          },
+        });
+        break;
       default: return false;
     }
   }
@@ -118,6 +126,7 @@ class Order extends Component {
       { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },
       { title: '客户', dataIndex: 'salesName', key: 'salesName', width: 80, render(text) { return text || '-'; } },
       { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
+      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 150, render(text) { return text || '-'; } },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
@@ -287,11 +296,12 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('status', {
-                  initialValue: '0',
+                  initialValue: '10',
                 })(
                   <Select placeholder="请选择订单状态">
                     <Option value="10">全部</Option>
                     <Option value="0">新建</Option>
+                    <Option value="1">确认</Option>
                     <Option value="2">已发货</Option>
                     <Option value="-1">已关闭</Option>
                   </Select>,
@@ -318,13 +328,18 @@ class Order extends Component {
                   <Input placeholder="请输入联系电话" />)}
               </FormItem>
             </Col>
-            <Col span="8">
+            <Col span={8}>
               <FormItem
-                label="客户"
+                label="销售"
                 {...formItemLayout}
               >
                 {getFieldDecorator('salesName', {})(
-                  <Input placeholder="请输入客户名称" />)}
+                  <Select placeholder="请选择销售" >
+                    {agencyList.map((el) => {
+                      return <Option key={el.id} value={el.name}>{el.name}</Option>;
+                    })}
+                  </Select>,
+                )}
               </FormItem>
             </Col>
           </Row>

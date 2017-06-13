@@ -100,7 +100,7 @@ class SkuTable extends Component {
     const newId = parseInt(lastId, 10) + 1;
     // 处理图片
     const pic = this.dealSkuPic(obj.batchFileList);
-    
+
     const newItem = {
       // id: newId,
       key: newId,
@@ -116,11 +116,11 @@ class SkuTable extends Component {
     skuData.push(newItem);
     this.setState({ skuData });
   }
-  //处理图片
+  // 处理图片
   dealSkuPic(batchFileList) {
-  	const pic = {};
+    const pic = {};
     if (batchFileList) {
-      	batchFileList.forEach((el) => {
+      batchFileList.forEach((el) => {
         const list = [];
         if (el.response && el.response.success) {
           list.push({
@@ -134,7 +134,6 @@ class SkuTable extends Component {
     }
     return pic;
   }
-  
   delItem(key) {
     console.log(key);
     const { skuData } = this.state;
@@ -157,36 +156,36 @@ class SkuTable extends Component {
       const virtualInv = this.virtualInv.refs.input.value;
       const packageLevelId = this.packageLevelId.state.value;
       const batchFileList = this.batchPic.state.fileList;
-      
+
       const { skuData } = this.state;
       let isUpdate = false;
-      //判断是否是修改
-      if(skuData.length) {
-      	const temColor = typeof color === 'string' ? color : '';
-      	const tempSalePrice = typeof salePrice === 'string' ? salePrice : '';
-      	const tempVirtualInv = typeof virtualInv === 'string' ? virtualInv : '';
-      	const temWeight = typeof weight === 'string' ? weight : '';
-      	const temPackageLevelId = packageLevelId ? JSON.stringify(packageLevelId) : [];
-      	const pic = this.dealSkuPic(batchFileList);
-      	const tempSkuPic = JSON.stringify(pic);
-      	skuData.forEach((el) => {
-      		//颜色没填，或者填的颜色已在现有sku中存在了，就认定是修改
-      		if((temColor!==''&&temColor===el.color) || temColor==='') {
-      			if(tempSalePrice) el.salePrice = tempSalePrice;
-      			if(tempVirtualInv) el.virtualInv = tempVirtualInv;
-      			if(temWeight) el.weight = temWeight;
-      			if(packageLevelId.length) el.packageLevelId = temPackageLevelId;
-      			if(pic.picList) el.skuPic = tempSkuPic;
-      			isUpdate = true;
-      		}
-      	});
+      // 判断是否是修改
+      if (skuData.length) {
+        const temColor = typeof color === 'string' ? color : '';
+        const tempSalePrice = typeof salePrice === 'string' ? salePrice : '';
+        const tempVirtualInv = typeof virtualInv === 'string' ? virtualInv : '';
+        const temWeight = typeof weight === 'string' ? weight : '';
+        const temPackageLevelId = packageLevelId ? JSON.stringify(packageLevelId) : [];
+        const pic = this.dealSkuPic(batchFileList);
+        const tempSkuPic = JSON.stringify(pic);
+        skuData.forEach((el) => {
+          // 颜色没填，或者填的颜色已在现有sku中存在了，就认定是修改
+          if ((temColor !== '' && temColor === el.color) || temColor === '') {
+            if (tempSalePrice) el.salePrice = tempSalePrice;
+            if (tempVirtualInv) el.virtualInv = tempVirtualInv;
+            if (temWeight) el.weight = temWeight;
+            if (packageLevelId.length) el.packageLevelId = temPackageLevelId;
+            if (pic.picList) el.skuPic = tempSkuPic;
+            isUpdate = true;
+          }
+        });
       }
-      if(!isUpdate) {
-		batchSelected.forEach((el) => {
-			const obj = { scale: el, salePrice, color, batchFileList, weight, virtualInv, packageLevelId };
-			this.addItem(obj);
-		});
-	  }
+      if (!isUpdate) {
+        batchSelected.forEach((el) => {
+          const obj = { scale: el, salePrice, color, batchFileList, weight, virtualInv, packageLevelId };
+          this.addItem(obj);
+        });
+      }
       this.setState({ batchSkuSort: '', batchSelected: [] });
       this.salePrice.refs.input.value = '';
       this.color.refs.input.value = '';
@@ -332,6 +331,7 @@ class SkuTable extends Component {
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_virtualInv`, {
                   initialValue: t || '',
+                  rules: [{ required: true, message: '请填写' }],
                 })(
                   <InputNumber step={1} min={0} placeholder="请填写" />)}
               </FormItem>

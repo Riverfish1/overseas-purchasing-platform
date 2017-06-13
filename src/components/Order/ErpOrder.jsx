@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, Popconfirm } from 'antd';
+import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, Popconfirm, DatePicker } from 'antd';
 
 import DeliveryModal from './component/DeliveryModal';
 import ErpOrderModal from './ErpOrderModal';
@@ -134,13 +134,14 @@ class ErpOrder extends Component {
       { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 100 },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 150 },
       { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
+      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 150, render(text) { return text || '-'; } },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150 },
       { title: '图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
         width: 80,
         render(text) {
-        	  if(!text) {return '-';}
+          if (!text) return '-';
           const picList = JSON.parse(text).picList;
           const t = picList.length ? JSON.parse(text).picList[0].url : '';
           return (
@@ -153,7 +154,7 @@ class ErpOrder extends Component {
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 100 },
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 100 },
       { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },
-      { title: '发货方式', dataIndex: 'logisticType', key: 'logisticType', width: 60, render(text) { return text===0 ? '直邮' : (text===1 ? '拼邮' : '-')} },
+      { title: '发货方式', dataIndex: 'logisticType', key: 'logisticType', width: 60, render(text) { return text === 0 ? '直邮' : (text === 1 ? '拼邮' : '-'); } },
       { title: '仓库名', dataIndex: 'warehouseName', key: 'warehouseName', width: 100, render(text) { return text || '-'; } },
       { title: '订单数量', dataIndex: 'quantity', key: 'quantity', width: 60, render(text) { return text || '-'; } },
       { title: '订单状态',
@@ -386,6 +387,15 @@ class ErpOrder extends Component {
                   <Select placeholder="请选择仓库" optionLabelProp="title" combobox>
                     {wareList.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="销售时间"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('orderTime', {})(
+                  <DatePicker placeholder="请选择" />)}
               </FormItem>
             </Col>
           </Row>

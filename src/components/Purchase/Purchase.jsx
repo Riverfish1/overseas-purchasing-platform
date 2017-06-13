@@ -103,15 +103,15 @@ class Purchase extends Component {
       <img role="presentation" src={previewImage} style={{ width: 400 }} />
     );
     const columnsList = [
-      { title: '任务单号', dataIndex: 'taskOrderNo', key: 'taskOrderNo' },
-      { title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle' },
-      { title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc' },
+      { title: '任务单号', dataIndex: 'taskOrderNo', key: 'taskOrderNo', width: 150 },
+      { title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle', width: 150 },
+      { title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc', width: 80 },
       // { title: '任务分配人', dataIndex: 'ownerName', key: 'ownerName' },
-      // { title: '分配者ID', dataIndex: 'ownerId', key: 'ownerId' },
-      { title: '买手', dataIndex: 'buyerName', key: 'buyerName', render(text) { return text || '-'; } },
+      { title: '买手', dataIndex: 'buyerName', key: 'buyerName', width: 60, render(text) { return text || '-'; } },
       { title: '图片',
         dataIndex: 'imageUrl',
         key: 'imageUrl',
+        width: 80,
         render(text) {
           if (text) {
             return (
@@ -123,9 +123,9 @@ class Purchase extends Component {
           return '-';
         },
       },
-      { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime' },
-      { title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime' },
-      { title: '备注', dataIndex: 'remark', key: 'remark', render(text) { return text || '-'; } },
+      { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime', width: 150 },
+      { title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime', width: 150 },
+      { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',

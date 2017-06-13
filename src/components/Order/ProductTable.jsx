@@ -31,9 +31,13 @@ class ProductTable extends Component {
     form.validateFields((err, fieldsSku) => {
       console.log('===field sku===', err, fieldsSku);
       if (err) return;
-      let count = 1;
       const keys = Object.keys(fieldsSku);
-      while (Object.prototype.hasOwnProperty.call(fieldsSku, `r_${count}_skuCode`)) {
+      const countKeys = {};
+      keys.forEach((key) => {
+        const num = key.split('r_')[1].split('_')[0];
+        if (!countKeys[num]) countKeys[num] = true;
+      });
+      Object.keys(countKeys).forEach((count) => {
         const skuSingle = {};
         keys.forEach((key) => {
           if (key.match(`r_${count}_`)) {
@@ -50,12 +54,14 @@ class ProductTable extends Component {
           delete skuSingle.classicalId;
         }
         skuList.push(skuSingle);
-        count += 1;
-      }
+      });
       if (skuList.length < 1) {
         message.error('请至少填写一项商品信息');
         return;
       }
+      console.log('*** skuList ***', skuList);
+      /* eslint-disable */
+      return;
       if (callback) callback(skuList);
     });
   }
@@ -142,7 +148,7 @@ class ProductTable extends Component {
             [`r_${key}_freight`]: value.freightStr,
             [`r_${key}_salePrice`]: value.salePrice || 0,
             [`r_${key}_quantity`]: value.quantity || 1,
-            [`r_${key}_classicalId`]: value.classicalId,
+            [`r_${key}_classicalId`]: value.id,
           });
         });
       }

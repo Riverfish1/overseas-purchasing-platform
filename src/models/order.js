@@ -17,6 +17,8 @@ const updateErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/update', {
 // 订单关闭
 const closeErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/close', { data: payload }).catch(e => e);
 const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/splitErpOrder', { data: payload }).catch(e => e);
+// 重分配库存
+const replayAssign = ({ payload }) => fetch.post('/haierp1/erpOrder/replayAssign', { data: payload }).catch(e => e);
 // 批量发货
 const multiDelivery = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDelivery', { data: payload }).catch(e => e);
 // 发货单查询
@@ -201,6 +203,13 @@ export default {
           type: 'queryErpOrderList',
           payload: {},
         });
+      }
+    },
+    * replayAssign({ payload }, { call }) {
+      const data = yield call(replayAssign, { payload: { orderIds: payload.orderIds } });
+      if (data.success) {
+        message.success('重新分配库存成功');
+        if (payload.callback) payload.callback();
       }
     },
     * closeErpOrder({ payload }, { call }) {

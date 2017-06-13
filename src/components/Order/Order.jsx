@@ -389,12 +389,12 @@ class Order extends Component {
           </Row>
         </Form>
         <Row>
-          <Col className="operBtn" span={20}>
+          <Col className="operBtn" span={22}>
             <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增订单</Button>
           </Col>
-          <Col className="operBtn" span={2}>
+          {/* <Col className="operBtn" span={2}>
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.handleOrderAction.bind(p, 'confirm')}>订单确定</Button>
-          </Col>
+          </Col> */}
           <Col className="operBtn" span={2}>
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.handleOrderAction.bind(p, 'close')}>订单关闭</Button>
           </Col>

@@ -258,7 +258,7 @@ class PurchaseModal extends Component {
       { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 44, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="32" height="32" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 50 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 50 },
-      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 60 },
+      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 60, render(t, r) { return t || r.taskDailyCount; } },
       { title: '数量',
         dataIndex: 'quantity',
         key: 'quantity',

@@ -55,6 +55,23 @@ class ErpOrder extends Component {
       },
     });
   }
+  replayAssign() {
+    const p = this;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'order/replayAssign',
+      payload: {
+        orderIds: JSON.stringify(p.state.checkId),
+        callback() {
+          p.setState({ isNotSelected: true, checkId: [] }); // 取消选择 checkId
+          dispatch({
+            type: 'order/queryErpOrderList',
+            payload: {},
+          });
+        },
+      },
+    });
+  }
   closeErpOrder() { // 子订单关闭
     const p = this;
     const { dispatch } = this.props;
@@ -412,8 +429,11 @@ class ErpOrder extends Component {
           </Row>
         </Form>
         <Row>
-          <Col span={22} className="operBtn">
+          <Col span={20} className="operBtn">
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>发货</Button>
+          </Col>
+          <Col span={2} className="operBtn">
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.replayAssign.bind(p)}>重分配库存</Button>
           </Col>
           <Col span={2} className="operBtn">
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.closeErpOrder.bind(p)}>关闭</Button>

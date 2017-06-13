@@ -216,6 +216,7 @@ class Products extends Component {
         });
         p.setState({ checkId: listId });
       },
+      selectedRowKeys: p.state.checkId,
     };
 
     return (

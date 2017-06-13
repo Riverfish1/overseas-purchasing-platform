@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Popconfirm, Popover } from 'antd';
+import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Popconfirm, Popover, Modal } from 'antd';
 import PurchaseModal from './PurchaseModal';
 
 const FormItem = Form.Item;
@@ -16,28 +16,33 @@ class Purchase extends Component {
       title: '', // modal的title
       previewImage: '',
       previewVisible: false,
+      taskDailyIds: [],
+      isNotSelected: true,
     };
   }
 
   handleSubmit(e, page) {
+    const p = this;
     if (e) e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
-      if (err) {
-        return;
-      }
-      if (fieldsValue.taskStart && fieldsValue.taskStart[0] && fieldsValue.taskStart[1]) {
-        fieldsValue.taskStart1 = new Date(fieldsValue.taskStart[0]).format('yyyy-MM-dd');
-        fieldsValue.taskStart2 = new Date(fieldsValue.taskStart[1]).format('yyyy-MM-dd');
-      }
-      if (fieldsValue.taskEnd && fieldsValue.taskEnd[0] && fieldsValue.taskEnd[1]) {
-        fieldsValue.taskEnd1 = new Date(fieldsValue.taskEnd[0]).format('yyyy-MM-dd');
-        fieldsValue.taskEnd2 = new Date(fieldsValue.taskEnd[1]).format('yyyy-MM-dd');
-      }
-      delete fieldsValue.taskStart;
-      delete fieldsValue.taskEnd;
-      this.props.dispatch({
-        type: 'purchase/queryPurchaseList',
-        payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
+    p.setState({ taskDailyIds: [] }, () => {
+      this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
+        if (err) {
+          return;
+        }
+        if (fieldsValue.taskStart && fieldsValue.taskStart[0] && fieldsValue.taskStart[1]) {
+          fieldsValue.taskStart1 = new Date(fieldsValue.taskStart[0]).format('yyyy-MM-dd');
+          fieldsValue.taskStart2 = new Date(fieldsValue.taskStart[1]).format('yyyy-MM-dd');
+        }
+        if (fieldsValue.taskEnd && fieldsValue.taskEnd[0] && fieldsValue.taskEnd[1]) {
+          fieldsValue.taskEnd1 = new Date(fieldsValue.taskEnd[0]).format('yyyy-MM-dd');
+          fieldsValue.taskEnd2 = new Date(fieldsValue.taskEnd[1]).format('yyyy-MM-dd');
+        }
+        delete fieldsValue.taskStart;
+        delete fieldsValue.taskEnd;
+        this.props.dispatch({
+          type: 'purchase/queryPurchaseList',
+          payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
+        });
       });
     });
   }
@@ -90,11 +95,55 @@ class Purchase extends Component {
     });
   }
 
+  handlePurchaseAction(type) {
+    const p = this;
+    const { taskDailyIds } = this.state;
+    switch (type) {
+      case 'finish':
+        Modal.confirm({
+          title: '完成采购',
+          content: '确定完成采购？',
+          onOk() {
+            p.props.dispatch({
+              type: 'purchase/finishTaskDaily',
+              payload: { taskDailyIds: JSON.stringify(taskDailyIds) },
+              success() {
+                p.props.dispatch({
+                  type: 'purchase/queryPurchaseList',
+                  payload: {},
+                });
+              },
+            });
+          },
+        });
+        break;
+      case 'close':
+        Modal.confirm({
+          title: '取消采购',
+          content: '确定取消采购？',
+          onOk() {
+            p.props.dispatch({
+              type: 'purchase/closeTaskDaily',
+              payload: { taskDailyIds: JSON.stringify(taskDailyIds) },
+              success() {
+                p.props.dispatch({
+                  type: 'purchase/queryPurchaseList',
+                  payload: {},
+                });
+              },
+            });
+          },
+        });
+        break;
+      default: return false;
+    }
+  }
+
   render() {
     const p = this;
     const { form, list = [], total, purchaseValues = {}, buyer = [], dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { title, previewImage } = p.state;
+    const { title, previewImage, isNotSelected } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -123,6 +172,19 @@ class Purchase extends Component {
           return '-';
         },
       },
+      { title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        width: 60,
+        render(t) {
+          switch (t) {
+            case 0: return '采购中';
+            case 1: return '已完成';
+            case -1: return '已取消';
+            default: return '-';
+          }
+        },
+      },
       { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime', width: 150 },
       { title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime', width: 150 },
       { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
@@ -149,6 +211,19 @@ class Purchase extends Component {
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
       },
+    };
+
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        const listId = [];
+        if (selectedRows.length) p.setState({ isNotSelected: false });
+        else p.setState({ isNotSelected: true });
+        selectedRows.forEach((el) => {
+          listId.push(el.id);
+        });
+        p.setState({ taskDailyIds: listId });
+      },
+      selectedRowKeys: p.state.taskDailyIds,
     };
     return (
       <div>
@@ -215,8 +290,14 @@ class Purchase extends Component {
           </Row>
         </Form>
         <Row>
-          <Col className="operBtn">
+          <Col className="operBtn" span="20">
             <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增采购</Button>
+          </Col>
+          <Col span="2" className="operBtn">
+            <Button type="primary" size="large" disabled={isNotSelected} onClick={p.handlePurchaseAction.bind(p, 'finish')}>完成采购</Button>
+          </Col>
+          <Col span="2" className="operBtn">
+            <Button size="large" disabled={isNotSelected} onClick={p.handlePurchaseAction.bind(p, 'close')}>取消采购</Button>
           </Col>
         </Row>
         <Row>
@@ -228,6 +309,7 @@ class Purchase extends Component {
               size="large"
               rowKey={record => record.id}
               pagination={paginationProps}
+              rowSelection={rowSelection}
             />
           </Col>
         </Row>

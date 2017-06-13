@@ -7,6 +7,10 @@ const queryPurchaseList = ({ payload }) => fetch.post('/haierp1/purchase/queryTa
 const queryPurchase = ({ payload }) => fetch.post('/haierp1/purchase/query', { data: payload }).catch(e => e);
 const queryBuyers = ({ payload }) => fetch.post('/haierp1/purchase/queryBuyers', { data: payload }).catch(e => e);
 const deletePurchase = ({ payload }) => fetch.post('/haierp1/purchase/delete', { data: payload }).catch(e => e);
+// 取消采购
+const closeTaskDaily = ({ payload }) => fetch.post('/haierp1/purchase/closeTaskDaily', { data: payload }).catch(e => e);
+// 完成采购
+const finishTaskDaily = ({ payload }) => fetch.post('/haierp1/purchase/finishTaskDaily', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'purchase',
@@ -92,6 +96,20 @@ export default {
     * exportPurchase({ payload }, { put }) {
       window.open(`http://${location.host}/haierp1/purchase/taskDailyExport?id=${payload.id}`);
       yield put({ type: 'queryPurchaseList', payload: {} });
+    },
+    * finishTaskDaily({ payload, success }, { call }) {
+      const data = yield call(finishTaskDaily, { payload });
+      if (data.success) {
+        message.success('完成采购成功');
+        if (success) success();
+      }
+    },
+    * closeTaskDaily({ payload, success }, { call }) {
+      const data = yield call(closeTaskDaily, { payload });
+      if (data.success) {
+        message.success('取消采购成功');
+        if (success) success();
+      }
     },
   },
   reducers: {

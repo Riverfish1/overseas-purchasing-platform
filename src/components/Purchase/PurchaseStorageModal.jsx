@@ -129,6 +129,7 @@ class PurchaseModal extends Component {
           item.price = el.price;
           item.shelfNo = el.shelfNo;
           item.taskDailyDetailId = el.taskDetailId;
+          item.taskDailyCount = el.count;
           return item;
         }
       }));
@@ -246,7 +247,7 @@ class PurchaseModal extends Component {
       { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 44, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="32" height="32" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 40 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 44 },
-      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 60 },
+      { title: '采购数', dataIndex: 'count', key: 'count', width: 60 },
       { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
     ];
 

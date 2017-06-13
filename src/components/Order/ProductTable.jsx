@@ -29,7 +29,7 @@ class ProductTable extends Component {
     const { form } = this.props;
     const skuList = [];
     form.validateFields((err, fieldsSku) => {
-      console.log(err, fieldsSku);
+      console.log('===field sku===', err, fieldsSku);
       if (err) return;
       let count = 1;
       const keys = Object.keys(fieldsSku);
@@ -45,6 +45,10 @@ class ProductTable extends Component {
           skuSingle.skuCode = p[`r_${count}_skuCode_dom`].refs.input.value;
         }
         if (skuSingle.skuPic) delete skuSingle.skuPic;
+        if (skuSingle.classicalId) {
+          skuSingle.id = skuSingle.classicalId;
+          delete skuSingle.classicalId;
+        }
         skuList.push(skuSingle);
         count += 1;
       }
@@ -124,6 +128,7 @@ class ProductTable extends Component {
             el.salePrice = value.salePrice || 0;
             el.quantity = value.quantity || 1;
             el.skuPic = value.skuPic;
+            el.classicalId = value.id;
           }
         });
         this.setState({ skuData }, () => {
@@ -137,6 +142,7 @@ class ProductTable extends Component {
             [`r_${key}_freight`]: value.freightStr,
             [`r_${key}_salePrice`]: value.salePrice || 0,
             [`r_${key}_quantity`]: value.quantity || 1,
+            [`r_${key}_classicalId`]: value.classicalId,
           });
         });
       }
@@ -414,9 +420,10 @@ class ProductTable extends Component {
           title: '操作',
           key: 'operator',
           width: 60,
-          render(text, record) {
-            return (<Popconfirm title="确定删除?" onConfirm={p.handleDelete.bind(p, record.key)}>
+          render(text, r) {
+            return (<Popconfirm title="确定删除?" onConfirm={p.handleDelete.bind(p, r.key)}>
               <a href="javascript:void(0)">删除</a>
+              {getFieldDecorator(`r_${r.key}_classicalId`, { initialValue: r && r.id })(<Input style={{ display: 'none' }} />)}
             </Popconfirm>);
           },
         },

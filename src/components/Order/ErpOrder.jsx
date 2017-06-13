@@ -156,7 +156,7 @@ class ErpOrder extends Component {
       { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },
       { title: '发货方式', dataIndex: 'logisticType', key: 'logisticType', width: 60, render(text) { return text === 0 ? '直邮' : (text === 1 ? '拼邮' : '-'); } },
       { title: '仓库名', dataIndex: 'warehouseName', key: 'warehouseName', width: 100, render(text) { return text || '-'; } },
-      { title: '订单数量', dataIndex: 'quantity', key: 'quantity', width: 60, render(text) { return text || '-'; } },
+      { title: '商品数量', dataIndex: 'quantity', key: 'quantity', width: 60, render(text) { return text || '-'; } },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',

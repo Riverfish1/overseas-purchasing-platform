@@ -33,7 +33,6 @@ class Order extends Component {
           fieldsValue.endOrderTime = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
         }
         delete fieldsValue.orderTime;
-        delete fieldsValue.action;
         this.props.dispatch({
           type: 'order/queryOrderList',
           payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },

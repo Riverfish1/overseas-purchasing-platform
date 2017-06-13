@@ -9,6 +9,7 @@ import RecordList from './component/RecordList';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const { RangePicker } = DatePicker;
 
 class ErpOrder extends Component {
   constructor(props) {
@@ -29,6 +30,11 @@ class ErpOrder extends Component {
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFields((err, fieldsValue) => {
         if (err) return;
+        if (fieldsValue.orderTime && fieldsValue.orderTime[0] && fieldsValue.orderTime[1]) {
+          fieldsValue.startOrderTime = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
+          fieldsValue.endOrderTime = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
+        }
+        delete fieldsValue.orderTime;
         this.props.dispatch({
           type: 'order/queryErpOrderList',
           payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
@@ -389,13 +395,12 @@ class ErpOrder extends Component {
                   </Select>)}
               </FormItem>
             </Col>
-            <Col span="8">
+            <Col span={16}>
               <FormItem
-                label="销售时间"
-                {...formItemLayout}
+                label="销售时间范围"
+                labelCol={{ span: 6 }}
               >
-                {getFieldDecorator('orderTime', {})(
-                  <DatePicker placeholder="请选择" />)}
+                {getFieldDecorator('orderTime', {})(<RangePicker />)}
               </FormItem>
             </Col>
           </Row>

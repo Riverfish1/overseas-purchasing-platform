@@ -103,7 +103,7 @@ class ProductTable extends Component {
   }
 
   handleSelect(key, skuCode) {
-    console.log('selected');
+    // console.log('selected');
 
     const { form, skuList } = this.props;
     let { skuData } = this.state;
@@ -267,16 +267,19 @@ class ProductTable extends Component {
       function batchSelectSku() {
         const { selectedSku } = p.state;
         setTimeout(() => {
+          let j = -1;
           for (let i = 0; i < selectedSku.length; i += 1) {
+            console.log('=== purchaseNeed ===', selectedSku[i]);
             if (skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0) {
-              // message.info('不能选择当前采购数量等于或者小于0的sku');
+              message.info('不能选择当前采购数量等于或者小于0的sku');
               continue;
             }
-            if (i === 0 && !(skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0)) {
+            j += 1;
+            if (j === 0 && !(skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0)) {
               setTimeout(() => { updateValue(selectedSku[i]); }, 0);
             } else {
               p.addProduct(1);
-              p.handleSelect(key + i, selectedSku[i].skuCode);
+              p.handleSelect(key + j, selectedSku[i].skuCode);
             }
           }
           setTimeout(() => {
@@ -608,7 +611,7 @@ class ProductTable extends Component {
           key: 'taskEndTime',
           width: '12%',
           render(t, r) {
-            console.log(r);
+            // console.log(r);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskEndTime`, {

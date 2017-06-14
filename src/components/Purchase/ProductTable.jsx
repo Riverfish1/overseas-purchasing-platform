@@ -269,8 +269,8 @@ class ProductTable extends Component {
         setTimeout(() => {
           for (let i = 0; i < selectedSku.length; i += 1) {
             if (skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0) {
-              message.info('不能选择当前采购数量等于或者小于0的sku');
-              break;
+              // message.info('不能选择当前采购数量等于或者小于0的sku');
+              continue;
             }
             if (i === 0 && !(skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0)) {
               setTimeout(() => { updateValue(selectedSku[i]); }, 0);

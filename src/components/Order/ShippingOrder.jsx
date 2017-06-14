@@ -121,7 +121,7 @@ class ShippingOrder extends Component {
         render(text, r) {
           return (
             <div>
-              <a href="javascript:void(0)" onClick={p.queryDetail.bind(p, r)}>查看</a>
+              <a href="javascript:void(0)" onClick={p.queryDetail.bind(p, r)} style={{ marginRight: 10 }}>查看</a>
               <a href="javascript:void(0)" onClick={p.updateModal.bind(p, r)}>修改</a>
             </div>);
         },

@@ -26,6 +26,7 @@ const queryShippingOrderList = ({ payload }) => fetch.post('/haierp1/shippingOrd
 const updateShippingOrder = ({ payload }) => fetch.post('/haierp1/shippingOrder/update', { data: payload }).catch(e => e);
 // 发货单详情表单查询
 const queryShippingOrderDetail = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDeliveryForm', { data: payload }).catch(e => e);
+const queryDetail = ({ payload }) => fetch.post('/haierp1/shippingOrder/queryShippingOrderDetail', { data: payload }).catch(e => e);
 // 查询物流公司
 const queryDeliveryCompanyList = ({ payload }) => fetch.post('/haierp1/shippingOrder/queryLogisticCompany', { data: payload }).catch(e => e);
 // 分配库存
@@ -243,6 +244,12 @@ export default {
           type: 'saveShippingOrderList',
           payload: data,
         });
+      }
+    },
+    * queryDetail({ payload, cb }, { call }) {
+      const data = yield call(queryDetail, { payload });
+      if (data.success) {
+        if (cb) cb(data.data);
       }
     },
     * updateShippingOrder({ payload, callback }, { call, put }) {

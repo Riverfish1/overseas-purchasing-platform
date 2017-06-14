@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Input, Select, Button } from 'antd';
+import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover } from 'antd';
 
 import InvoiceModal from './component/InvoiceModal';
 
@@ -17,6 +17,8 @@ class ShippingOrder extends Component {
       type: 'update',
       checkId: [],
       isNotSelected: true,
+      shippingDetail: [],
+      showDetail: false,
     };
   }
   handleSubmit(e, page) {
@@ -47,11 +49,24 @@ class ShippingOrder extends Component {
     });
     this.setState({ checkId: [] });
   }
+  queryDetail(r) {
+    const p = this;
+    this.props.dispatch({
+      type: 'order/queryDetail',
+      payload: { shippingOrderId: r.id },
+      cb(data) {
+        p.setState({
+          shippingDetail: data,
+          showDetail: true,
+        });
+      },
+    });
+  }
   render() {
     const p = this;
     const { shippingOrderList, shippingOrderTotal, deliveryCompanyList = [], form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { visible, data, isNotSelected } = p.state;
+    const { visible, data, isNotSelected, shippingDetail, showDetail } = p.state;
 
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
@@ -68,7 +83,7 @@ class ShippingOrder extends Component {
     };
 
     const pagination = {
-    	  pageSize:20,
+      pageSize: 20,
       total: shippingOrderTotal,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
@@ -106,10 +121,53 @@ class ShippingOrder extends Component {
         render(text, r) {
           return (
             <div>
+              <a href="javascript:void(0)" onClick={p.queryDetail.bind(p, r)}>查看</a>
               <a href="javascript:void(0)" onClick={p.updateModal.bind(p, r)}>修改</a>
             </div>);
         },
       },
+    ];
+    const detailColumns = [
+      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 100 },
+      { title: 'SKU编号', dataIndex: 'skuCode', key: 'skuCode', width: 200 },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150 },
+      { title: '商品图片',
+        dataIndex: 'skuPic',
+        key: 'skuPic',
+        width: 100,
+        render(t) {
+          if (t) {
+            const picObj = JSON.parse(t);
+            const picList = picObj.picList;
+            if (picList.length) {
+              const imgUrl = picList[0].url;
+              return (
+                <Popover title={null} content={<img role="presentation" src={imgUrl} style={{ width: 400 }} />}>
+                  <img role="presentation" src={imgUrl} width={60} height={60} />
+                </Popover>
+              );
+            }
+          }
+          return '-';
+        },
+      },
+      { title: '物流方式',
+        dataIndex: 'logisticType',
+        key: 'logisticType',
+        width: 60,
+        render(t) {
+          switch (t) {
+            case 0: return '直邮';
+            case 1: return '拼邮';
+            default: return false;
+          }
+        },
+      },
+      { title: '颜色', dataIndex: 'color', key: 'color', width: 100 },
+      { title: '尺码', dataIndex: 'scale', key: 'scale', width: 100 },
+      { title: '购买数量', dataIndex: 'quantity', key: 'quantity', width: 100 },
+      { title: '发货仓库', dataIndex: 'warehouseName', key: 'warehouseName', width: 100 },
+      { title: '配货库位', dataIndex: 'positionNo', key: 'positionNo', width: 100 },
     ];
     return (
       <div>
@@ -198,6 +256,14 @@ class ShippingOrder extends Component {
         <Row>
           <Table columns={columns} dataSource={shippingOrderList} rowKey={r => r.id} rowSelection={rowSelection} pagination={pagination} bordered />
         </Row>
+        <Modal
+          visible={showDetail}
+          title="详情"
+          footer={null}
+          onCancel={() => this.setState({ showDetail: false })}
+        >
+          <Table columns={detailColumns} dataSource={shippingDetail} rowKey={r => r.id} bordered />
+        </Modal>
         <InvoiceModal
           visible={visible}
           data={data}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, Button, Row, Col, Select, DatePicker, Form, Popconfirm, Modal } from 'antd';
+import { Table, Input, Button, Row, Col, Select, DatePicker, Form, Popconfirm, Modal, Popover } from 'antd';
 import PurchaseStorageModal from './PurchaseStorageModal';
 
 const FormItem = Form.Item;
@@ -12,6 +12,7 @@ class PurchaseStorage extends Component {
     super();
     this.state = {
       selectedRowKeys: [],
+      showDetail: false,
     };
   }
 
@@ -85,10 +86,20 @@ class PurchaseStorage extends Component {
     });
   }
 
+  queryDetail(r) {
+    const p = this;
+    p.setState({ showDetail: true }, () => {
+      p.props.dispatch({
+        type: 'purchaseStorage/queryStorage',
+        payload: { id: r.id },
+      });
+    });
+  }
+
   render() {
     const p = this;
     const { form, list = [], total, buyer = [], wareList = [], showModal, editInfo = {}, buyerTaskList = [] } = p.props;
-    const { selectedRowKeys } = p.state;
+    const { selectedRowKeys, showDetail } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -110,6 +121,7 @@ class PurchaseStorage extends Component {
         render(text, record) {
           return (
             <div>
+              <a href="javascript:void(0)" onClick={p.queryDetail.bind(p, record)} style={{ marginRight: 10 }}>查看</a>
               <a href="javascript:void(0)" style={{ margin: '0 10px 0 0' }} onClick={p.showModal.bind(p, 'update', record.id)}>修改</a>
               <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, record.id)} >
                 <a href="javascript:void(0)" >删除</a>
@@ -117,6 +129,38 @@ class PurchaseStorage extends Component {
             </div>);
         },
       },
+    ];
+
+    const columnsStorageList = [
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 50 },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
+      { title: '图片',
+        dataIndex: 'skuPic',
+        key: 'skuPic',
+        width: 80,
+        render(t) {
+          if (t) {
+            const picObj = JSON.parse(t);
+            const picList = picObj.picList;
+            if (picList.length) {
+              const imgUrl = picList[0].url;
+              return (
+                <Popover title={null} content={<img role="presentation" src={imgUrl} style={{ width: 400 }} />}>
+                  <img role="presentation" src={imgUrl} width={60} height={60} />
+                </Popover>
+              );
+            }
+          }
+          return '-';
+        },
+      },
+      { title: '颜色', dataIndex: 'color', key: 'color', width: 60 },
+      { title: '规格', dataIndex: 'scale', key: 'scale', width: 80 },
+      { title: '计划采购数', dataIndex: 'taskDailyCount', key: 'taskDailyCount', width: 60 },
+      { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
+      { title: '仓库', dataIndex: 'warehouseName', key: 'warehouseName', width: 100 },
+      { title: '货架号', dataIndex: 'shelfNo', key: 'shelfNo', width: 100 },
     ];
 
     const rowSelection = {
@@ -216,7 +260,15 @@ class PurchaseStorage extends Component {
             </Col>
           </Row>
         </Row>
-
+        <Modal
+          visible={showDetail}
+          title="详情"
+          footer={null}
+          width="900"
+          onCancel={() => this.setState({ showDetail: false })}
+        >
+          <Table columns={columnsStorageList} dataSource={editInfo.purchaseStorageDetailList} rowKey={r => r.id} bordered />
+        </Modal>
         <PurchaseStorageModal
           visible={showModal}
           title={Object.keys(editInfo).length > 0 ? '修改入库单' : '新增入库单'}

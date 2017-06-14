@@ -158,7 +158,7 @@ class PurchaseStorage extends Component {
       { title: '颜色', dataIndex: 'color', key: 'color', width: 60 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 80 },
       { title: '计划采购数', dataIndex: 'taskDailyCount', key: 'taskDailyCount', width: 60 },
-      { title: '入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
+      { title: '入库数', dataIndex: 'quantity', key: 'quantity', width: 70, render(t) { return t || 0; } },
       { title: '仓库', dataIndex: 'warehouseName', key: 'warehouseName', width: 100 },
       { title: '货架号', dataIndex: 'shelfNo', key: 'shelfNo', width: 100 },
     ];

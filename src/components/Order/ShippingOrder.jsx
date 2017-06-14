@@ -68,6 +68,7 @@ class ShippingOrder extends Component {
     };
 
     const pagination = {
+    	  pageSize:20,
       total: shippingOrderTotal,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);

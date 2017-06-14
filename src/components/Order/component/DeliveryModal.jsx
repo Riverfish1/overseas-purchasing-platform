@@ -5,11 +5,23 @@ import divisions from '../../../utils/divisions.json';
 import check from '../../../utils/checkLib';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 class DeliveryModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      checkId: [],
+    };
+  }
+  componentWillReceiveProps({ ids }) {
+    console.log(ids);
+    if (ids.length) this.setState({ checkId: ids });
+  }
   handleSubmit() {
     const p = this;
-    const { form, dispatch, ids } = this.props;
+    const { form, dispatch } = this.props;
+    const { checkId } = this.state;
     form.validateFields((err, values) => {
       if (err) return;
       if (values.address) {
@@ -19,7 +31,7 @@ class DeliveryModal extends Component {
         delete values.address;
       }
       console.log(values);
-      values.erpOrderId = JSON.stringify(ids);
+      values.erpOrderId = JSON.stringify(checkId);
       dispatch({
         type: 'order/multiDelivery',
         payload: { ...values },
@@ -61,6 +73,21 @@ class DeliveryModal extends Component {
       { title: '数量', dataIndex: 'quantity', key: 'quantity' },
       { title: '仓库', dataIndex: 'warehouseName', key: 'warehouseName' },
     ];
+
+    const rowSelection = {
+      onChange(selectedRowKeys, selectedRows) {
+        console.log(selectedRowKeys);
+        const listId = [];
+        selectedRows.forEach((el) => {
+          listId.push(el.id);
+        });
+        p.setState({ checkId: listId });
+      },
+      selectedRowKeys: p.state.checkId,
+      getCheckboxProps: () => ({
+        defaultChecked: true,
+      }),
+    };
 
     const initialAddress = [];
     initialAddress.push(data.receiverState);
@@ -111,8 +138,6 @@ class DeliveryModal extends Component {
                   )}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <FormItem
                   label="联系电话"
@@ -137,8 +162,6 @@ class DeliveryModal extends Component {
                     <Input placeholder="请输入详细地址" />)}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <FormItem
                   label="物流运单号"
@@ -167,8 +190,6 @@ class DeliveryModal extends Component {
                   )}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <FormItem
                   label="运单状态"
@@ -187,6 +208,22 @@ class DeliveryModal extends Component {
               </Col>
               <Col span={12}>
                 <FormItem
+                  label="渠道"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('type', {
+                    initialValue: data.type || undefined,
+                  })(
+                    <Select placeholder="请选择渠道" >
+                      <Option value={1} key="1">包税线</Option>
+                      <Option value={2} key="2">身份证线</Option>
+                      <Option value={3} key="3">BC线</Option>
+                    </Select>,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem
                   label="运费"
                   {...formItemLayout}
                 >
@@ -196,8 +233,6 @@ class DeliveryModal extends Component {
                     <Input placeholder="请输入运费" />)}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <FormItem
                   label="邮编"
@@ -221,8 +256,6 @@ class DeliveryModal extends Component {
                     <Input placeholder="请输入身份证号" />)}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <FormItem
                   label="备注"
@@ -236,7 +269,7 @@ class DeliveryModal extends Component {
               </Col>
             </Row>
             <Row>
-              <Table columns={columns} dataSource={data.erpOrderList || []} rowKey={r => r.erpNo} pagination={false} bordered />
+              <Table rowSelection={rowSelection} columns={columns} dataSource={data.erpOrderList || []} rowKey={r => r.erpNo + r.positionNo} pagination={false} bordered />
             </Row>
           </Form>
         </Modal>

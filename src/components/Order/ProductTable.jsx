@@ -29,7 +29,6 @@ class ProductTable extends Component {
     const { form } = this.props;
     const skuList = [];
     form.validateFields((err, fieldsSku) => {
-      console.log('===field sku===', err, fieldsSku);
       if (err) return;
       const keys = Object.keys(fieldsSku);
       const countKeys = {};
@@ -59,9 +58,6 @@ class ProductTable extends Component {
         message.error('请至少填写一项商品信息');
         return;
       }
-      console.log('*** skuList ***', skuList);
-      /* eslint-disable */
-      return;
       if (callback) callback(skuList);
     });
   }

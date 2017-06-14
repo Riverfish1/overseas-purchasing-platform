@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, Row, Col, Alert, Table, Cascader, Select } from 'antd';
+import { Form, Input, Modal, Row, Col, Alert, Table, Cascader, Select, Popover } from 'antd';
 
 import divisions from '../../../utils/divisions.json';
 import check from '../../../utils/checkLib';
@@ -14,9 +14,16 @@ class DeliveryModal extends Component {
       checkId: [],
     };
   }
-  componentWillReceiveProps({ ids }) {
-    console.log(ids);
-    if (ids.length) this.setState({ checkId: ids });
+  componentWillReceiveProps({ data = {} }) {
+    const p = this;
+    if (data.erpOrderList && data.erpOrderList.length) {
+      const list = data.erpOrderList;
+      const listId = [];
+      list.forEach((el) => {
+        listId.push(el.id);
+      });
+      p.setState({ checkId: listId });
+    }
   }
   handleSubmit() {
     const p = this;
@@ -65,18 +72,49 @@ class DeliveryModal extends Component {
     };
 
     const columns = [
-      { title: '订单号', dataIndex: 'orderNo', key: 'orderNo' },
-      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo' },
-      { title: '商品名称', dataIndex: 'itemName', key: 'itemName' },
-      { title: '颜色', dataIndex: 'color', key: 'color' },
-      { title: '尺寸', dataIndex: 'scale', key: 'scale' },
-      { title: '数量', dataIndex: 'quantity', key: 'quantity' },
-      { title: '仓库', dataIndex: 'warehouseName', key: 'warehouseName' },
+      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 100 },
+      { title: 'SKU编号', dataIndex: 'skuCode', key: 'skuCode', width: 200 },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150 },
+      { title: '商品图片',
+        dataIndex: 'skuPic',
+        key: 'skuPic',
+        width: 100,
+        render(t) {
+          if (t) {
+            const picObj = JSON.parse(t);
+            const picList = picObj.picList;
+            if (picList.length) {
+              const imgUrl = picList[0].url;
+              return (
+                <Popover title={null} content={<img role="presentation" src={imgUrl} style={{ width: 400 }} />}>
+                  <img role="presentation" src={imgUrl} width={60} height={60} />
+                </Popover>
+              );
+            }
+          }
+          return '-';
+        },
+      },
+      { title: '物流方式',
+        dataIndex: 'logisticType',
+        key: 'logisticType',
+        width: 60,
+        render(t) {
+          switch (t) {
+            case 0: return '直邮';
+            case 1: return '拼邮';
+            default: return '-';
+          }
+        },
+      },
+      { title: '颜色', dataIndex: 'color', key: 'color', width: 100 },
+      { title: '尺码', dataIndex: 'scale', key: 'scale', width: 100 },
+      { title: '购买数量', dataIndex: 'quantity', key: 'quantity', width: 100 },
+      { title: '发货仓库', dataIndex: 'warehouseName', key: 'warehouseName', width: 100 },
+      { title: '配货库位', dataIndex: 'positionNo', key: 'positionNo', width: 100 },
     ];
-
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
-        console.log(selectedRowKeys);
         const listId = [];
         selectedRows.forEach((el) => {
           listId.push(el.id);

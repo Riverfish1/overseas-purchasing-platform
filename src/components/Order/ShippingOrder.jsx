@@ -112,12 +112,12 @@ class ShippingOrder extends Component {
           }
         },
       },
-      { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 100, render(text) { return text || '-'; } },
-      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 100, render(text) { return text || '-'; } },
+      { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 80, render(text) { return text || '-'; } },
+      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 80, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
-        width: 50,
+        width: 80,
         render(text, r) {
           return (
             <div>
@@ -159,7 +159,7 @@ class ShippingOrder extends Component {
           switch (t) {
             case 0: return '直邮';
             case 1: return '拼邮';
-            default: return false;
+            default: return '-';
           }
         },
       },
@@ -260,6 +260,7 @@ class ShippingOrder extends Component {
           visible={showDetail}
           title="详情"
           footer={null}
+          width="900"
           onCancel={() => this.setState({ showDetail: false })}
         >
           <Table columns={detailColumns} dataSource={shippingDetail} rowKey={r => r.id} bordered />

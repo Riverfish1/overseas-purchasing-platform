@@ -30,6 +30,7 @@
     "no-underscore-dangle": [0],
     "no-script-url": [0],
     "no-loop-func": [0],
+    "no-continue": [0],
     "max-len": [0]
   },
   "parserOptions": {

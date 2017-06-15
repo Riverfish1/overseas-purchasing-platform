@@ -1,45 +1,63 @@
 import React, { Component } from 'react';
-import { Input, Button, Popover, InputNumber } from 'antd';
+import { Form, Input, Button, Popover, InputNumber } from 'antd';
+
+const FormItem = Form.Item;
 
 export default class extends Component {
   constructor() {
     super();
     this.state = {
-      data: {},
       visible: false,
-      quantity: 1,
-      positionNo: undefined,
-      showError: false,
     };
   }
   toggleVisible() {
-    this.setState({ visible: !this.state.visible, quantity: 1, positionNo: undefined, showError: false });
+    this.setState({ visible: !this.state.visible });
   }
   submit() {
-    const { record } = this.props;
-    const { quantity, positionNo } = this.state;
-    if (!quantity || !positionNo) {
-      this.setState({ showError: true });
-      return;
-    }
-    this.toggleVisible();
-    this.props.dispatch({
-      type: 'inventory/checkIn',
-      payload: { quantity, positionNo, skuId: record.skuId, warehouseId: record.warehouseId },
+    const { record, form } = this.props;
+    form.validateFields((err, values) => {
+      if (err) return;
+      delete values.toTrans;
+      this.toggleVisible();
+      this.props.dispatch({
+        type: 'inventory/checkIn',
+        payload: { ...values, skuId: record.skuId, warehouseId: record.warehouseId },
+      });
     });
   }
   render() {
-    const { showError } = this.state;
-    const { record } = this.props;
+    const { record, form } = this.props;
+    const { getFieldDecorator } = form;
     return (
       <Popover
-        content={<div>
-          <div>商品名称：{record.itemName}</div>
-          <div style={{ paddingTop: 6 }}>盘入数量：<InputNumber placeholder="请输入" step={1} defaultValue={1} onChange={v => this.setState({ quantity: v })} /></div>
-          <div style={{ paddingTop: 6 }}>盘入货架号：<Input style={{ width: 160, display: 'inline-block' }} placeholder="请输入" defaultValue={record.positionNo} onChange={e => this.setState({ positionNo: e.target.value.toUpperCase() })} /></div>
-          {showError && <div style={{ paddingTop: 6, color: 'red' }}>请填写盘入数量与盘入货架号</div>}
-          <Button size="small" type="primary" style={{ marginTop: 6 }} onClick={this.submit.bind(this)}>保存</Button>
-        </div>}
+        content={<Form>
+          <div style={{ margin: '12px 0 12px' }}>商品名称：{record.itemName}</div>
+          <FormItem
+            label="入仓数量"
+            labelCol={{ span: 7 }}
+            wrapperCol={{ span: 17 }}
+          >
+            {getFieldDecorator('quantity', {
+              initialValue: 1,
+              rules: [{ required: true, message: '请输入' }],
+            })(
+              <InputNumber placeholder="请输入" step={1} />,
+            )}
+          </FormItem>
+          <FormItem
+            label="货架号"
+            labelCol={{ span: 7 }}
+            wrapperCol={{ span: 17 }}
+          >
+            {getFieldDecorator('positionNo', {
+              initialValue: record.positionNo,
+              rules: [{ required: true, message: '请输入' }],
+            })(
+              <Input placeholder="请输入" />,
+            )}
+          </FormItem>
+          <Button size="small" type="primary" onClick={this.submit.bind(this)}>保存</Button>
+        </Form>}
         title="库存盘进"
         trigger="click"
         visible={this.state.visible}

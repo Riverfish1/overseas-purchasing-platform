@@ -84,8 +84,8 @@ class Inventory extends Component {
         render(text, record) {
           return (
             <div>
-              <TransTo dispatch={dispatch} record={record} />
-              <CheckIn dispatch={dispatch} record={record} />
+              <TransTo dispatch={dispatch} record={record} form={form} />
+              <CheckIn dispatch={dispatch} record={record} form={form} />
               <CheckOut dispatch={dispatch} record={record} />
             </div>
           );

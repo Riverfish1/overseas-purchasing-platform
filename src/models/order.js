@@ -34,7 +34,6 @@ const lockErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/lockErpOrder
 // 释放库存
 const releaseInventory = ({ payload }) => fetch.post('/haierp1/erpOrder/releaseInventory', { data: payload }).catch(e => e);
 
-
 export default {
   namespace: 'order',
   state: {
@@ -314,7 +313,10 @@ export default {
       }
     },
     exportPdf({ payload }) {
-      window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExport?shippingOrderIds=${payload}`);
+      window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportPdf?shippingOrderIds=${payload}`);
+    },
+    exportOrderDetail({ payload }) {
+      window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportExcel?startOrderTime=${payload.startOrderTime}&endOrderTime=${payload.endOrderTime}`);
     },
     * lockErpOrder(payload, { call, put }) {
       const data = yield call(lockErpOrder, payload);

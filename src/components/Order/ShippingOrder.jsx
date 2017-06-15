@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover } from 'antd';
+import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, DatePicker } from 'antd';
 
 import InvoiceModal from './component/InvoiceModal';
 
+const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 const Option = Select.Option;
-
 
 class ShippingOrder extends Component {
   constructor(props) {
@@ -19,12 +19,18 @@ class ShippingOrder extends Component {
       isNotSelected: true,
       shippingDetail: [],
       showDetail: false,
+      detailVisible: false,
     };
   }
   handleSubmit(e, page) {
     if (e) e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (err) return;
+      if (values.orderTime && values.orderTime[0] && values.orderTime[1]) {
+        values.startOrderTime = new Date(values.orderTime[0]).format('yyyy-MM-dd');
+        values.endOrderTime = new Date(values.orderTime[1]).format('yyyy-MM-dd');
+      }
+      delete values.orderTime;
       this.props.dispatch({
         type: 'order/queryShippingOrderList',
         payload: { ...values, pageIndex: typeof page === 'number' ? page : 1 },
@@ -62,11 +68,35 @@ class ShippingOrder extends Component {
       },
     });
   }
+  toggleVisible() {
+    this.setState({ detailVisible: !this.state.detailVisible });
+  }
+  exportOrderDetail() {
+    const { form } = this.props;
+    const p = this;
+    form.validateFields((err, values) => {
+      if (err) return;
+      let startOrderTime;
+      let endOrderTime;
+      if (values.detailOrderTime && values.detailOrderTime[0] && values.detailOrderTime[1]) {
+        startOrderTime = new Date(values.detailOrderTime[0]).format('yyyy-MM-dd');
+        endOrderTime = new Date(values.detailOrderTime[1]).format('yyyy-MM-dd');
+      }
+      this.props.dispatch({
+        type: 'order/exportOrderDetail',
+        payload: {
+          startOrderTime,
+          endOrderTime,
+        },
+      });
+      p.setState({ detailVisible: false });
+    });
+  }
   render() {
     const p = this;
     const { shippingOrderList, shippingOrderTotal, deliveryCompanyList = [], form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { visible, data, isNotSelected, shippingDetail, showDetail } = p.state;
+    const { visible, data, isNotSelected, shippingDetail, showDetail, detailVisible } = p.state;
 
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
@@ -121,7 +151,7 @@ class ShippingOrder extends Component {
           return (
             <div>
               <a href="javascript:void(0)" onClick={p.queryDetail.bind(p, r)} style={{ marginRight: 10 }}>查看</a>
-              <a href="javascript:void(0)" onClick={p.updateModal.bind(p, r)}>修改</a>
+              <a href="javascript:void(0)" onClick={p.updateModal.bind(p, r)} style={{ marginRight: 10 }}>修改</a>
             </div>);
         },
       },
@@ -168,6 +198,23 @@ class ShippingOrder extends Component {
       { title: '发货仓库', dataIndex: 'warehouseName', key: 'warehouseName', width: 100 },
       { title: '配货库位', dataIndex: 'positionNo', key: 'positionNo', width: 100 },
     ];
+
+    const detailContent = (
+      <Form onSubmit={this.exportOrderDetail.bind(this)}>
+        <FormItem
+          label="时间范围"
+          {...formItemLayout}
+          labelCol={{ span: 6 }}
+        >
+          {getFieldDecorator('detailOrderTime', {
+            rules: [{ required: true, message: '请选择' }],
+          })(
+            <RangePicker />,
+          )}
+        </FormItem>
+        <Button htmlType="submit" size="small" type="primary">提交</Button>
+      </Form>
+    );
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -240,6 +287,19 @@ class ShippingOrder extends Component {
               </FormItem>
             </Col>
           </Row>
+          <Row>
+            <Col>
+              <FormItem
+                label="发货时间"
+                {...formItemLayout}
+                labelCol={{ span: 4 }}
+              >
+                {getFieldDecorator('orderTime', {})(
+                  <RangePicker />,
+                )}
+              </FormItem>
+            </Col>
+          </Row>
           <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">
               <Button htmlType="submit" size="large" type="primary">查询</Button>
@@ -248,8 +308,13 @@ class ShippingOrder extends Component {
           </Row>
         </Form>
         <Row>
-          <Col className="operBtn">
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={this.exportPdf.bind(this)}>导出发货单</Button>
+          <Col className="operBtn" span={22}>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={this.exportPdf.bind(this)}>导出发货标签</Button>
+          </Col>
+          <Col className="operBtn" span={2}>
+            <Popover title="导出明细" content={detailContent} visible={detailVisible}>
+              <Button type="primary" size="large" onClick={this.toggleVisible.bind(this)}>导出发货明细</Button>
+            </Popover>
           </Col>
         </Row>
         <Row>

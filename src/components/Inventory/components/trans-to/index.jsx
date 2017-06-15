@@ -17,6 +17,7 @@ export default class extends Component {
   }
   submit() {
     const { record, form } = this.props;
+    console.log(record);
     form.validateFields((err, values) => {
       if (err) return;
       delete values.quantity;

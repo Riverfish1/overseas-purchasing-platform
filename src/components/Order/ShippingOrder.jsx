@@ -19,7 +19,6 @@ class ShippingOrder extends Component {
       isNotSelected: true,
       shippingDetail: [],
       showDetail: false,
-      detailVisible: false,
     };
   }
   handleSubmit(e, page) {
@@ -47,15 +46,15 @@ class ShippingOrder extends Component {
     });
     this.setState({ visible: false });
   }
-  exportPdf() {
+  exportPdf() { // 导出发货标签
     const { checkId } = this.state;
     this.props.dispatch({
       type: 'order/exportPdf',
       payload: JSON.stringify(checkId),
     });
-    this.setState({ checkId: [] });
+    this.setState({ checkId: [], isNotSelected: true });
   }
-  queryDetail(r) {
+  queryDetail(r) { // 查看明细
     const p = this;
     this.props.dispatch({
       type: 'order/queryDetail',
@@ -68,35 +67,31 @@ class ShippingOrder extends Component {
       },
     });
   }
-  toggleVisible() {
-    this.setState({ detailVisible: !this.state.detailVisible });
-  }
-  exportOrderDetail() {
+  exportOrderDetail() { // 导出发货明细
     const { form } = this.props;
     const p = this;
     form.validateFields((err, values) => {
       if (err) return;
       let startOrderTime;
       let endOrderTime;
-      if (values.detailOrderTime && values.detailOrderTime[0] && values.detailOrderTime[1]) {
-        startOrderTime = new Date(values.detailOrderTime[0]).format('yyyy-MM-dd');
-        endOrderTime = new Date(values.detailOrderTime[1]).format('yyyy-MM-dd');
+      if (values.orderTime && values.orderTime[0] && values.orderTime[1]) {
+        startOrderTime = new Date(values.orderTime[0]).format('yyyy-MM-dd');
+        endOrderTime = new Date(values.orderTime[1]).format('yyyy-MM-dd');
       }
-      this.props.dispatch({
+      p.props.dispatch({
         type: 'order/exportOrderDetail',
         payload: {
           startOrderTime,
           endOrderTime,
         },
       });
-      p.setState({ detailVisible: false });
     });
   }
   render() {
     const p = this;
     const { shippingOrderList, shippingOrderTotal, deliveryCompanyList = [], form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { visible, data, isNotSelected, shippingDetail, showDetail, detailVisible } = p.state;
+    const { visible, data, isNotSelected, shippingDetail, showDetail } = p.state;
 
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
@@ -128,6 +123,7 @@ class ShippingOrder extends Component {
       { title: '物流订单号', dataIndex: 'logisticNo', key: 'logisticNo', width: 100, render(text) { return text || '-'; } },
       { title: '物流公司名称', dataIndex: 'logisticCompany', width: 100, key: 'logisticCompany', render(text) { return text || '-'; } },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 200, render(text) { return text || '-'; } },
+      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200, render(text) { return text || '-'; } },
       { title: '运单状态',
         dataIndex: 'status',
         key: 'status',
@@ -199,22 +195,6 @@ class ShippingOrder extends Component {
       { title: '配货库位', dataIndex: 'positionNo', key: 'positionNo', width: 100 },
     ];
 
-    const detailContent = (
-      <Form onSubmit={this.exportOrderDetail.bind(this)}>
-        <FormItem
-          label="时间范围"
-          {...formItemLayout}
-          labelCol={{ span: 6 }}
-        >
-          {getFieldDecorator('detailOrderTime', {
-            rules: [{ required: true, message: '请选择' }],
-          })(
-            <RangePicker />,
-          )}
-        </FormItem>
-        <Button htmlType="submit" size="small" type="primary">提交</Button>
-      </Form>
-    );
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -292,7 +272,7 @@ class ShippingOrder extends Component {
               <FormItem
                 label="发货时间"
                 {...formItemLayout}
-                labelCol={{ span: 4 }}
+                labelCol={{ span: 2 }}
               >
                 {getFieldDecorator('orderTime', {})(
                   <RangePicker />,
@@ -308,13 +288,11 @@ class ShippingOrder extends Component {
           </Row>
         </Form>
         <Row>
-          <Col className="operBtn" span={22}>
+          <Col className="operBtn" span={21}>
             <Button type="primary" disabled={isNotSelected} size="large" onClick={this.exportPdf.bind(this)}>导出发货标签</Button>
           </Col>
-          <Col className="operBtn" span={2}>
-            <Popover title="导出明细" content={detailContent} visible={detailVisible}>
-              <Button type="primary" size="large" onClick={this.toggleVisible.bind(this)}>导出发货明细</Button>
-            </Popover>
+          <Col className="operBtn" span={3}>
+            <Button type="primary" size="large" onClick={this.exportOrderDetail.bind(this)}>导出发货明细</Button>
           </Col>
         </Row>
         <Row>

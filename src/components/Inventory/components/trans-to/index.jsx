@@ -11,7 +11,9 @@ export default class extends Component {
     };
   }
   toggleVisible() {
-    this.setState({ visible: !this.state.visible });
+    this.setState({ visible: !this.state.visible }, () => {
+      if (!this.state.visible) this.props.form.resetFields();
+    });
   }
   submit() {
     const { record, form } = this.props;

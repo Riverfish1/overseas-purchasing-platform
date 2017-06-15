@@ -50,8 +50,8 @@ class ProductTable extends Component {
         if (skuSingle.skuPic) delete skuSingle.skuPic;
         if (skuSingle.classicalId) {
           skuSingle.id = skuSingle.classicalId;
-          delete skuSingle.classicalId;
         }
+        delete skuSingle.classicalId;
         skuList.push(skuSingle);
       });
       if (skuList.length < 1) {
@@ -130,7 +130,7 @@ class ProductTable extends Component {
             el.salePrice = value.salePrice || 0;
             el.quantity = value.quantity || 1;
             el.skuPic = value.skuPic;
-            el.classicalId = value.id;
+            el.classicalId = ''; // 重置条目id
           }
         });
         this.setState({ skuData }, () => {
@@ -144,7 +144,7 @@ class ProductTable extends Component {
             [`r_${key}_freight`]: value.freightStr,
             [`r_${key}_salePrice`]: value.salePrice || 0,
             [`r_${key}_quantity`]: value.quantity || 1,
-            [`r_${key}_classicalId`]: value.id,
+            [`r_${key}_classicalId`]: '', // 重置条目id
           });
         });
       }

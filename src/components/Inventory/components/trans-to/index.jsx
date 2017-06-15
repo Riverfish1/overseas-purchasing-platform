@@ -35,8 +35,8 @@ export default class extends Component {
       <Popover
         content={<div>
           <div>商品名称：{record.itemName}</div>
-          <div style={{ paddingTop: 6 }}>入仓数量：<InputNumber placeholder="请输入" step={1} value={this.state.toTrans} onChange={v => this.setState({ toTrans: v })} /></div>
-          <div style={{ paddingTop: 6 }}>{`货架号：${record.positionNo}`}</div>
+          <div style={{ paddingTop: 6 }}>入仓数量：<InputNumber placeholder="请输入" step={1} defaultValue={1} onChange={v => this.setState({ toTrans: v })} /></div>
+          <div style={{ paddingTop: 6 }}>货架号：<Input style={{ width: 160, display: 'inline-block' }} placeholder="请输入" defaultValue={record.positionNo} onChange={e => this.setState({ positionNo: e.target.value.toUpperCase() })} /></div>
           {showError && <div style={{ paddingTop: 6, color: 'red' }}>请填写入仓数量与货架号</div>}
           <Button size="small" type="primary" style={{ marginTop: 6 }} onClick={this.submit.bind(this)}>保存</Button>
         </div>}

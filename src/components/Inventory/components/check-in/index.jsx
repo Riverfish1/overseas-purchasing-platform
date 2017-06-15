@@ -36,7 +36,7 @@ export default class extends Component {
         content={<div>
           <div>商品名称：{record.itemName}</div>
           <div style={{ paddingTop: 6 }}>盘入数量：<InputNumber placeholder="请输入" step={1} value={this.state.quantity} onChange={v => this.setState({ quantity: v })} /></div>
-          <div style={{ paddingTop: 6 }}>盘入货架号：<Input style={{ width: 160, display: 'inline-block' }} placeholder="请输入" value={this.state.positionNo} onChange={e => this.setState({ positionNo: e.target.value.toUpperCase() })} /></div>
+          <div style={{ paddingTop: 6 }}>{`盘入货架号：${record.positionNo}`}</div>
           {showError && <div style={{ paddingTop: 6, color: 'red' }}>请填写盘入数量与盘入货架号</div>}
           <Button size="small" type="primary" style={{ marginTop: 6 }} onClick={this.submit.bind(this)}>保存</Button>
         </div>}

@@ -316,7 +316,11 @@ export default {
       window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportPdf?shippingOrderIds=${payload}`);
     },
     exportOrderDetail({ payload }) {
-      window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportExcel?startOrderTime=${payload.startOrderTime}&endOrderTime=${payload.endOrderTime}`);
+      if (payload.startOrderTime && payload.endOrderTime) {
+        window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportExcel?startOrderTime=${payload.startOrderTime}&endOrderTime=${payload.endOrderTime}`);
+      } else {
+        message.error('请选择发货时间');
+      }
     },
     * lockErpOrder(payload, { call, put }) {
       const data = yield call(lockErpOrder, payload);

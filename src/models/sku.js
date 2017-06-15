@@ -101,24 +101,24 @@ export default {
         });
       }
     },
-    * querySkuList({ payload = {} }, { call, put, select }) { // SKU管理列表
-      let pageIndex = yield select(({ sku }) => sku.currentPage);
-      let pageSize = yield select(({ sku }) => sku.pageSize);
-      if (payload.pageIndex) {
-        pageIndex = payload.pageIndex;
-        yield put({ type: 'saveCurrentPage', payload });
-      }
-      if (payload.pageSize) {
-        pageSize = payload.pageSize;
-        yield put({ type: 'savePageSize', payload });
-      }
-      const data = yield call(querySkuList, { payload: { ...payload, pageIndex, pageSize } });
-      // if (data.success) {
-      yield put({
-        type: 'saveItemSkuList',
-        payload: data,
-      });
+    * querySkuList({ payload = {} }, { call, put }) { // SKU管理列表
+      // let pageIndex = yield select(({ sku }) => sku.currentPage);
+      // let pageSize = yield select(({ sku }) => sku.pageSize);
+      // if (payload.pageIndex) {
+      //   pageIndex = payload.pageIndex;
+      //   yield put({ type: 'saveCurrentPage', payload });
       // }
+      // if (payload.pageSize) {
+      //   pageSize = payload.pageSize;
+      //   yield put({ type: 'savePageSize', payload });
+      // }
+      const data = yield call(querySkuList, { payload: { ...payload, pageIndex: 1, pageSize: 20 } });
+      if (data.success) {
+        yield put({
+          type: 'saveItemSkuList',
+          payload: data,
+        });
+      }
     },
     * querySkuList2({ payload = {} }, { call, put, select }) { // SKU管理列表
       let pageIndex = yield select(({ sku }) => sku.currentPage);

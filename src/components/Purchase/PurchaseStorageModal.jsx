@@ -76,7 +76,6 @@ class PurchaseModal extends Component {
       storageList[newIndex].skuId = generateRandomSkuId(storageList[newIndex].skuId);
       storageList[newIndex].shelfNo = '';
       if (storageList[newIndex].id) delete storageList[newIndex].id;
-      console.log(storageList);
     }
     this.setState({ storageList });
   }
@@ -135,7 +134,6 @@ class PurchaseModal extends Component {
       }));
 
       if (!hasError) {
-        console.log(fieldsValue);
         fieldsValue.id = p.state.id;
         delete fieldsValue.stoOrderNo;
         if (type === 'save') {

@@ -18,7 +18,6 @@ class PackageScale extends Component {
   handleSubmit() {
     const { scaleValues, dispatch } = this.props;
     this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
-      console.log(fieldsValue);
       if (err) {
         return;
       }

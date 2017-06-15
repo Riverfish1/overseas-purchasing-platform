@@ -16,7 +16,6 @@ class Warehouse extends Component {
   handleSubmit() {
     const p = this;
     const { modalValues = {}, dispatch, form } = this.props;
-    console.log(modalValues);
     form.validateFields((err, values) => {
       if (err) return;
       if (modalValues.data) {

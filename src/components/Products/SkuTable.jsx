@@ -57,7 +57,6 @@ class SkuTable extends Component {
           }
         });
         skuSingle.packageLevelId = JSON.stringify(skuSingle.packageLevelId); // 数组转字符串
-        console.log(skuSingle);
         // 处理图片
         if (skuSingle.skuPic) {
           const uploadMainPic = [];
@@ -93,7 +92,6 @@ class SkuTable extends Component {
     this.setState({ skuData: data });
   }
   addItem(obj) {
-    console.log(obj);
     const { skuData } = this.state;
     const skuLen = skuData.length;
     const lastId = skuLen < 1 ? 0 : skuData[skuData.length - 1].key;
@@ -135,7 +133,6 @@ class SkuTable extends Component {
     return pic;
   }
   delItem(key) {
-    console.log(key);
     const { skuData } = this.state;
     const newSkuData = skuData.filter(item => key !== item.key);
     this.setState({ skuData: newSkuData }, () => {
@@ -383,7 +380,6 @@ class SkuTable extends Component {
                   initialValue: t ? picList : formValue,
                   valuePropName: 'fileList',
                   getValueFromEvent(e) {
-                    console.log(e);
                     if (!e || !e.fileList) {
                       return e;
                     }
@@ -456,7 +452,6 @@ class SkuTable extends Component {
         });
       },
       onChange(info) {
-        console.log(info);
         p.setState({ batchFileList: info.fileList });
         if (info.file.status === 'done') {
           if (info.file.response && info.file.response.success) {
@@ -464,7 +459,6 @@ class SkuTable extends Component {
             // 添加文件预览
             const newFile = info.file;
             newFile.url = info.file.response.data;
-            console.log(newFile);
             batchFileList.push(newFile);
             p.setState({ batchFileList });
           } else { message.error(`${info.file.name} 解析失败：${info.file.response.msg || info.file.response.errorMsg}`); }

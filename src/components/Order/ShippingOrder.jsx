@@ -70,7 +70,6 @@ class ShippingOrder extends Component {
 
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
-        console.log(selectedRowKeys);
         const listId = [];
         if (selectedRows.length) p.setState({ isNotSelected: false });
         else p.setState({ isNotSelected: true });

@@ -19,7 +19,6 @@ class Resource extends Component {
   handleSubmit() {
     const p = this;
     const { userModal = {}, dispatch, form } = this.props;
-    console.log(userModal);
     form.validateFields((err, values) => {
       if (err) return;
       if (values.createTime) values.createTime = new Date(values.createTime).format('yyyy-MM-dd hh:mm:ss');

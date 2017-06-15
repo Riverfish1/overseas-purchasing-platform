@@ -106,7 +106,6 @@ export default {
         yield put({ type: 'saveTypeCurrentPage', payload });
       }
       const data = yield call(queryAgencyTypeList, { payload: { ...payload, pageIndex } });
-      console.log(data);
       if (data.success) {
         yield put({ type: 'updateTypeList', payload: data });
       }

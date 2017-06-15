@@ -103,7 +103,6 @@ export default {
         yield put({ type: 'saveLevelPage', payload });
       }
       const data = yield call(queryPackageLevelList, { payload: { ...payload, pageIndex } });
-      console.log(data);
       if (data.success) {
         yield put({ type: 'updateLevelList', payload: data });
       }

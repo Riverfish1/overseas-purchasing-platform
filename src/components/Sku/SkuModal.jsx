@@ -31,7 +31,6 @@ class SkuModal extends Component {
     const { form, dispatch, modalValues, brands } = this.props;
     const { proSearchList } = this.state;
     form.validateFieldsAndScroll((err, fieldsValue) => {
-      console.log(fieldsValue);
       if (err) {
         return;
       }
@@ -39,7 +38,6 @@ class SkuModal extends Component {
       if (fieldsValue.skuPic) {
         const uploadMainPic = [];
         fieldsValue.skuPic.forEach((item, index) => {
-          console.log(item);
           uploadMainPic.push({
             uid: `i_${index}`,
             type: item.type,
@@ -61,7 +59,6 @@ class SkuModal extends Component {
       }
       if (modalValues.data) {
         fieldsValue.id = modalValues.data.id;
-        console.log(fieldsValue);
         dispatch({
           type: 'sku/updateSku',
           payload: { ...fieldsValue, id: modalValues.data.id, itemId: proSearchList.data ? proSearchList.data[0].id : modalValues.data.itemId },

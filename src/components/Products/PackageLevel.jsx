@@ -81,7 +81,6 @@ class PackageLevel extends Component {
   }
 
   handleSelectScale(value) {
-    console.log(value);
     const { scaleList, form } = this.props;
     scaleList.forEach((el) => {
       if (el.id.toString() === value) form.setFieldsValue({ packageEn: el.enName });

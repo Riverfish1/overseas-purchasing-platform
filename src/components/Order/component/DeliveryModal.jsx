@@ -37,7 +37,6 @@ class DeliveryModal extends Component {
         values.receiverDistrict = values.address[2];
         delete values.address;
       }
-      console.log(values);
       values.erpOrderId = JSON.stringify(checkId);
       dispatch({
         type: 'order/multiDelivery',

@@ -18,7 +18,6 @@ class Role extends Component {
   handleSubmit() {
     const p = this;
     const { roleModal = {}, dispatch, form } = this.props;
-    console.log(roleModal);
     form.validateFields((err, values) => {
       if (err) return;
       if (roleModal.id) {

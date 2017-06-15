@@ -17,7 +17,6 @@ export default class extends Component {
           type: 'inventory/queryRecordList',
           payload: { id: this.props.record.id },
           success(data) {
-            // console.log(data);
             p.setState({ data: data.data });
           },
         });

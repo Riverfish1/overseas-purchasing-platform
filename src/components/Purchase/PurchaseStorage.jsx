@@ -26,7 +26,6 @@ class PurchaseStorage extends Component {
       title: '确认将选中项批量入库？',
       content: '操作不可撤回，请预先核对',
       onOk() {
-        console.log(p.state.selectedRowKeys);
         p.props.dispatch({ type: 'purchaseStorage/multiConfirmStorage', payload: { ids: p.state.selectedRowKeys } });
         p.setState({ selectedRowKeys: [] });
       },
@@ -51,7 +50,6 @@ class PurchaseStorage extends Component {
         }
         delete values.orderDate;
         delete values.storageDate;
-        console.log(values);
         this.props.dispatch({
           type: 'purchaseStorage/queryPurchaseStorageList',
           payload: { ...values, pageIndex: typeof page === 'number' ? page : 1 },
@@ -78,7 +76,6 @@ class PurchaseStorage extends Component {
 
   updateModal(id) {
     const p = this;
-    console.log(id);
     this.setState({
       modalVisible: true,
     }, () => {

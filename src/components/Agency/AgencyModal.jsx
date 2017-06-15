@@ -29,7 +29,6 @@ class AgencyModal extends Component {
     form.validateFieldsAndScroll((err, values) => {
       if (err) return;
       if (modalValues.data) {
-        console.log(modalValues.data);
         this.props.dispatch({
           type: 'agency/updateAgency',
           payload: { ...values, typeId: typeId || modalValues.data.typeId, id: modalValues.data.id }, // userId: modalValues.data.userId,

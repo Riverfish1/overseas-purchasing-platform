@@ -16,7 +16,6 @@ class Organization extends Component {
   handleSubmit() {
     const p = this;
     const { orgModal = {}, dispatch, form } = this.props;
-    console.log(orgModal);
     form.validateFields((err, values) => {
       if (err) return;
       if (values.createTime) values.createTime = new Date(values.createTime).format('yyyy-MM-dd hh:mm:ss');

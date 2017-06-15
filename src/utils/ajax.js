@@ -159,7 +159,6 @@ AjaxClass.prototype.init = function init() {
       }
     },
   });
-  // console.log('发送http请求', this.options.type, this.options.apiName, this.options);
   return this;
 };
 
@@ -194,7 +193,6 @@ AjaxClass.prototype.handler = function handler(status, errorMsg, errorCode) {
     const p = this;
     setTimeout(() => {
       p.init();
-      // console.log('轮询剩余次数：' + p.options.pollTime);
     }, this.options.pollTimeout);
   }
 };

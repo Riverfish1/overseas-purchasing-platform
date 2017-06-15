@@ -132,7 +132,6 @@ class ErpOrder extends Component {
   render() {
     const p = this;
     const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
-    console.log(erpOrderValues);
     const { getFieldDecorator, resetFields } = form;
     const { isNotSelected, deliveryModalVisible, checkId, type, modalVisible, title } = p.state;
 
@@ -142,7 +141,6 @@ class ErpOrder extends Component {
     };
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
-        console.log(selectedRowKeys);
         const listId = [];
         if (selectedRows.length) p.setState({ isNotSelected: false });
         else p.setState({ isNotSelected: true });

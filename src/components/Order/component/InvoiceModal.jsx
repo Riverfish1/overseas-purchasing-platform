@@ -19,7 +19,6 @@ class InvoiceModal extends Component {
         values.receiverDistrict = values.address[2];
         delete values.address;
       }
-      console.log(values);
       values.id = data.id;
       dispatch({
         type: 'order/updateShippingOrder',

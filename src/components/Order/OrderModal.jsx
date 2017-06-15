@@ -30,7 +30,6 @@ class OrderModal extends Component {
     const { form, dispatch, modalValues = {}, agencyList = [] } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
-      console.log(fieldsValue);
       let salesName = '';
       agencyList.forEach((el) => {
         if (el.id.toString() === fieldsValue.salesId) {

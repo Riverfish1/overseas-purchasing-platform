@@ -103,8 +103,6 @@ class ProductTable extends Component {
   }
 
   handleSelect(key, skuCode) {
-    // console.log('selected');
-
     const { form, skuList } = this.props;
     let { skuData } = this.state;
     if (!skuData) skuData = [];
@@ -122,7 +120,6 @@ class ProductTable extends Component {
           }
         });
         this.setState({ skuData }, () => {
-          console.log(value);
           form.setFieldsValue({
             [`r_${key}_skuId`]: value.id,
             [`r_${key}_skuCode`]: value.skuCode,
@@ -196,7 +193,6 @@ class ProductTable extends Component {
   }
 
   clearSelectedSku(visible) {
-    console.log('sku popover visible: ', visible);
     if (!visible) {
       this.setState({ selectedSku: [] });
     }
@@ -253,7 +249,6 @@ class ProductTable extends Component {
       }
 
       function updateValue(sku) {
-        console.log(key, sku);
         if (skuSearchType === 'order' && sku.purchaseNeed <= 0) {
           message.info('不能选择当前采购数量等于或者小于0的sku');
           return;
@@ -269,7 +264,6 @@ class ProductTable extends Component {
         setTimeout(() => {
           let j = -1;
           for (let i = 0; i < selectedSku.length; i += 1) {
-            console.log('=== purchaseNeed ===', selectedSku[i]);
             if (skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0) {
               message.info('不能选择当前采购数量等于或者小于0的sku');
               continue;
@@ -611,7 +605,6 @@ class ProductTable extends Component {
           key: 'taskEndTime',
           width: '12%',
           render(t, r) {
-            // console.log(r);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_taskEndTime`, {

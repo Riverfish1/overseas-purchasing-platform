@@ -42,7 +42,6 @@ class PurchaseModal extends Component {
       if (err) { return; }
       delete fieldsValue.defaultBuyer;
       p.getSkuValue((detailList) => {
-        console.log(detailList);
         const values = {
           ...fieldsValue,
           taskStartTime: fieldsValue.taskStartTime && fieldsValue.taskStartTime.format('YYYY-MM-DD'),
@@ -62,7 +61,6 @@ class PurchaseModal extends Component {
           });
           values.imageUrl = JSON.stringify({ picList: uploadMainPic });
         }
-        console.log(values);
         if (modalValues && modalValues.data) {
           dispatch({
             type: 'purchase/updatePurchase',

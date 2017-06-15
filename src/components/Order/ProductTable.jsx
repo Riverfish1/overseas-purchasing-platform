@@ -134,7 +134,6 @@ class ProductTable extends Component {
           }
         });
         this.setState({ skuData }, () => {
-          console.log('selected value: ', value);
           form.setFieldsValue({
             [`r_${key}_skuCode`]: value.skuCode,
             [`r_${key}_skuId`]: value.id,
@@ -319,7 +318,6 @@ class ProductTable extends Component {
           key: 'skuCode',
           width: '20%',
           render(text, r) {
-            console.log(text, r);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_skuCode`, {
@@ -351,7 +349,6 @@ class ProductTable extends Component {
           key: 'skuPic',
           width: '12%',
           render(text) {
-            console.log(text);
             let imgUrl = '';
             try {
               const imgObj = JSON.parse(text);

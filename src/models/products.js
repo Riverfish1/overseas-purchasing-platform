@@ -66,7 +66,6 @@ export default {
     },
     * queryProduct({ payload }, { call, put }) { // 修改商品
       const data = yield call(queryProduct, { payload });
-      console.log('queryProduct success', data);
       if (data.success) {
         // 处理图片缩略图
         if (data.data.mainPic && data.data.mainPic !== '0') {
@@ -86,7 +85,6 @@ export default {
     },
     * updateProducts({ payload }, { call, put, select }) { // 修改商品
       const data = yield call(updateProducts, { payload });
-      console.log('updateProducts success', data);
       if (data.success) {
         message.success('修改商品成功');
         const values = yield select(({ products }) => products.searchValues);
@@ -176,7 +174,6 @@ export default {
       }
     },
     * batchSynItemYouzan({ payload }, { call, put }) {
-      console.log(payload);
       const data = yield call(batchSynItemYouzan, { payload });
       if (data.success) {
         message.success('批量同步成功');

@@ -112,7 +112,7 @@ export default {
       //   pageSize = payload.pageSize;
       //   yield put({ type: 'savePageSize', payload });
       // }
-      const data = yield call(querySkuList, { payload: { ...payload, pageIndex: 1, pageSize: 20 } });
+      const data = yield call(querySkuList, { payload: { ...payload, pageSize: 20 } });
       if (data.success) {
         yield put({
           type: 'saveItemSkuList',

@@ -110,7 +110,7 @@ class Sku extends Component {
 
   render() {
     const p = this;
-    const { skuList = {}, skuTotal, currentPage, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
+    const { skuList = {}, skuTotal, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
     const { previewImage } = this.state;
     const { getFieldDecorator } = form;
 
@@ -210,7 +210,6 @@ class Sku extends Component {
     const paginationProps = {
       total: skuTotal,
       pageSize: 20,
-      current: currentPage,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
       },
@@ -307,13 +306,12 @@ class Sku extends Component {
 }
 
 function mapStateToProps(state) {
-  const { skuList, skuTotal, skuData, currentPage, packageScales } = state.sku;
+  const { skuList, skuTotal, skuData, packageScales } = state.sku;
   const { brands, productsList, tree } = state.products;
   return {
     skuList,
     skuTotal,
     skuData,
-    currentPage,
     packageScales,
     brands,
     productsList,

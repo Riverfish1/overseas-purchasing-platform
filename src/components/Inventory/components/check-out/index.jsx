@@ -13,7 +13,7 @@ export default class extends Component {
   }
   toggleVisible() {
     this.setState({ visible: !this.state.visible, quantity: 1, showError: false }, () => {
-      if (!this.state.visible) this.props.form.resetFields();
+      setTimeout(() => { this.props.form.resetFields(); }, 0);
     });
   }
   submit() {

@@ -438,7 +438,15 @@ class ErpOrder extends Component {
           </Col>
         </Row>
         <DeliveryModal visible={deliveryModalVisible} deliveryCompanyList={deliveryCompanyList} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
-        <Table columns={columns} rowSelection={rowSelection} dataSource={erpOrderList} rowKey={r => r.id} pagination={pagination} scroll={{ x: '130%' }} bordered />
+        <Table
+          columns={columns}
+          rowSelection={rowSelection}
+          dataSource={erpOrderList}
+          rowKey={r => r.id}
+          pagination={pagination}
+          scroll={{ x: '130%', y: 500 }}
+          bordered="true"
+        />
         <ErpOrderModal
           visible={modalVisible}
           close={this.closeModal.bind(this)}

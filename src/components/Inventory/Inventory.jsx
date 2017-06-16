@@ -153,7 +153,14 @@ class Inventory extends Component {
         </Form>
         <Row style={{ marginTop: 15 }}>
           <Col>
-            <Table bordered dataSource={list} columns={columns} pagination={paginationProps} rowKey={record => record.id} />
+            <Table
+              bordered
+              dataSource={list}
+              columns={columns}
+              pagination={paginationProps}
+              rowKey={record => record.id}
+              scroll={{ y: 500 }}
+            />
           </Col>
         </Row>
       </div>);

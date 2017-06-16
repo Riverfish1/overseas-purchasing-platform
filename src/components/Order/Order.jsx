@@ -419,7 +419,7 @@ class Order extends Component {
             size="large"
             rowKey={record => record.id}
             pagination={false}
-            scroll={{ x: '130%' }}
+            scroll={{ x: '130%', y: 500 }}
           />
         </Modal>
         <OrderModal

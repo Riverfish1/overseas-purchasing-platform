@@ -314,6 +314,7 @@ class Products extends Component {
               rowKey={record => record.id}
               pagination={paginationProps}
               rowSelection={rowSelection}
+              scroll={{ y: 500 }}
             />
           </Col>
         </Row>

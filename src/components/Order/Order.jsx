@@ -411,6 +411,7 @@ class Order extends Component {
               rowKey={record => record.id}
               pagination={listPaginationProps}
               rowSelection={rowSelection}
+              scroll={{ y: 500 }}
             />
           </Col>
         </Row>

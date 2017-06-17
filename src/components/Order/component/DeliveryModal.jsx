@@ -114,11 +114,13 @@ class DeliveryModal extends Component {
     ];
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
+        console.log(selectedRowKeys, selectedRows);
         const listId = [];
         selectedRows.forEach((el) => {
           listId.push(el.id);
         });
         p.setState({ checkId: listId });
+        console.log(p.state.checkId);
       },
       selectedRowKeys: p.state.checkId,
       getCheckboxProps: () => ({
@@ -236,9 +238,9 @@ class DeliveryModal extends Component {
                     initialValue: data.status || 0,
                   })(
                     <Select placeholder="请选择运单状态" >
-                      <Option value={0} key="0">新建</Option>
-                      <Option value={1} key="1">已发货</Option>
-                      <Option value={2} key="2">已收货</Option>
+                      <Option value="0" key="0">新建</Option>
+                      <Option value="1" key="1">已发货</Option>
+                      <Option value="2" key="2">已收货</Option>
                     </Select>,
                   )}
                 </FormItem>
@@ -306,7 +308,7 @@ class DeliveryModal extends Component {
               </Col>
             </Row>
             <Row>
-              <Table rowSelection={rowSelection} columns={columns} dataSource={data.erpOrderList || []} rowKey={r => r.erpNo + r.positionNo} pagination={false} bordered />
+              <Table rowSelection={rowSelection} columns={columns} dataSource={data.erpOrderList || []} rowKey={r => r.id} pagination={false} bordered />
             </Row>
           </Form>
         </Modal>

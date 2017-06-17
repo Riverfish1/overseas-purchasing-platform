@@ -427,15 +427,15 @@ class ErpOrder extends Component {
             </Col>
           </Row>
         </Form>
-        <Row>
-          <Col span={20} className="operBtn">
+        <Row className="operBtn">
+          <Col style={{ float: 'left' }} >
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>发货</Button>
           </Col>
-          <Col span={2} className="operBtn">
+          <Col style={{ float: 'right', marginLeft: 10 }} >
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.replayAssign.bind(p)}>重分配库存</Button>
           </Col>
-          <Col span={2} className="operBtn">
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.closeErpOrder.bind(p)}>关闭</Button>
+          <Col style={{ float: 'right' }} >
+            <Button disabled={isNotSelected} size="large" onClick={p.closeErpOrder.bind(p)}>关闭</Button>
           </Col>
         </Row>
         <DeliveryModal visible={deliveryModalVisible} deliveryCompanyList={deliveryCompanyList} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
@@ -445,7 +445,7 @@ class ErpOrder extends Component {
           dataSource={erpOrderList}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: '130%', y: 500 }}
+          scroll={{ x: '130%' }}
           bordered="true"
         />
         <ErpOrderModal

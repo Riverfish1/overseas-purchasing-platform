@@ -19,7 +19,7 @@ const closeErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/close', { d
 const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/splitErpOrder', { data: payload }).catch(e => e);
 // 重分配库存
 const replayAssign = ({ payload }) => fetch.post('/haierp1/erpOrder/replayAssign', { data: payload }).catch(e => e);
-// 批量发货
+// 发货
 const multiDelivery = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDelivery', { data: payload }).catch(e => e);
 // 发货单查询
 const queryShippingOrderList = ({ payload }) => fetch.post('/haierp1/shippingOrder/query', { data: payload }).catch(e => e);
@@ -285,10 +285,10 @@ export default {
     * multiDelivery({ payload, callback }, { call, put }) {
       const data = yield call(multiDelivery, { payload });
       if (data.success) {
-        message.success('批量发货完成');
+        message.success('发货完成');
         if (callback) callback();
         yield put({
-          type: 'queryShippingOrderList',
+          type: 'queryErpOrderList',
           payload: {},
         });
       }

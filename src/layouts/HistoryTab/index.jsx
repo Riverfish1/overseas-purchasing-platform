@@ -31,7 +31,7 @@ class HistoryTab extends React.Component {
   routeLink(key) {
     if (this.props.location.pathname !== key) {
       location.href = `#${key}`;
-      console.log('跳转');
+      console.log(this.props.location);
     }
   }
   render() {

@@ -46,13 +46,13 @@ class Inventory extends Component {
       <img role="presentation" src={previewImage} style={{ width: 400 }} />
     );
     const columns = [
-      { title: 'SKU代码', key: 'skuCode', dataIndex: 'skuCode' },
-      { title: '商品名称', key: 'itemName', dataIndex: 'itemName' },
+      { title: 'SKU代码', key: 'skuCode', dataIndex: 'skuCode', width: 150 },
+      { title: '商品名称', key: 'itemName', dataIndex: 'itemName', width: 200 },
       {
         title: '商品图片',
         key: 'skuPic',
         dataIndex: 'skuPic',
-        width: 100,
+        width: 88,
         render(text) {
           let imgUrl = '';
           try {
@@ -68,20 +68,20 @@ class Inventory extends Component {
           );
         },
       },
-      { title: '仓库名称', key: 'warehouseName', dataIndex: 'warehouseName' },
-      { title: 'UPC', key: 'upc', dataIndex: 'upc' },
-      { title: '可售库存', key: 'totalAvailableInv', dataIndex: 'totalAvailableInv' },
-      { title: '现货库存', key: 'inventory', dataIndex: 'inventory' },
-      { title: '现货占用', key: 'lockedInv', dataIndex: 'lockedInv' },
+      { title: '仓库名称', key: 'warehouseName', dataIndex: 'warehouseName', width: 100 },
+      { title: 'UPC', key: 'upc', dataIndex: 'upc', width: 100 },
+      { title: '可售库存', key: 'totalAvailableInv', dataIndex: 'totalAvailableInv', width: 80 },
+      { title: '现货库存', key: 'inventory', dataIndex: 'inventory', width: 80 },
+      { title: '现货占用', key: 'lockedInv', dataIndex: 'lockedInv', width: 80 },
       // { title: '虚拟库存', key: 'virtualInv', dataIndex: 'virtualInv' },
-      { title: '在途库存', key: 'transInv', dataIndex: 'transInv' },
-      { title: '在途占用', key: 'lockedTransInv', dataIndex: 'lockedTransInv' },
-      { title: '货架号', key: 'positionNo', dataIndex: 'positionNo' },
+      { title: '在途库存', key: 'transInv', dataIndex: 'transInv', width: 80 },
+      { title: '在途占用', key: 'lockedTransInv', dataIndex: 'lockedTransInv', width: 80 },
+      { title: '货架号', key: 'positionNo', dataIndex: 'positionNo', width: 60 },
       {
         title: '操作',
         dataIndex: 'oper',
         key: 'oper',
-        width: 184,
+        width: 200,
         render(text, record) {
           return (
             <div>

@@ -147,11 +147,11 @@ class Inventory extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="货位号"
+                label="货架号"
                 {...formItemLayout}
               >
                 {getFieldDecorator('positionNo', {})(
-                  <Input placeholder="请输入货位号" />,
+                  <Input placeholder="请输入货架号" />,
                 )}
               </FormItem>
             </Col>

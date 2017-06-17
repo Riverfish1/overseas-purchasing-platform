@@ -73,7 +73,7 @@ class Inout extends Component {
         },
       },
       { title: '仓库名称', dataIndex: 'warehouseName', key: 'warehouseName', width: 80, render(text) { return text || '-'; } },
-      { title: '货位号', dataIndex: 'positionNo', key: 'positionNo', width: 50, render(text) { return text || '-'; } },
+      { title: '货架号', dataIndex: 'positionNo', key: 'positionNo', width: 50, render(text) { return text || '-'; } },
       { title: '数量', dataIndex: 'quantity', key: 'quantity', width: 50, render(text) { return text || '-'; } },
       { title: '操作类型',
         dataIndex: 'operatorType',
@@ -159,11 +159,11 @@ class Inout extends Component {
             </Col>
             <Col span="8">
               <FormItem
-                label="货位号"
+                label="货架号"
                 {...formItemLayout}
               >
                 {getFieldDecorator('positionNo', {})(
-                  <Input placeholder="请输入货位号" />,
+                  <Input placeholder="请输入货架号" />,
                 )}
               </FormItem>
             </Col>

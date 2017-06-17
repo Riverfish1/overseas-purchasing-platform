@@ -110,7 +110,6 @@ class DeliveryModal extends Component {
       { title: '尺码', dataIndex: 'scale', key: 'scale', width: 100 },
       { title: '购买数量', dataIndex: 'quantity', key: 'quantity', width: 100 },
       { title: '发货仓库', dataIndex: 'warehouseName', key: 'warehouseName', width: 100 },
-      { title: '配货库位', dataIndex: 'positionNo', key: 'positionNo', width: 100 },
     ];
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {

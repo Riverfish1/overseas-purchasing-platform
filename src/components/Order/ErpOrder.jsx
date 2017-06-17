@@ -32,8 +32,8 @@ class ErpOrder extends Component {
       this.props.form.validateFields((err, fieldsValue) => {
         if (err) return;
         if (fieldsValue.orderTime && fieldsValue.orderTime[0] && fieldsValue.orderTime[1]) {
-          fieldsValue.startOrderTime = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
-          fieldsValue.endOrderTime = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
+          fieldsValue.startGmtCreate = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
+          fieldsValue.endGmtCreate = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
         }
         delete fieldsValue.orderTime;
         this.props.dispatch({
@@ -413,7 +413,7 @@ class ErpOrder extends Component {
             </Col>
             <Col span={16}>
               <FormItem
-                label="销售时间范围"
+                label="创建时间范围"
                 labelCol={{ span: 6 }}
               >
                 {getFieldDecorator('orderTime', {})(<RangePicker />)}

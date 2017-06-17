@@ -30,8 +30,8 @@ class Order extends Component {
           return;
         }
         if (fieldsValue.orderTime && fieldsValue.orderTime[0] && fieldsValue.orderTime[1]) {
-          fieldsValue.startOrderTime = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
-          fieldsValue.endOrderTime = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
+          fieldsValue.startGmtCreate = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
+          fieldsValue.endGmtCreate = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
         }
         delete fieldsValue.orderTime;
         this.props.dispatch({
@@ -376,7 +376,7 @@ class Order extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col style={{ marginLeft: 6 }}>
               <FormItem
-                label="销售时间范围"
+                label="创建时间范围"
                 labelCol={{ span: 3 }}
               >
                 {getFieldDecorator('orderTime', {})(<RangePicker />)}

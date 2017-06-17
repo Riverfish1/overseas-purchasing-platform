@@ -4,6 +4,7 @@ import styles from './style.less';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
 import Breadcrumb from '../Breadcrumb';
+import HistoryTab from '../HistoryTab';
 import { routerCfg } from '../../constants';
 
 function MainLayout({ children, location }) {
@@ -20,6 +21,7 @@ function MainLayout({ children, location }) {
       {!showLogin && <Header location={location} />}
       {!showLogin && !showSideBar && <Sidebar location={location} />}
       <div className={wrapperClass}>
+        {!showLogin && <HistoryTab location={location} />}
         {!showLogin && <Breadcrumb location={location} />}
         <div className={styles.content}>
           {children}

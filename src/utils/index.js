@@ -1,3 +1,5 @@
+import { message } from 'antd';
+
 export default () => {
   /* eslint-disable */
   // 连字符转驼峰
@@ -34,14 +36,19 @@ export default () => {
     }
     return format
   }
+  /* eslint-enable */
+
+  const pageStorage = {
+    data: {},
+    getItem(key) { return this.data[key] || null; },
+    setItem(key, dataStr) { this.data[key] = dataStr; },
+  };
 
   function getState(_this) {
     const { pathname } = _this.props.location;
-    const dataStr = sessionStorage.getItem('airuhua_' + pathname);
-    console.log(dataStr);
+    const dataStr = pageStorage.getItem(`airuhua_${pathname}`);
     if (dataStr) {
       const data = JSON.parse(dataStr);
-      console.log(data);
       setTimeout(() => {
         _this.setState(data.state);
         _this.props.form.setFieldsValue(data.search);
@@ -50,37 +57,76 @@ export default () => {
   }
 
   function existState(pathname) {
-    return !!sessionStorage.getItem('airuhua_' + pathname);
+    return !!pageStorage.getItem(`airuhua_${pathname}`);
   }
 
   function clearState(pathname) {
-    sessionStorage.setItem('airuhua_' + pathname, null);
+    pageStorage.setItem((`airuhua_${pathname}`), null);
   }
 
   function setState(_this) {
     const { pathname } = _this.props.location;
     if (pathname) {
-      let cacheData = sessionStorage.getItem('airuhua_' + pathname);
+      let cacheData = pageStorage.getItem(`airuhua_${pathname}`);
       if (!cacheData) cacheData = {};
       else cacheData = JSON.parse(cacheData);
       // 搜索表单
       cacheData.search = _this.props.form.getFieldsValue();
       // 状态
       cacheData.state = _this.state;
-      sessionStorage.setItem('airuhua_' + pathname, JSON.stringify(cacheData));
+      pageStorage.setItem((`airuhua_${pathname}`), JSON.stringify(cacheData));
     }
   }
 
   window.regStateCache = (target) => {
-    target.prototype.componentWillMount = function() {
+    target.prototype.componentWillMount = function mount() {
       getState(this);
-    }
-    target.prototype.componentWillUnmount = function() {
+    };
+    target.prototype.componentWillUnmount = function unmount() {
       setState(this);
-    }
-  }
+    };
+  };
 
   window.getCacheState = getState;
   window.existCacheState = existState;
   window.clearCacheState = clearState;
-}
+
+  let historyTabs = [];
+
+  window.addHistoryTab = function add(payload) {
+    if (payload) {
+      let isExists = false;
+      historyTabs.forEach((tab) => {
+        if (tab.route === payload.route) isExists = true;
+      });
+      if (!isExists) {
+        if (historyTabs.length >= 10) {
+          message.error('最多打开10个标签页，请关闭标签页后重试');
+          return;
+        }
+        historyTabs.push({ route: payload.route, title: payload.name, key: payload.route });
+        window.renderHistoryTab(historyTabs);
+      }
+    }
+  };
+
+  window.renderHistoryTab = function render(tabs, route) {
+    window._renderHistoryTab([...tabs], route);
+  };
+
+  window.removeHistoryTab = function remove(key, currentPath) {
+    let i = -1;
+    const newTabs = historyTabs.filter((tab, index) => {
+      if (tab.route === key) {
+        i = index;
+        return false;
+      }
+      return true;
+    });
+    if (i === 0) i = 1;
+    else i -= 1;
+    const route = historyTabs[i].route;
+    historyTabs = newTabs;
+    window.renderHistoryTab(newTabs, key === currentPath ? route : undefined);
+  };
+};

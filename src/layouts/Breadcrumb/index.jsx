@@ -31,10 +31,15 @@ function Bread({ location }) {
       pathNames.push(`-${item}`.hyphenToHump());
     }
   });
+  const len = pathNames.length;
   const breads = pathNames.map((i, key) => {
     let item = i;
     if (!(i in pathSet)) {
       item = routerCfg.OVERVIEW[0].toUpperCase() + routerCfg.OVERVIEW.substr(1);
+    }
+    // 面包屑生成时，推一把Tab
+    if (key === len - 1) {
+      window.addHistoryTab({ name: pathSet[item].name, route: pathSet[item].path });
     }
     return (
       <Breadcrumb.Item key={key} {...((pathNames.length - 1 === key) || !pathSet[item].clickable) ? '' : { href: `#${pathSet[item].path}` }}>

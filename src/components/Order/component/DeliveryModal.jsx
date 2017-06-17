@@ -199,6 +199,7 @@ class DeliveryModal extends Component {
                 >
                   {getFieldDecorator('logisticNo', {
                     initialValue: data.logisticNo,
+                    rules: [{ required: true, message: '请输入' }],
                   })(
                     <Input placeholder="请输入物流运单号" />,
                   )}
@@ -211,6 +212,7 @@ class DeliveryModal extends Component {
                 >
                   {getFieldDecorator('logisticCompany', {
                     initialValue: data.logisticCompany || undefined,
+                    rules: [{ required: true, message: '请选择' }],
                   })(
                     <Select placeholder="请选择物流公司名称" >
                       {deliveryCompanyList.map(v => (
@@ -226,7 +228,7 @@ class DeliveryModal extends Component {
                   {...formItemLayout}
                 >
                   {getFieldDecorator('status', {
-                    initialValue: data.status || 0,
+                    initialValue: data.status ? data.status.toString() : '0',
                   })(
                     <Select placeholder="请选择运单状态" >
                       <Option value="0" key="0">新建</Option>
@@ -242,12 +244,12 @@ class DeliveryModal extends Component {
                   {...formItemLayout}
                 >
                   {getFieldDecorator('type', {
-                    initialValue: data.type || undefined,
+                    initialValue: data.type ? data.type.toString() : undefined,
                   })(
                     <Select placeholder="请选择渠道" >
-                      <Option value={1} key="1">包税线</Option>
-                      <Option value={2} key="2">身份证线</Option>
-                      <Option value={3} key="3">BC线</Option>
+                      <Option value="1" key="1">包税线</Option>
+                      <Option value="2" key="2">身份证线</Option>
+                      <Option value="3" key="3">BC线</Option>
                     </Select>,
                   )}
                 </FormItem>

@@ -4,6 +4,7 @@ import { Input, Form, Table, Row, Col, Button, Modal } from 'antd';
 
 const FormItem = Form.Item;
 
+@window.regStateCache
 class Brands extends Component {
   constructor(props) {
     super(props);

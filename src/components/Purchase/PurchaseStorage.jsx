@@ -6,6 +6,7 @@ import PurchaseStorageModal from './PurchaseStorageModal';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+@window.regStateCache
 class PurchaseStorage extends Component {
 
   constructor() {

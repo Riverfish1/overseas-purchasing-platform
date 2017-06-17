@@ -5,6 +5,7 @@ import { connect } from 'dva';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+@window.regStateCache
 class Organization extends Component {
   constructor(props) {
     super(props);

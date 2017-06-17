@@ -34,4 +34,43 @@ export default () => {
     }
     return format
   }
+
+  function getState(_this) {
+    const { pathname } = _this.props.location;
+    const dataStr = sessionStorage.getItem('airuhua_' + pathname);
+    console.log(dataStr);
+    if (dataStr) {
+      const data = JSON.parse(dataStr);
+      console.log(data);
+      setTimeout(() => {
+        _this.setState(data.state);
+        _this.props.form.setFieldsValue(data.search);
+      }, 0);
+    }
+  }
+
+  function setState(_this) {
+    const { pathname } = _this.props.location;
+    if (pathname) {
+      let cacheData = sessionStorage.getItem('airuhua_' + pathname);
+      if (!cacheData) cacheData = {};
+      else cacheData = JSON.parse(cacheData);
+      // 搜索表单
+      cacheData.search = _this.props.form.getFieldsValue();
+      // 状态
+      cacheData.state = _this.state;
+      sessionStorage.setItem('airuhua_' + pathname, JSON.stringify(cacheData));
+    }
+  }
+
+  window.regStateCache = (target) => {
+    target.prototype.componentWillMount = function() {
+      getState(this);
+    }
+    target.prototype.componentWillUnmount = function() {
+      setState(this);
+    }
+  }
+
+  window.getCacheState = getState;
 }

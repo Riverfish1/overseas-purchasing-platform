@@ -5,6 +5,7 @@ import { Form, Table, Tabs, Button, Modal, Row, Col, Input, InputNumber } from '
 const Pane = Tabs.TabPane;
 const FormItem = Form.Item;
 
+@window.regStateCache
 class Journal extends Component {
   constructor(props) {
     super(props);

@@ -8,6 +8,7 @@ const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+@window.regStateCache
 class ShippingOrder extends Component {
   constructor(props) {
     super(props);

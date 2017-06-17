@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Table, Row, Col, Button } from 'antd';
 
+@window.regStateCache
 class Receipt extends Component {
   constructor(props) {
     super(props);
@@ -31,6 +32,7 @@ class Receipt extends Component {
         });
         p.setState({ checkId: listId });
       },
+      selectedRowKeys: p.state.checkId,
     };
     const columns = [
       { title: '小票单号', dataIndex: 'receiptNo', key: 'receiptNo' },

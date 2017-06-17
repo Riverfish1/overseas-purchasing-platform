@@ -5,6 +5,7 @@ import styles from './Products.less';
 
 const FormItem = Form.Item;
 
+@window.regStateCache
 class PackageScale extends Component {
 
   constructor() {

@@ -4,6 +4,7 @@ import { connect } from 'dva';
 
 const FormItem = Form.Item;
 
+@window.regStateCache
 class Warehouse extends Component {
   constructor(props) {
     super(props);

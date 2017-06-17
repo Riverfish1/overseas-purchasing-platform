@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import { Table, Button, Row, Col, Popconfirm } from 'antd';
 import CategoryModal from './CategoryModal';
 
+@window.regStateCache
 class Category extends Component {
 
   constructor() {

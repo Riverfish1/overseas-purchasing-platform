@@ -6,6 +6,7 @@ import AgencyModal from './AgencyModal';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+@window.regStateCache
 class Agency extends Component {
 
   constructor() {

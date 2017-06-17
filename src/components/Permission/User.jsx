@@ -8,6 +8,7 @@ import isNull from '../../utils/isNull';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+@window.regStateCache
 class Resource extends Component {
   constructor(props) {
     super(props);

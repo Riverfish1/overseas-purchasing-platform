@@ -6,6 +6,7 @@ import SkuModal from './SkuModal';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+@window.regStateCache
 class Sku extends Component {
 
   constructor() {

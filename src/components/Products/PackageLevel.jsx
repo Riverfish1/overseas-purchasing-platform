@@ -14,6 +14,7 @@ function toString(str, type) {
   return '';
 }
 
+@window.regStateCache
 class PackageLevel extends Component {
 
   constructor() {

@@ -5,6 +5,7 @@ import { connect } from 'dva';
 const FormItem = Form.Item;
 const { Option } = Select;
 
+@window.regStateCache
 class Resource extends Component {
   constructor(props) {
     super(props);

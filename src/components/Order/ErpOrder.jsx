@@ -11,6 +11,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
+@window.regStateCache
 class ErpOrder extends Component {
   constructor(props) {
     super(props);

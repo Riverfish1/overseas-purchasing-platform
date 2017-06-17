@@ -8,6 +8,7 @@ import CheckOut from './components/check-out';
 
 const FormItem = Form.Item;
 
+@window.regStateCache
 class Inventory extends Component {
   constructor() {
     super();

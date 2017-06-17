@@ -4,6 +4,7 @@ import { Table, Input, Button, Row, Col, Form, Modal, Popconfirm } from 'antd';
 
 const FormItem = Form.Item;
 
+@window.regStateCache
 class AgencyType extends Component {
 
   constructor() {

@@ -7,6 +7,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
+@window.regStateCache
 class Order extends Component {
 
   constructor() {
@@ -170,6 +171,7 @@ class Order extends Component {
     ];
 
     const rowSelection = {
+      selectedRowKeys: p.state.checkId,
       onChange(selectedRowKeys, selectedRows) {
         const listId = [];
         if (selectedRows.length) p.setState({ isNotSelected: false });

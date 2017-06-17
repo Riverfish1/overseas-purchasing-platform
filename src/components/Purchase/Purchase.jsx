@@ -7,6 +7,7 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
+@window.regStateCache
 class Purchase extends Component {
 
   constructor() {

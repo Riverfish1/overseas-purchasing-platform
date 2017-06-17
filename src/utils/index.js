@@ -46,9 +46,8 @@ export default () => {
 
   function getState(_this) {
     const { pathname } = _this.props.location;
-    const dataStr = pageStorage.getItem(`airuhua_${pathname}`);
-    if (dataStr) {
-      const data = JSON.parse(dataStr);
+    const data = pageStorage.getItem(`airuhua_${pathname}`);
+    if (data) {
       setTimeout(() => {
         _this.setState(data.state);
         _this.props.form.setFieldsValue(data.search);
@@ -69,12 +68,11 @@ export default () => {
     if (pathname) {
       let cacheData = pageStorage.getItem(`airuhua_${pathname}`);
       if (!cacheData) cacheData = {};
-      else cacheData = JSON.parse(cacheData);
       // 搜索表单
       cacheData.search = _this.props.form.getFieldsValue();
       // 状态
       cacheData.state = _this.state;
-      pageStorage.setItem((`airuhua_${pathname}`), JSON.stringify(cacheData));
+      pageStorage.setItem((`airuhua_${pathname}`), cacheData);
     }
   }
 

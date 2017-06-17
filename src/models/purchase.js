@@ -24,13 +24,13 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname }) => {
-        if (pathname === '/purchase/purchaseList') {
+        if (pathname === '/purchase/purchaseList' && !window.existCacheState('/purchase/purchaseList')) {
           setTimeout(() => {
             dispatch({ type: 'queryPurchaseList', payload: {} });
             dispatch({ type: 'queryBuyers', payload: {} });
           }, 0);
         }
-        if (pathname === '/purchase/preStock') {
+        if (pathname === '/purchase/preStock' && !window.existCacheState('/purchase/preStock')) {
           setTimeout(() => {
             dispatch({ type: 'queryPurchaseList', payload: {} });
             dispatch({ type: 'queryBuyers', payload: {} });

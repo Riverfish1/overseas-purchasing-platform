@@ -18,13 +18,13 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname }) => {
-        if (pathname === '/purchase/check/journal') {
+        if (pathname === '/purchase/check/journal' && !window.existCacheState('/purchase/check/journal')) {
           setTimeout(() => {
             dispatch({ type: 'queryJournalList', payload: { status: 0 } });
             dispatch({ type: 'queryJournalList', payload: { status: 1 } });
           }, 0);
         }
-        if (pathname === '/purchase/check/receipt') {
+        if (pathname === '/purchase/check/receipt' && !window.existCacheState('/purchase/check/receipt')) {
           setTimeout(() => {
             dispatch({ type: 'queryReceiptList', payload: {} });
           }, 0);

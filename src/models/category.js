@@ -75,7 +75,7 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        if (pathname === '/products/cateList') {
+        if (pathname === '/products/cateList' && !window.existCacheState('/products/cateList')) {
           setTimeout(() => {
             dispatch({ type: 'queryCateList', payload: query });
           }, 0);

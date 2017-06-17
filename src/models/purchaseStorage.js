@@ -28,7 +28,7 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname }) => {
-        if (pathname === '/purchase/purchaseStorage') {
+        if (pathname === '/purchase/purchaseStorage' && !window.existCacheState('/purchase/purchaseStorage')) {
           setTimeout(() => {
             dispatch({ type: 'queryPurchaseStorageList', payload: {} });
             dispatch({ type: 'queryBuyers', payload: {} });

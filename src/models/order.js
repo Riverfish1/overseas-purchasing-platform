@@ -346,13 +346,13 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        if (pathname === '/sale/orderList') {
+        if (pathname === '/sale/orderList' && !window.existCacheState('/sale/orderList')) {
           setTimeout(() => {
             dispatch({ type: 'queryOrderList', payload: query });
             dispatch({ type: 'agency/queryAgencyList', payload: query });
           }, 0);
         }
-        if (pathname === '/sale/erpOrder') {
+        if (pathname === '/sale/erpOrder' && !window.existCacheState('/sale/erpOrder')) {
           setTimeout(() => {
             dispatch({ type: 'queryErpOrderList', payload: query });
             dispatch({ type: 'agency/queryAgencyList', payload: query });
@@ -360,7 +360,7 @@ export default {
             dispatch({ type: 'inventory/queryWareList', payload: {} });
           }, 0);
         }
-        if (pathname === '/sale/shippingOrder') {
+        if (pathname === '/sale/shippingOrder' && !window.existCacheState('/sale/shippingOrder')) {
           setTimeout(() => {
             dispatch({ type: 'queryShippingOrderList', payload: query });
             dispatch({ type: 'queryDeliveryCompanyList', payload: query });

@@ -49,24 +49,24 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname }) => {
-        if (pathname === '/permission/resource') {
+        if (pathname === '/permission/resource' && !window.existCacheState('/permission/resource')) {
           setTimeout(() => {
             dispatch({ type: 'queryResourceList', payload: {} });
           }, 0);
         }
-        if (pathname === '/permission/role') {
+        if (pathname === '/permission/role' && !window.existCacheState('/permission/role')) {
           setTimeout(() => {
             dispatch({ type: 'queryRoleList', payload: {} });
           }, 0);
         }
-        if (pathname === '/permission/user') {
+        if (pathname === '/permission/user' && !window.existCacheState('/permission/user')) {
           setTimeout(() => {
             dispatch({ type: 'queryUserList', payload: {} });
             dispatch({ type: 'queryOrgList', payload: {} });
             dispatch({ type: 'queryRoleList', payload: {} });
           }, 0);
         }
-        if (pathname === '/permission/organization') {
+        if (pathname === '/permission/organization' && !window.existCacheState('/permission/organization')) {
           setTimeout(() => {
             dispatch({ type: 'queryOrgList', payload: {} });
           }, 0);

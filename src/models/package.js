@@ -27,11 +27,11 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(({ pathname }) => {
-        if (pathname === '/products/packageLevel') {
+        if (pathname === '/products/packageLevel' && !window.existCacheState('/products/packageLevel')) {
           dispatch({ type: 'queryPackageLevelList', payload: { pageIndex: 1 } });
           dispatch({ type: 'queryPackageScaleList', payload: { pageIndex: 1 } });
         }
-        if (pathname === '/products/packageScale') {
+        if (pathname === '/products/packageScale' && !window.existCacheState('/products/packageScale')) {
           dispatch({ type: 'queryPackageScaleList', payload: { pageIndex: 1 } });
         }
       });

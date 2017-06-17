@@ -25,7 +25,7 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname }) => {
-        if (pathname === '/inventory/inventoryList') {
+        if (pathname === '/inventory/inventoryList' && !window.existCacheState('/inventory/inventoryList')) {
           setTimeout(() => {
             dispatch({
               type: 'queryList',
@@ -33,7 +33,7 @@ export default {
             });
           }, 0);
         }
-        if (pathname === '/inventory/warehouse') {
+        if (pathname === '/inventory/warehouse' && !window.existCacheState('/inventory/warehouse')) {
           setTimeout(() => {
             dispatch({ type: 'queryWareList', payload: { pageIndex: 1 } });
           }, 0);

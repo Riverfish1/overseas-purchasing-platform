@@ -49,6 +49,14 @@ export default () => {
     }
   }
 
+  function existState(pathname) {
+    return !!sessionStorage.getItem('airuhua_' + pathname);
+  }
+
+  function clearState(pathname) {
+    sessionStorage.setItem('airuhua_' + pathname, null);
+  }
+
   function setState(_this) {
     const { pathname } = _this.props.location;
     if (pathname) {
@@ -73,4 +81,6 @@ export default () => {
   }
 
   window.getCacheState = getState;
+  window.existCacheState = existState;
+  window.clearCacheState = clearState;
 }

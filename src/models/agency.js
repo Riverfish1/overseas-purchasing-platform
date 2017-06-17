@@ -27,13 +27,13 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(({ pathname }) => {
-        if (pathname === '/person/agencyType') {
+        if (pathname === '/person/agencyType' && !window.existCacheState('/person/agencyType')) {
           dispatch({
             type: 'queryAgencyTypeList',
             payload: { pageIndex: 1 },
           });
         }
-        if (pathname === '/person/agencyList') {
+        if (pathname === '/person/agencyList' && !window.existCacheState('/person/agencyList')) {
           dispatch({ type: 'queryAgencyList', payload: { pageIndex: 1 } });
           dispatch({ type: 'queryAgencyTypeList', payload: { pageIndex: 1 } });
         }

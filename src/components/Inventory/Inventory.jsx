@@ -176,7 +176,6 @@ class Inventory extends Component {
               columns={columns}
               pagination={paginationProps}
               rowKey={record => record.id}
-              scroll={{ y: 500 }}
             />
           </Col>
         </Row>

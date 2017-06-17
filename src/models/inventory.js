@@ -12,6 +12,10 @@ const addWare = ({ payload }) => fetch.get('/haierp1/warehouse/add', { data: pay
 const updateWare = ({ payload }) => fetch.get('/haierp1/warehouse/update', { data: payload }).catch(e => e);
 const queryWare = ({ payload }) => fetch.get('/haierp1/warehouse/query', { data: payload }).catch(e => e);
 // 在途入仓
+
+// 出入库记录
+const queryInoutList = ({ payload }) => fetch.post('/haierp1/inventory/queryInventoryInout', { data: payload }).catch(e => e);
+
 export default {
   namespace: 'inventory',
   state: {
@@ -21,20 +25,27 @@ export default {
     wareList: [],
     wareValues: {},
     wareCurrent: 1,
+    inoutList: [],
+    inoutCurrent: 1,
+    inoutTotal: 1,
   },
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname }) => {
         if (pathname === '/inventory/inventoryList' && !window.existCacheState('/inventory/inventoryList')) {
           setTimeout(() => {
-            dispatch({
-              type: 'queryList',
-              payload: { pageIndex: 1 },
-            });
+            dispatch({ type: 'queryList', payload: { pageIndex: 1 } });
+            dispatch({ type: 'queryWareList', payload: { pageIndex: 1 } });
           }, 0);
         }
         if (pathname === '/inventory/warehouse' && !window.existCacheState('/inventory/warehouse')) {
           setTimeout(() => {
+            dispatch({ type: 'queryWareList', payload: { pageIndex: 1 } });
+          }, 0);
+        }
+        if (pathname === '/inventory/inout') {
+          setTimeout(() => {
+            dispatch({ type: 'queryInoutList', payload: { pageIndex: 1 } });
             dispatch({ type: 'queryWareList', payload: { pageIndex: 1 } });
           }, 0);
         }
@@ -112,6 +123,20 @@ export default {
         yield put({ type: 'queryList', payload: {} });
       }
     },
+    * queryInoutList({ payload = {} }, { call, put, select }) {
+      let pageIndex = yield select(({ inventory }) => inventory.inoutCurrent);
+      if (payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({
+          type: 'saveInoutCurrent',
+          payload,
+        });
+      }
+      const data = yield call(queryInoutList, { payload });
+      if (data.success) {
+        yield put({ type: 'updateInoutList', payload: data });
+      }
+    },
   },
   reducers: {
     updateList(state, { payload }) {
@@ -128,6 +153,12 @@ export default {
     },
     updateWareList(state, { payload }) {
       return { ...state, wareList: payload.data };
+    },
+    updateInoutList(state, { payload }) {
+      return { ...state, inoutList: payload.data, inoutTotal: payload.totalCount };
+    },
+    saveInoutCurrent(state, { payload }) {
+      return { ...state, inoutCurrent: payload.pageIndex };
     },
   },
 };

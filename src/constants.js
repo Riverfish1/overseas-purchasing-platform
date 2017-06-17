@@ -8,6 +8,7 @@ export const backendCfg = {
   skuList: 'item_skulist',
   packageScale: 'item_scale',
   packageLevel: 'item_level',
+  category: 'category',
   sale: 'sale',
   orderList: 'sale_outerorder',
   erpOrder: 'sale_erporder',
@@ -21,7 +22,7 @@ export const backendCfg = {
   inventory: 'inventory',
   inventoryList: 'inventory_list',
   warehouse: 'inventory_warehouse',
-
+  inout: 'inventory_inout',
   // 内置
   overview: 'overview',
 };
@@ -65,6 +66,7 @@ export const routerCfg = {
   INVENTORY: 'inventory',
   INVENTORY_LIST: 'inventoryList',
   WAREHOUSE: 'warehouse', // 仓库管理
+  INOUT: 'inout', // 出入库管理
 };
 
 export const originalNavigation = [
@@ -81,7 +83,7 @@ export const originalNavigation = [
     child: [
       { key: routerCfg.PRODUCTS_LIST, name: '商品列表' },
       { key: routerCfg.SKU_LIST, name: 'SKU管理' },
-      // { key: routerCfg.CATE_LIST, name: '类目管理' },
+      { key: routerCfg.CATE_LIST, name: '类目管理' },
       { key: routerCfg.PACKAGE_SCALE, name: '包装规格类别' },
       { key: routerCfg.PACKAGE_LEVEL, name: '包装规格' },
     ],
@@ -116,6 +118,7 @@ export const originalNavigation = [
     child: [
       { key: routerCfg.INVENTORY_LIST, name: '库存管理' },
       { key: routerCfg.WAREHOUSE, name: '仓库管理' },
+      { key: routerCfg.INOUT, name: '出入库记录' },
     ],
   },
 ];

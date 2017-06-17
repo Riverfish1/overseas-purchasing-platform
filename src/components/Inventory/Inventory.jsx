@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Button, Input, Popover } from 'antd';
+import { Form, Table, Row, Col, Button, Input, Popover, Select } from 'antd';
 
 import TransTo from './components/trans-to';
 import CheckIn from './components/check-in';
 import CheckOut from './components/check-out';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 @window.regStateCache
 class Inventory extends Component {
@@ -35,7 +36,7 @@ class Inventory extends Component {
   }
   render() {
     const p = this;
-    const { list = [], total, form, dispatch } = this.props;
+    const { list = [], total, form, dispatch, wareList = [] } = this.props;
     const { previewImage } = this.state;
     const { getFieldDecorator, resetFields } = form;
     const formItemLayout = {
@@ -70,6 +71,8 @@ class Inventory extends Component {
       },
       { title: '仓库名称', key: 'warehouseName', dataIndex: 'warehouseName', width: 100 },
       { title: 'UPC', key: 'upc', dataIndex: 'upc', width: 100 },
+      { title: '颜色', key: 'color', dataIndex: 'color', width: 80 },
+      { title: '尺寸', key: 'scale', dataIndex: 'scale', width: 80 },
       { title: '可售库存', key: 'totalAvailableInv', dataIndex: 'totalAvailableInv', width: 80 },
       { title: '现货库存', key: 'inventory', dataIndex: 'inventory', width: 80 },
       { title: '现货占用', key: 'lockedInv', dataIndex: 'lockedInv', width: 80 },
@@ -77,9 +80,7 @@ class Inventory extends Component {
       { title: '在途库存', key: 'transInv', dataIndex: 'transInv', width: 80 },
       { title: '在途占用', key: 'lockedTransInv', dataIndex: 'lockedTransInv', width: 80 },
       { title: '货架号', key: 'positionNo', dataIndex: 'positionNo', width: 60 },
-      {
-        title: '操作',
-        dataIndex: 'oper',
+      { title: '操作',
         key: 'oper',
         width: 200,
         render(text, record) {
@@ -106,12 +107,13 @@ class Inventory extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
-                label="仓库名称"
+                label="仓库"
                 {...formItemLayout}
               >
-                {getFieldDecorator('warehouseName', {})(
-                  <Input placeholder="请输入仓库名称" />,
-                )}
+                {getFieldDecorator('warehouseId', {})(
+                  <Select placeholder="请选择仓库" optionLabelProp="title" combobox>
+                    {wareList.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
+                  </Select>)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -169,8 +171,8 @@ class Inventory extends Component {
 }
 
 function mapStateToProps(state) {
-  const { list, total } = state.inventory;
-  return { list, total };
+  const { list, total, wareList } = state.inventory;
+  return { list, total, wareList };
 }
 
 export default connect(mapStateToProps)(Form.create()(Inventory));

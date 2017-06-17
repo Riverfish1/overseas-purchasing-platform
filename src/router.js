@@ -22,6 +22,7 @@ import Agency from './components/Agency/Agency';
 import AgencyType from './components/Agency/AgencyType';
 import Inventory from './components/Inventory/Inventory';
 import Warehouse from './components/Inventory/Warehouse'; // 仓库管理
+import Inout from './components/Inventory/Inout'; // 仓库管理
 import Resource from './components/Permission/Resource';
 import Role from './components/Permission/Role';
 import User from './components/Permission/User';
@@ -72,6 +73,7 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.PERSON}/${routerCfg.AGENCY_TYPE}`} component={AgencyType} />
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} component={Inventory} />
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.WAREHOUSE}`} component={Warehouse} />
+        <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INOUT}`} component={Inout} />
         {/* 一级导航重定向 */}
         <Redirect from={`/${routerCfg.PERMISSION}`} to={`/${routerCfg.PERMISSION}/${routerCfg.RESOURCE}`} />
         <Redirect from={`/${routerCfg.PRODUCTS}`} to={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} />

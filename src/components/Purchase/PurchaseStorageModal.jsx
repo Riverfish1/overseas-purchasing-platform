@@ -42,6 +42,7 @@ class PurchaseModal extends Component {
 
   componentWillReceiveProps(...args) {
     const { purchaseStorageData, dispatch } = args[0];
+    console.log(purchaseStorageData);
     if (purchaseStorageData && purchaseStorageData.purchaseStorageDetailList && firstLoad) {
       this.setState({ storageList: purchaseStorageData.purchaseStorageDetailList, id: purchaseStorageData.id });
       dispatch({ type: 'purchaseStorage/queryBuyerTaskList', payload: { buyerId: purchaseStorageData.buyerId } });
@@ -100,6 +101,7 @@ class PurchaseModal extends Component {
     const { form, dispatch } = p.props;
     // TODO: 上传的是skuid
     form.validateFieldsAndScroll((err, fieldsValue) => {
+      console.log(fieldsValue, p.state.id);
       if (err) { return; }
       const storageList = p.state.storageList;
       if (storageList.length < 1) {

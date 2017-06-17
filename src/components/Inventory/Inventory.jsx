@@ -22,9 +22,14 @@ class Inventory extends Component {
     const { form, dispatch } = this.props;
     form.validateFieldsAndScroll((err, values) => {
       if (err) return;
+      const warehouseId = values.warehouseId;
+      const skuCode = values.skuCode;
+      const upc = values.upc;
+      const itemName = values.itemName;
+      const positionNo = values.positionNo;
       dispatch({
         type: 'inventory/queryList',
-        payload: { ...values, pageIndex: typeof page === 'number' ? page : 1 },
+        payload: { warehouseId, skuCode, upc, itemName, positionNo, pageIndex: typeof page === 'number' ? page : 1 },
       });
     });
   }

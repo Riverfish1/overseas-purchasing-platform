@@ -3,7 +3,7 @@ import { Form, Input, Button, Popover, InputNumber } from 'antd';
 
 const FormItem = Form.Item;
 
-export default class extends Component {
+export default class CheckIn extends Component {
   constructor() {
     super();
     this.state = {
@@ -19,11 +19,12 @@ export default class extends Component {
     const { record, form } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
-      delete values.toTrans;
+      const positionNo = values.num;
+      const quantity = values.quantity;
       this.toggleVisible();
       this.props.dispatch({
         type: 'inventory/checkIn',
-        payload: { ...values, skuId: record.skuId, warehouseId: record.warehouseId },
+        payload: { positionNo, quantity, skuId: record.skuId, warehouseId: record.warehouseId },
       });
     });
   }
@@ -51,7 +52,7 @@ export default class extends Component {
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 17 }}
           >
-            {getFieldDecorator('positionNo', {
+            {getFieldDecorator('num', {
               initialValue: record.positionNo,
               rules: [{ required: true, message: '请输入' }],
             })(

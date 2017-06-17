@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Popover, InputNumber } from 'antd';
 
-export default class extends Component {
+export default class CheckOut extends Component {
   constructor() {
     super();
     this.state = {

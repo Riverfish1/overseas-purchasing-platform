@@ -49,8 +49,7 @@ class Inventory extends Component {
     const columns = [
       { title: 'SKU代码', key: 'skuCode', dataIndex: 'skuCode', width: 150 },
       { title: '商品名称', key: 'itemName', dataIndex: 'itemName', width: 200 },
-      {
-        title: '商品图片',
+      { title: '商品图片',
         key: 'skuPic',
         dataIndex: 'skuPic',
         width: 88,
@@ -146,6 +145,16 @@ class Inventory extends Component {
                 )}
               </FormItem>
             </Col>
+            <Col span="8">
+              <FormItem
+                label="货位号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('positionNo', {})(
+                  <Input placeholder="请输入货位号" />,
+                )}
+              </FormItem>
+            </Col>
           </Row>
           <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">
@@ -162,7 +171,6 @@ class Inventory extends Component {
               columns={columns}
               pagination={paginationProps}
               rowKey={record => record.id}
-              scroll={{ y: 500 }}
             />
           </Col>
         </Row>

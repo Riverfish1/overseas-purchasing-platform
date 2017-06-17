@@ -157,6 +157,16 @@ class Inout extends Component {
                   </Select>)}
               </FormItem>
             </Col>
+            <Col span="8">
+              <FormItem
+                label="货位号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('positionNo', {})(
+                  <Input placeholder="请输入货位号" />,
+                )}
+              </FormItem>
+            </Col>
           </Row>
           <Row style={{ marginLeft: 13 }}>
             <Col className="listBtnGroup">

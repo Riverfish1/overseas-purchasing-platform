@@ -14,15 +14,9 @@ class DeliveryModal extends Component {
       checkId: [],
     };
   }
-  componentWillReceiveProps({ data = {} }) {
-    const p = this;
-    if (data.erpOrderList && data.erpOrderList.length) {
-      const list = data.erpOrderList;
-      const listId = [];
-      list.forEach((el) => {
-        listId.push(el.id);
-      });
-      p.setState({ checkId: listId });
+  componentWillReceiveProps({ checkId }) {
+    if (checkId) {
+      this.setState({ checkId });
     }
   }
   handleSubmit() {
@@ -113,17 +107,15 @@ class DeliveryModal extends Component {
     ];
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
-        console.log(selectedRowKeys, selectedRows);
         const listId = [];
         selectedRows.forEach((el) => {
           listId.push(el.id);
         });
         p.setState({ checkId: listId });
-        console.log(p.state.checkId);
       },
       selectedRowKeys: p.state.checkId,
-      getCheckboxProps: () => ({
-        defaultChecked: true,
+      getCheckboxProps: r => ({
+        defaultChecked: p.state.checkId.forEach(el => el === r.id),
       }),
     };
 

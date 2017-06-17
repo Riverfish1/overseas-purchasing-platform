@@ -438,7 +438,7 @@ class ErpOrder extends Component {
             <Button disabled={isNotSelected} size="large" onClick={p.closeErpOrder.bind(p)}>关闭</Button>
           </Col>
         </Row>
-        <DeliveryModal visible={deliveryModalVisible} deliveryCompanyList={deliveryCompanyList} ids={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
+        <DeliveryModal visible={deliveryModalVisible} deliveryCompanyList={deliveryCompanyList} checkId={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
         <Table
           columns={columns}
           rowSelection={rowSelection}

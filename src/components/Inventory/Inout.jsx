@@ -62,7 +62,6 @@ class Inout extends Component {
           if (text) {
             const imgObj = JSON.parse(text);
             imgUrl = imgObj.picList[0].url;
-            console.log(imgUrl);
             return (
               <Popover title={null} content={content}>
                 <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />

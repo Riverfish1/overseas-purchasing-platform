@@ -349,7 +349,7 @@ class PurchaseModal extends Component {
                   initialValue: toString(purchaseStorageData.warehouseId, 'SELECT'),
                   rules: [{ required: true, message: '请选择仓库' }],
                 })(
-                  <Select placeholder="请选择仓库" optionLabelProp="title" combobox>
+                  <Select placeholder="请选择仓库" optionLabelProp="title">
                     {wareList.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>)}
               </FormItem>

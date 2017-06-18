@@ -186,8 +186,8 @@ class Purchase extends Component {
           }
         },
       },
-      { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime', width: 150 },
-      { title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime', width: 150 },
+      { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime', width: 150, render(t) { return t ? t.slice(0, 11) : '-'; } },
+      { title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime', width: 150, render(t) { return t ? t.slice(0, 11) : '-'; } },
       { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',

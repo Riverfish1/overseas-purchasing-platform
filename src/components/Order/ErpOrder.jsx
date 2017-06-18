@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, Popconfirm, DatePicker } from 'antd';
+import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, Popconfirm, DatePicker, Icon } from 'antd';
 
 import DeliveryModal from './component/DeliveryModal';
 import ErpOrderModal from './ErpOrderModal';
@@ -130,6 +130,11 @@ class ErpOrder extends Component {
       this.props.dispatch({ type: 'order/releaseInventory', payload: { id } });
     }
   }
+  handleEmpty() {
+    this.props.form.setFieldsValue({
+      erpNo: undefined,
+    });
+  }
   render() {
     const p = this;
     const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
@@ -255,6 +260,8 @@ class ErpOrder extends Component {
         p.handleSubmit(null, pageIndex);
       },
     };
+    const data = form.getFieldValue('erpNo');
+    const erpNoSuffix = data ? <Icon type="close-circle" onClick={p.handleEmpty.bind(p, 'erpNo')} /> : null;
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -275,7 +282,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('erpNo', {})(
-                  <Input placeholder="请输入" />)}
+                  <Input placeholder="请输入" suffix={erpNoSuffix} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -406,7 +413,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('warehouseId', {})(
-                  <Select placeholder="请选择仓库" optionLabelProp="title" combobox>
+                  <Select placeholder="请选择仓库" optionLabelProp="title">
                     {wareList.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>)}
               </FormItem>

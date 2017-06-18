@@ -101,6 +101,9 @@ export default {
         yield put({ type: 'queryPurchaseStorageList', payload: {} });
       }
     },
+    * exportDetail({ payload }) {
+      window.open(`http://${location.host}/purchaseStorage/purchaseExport?id=${payload.id}`);
+    },
   },
   reducers: {
     // 修改的状态

@@ -94,6 +94,13 @@ class PurchaseStorage extends Component {
     });
   }
 
+  exportDetail(id) {
+    this.props.dispatch({
+      type: 'purchaseStorage/exportDetail',
+      payload: { id },
+    });
+  }
+
   render() {
     const p = this;
     const { form, list = [], total, buyer = [], wareList = [], showModal, editInfo = {}, buyerTaskList = [] } = p.props;
@@ -122,8 +129,9 @@ class PurchaseStorage extends Component {
               <a href="javascript:void(0)" onClick={p.queryDetail.bind(p, record)} style={{ marginRight: 10 }}>查看</a>
               <a href="javascript:void(0)" style={{ margin: '0 10px 0 0' }} onClick={p.showModal.bind(p, 'update', record.id)}>修改</a>
               <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, record.id)} >
-                <a href="javascript:void(0)" >删除</a>
+                <a href="javascript:void(0)" style={{ marginRight: 10 }}>删除</a>
               </Popconfirm>
+              <a href="javascript:void(0)" onClick={p.exportDetail.bind(p, record.id)} >导出</a>
             </div>);
         },
       },

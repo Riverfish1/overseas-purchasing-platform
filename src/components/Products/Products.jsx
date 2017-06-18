@@ -264,6 +264,7 @@ class Products extends Component {
               >
                 {getFieldDecorator('brand', {})(
                   <Select
+                    allowClear
                     placeholder="请输入品牌"
                     showSearch
                     optionFilterProp="children"

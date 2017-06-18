@@ -147,7 +147,7 @@ class Inout extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('operatorType', {})(
-                  <Select placeholder="请选择操作类型">
+                  <Select placeholder="请选择操作类型" allowClear>
                     <Option value={0}>采购入库</Option>
                     <Option value={1}>销售出库</Option>
                     <Option value={2}>在途入库</Option>

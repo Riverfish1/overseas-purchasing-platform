@@ -130,10 +130,25 @@ class ErpOrder extends Component {
       this.props.dispatch({ type: 'order/releaseInventory', payload: { id } });
     }
   }
-  handleEmpty() {
-    this.props.form.setFieldsValue({
-      erpNo: undefined,
-    });
+  handleEmpty(type) { // 清空内容
+    const { setFieldsValue } = this.props.form;
+    switch (type) {
+      case 'orderNo': setFieldsValue({ orderNo: undefined }); break;
+      case 'erpNo': setFieldsValue({ erpNo: undefined }); break;
+      case 'targetNo': setFieldsValue({ targetNo: undefined }); break;
+      case 'skuCode': setFieldsValue({ skuCode: undefined }); break;
+      case 'itemName': setFieldsValue({ itemName: undefined }); break;
+      case 'upc': setFieldsValue({ upc: undefined }); break;
+      default: return false;
+    }
+  }
+  showClear(type) { // 是否显示清除按钮
+    const { getFieldValue } = this.props.form;
+    const data = getFieldValue(type);
+    if (data) {
+      return <Icon type="close-circle" onClick={this.handleEmpty.bind(this, type)} />;
+    }
+    return null;
   }
   render() {
     const p = this;
@@ -260,8 +275,6 @@ class ErpOrder extends Component {
         p.handleSubmit(null, pageIndex);
       },
     };
-    const data = form.getFieldValue('erpNo');
-    const erpNoSuffix = data ? <Icon type="close-circle" onClick={p.handleEmpty.bind(p, 'erpNo')} /> : null;
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -272,7 +285,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('orderNo', {})(
-                  <Input placeholder="请输入" />,
+                  <Input placeholder="请输入" suffix={p.showClear('orderNo')} />,
                 )}
               </FormItem>
             </Col>
@@ -282,7 +295,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('erpNo', {})(
-                  <Input placeholder="请输入" suffix={erpNoSuffix} />)}
+                  <Input placeholder="请输入" suffix={p.showClear('erpNo')} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -291,7 +304,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('targetNo', {})(
-                  <Input placeholder="请输入" />,
+                  <Input placeholder="请输入" suffix={p.showClear('targetNo')} />,
                 )}
               </FormItem>
             </Col>
@@ -335,7 +348,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('skuCode', {})(
-                  <Input placeholder="请输入" />)}
+                  <Input placeholder="请输入" suffix={p.showClear('skuCode')} />)}
               </FormItem>
             </Col>
           </Row>
@@ -346,7 +359,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemName', {})(
-                  <Input placeholder="请输入" />)}
+                  <Input placeholder="请输入" suffix={p.showClear('itemName')} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -355,7 +368,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('upc', {})(
-                  <Input placeholder="请输入" />)}
+                  <Input placeholder="请输入" suffix={p.showClear('upc')} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -375,7 +388,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('salesName', {})(
-                  <Select placeholder="请选择销售" >
+                  <Select placeholder="请选择销售" allowClear>
                     {agencyList.map((el) => {
                       return <Option key={el.id} value={el.name}>{el.name}</Option>;
                     })}
@@ -413,7 +426,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('warehouseId', {})(
-                  <Select placeholder="请选择仓库" optionLabelProp="title">
+                  <Select placeholder="请选择仓库" optionLabelProp="title" allowClear>
                     {wareList.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>)}
               </FormItem>
@@ -453,7 +466,7 @@ class ErpOrder extends Component {
           rowKey={r => r.id}
           pagination={pagination}
           scroll={{ x: '130%' }}
-          bordered="true"
+          bordered={true}
         />
         <ErpOrderModal
           visible={modalVisible}

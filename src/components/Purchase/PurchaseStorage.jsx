@@ -185,7 +185,7 @@ class PurchaseStorage extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('buyerId', {})(
-                  <Select placeholder="请选择用户" optionLabelProp="title" combobox>
+                  <Select placeholder="请选择用户" optionLabelProp="title" combobox allowClear>
                     {buyer.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>)}
               </FormItem>
@@ -206,7 +206,7 @@ class PurchaseStorage extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('warehouseId', {})(
-                  <Select placeholder="请选择仓库" optionLabelProp="title">
+                  <Select placeholder="请选择仓库" optionLabelProp="title" allowClear>
                     {wareList.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>)}
               </FormItem>

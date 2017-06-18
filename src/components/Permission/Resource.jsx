@@ -136,7 +136,7 @@ class Resource extends Component {
                     rules: [{ required: true, message: '请输入资源类型' }],
                     initialValue: typeof (resourceModal.resourceType) === 'number' ? resourceModal.resourceType.toString() : undefined,
                   })(
-                    <Select placeholder="请输入资源类型" >
+                    <Select placeholder="请输入资源类型" allowClear>
                       <Option key="0" value="0">菜单</Option>
                       <Option key="1" value="1">按钮</Option>
                     </Select>,
@@ -157,7 +157,7 @@ class Resource extends Component {
                   {getFieldDecorator('openMode', {
                     initialValue: resourceModal.openMode || undefined,
                   })(
-                    <Select placeholder="请选择打开方式" >
+                    <Select placeholder="请选择打开方式" allowClear>
                       <Option key="ajax" value="ajax">ajax</Option>
                       <Option key="iframe" value="iframe">iframe</Option>
                     </Select>,
@@ -189,7 +189,7 @@ class Resource extends Component {
                     rules: [{ required: true, message: '请输入状态' }],
                     initialValue: typeof (resourceModal.status) === 'number' ? resourceModal.status.toString() : undefined,
                   })(
-                    <Select placeholder="请输入状态" >
+                    <Select placeholder="请输入状态" allowClear>
                       <Option key="0" value="0">正常</Option>
                       <Option key="1" value="1">停用</Option>
                     </Select>,

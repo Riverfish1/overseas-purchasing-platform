@@ -141,7 +141,7 @@ class InvoiceModal extends Component {
                     initialValue: data.logisticCompany || undefined,
                     rules: [{ required: true, message: '请选择' }],
                   })(
-                    <Select placeholder="请选择物流公司名称" >
+                    <Select placeholder="请选择物流公司名称" allowClear>
                       {deliveryCompanyList.map(v => (
                         <Option value={v.name} key={v.name}>{v.name}</Option>
                       ))}
@@ -159,7 +159,7 @@ class InvoiceModal extends Component {
                   {getFieldDecorator('status', {
                     initialValue: data.status ? data.status.toString() : '0',
                   })(
-                    <Select placeholder="请选择运单状态" >
+                    <Select placeholder="请选择运单状态" allowClear>
                       <Option value="0" key="0">新建</Option>
                       <Option value="1" key="1">已发货</Option>
                       <Option value="2" key="2">已收货</Option>

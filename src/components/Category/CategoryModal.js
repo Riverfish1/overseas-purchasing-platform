@@ -121,7 +121,7 @@ class CategoryModal extends Component {
                 {getFieldDecorator('status', {
                   initialValue: toString(cateModalData.status, 'SELECT'),
                 })(
-                  <Select placeholder="请输入状态" >
+                  <Select placeholder="请输入状态" allowClear>
                     <Option value="0">失效</Option>
                     <Option value="1">生效</Option>
                   </Select>)}

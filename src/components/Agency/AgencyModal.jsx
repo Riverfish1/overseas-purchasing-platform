@@ -107,7 +107,7 @@ class AgencyModal extends Component {
                   initialValue: toString(agencyData.typeName, 'SELECT'),
                   rules: [{ required: true, message: '请选择销售类别' }],
                 })(
-                  <Select placeholder="请选择销售名称" onChange={this.handleChange.bind(this)} >
+                  <Select placeholder="请选择销售名称" onChange={this.handleChange.bind(this)} allowClear>
                     {list.map((el, index) => <Option key={index} value={el.name}>{el.name}</Option>)}
                   </Select>,
                 )}

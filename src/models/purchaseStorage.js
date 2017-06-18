@@ -102,7 +102,7 @@ export default {
       }
     },
     * exportDetail({ payload }) {
-      window.open(`http://${location.host}/purchaseStorage/purchaseExport?id=${payload.id}`);
+      window.open(`http://${location.host}/haierp1/purchaseStorage/purchaseExport?id=${payload.id}`);
     },
   },
   reducers: {

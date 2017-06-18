@@ -136,6 +136,12 @@ class Purchase extends Component {
           },
         });
         break;
+      case 'create':
+        this.props.dispatch({
+          type: 'purchase/createByOrder',
+          payload: {},
+        });
+        break;
       default: return false;
     }
   }
@@ -290,16 +296,11 @@ class Purchase extends Component {
             </Col>
           </Row>
         </Form>
-        <Row>
-          <Col className="operBtn" span="20">
-            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增采购</Button>
-          </Col>
-          <Col span="2" className="operBtn">
-            <Button type="primary" size="large" disabled={isNotSelected} onClick={p.handlePurchaseAction.bind(p, 'finish')}>完成采购</Button>
-          </Col>
-          <Col span="2" className="operBtn">
-            <Button size="large" disabled={isNotSelected} onClick={p.handlePurchaseAction.bind(p, 'close')}>取消采购</Button>
-          </Col>
+        <Row className="operBtn">
+          <Button style={{ float: 'left' }} type="primary" size="large" onClick={p.showModal.bind(p)}>新增采购</Button>
+          <Button style={{ float: 'right', marginLeft: 10 }} type="primary" size="large" disabled={isNotSelected} onClick={p.handlePurchaseAction.bind(p, 'finish')}>完成采购</Button>
+          <Button style={{ float: 'right', marginLeft: 10 }} size="large" disabled={isNotSelected} onClick={p.handlePurchaseAction.bind(p, 'close')}>取消采购</Button>
+          <Button style={{ float: 'right', marginLeft: 10 }} size="large" onClick={p.handlePurchaseAction.bind(p, 'create')}>根据当前订单生成采购任务</Button>
         </Row>
         <Row>
           <Col>

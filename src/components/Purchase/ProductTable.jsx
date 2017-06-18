@@ -95,6 +95,7 @@ class ProductTable extends Component {
       skuData.push(newItem);
     }
     this.setState({ skuData });
+    this[`r_${currentId + 1}_skuCode`].focus();
   }
 
   handleDelete(key) {

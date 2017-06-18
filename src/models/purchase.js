@@ -11,6 +11,8 @@ const deletePurchase = ({ payload }) => fetch.post('/haierp1/purchase/delete', {
 const closeTaskDaily = ({ payload }) => fetch.post('/haierp1/purchase/closeTaskDaily', { data: payload }).catch(e => e);
 // 完成采购
 const finishTaskDaily = ({ payload }) => fetch.post('/haierp1/purchase/finishTaskDaily', { data: payload }).catch(e => e);
+// 根据当前订单生成采购任务
+const createByOrder = () => fetch.get('/haierp1/purchase/autoAddByOrder').catch(e => e);
 
 export default {
   namespace: 'purchase',
@@ -42,8 +44,8 @@ export default {
   effects: {
     * queryPurchaseList({ payload }, { call, put }) {
       const data = yield call(queryPurchaseList, { payload });
-      if (data.success) {
-        data.data && data.data.forEach((el) => {
+      if (data.success && data.data) {
+        data.data.forEach((el) => {
           const url = JSON.parse(decodeURIComponent(el.imageUrl).replace(/&quot;/g, '"')) || [];
           el.imageUrl = url.picList.length ? url.picList[0].url : '';
         });
@@ -90,6 +92,13 @@ export default {
     * deletePurchase({ payload }, { call, put }) {
       const data = yield call(deletePurchase, { payload });
       if (data.success) {
+        yield put({ type: 'queryPurchaseList', payload: {} });
+      }
+    },
+    * createByOrder({ payload }, { call, put }) {
+      const data = yield call(createByOrder);
+      if (data.success) {
+        message.success('生产采购任务成功');
         yield put({ type: 'queryPurchaseList', payload: {} });
       }
     },

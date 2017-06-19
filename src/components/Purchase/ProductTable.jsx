@@ -94,8 +94,94 @@ class ProductTable extends Component {
       };
       skuData.push(newItem);
     }
-    this.setState({ skuData });
-    this[`r_${currentId + 1}_skuCode`].focus();
+    this.setState({ skuData }, () => {
+      setTimeout(() => {
+        this[`r_${currentId}_skuCode`].focus();
+        this[`r_${currentId}_skuCode`].refs.input.click();
+      }, 0);
+    });
+  }
+
+  batchAddProduct(props, key) {
+    let { skuData } = this.state;
+    if (!skuData) skuData = [];
+    const skuLen = skuData ? skuData.length : 0;
+    const lastId = skuLen < 1 ? 0 : skuData[skuData.length - 1].key;
+    const looptime = props.length;
+
+    const batchUpdateFormValues = {};
+
+    let currentId = parseInt(lastId, 10);
+
+    // 当前先选择一把
+    this.props.skuList.forEach((value) => {
+      if (value.skuCode.toString() === props[0].skuCode.toString()) {
+        skuData.forEach((el) => {
+          if (el.key.toString() === props[0].key.toString()) {
+            el.skuId = value.id;
+            el.skuCode = value.skuCode;
+            el.skuPic = value.skuPic;
+            el.purchaseNeed = value.purchaseNeed || undefined;
+          }
+        });
+        batchUpdateFormValues[`r_${props[0].key}_skuId`] = value.id;
+        batchUpdateFormValues[`r_${props[0].key}_skuCode`] = value.skuCode;
+        batchUpdateFormValues[`r_${props[0].key}_count`] = value.purchaseNeed;
+      }
+    });
+
+    // 再进行追加
+    for (let i = 1; i < looptime; i += 1) {
+      // 检验重复
+      let isDuplicated = false;
+      for (let j = 0; j < skuData.length; j += 1) {
+        if (skuData[j].skuCode.toString() === props[i].skuCode.toString()) {
+          isDuplicated = true;
+          break;
+        }
+      }
+      if (!isDuplicated) {
+        currentId += 1;
+        const newId = currentId;
+        const newItem = {
+          id: '',
+          key: newId,
+          skuCode: '',
+          skuId: '',
+          itemName: '',
+          color: '',
+          scale: '',
+          salePrice: '',
+          freight: '',
+          quantity: '',
+        };
+
+        this.props.skuList.forEach((value) => {
+          if (value.skuCode.toString() === props[i].skuCode.toString()) {
+            newItem.skuId = value.id;
+            newItem.skuCode = value.skuCode;
+            newItem.skuPic = value.skuPic;
+            newItem.purchaseNeed = value.purchaseNeed || undefined;
+
+            batchUpdateFormValues[`r_${props[i].key}_skuId`] = value.id;
+            batchUpdateFormValues[`r_${props[i].key}_skuCode`] = value.skuCode;
+            batchUpdateFormValues[`r_${props[i].key}_count`] = value.purchaseNeed;
+          }
+        });
+
+        skuData.push(newItem);
+      }
+    }
+
+    this.setState({ skuData }, () => {
+      this.props.form.setFieldsValue(batchUpdateFormValues);
+      setTimeout(() => {
+        this[`r_${key}_skuCode`].refs.input.click();
+        setTimeout(() => {
+          this.clearSelectedSku();
+        }, 500);
+      }, 0);
+    });
   }
 
   handleDelete(key) {
@@ -262,6 +348,7 @@ class ProductTable extends Component {
 
       function batchSelectSku() {
         const { selectedSku } = p.state;
+        const batchSelectParams = [];
         setTimeout(() => {
           let j = -1;
           for (let i = 0; i < selectedSku.length; i += 1) {
@@ -270,16 +357,16 @@ class ProductTable extends Component {
               continue;
             }
             j += 1;
-            if (j === 0 && !(skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0)) {
-              setTimeout(() => { updateValue(selectedSku[i]); }, 0);
-            } else {
-              p.addProduct(1);
-              p.handleSelect(key + j, selectedSku[i].skuCode);
-            }
+
+            batchSelectParams.push({ key: key + j, skuCode: selectedSku[i].skuCode });
+            // if (j === 0 && !(skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0)) {
+            //   setTimeout(() => { updateValue(selectedSku[i]); }, 0);
+            // } else {
+            //   p.addProduct(1);
+            //   p.handleSelect(key + j, selectedSku[i].skuCode);
+            // }
           }
-          setTimeout(() => {
-            p.clearSelectedSku();
-          }, 0);
+          p.batchAddProduct(batchSelectParams, key);
         }, 0);
       }
 

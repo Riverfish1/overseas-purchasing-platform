@@ -305,7 +305,7 @@ class Products extends Component {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col className="table-wrapper">
             <Table
               columns={columns}
               dataSource={productsList}
@@ -316,6 +316,7 @@ class Products extends Component {
               rowSelection={rowSelection}
             />
           </Col>
+          <Col className="table-placeholder" />
         </Row>
         <ProductsModal
           visible={this.state.modalVisible}

@@ -42,7 +42,6 @@ class PurchaseModal extends Component {
 
   componentWillReceiveProps(...args) {
     const { purchaseStorageData, dispatch } = args[0];
-    console.log(purchaseStorageData);
     if (purchaseStorageData && purchaseStorageData.purchaseStorageDetailList && firstLoad) {
       this.setState({ storageList: purchaseStorageData.purchaseStorageDetailList, id: purchaseStorageData.id });
       dispatch({ type: 'purchaseStorage/queryBuyerTaskList', payload: { buyerId: purchaseStorageData.buyerId } });
@@ -101,7 +100,6 @@ class PurchaseModal extends Component {
     const { form, dispatch } = p.props;
     // TODO: 上传的是skuid
     form.validateFieldsAndScroll((err, fieldsValue) => {
-      console.log(fieldsValue, p.state.id);
       if (err) { return; }
       const storageList = p.state.storageList;
       if (storageList.length < 1) {
@@ -113,7 +111,6 @@ class PurchaseModal extends Component {
       fieldsValue.purchaseStorageDetails = JSON.stringify(storageList.map((el) => {
         const item = {};
         item.skuId = restoreSkuId(el.skuId);
-
         if (el.id) item.id = el.id;
 
         if (!checkPassed(el.price) || !checkPassed(el.shelfNo)) {
@@ -255,7 +252,7 @@ class PurchaseModal extends Component {
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 70 },
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
-      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 90, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="80" height="80" /> : '无'; } },
+      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 100, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="100" height="100" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 50 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 50 },
       { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
@@ -265,9 +262,8 @@ class PurchaseModal extends Component {
         key: 'quantity',
         width: 70,
         render(t, r) {
-          console.log(r);
           const quantity = r.count - r.inCount;
-          return <InputNumber min={1} step="1" placeholder="输入" value={(quantity && quantity > 0) ? quantity : 0} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
+          return <InputNumber min={1} step="1" placeholder="输入" defaultValue={(quantity && quantity > 0) ? quantity : 0} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
         },
       },
       { title: '在途数量',

@@ -58,7 +58,10 @@ class PurchaseModal extends Component {
     this.state.selectedRowKeys.forEach((key) => {
       const realKey = key.split('__')[0];
       const res = this.props.buyerTaskList.filter(el => el.skuId.toString() === realKey.toString());
-      if (res.length > 0) storageList.push(res[0]);
+      if (res.length > 0) {
+        res[0].type = 'add';
+        storageList.push(res[0]);
+      }
     });
     this.setState({ storageList, selectedRowKeys: [] });
   }
@@ -126,8 +129,8 @@ class PurchaseModal extends Component {
           item.transQuantity = el.transQuantity || 0;
           item.price = el.price;
           item.shelfNo = el.shelfNo;
-          item.taskDailyDetailId = el.taskDetailId;
-          item.taskDailyCount = el.count;
+          item.taskDailyDetailId = el.taskDailyDetailId;
+          item.taskDailyCount = el.taskDailyCount;
           return item;
         }
       }));
@@ -244,7 +247,7 @@ class PurchaseModal extends Component {
       { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 100, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="80" height="80" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 40 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 44 },
-      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 60 },
+      { title: '计划采购数', dataIndex: 'taskDailyCount', key: 'taskDailyCount', width: 60 },
       { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
     ];
 
@@ -262,8 +265,11 @@ class PurchaseModal extends Component {
         key: 'quantity',
         width: 70,
         render(t, r) {
-          const quantity = r.count - r.inCount;
-          return <InputNumber min={1} step="1" placeholder="输入" defaultValue={(quantity && quantity > 0) ? quantity : 0} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
+          let quantity;
+          if (r.type === 'add') quantity = r.count - r.inCount;
+          else quantity = t;
+          const defaultQuantity = (quantity && quantity > 0) ? quantity : 0;
+          return <InputNumber min={1} step="1" placeholder="输入" defaultValue={defaultQuantity} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
         },
       },
       { title: '在途数量',

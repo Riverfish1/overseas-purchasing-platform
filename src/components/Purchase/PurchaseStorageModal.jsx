@@ -252,7 +252,7 @@ class PurchaseModal extends Component {
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 70 },
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
-      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 100, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="100" height="100" /> : '无'; } },
+      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 100, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="80" height="80" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 50 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 50 },
       { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
@@ -382,7 +382,7 @@ class PurchaseModal extends Component {
                 <Col span="12"><Input placeholder="输入SKU代码或UPC码添加" size="large" ref={(c) => { this.upcInput = c; }} /></Col>
                 <Col span="6" style={{ marginLeft: 10 }}><Button type="primary" size="large" onClick={this.queryUpc.bind(this)}>添加</Button></Col>
               </Row>
-              <Table columns={columnsStorageList} bordered scroll={{ x: '140%', y: 500 }} dataSource={storageList} rowKey={r => r.id} pagination={false} />
+              <Table columns={columnsStorageList} bordered scroll={{ x: '160%', y: 500 }} dataSource={storageList} rowKey={r => r.id} pagination={false} />
             </Col>
           </Row>
         </Form>

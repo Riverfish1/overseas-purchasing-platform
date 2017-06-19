@@ -6,6 +6,7 @@ const updateOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/update', { 
 const deleteOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/delete', { data: payload }).catch(e => e);
 const queryOrderList = ({ payload }) => fetch.post('/haierp1/outerOrder/queryOuterOrderList', { data: payload }).catch(e => e);
 const queryOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/query', { data: payload }).catch(e => e);
+const queryOrderDetail = ({ payload }) => fetch.post('/haierp1/outerOrder/erpStockup', { data: payload }).catch(e => e);
 const confirmOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/confirm', { data: payload }).catch(e => e);
 const closeOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/close', { data: payload }).catch(e => e);
 // erp
@@ -19,7 +20,7 @@ const closeErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/close', { d
 const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/splitErpOrder', { data: payload }).catch(e => e);
 // 重分配库存
 const replayAssign = ({ payload }) => fetch.post('/haierp1/erpOrder/replayAssign', { data: payload }).catch(e => e);
-// 批量发货
+// 发货
 const multiDelivery = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDelivery', { data: payload }).catch(e => e);
 // 发货单查询
 const queryShippingOrderList = ({ payload }) => fetch.post('/haierp1/shippingOrder/query', { data: payload }).catch(e => e);
@@ -38,8 +39,8 @@ export default {
   namespace: 'order',
   state: {
     orderList: [],
+    orderDetailList: [],
     orderTotal: 1,
-    orderSkuSnip: {},
     currentPage: 1,
     orderValues: {},
     // erp
@@ -65,8 +66,8 @@ export default {
     saveOrder(state, { payload }) {
       return { ...state, orderValues: payload };
     },
-    saveOrderSkuSnip(state, { payload }) {
-      return { ...state, orderSkuSnip: payload };
+    saveOrderDetail(state, { payload }) {
+      return { ...state, orderDetailList: payload.data };
     },
     // erp
     saveErpCurrentPage(state, { payload }) {
@@ -137,20 +138,21 @@ export default {
     },
     * queryOrder({ payload }, { call, put }) {
       const newPayload = { ...payload };
-      delete newPayload.type;
       const data = yield call(queryOrder, { payload: newPayload });
       if (data.success) {
-        if (payload.type === 'snip') {
-          yield put({
-            type: 'saveOrderSkuSnip',
-            payload: data,
-          });
-        } else {
-          yield put({
-            type: 'saveOrder',
-            payload: data,
-          });
-        }
+        yield put({
+          type: 'saveOrder',
+          payload: data,
+        });
+      }
+    },
+    * queryOrderDetail({ payload }, { call, put }) {
+      const data = yield call(queryOrderDetail, { payload });
+      if (data.success) {
+        yield put({
+          type: 'saveOrderDetail',
+          payload: data,
+        });
       }
     },
     * queryOrderList({ payload }, { call, put, select }) { // 订单管理列表
@@ -285,10 +287,10 @@ export default {
     * multiDelivery({ payload, callback }, { call, put }) {
       const data = yield call(multiDelivery, { payload });
       if (data.success) {
-        message.success('批量发货完成');
+        message.success('发货完成');
         if (callback) callback();
         yield put({
-          type: 'queryShippingOrderList',
+          type: 'queryErpOrderList',
           payload: {},
         });
       }

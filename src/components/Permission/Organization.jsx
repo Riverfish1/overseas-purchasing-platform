@@ -153,7 +153,7 @@ class Organization extends Component {
                   {getFieldDecorator('pid', {
                     initialValue: orgModal.pid ? orgModal.pid.toString() : undefined,
                   })(
-                    <Select placeholder="请选择上级部门">
+                    <Select placeholder="请选择上级部门" allowClear>
                       {orgList.map(el => <Option key={el.id} value={el.id.toString()}>{el.name}</Option>)}
                     </Select>,
                   )}

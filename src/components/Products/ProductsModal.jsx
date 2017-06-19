@@ -351,6 +351,7 @@ class ProductsModal extends Component {
                       rules: [{ required: true, message: '请输入品牌' }],
                     })(
                       <Select
+                        allowClear
                         placeholder="请输入品牌"
                         showSearch
                         optionFilterProp="children"
@@ -372,7 +373,7 @@ class ProductsModal extends Component {
                       initialValue: toString(productData.country, 'SELECT'),
                       rules: [{ required: true, message: '请选择国家' }],
                     })(
-                      <Select placeholder="请选择国家">
+                      <Select placeholder="请选择国家" allowClear>
                         <Option value="1">美国</Option>
                         <Option value="2">德国</Option>
                         <Option value="3">日本</Option>
@@ -390,7 +391,7 @@ class ProductsModal extends Component {
                       initialValue: toString(productData.currency, 'SELECT'),
                       rules: [{ required: true, message: '请选择币种' }],
                     })(
-                      <Select placeholder="请选择币种">
+                      <Select placeholder="请选择币种" allowClear>
                         <Option value="1">人民币</Option>
                         <Option value="2">美元</Option>
                       </Select>,
@@ -406,7 +407,7 @@ class ProductsModal extends Component {
                       initialValue: toString(productData.idCard, 'SELECT'),
                       rules: [{ required: true, message: '请选择是否身份证' }],
                     })(
-                      <Select placeholder="请选择是否身份证">
+                      <Select placeholder="请选择是否身份证" allowClear>
                         <Option value="1">是</Option>
                         <Option value="0">否</Option>
                       </Select>,
@@ -581,7 +582,7 @@ class ProductsModal extends Component {
                       initialValue: mainPicNum,
                       rules: [{ validator: this.checkMainPicNum.bind(this) }],
                     })(
-                      <Select placeholder="请选择主图">
+                      <Select placeholder="请选择主图" allowClear>
                         {fileListSource.map((el, index) => (
                           <Option key={index} value={(index + 1).toString()}>{`图片${index + 1}`}</Option>
                         ))}

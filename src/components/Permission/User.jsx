@@ -188,7 +188,7 @@ class Resource extends Component {
                     rules: [{ required: true, message: '请选择性别' }],
                     initialValue: !isNull(userModal.sex) ? userModal.sex.toString() : undefined,
                   })(
-                    <Select placeholder="请选择性别">
+                    <Select placeholder="请选择性别" allowClear>
                       <Option value="1">男</Option>
                       <Option value="2">女</Option>
                     </Select>,
@@ -211,7 +211,7 @@ class Resource extends Component {
                     rules: [{ required: true, message: '请输入用户类别' }],
                     initialValue: typeof (userModal.userType) === 'number' ? userModal.userType.toString() : undefined,
                   })(
-                    <Select placeholder="请输入用户类别">
+                    <Select placeholder="请输入用户类别" allowClear>
                       <Option value="1">用户</Option>
                       <Option value="0">管理员</Option>
                     </Select>,
@@ -224,7 +224,7 @@ class Resource extends Component {
                     rules: [{ required: true, message: '请选择部门' }],
                     initialValue: userModal.organizationId ? userModal.organizationId.toString() : undefined,
                   })(
-                    <Select placeholder="请选择部门">
+                    <Select placeholder="请选择部门" allowClear>
                       {orgList.map(el => <Option key={el.id} value={el.id.toString()}>{el.name}</Option>)}
                     </Select>,
                   )}
@@ -236,7 +236,7 @@ class Resource extends Component {
                     rules: [{ required: true, message: '请选择角色' }],
                     initialValue: _roleIds,
                   })(
-                    <Select placeholder="请选择角色" mode="multiple">
+                    <Select placeholder="请选择角色" mode="multiple" allowClear>
                       {roleList.map(el => <Option key={el.id} value={el.id.toString()}>{el.name}</Option>)}
                     </Select>,
                   )}
@@ -258,7 +258,7 @@ class Resource extends Component {
                     rules: [{ required: true, message: '请选择状态' }],
                     initialValue: !isNull(userModal.status) ? userModal.status.toString() : undefined,
                   })(
-                    <Select placeholder="请选择状态">
+                    <Select placeholder="请选择状态" allowClear>
                       <Option value="0">正常</Option>
                       <Option value="1">停用</Option>
                     </Select>,

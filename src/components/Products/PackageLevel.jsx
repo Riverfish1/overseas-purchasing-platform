@@ -171,7 +171,7 @@ class PackageLevel extends Component {
                 initialValue: toString(modalValues.packageId, 'SELECT'),
                 rules: [{ required: true, message: '请选择包装规格类别名称' }],
               })(
-                <Select placeholder="请选择包装规格类别名称" onChange={this.handleSelectScale.bind(this)} optionLabelProp="title" >
+                <Select placeholder="请选择包装规格类别名称" onChange={this.handleSelectScale.bind(this)} optionLabelProp="title" allowClear>
                   {scaleList.map(el => <Option key={el.name} value={el.id.toString()} title={el.name}>{el.name}</Option>)}
                 </Select>,
               )}
@@ -206,7 +206,7 @@ class PackageLevel extends Component {
                 initialValue: toString(modalValues.packageLevel, 'SELECT'),
                 rules: [{ required: true, message: '请输入包装级别' }],
               })(
-                <Select placeholder="请输入包装级别" >
+                <Select placeholder="请输入包装级别" allowClear>
                   <Option key="1">一级</Option>
                   <Option key="2">二级</Option>
                   <Option key="3">三级</Option>

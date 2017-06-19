@@ -62,7 +62,6 @@ class Inout extends Component {
           if (text) {
             const imgObj = JSON.parse(text);
             imgUrl = imgObj.picList[0].url;
-            console.log(imgUrl);
             return (
               <Popover title={null} content={content}>
                 <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />
@@ -73,7 +72,7 @@ class Inout extends Component {
         },
       },
       { title: '仓库名称', dataIndex: 'warehouseName', key: 'warehouseName', width: 80, render(text) { return text || '-'; } },
-      { title: '货位号', dataIndex: 'positionNo', key: 'positionNo', width: 50, render(text) { return text || '-'; } },
+      { title: '货架号', dataIndex: 'positionNo', key: 'positionNo', width: 50, render(text) { return text || '-'; } },
       { title: '数量', dataIndex: 'quantity', key: 'quantity', width: 50, render(text) { return text || '-'; } },
       { title: '操作类型',
         dataIndex: 'operatorType',
@@ -84,8 +83,8 @@ class Inout extends Component {
             case 0: return '采购入库';
             case 1: return '销售出库';
             case 2: return '在途入库';
-            case 3: return '库存盘出';
-            case 4: return '库存盘入';
+            case 3: return '库存盘入';
+            case 4: return '库存盘出';
             default: return '-';
           }
         },
@@ -110,7 +109,7 @@ class Inout extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('warehouseId', {})(
-                  <Select placeholder="请选择仓库" optionLabelProp="title" combobox>
+                  <Select placeholder="请选择仓库" optionLabelProp="title" allowClear>
                     {wareList.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>)}
               </FormItem>
@@ -148,22 +147,22 @@ class Inout extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('operatorType', {})(
-                  <Select placeholder="请选择操作类型">
+                  <Select placeholder="请选择操作类型" allowClear>
                     <Option value={0}>采购入库</Option>
                     <Option value={1}>销售出库</Option>
                     <Option value={2}>在途入库</Option>
-                    <Option value={3}>库存盘出</Option>
-                    <Option value={4}>库存盘入</Option>
+                    <Option value={3}>库存盘入</Option>
+                    <Option value={4}>库存盘出</Option>
                   </Select>)}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
-                label="货位号"
+                label="货架号"
                 {...formItemLayout}
               >
                 {getFieldDecorator('positionNo', {})(
-                  <Input placeholder="请输入货位号" />,
+                  <Input placeholder="请输入货架号" />,
                 )}
               </FormItem>
             </Col>

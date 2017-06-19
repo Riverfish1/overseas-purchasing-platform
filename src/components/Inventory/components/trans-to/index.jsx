@@ -3,7 +3,7 @@ import { Form, Input, Button, Popover, InputNumber } from 'antd';
 
 const FormItem = Form.Item;
 
-export default class extends Component {
+export default class TransTo extends Component {
   constructor() {
     super();
     this.state = {
@@ -17,14 +17,14 @@ export default class extends Component {
   }
   submit() {
     const { record, form } = this.props;
-    console.log(record);
     form.validateFields((err, values) => {
       if (err) return;
-      delete values.quantity;
+      const positionNo = values.no;
+      const toTrans = values.toTrans;
       this.toggleVisible();
       this.props.dispatch({
         type: 'inventory/transTo',
-        payload: { ...values, inventoryAreaId: record.id },
+        payload: { positionNo, toTrans, inventoryAreaId: record.id },
       });
     });
   }
@@ -52,7 +52,7 @@ export default class extends Component {
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 17 }}
           >
-            {getFieldDecorator('positionNo', {
+            {getFieldDecorator('no', {
               initialValue: record.positionNo,
               rules: [{ required: true, message: '请输入' }],
             })(

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm, Popover } from 'antd';
+import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm, Popover, Icon } from 'antd';
 import OrderModal from './OrderModal';
 
 const FormItem = Form.Item;
@@ -30,8 +30,8 @@ class Order extends Component {
           return;
         }
         if (fieldsValue.orderTime && fieldsValue.orderTime[0] && fieldsValue.orderTime[1]) {
-          fieldsValue.startOrderTime = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
-          fieldsValue.endOrderTime = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
+          fieldsValue.startGmtCreate = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
+          fieldsValue.endGmtCreate = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
         }
         delete fieldsValue.orderTime;
         this.props.dispatch({
@@ -99,8 +99,8 @@ class Order extends Component {
       visible: true,
     }, () => {
       p.props.dispatch({
-        type: 'order/queryOrder',
-        payload: { id: record.id, type: 'snip' },
+        type: 'order/queryOrderDetail',
+        payload: { id: record.id },
       });
     });
   }
@@ -112,9 +112,32 @@ class Order extends Component {
     });
   }
 
+  handleEmptyInput(type) { // 清空内容
+    const { setFieldsValue } = this.props.form;
+    switch (type) {
+      case 'orderNo': setFieldsValue({ orderNo: undefined }); break;
+      case 'targetNo': setFieldsValue({ targetNo: undefined }); break;
+      case 'skuCode': setFieldsValue({ skuCode: undefined }); break;
+      case 'itemName': setFieldsValue({ itemName: undefined }); break;
+      case 'upc': setFieldsValue({ upc: undefined }); break;
+      case 'receiver': setFieldsValue({ receiver: undefined }); break;
+      case 'telephone': setFieldsValue({ telephone: undefined }); break;
+      default: return false;
+    }
+  }
+
+  showClear(type) { // 是否显示清除按钮
+    const { getFieldValue } = this.props.form;
+    const data = getFieldValue(type);
+    if (data) {
+      return <Icon type="close-circle" onClick={this.handleEmptyInput.bind(this, type)} />;
+    }
+    return null;
+  }
+
   render() {
     const p = this;
-    const { form, dispatch, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, agencyList = [] } = p.props;
+    const { form, dispatch, orderList = [], orderTotal, currentPage, orderValues = {}, agencyList = [], orderDetailList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { title, visible, isNotSelected, modalVisible } = p.state;
     const formItemLayout = {
@@ -134,8 +157,8 @@ class Order extends Component {
         render(text) {
           switch (text) {
             case 0: return '新建';
-            case 1: return '确认';
-            case 2: return '已发货';
+            case 1: return '部分发货';
+            case 2: return '全部发货';
             case -1: return '已关闭';
             default: return '-';
           }
@@ -160,7 +183,7 @@ class Order extends Component {
         render(text, record) {
           return (
             <div>
-              <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>订单明细</a>
+              {record.status !== -1 && <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>订单明细</a>}
               <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
               <Popconfirm title="确定删除此订单？" onConfirm={p.handleDelete.bind(p, record.id)}>
                 <a href="javascript:void(0)" style={{ marginRight: '10px' }}>删除</a>
@@ -213,6 +236,36 @@ class Order extends Component {
           );
         },
       },
+      { title: '订单状态',
+        dataIndex: 'status',
+        key: 'status',
+        render(text) {
+          switch (text) {
+            case 0: return '新建';
+            case 1: return '部分发货';
+            case 2: return '全部发货';
+            case -1: return '已关闭';
+            default: return '-';
+          }
+        },
+      },
+      {
+        title: '备货状态',
+        dataIndex: 'stockStatus',
+        key: 'stockStatus',
+        render(text) {
+          switch (text) {
+            case 0: return '未备货';
+            case 1: return '部分备货';
+            case 2: return '部分在途备货';
+            case 3: return '全部在途备货';
+            case 4: return '混合备货完成';
+            case 9: return '已释放';
+            case 10: return '已备货';
+            default: return '-';
+          }
+        },
+      },
       {
         title: '颜色',
         dataIndex: 'color',
@@ -235,19 +288,19 @@ class Order extends Component {
         title: '销售价',
         dataIndex: 'salePrice',
         key: 'salePrice',
-        render(text) { return text || '-'; },
+        render(text) { return text || 0; },
       },
       {
         title: '运费',
         dataIndex: 'freight',
-        key: '10',
-        render(text) { return text || '-'; },
+        key: 'freight',
+        render(text) { return text || 0; },
       },
       {
         title: '数量',
         dataIndex: 'quantity',
-        key: '11',
-        render(text) { return text || '-'; },
+        key: 'quantity',
+        render(text) { return text || 0; },
       },
       {
         title: '商品名称',
@@ -258,7 +311,7 @@ class Order extends Component {
     ];
 
     const modalProps = {
-      title: `订单编号：${(orderSkuSnip.data && orderSkuSnip.data.orderNo) || '-'}`,
+      title: `订单编号：${(orderDetailList && orderDetailList[0] && orderDetailList[0].orderNo) || '-'}`,
       footer: null,
       visible,
       width: 1200,
@@ -279,7 +332,7 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('orderNo', {})(
-                  <Input placeholder="请输入主订单号" />)}
+                  <Input placeholder="请输入主订单号" suffix={p.showClear('orderNo')} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -288,7 +341,7 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('targetNo', {})(
-                  <Input placeholder="请输入外部订单号" />)}
+                  <Input placeholder="请输入外部订单号" suffix={p.showClear('targetNo')} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -299,10 +352,11 @@ class Order extends Component {
                 {getFieldDecorator('status', {
                   initialValue: '10',
                 })(
-                  <Select placeholder="请选择订单状态">
+                  <Select placeholder="请选择订单状态" >
                     <Option value="10">全部</Option>
                     <Option value="0">新建</Option>
-                    <Option value="2">已发货</Option>
+                    <Option value="1">部分发货</Option>
+                    <Option value="2">全部发货</Option>
                     <Option value="-1">已关闭</Option>
                   </Select>,
                 )}
@@ -316,7 +370,7 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('receiver', {})(
-                  <Input placeholder="请输入收件人" />)}
+                  <Input placeholder="请输入收件人" suffix={p.showClear('receiver')} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -325,7 +379,7 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('telephone', {})(
-                  <Input placeholder="请输入联系电话" />)}
+                  <Input placeholder="请输入联系电话" suffix={p.showClear('telephone')} />)}
               </FormItem>
             </Col>
             <Col span={8}>
@@ -334,7 +388,7 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('salesName', {})(
-                  <Select placeholder="请选择销售" >
+                  <Select placeholder="请选择销售" allowClear>
                     {agencyList.map((el) => {
                       return <Option key={el.id} value={el.name}>{el.name}</Option>;
                     })}
@@ -350,7 +404,7 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('upc', {})(
-                  <Input placeholder="请输入UPC代码" />)}
+                  <Input placeholder="请输入UPC代码" suffix={p.showClear('upc')} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -359,7 +413,7 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemName', {})(
-                  <Input placeholder="请输入商品名称" />)}
+                  <Input placeholder="请输入商品名称" suffix={p.showClear('itemName')} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -368,14 +422,14 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('skuCode', {})(
-                  <Input placeholder="请输入SKU代码" />)}
+                  <Input placeholder="请输入SKU代码" suffix={p.showClear('skuCode')} />)}
               </FormItem>
             </Col>
           </Row>
           <Row gutter={20} style={{ width: 800 }}>
             <Col style={{ marginLeft: 6 }}>
               <FormItem
-                label="销售时间范围"
+                label="创建时间范围"
                 labelCol={{ span: 3 }}
               >
                 {getFieldDecorator('orderTime', {})(<RangePicker />)}
@@ -416,12 +470,12 @@ class Order extends Component {
         <Modal {...modalProps}>
           <Table
             columns={skuColumns}
-            dataSource={orderSkuSnip.data && orderSkuSnip.data.outerOrderDetails}
+            dataSource={orderDetailList}
             bordered
             size="large"
             rowKey={record => record.id}
             pagination={false}
-            scroll={{ x: '130%', y: 500 }}
+            scroll={{ x: '130%' }}
           />
         </Modal>
         <OrderModal
@@ -438,15 +492,15 @@ class Order extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList, orderTotal, currentPage, orderValues, orderSkuSnip } = state.order;
+  const { orderList, orderTotal, currentPage, orderValues, orderDetailList } = state.order;
   const { list } = state.agency;
   return {
     orderList,
     orderTotal,
     currentPage,
     orderValues,
-    orderSkuSnip,
     agencyList: list,
+    orderDetailList,
   };
 }
 

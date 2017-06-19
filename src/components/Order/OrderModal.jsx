@@ -161,7 +161,7 @@ class OrderModal extends Component {
                   initialValue: orderData.salesId ? orderData.salesId.toString() : undefined,
                   rules: [{ required: true, message: '请选择销售' }],
                 })(
-                  <Select placeholder="请选择销售" >
+                  <Select placeholder="请选择销售" allowClear>
                     {agencyList.map((el) => {
                       return <Option key={el.id} value={el.id && el.id.toString()}>{el.name}</Option>;
                     })}
@@ -242,7 +242,7 @@ class OrderModal extends Component {
                   initialValue: orderData.platformType && orderData.platformType.toString(),
                   rules: [{ required: true, message: '请选择销售来源' }],
                 })(
-                  <Select placeholder="请选择销售来源">
+                  <Select placeholder="请选择销售来源" allowClear>
                     <Option key="1">有赞</Option>
                     <Option key="2">微信</Option>
                     <Option key="10">其他</Option>
@@ -258,7 +258,7 @@ class OrderModal extends Component {
                 {getFieldDecorator('payType', {
                   initialValue: orderData.payType || undefined,
                 })(
-                  <Select placeholder="请选择支付方式">
+                  <Select placeholder="请选择支付方式" allowClear>
                     <Option key="0">微信自有支付</Option>
                     <Option key="1">微信代销支付</Option>
                     <Option key="2">支付宝支付</Option>

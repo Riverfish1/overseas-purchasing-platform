@@ -27,7 +27,7 @@ class PurchaseStorage extends Component {
       title: '确认将选中项批量入库？',
       content: '操作不可撤回，请预先核对',
       onOk() {
-        p.props.dispatch({ type: 'purchaseStorage/multiConfirmStorage', payload: { ids: p.state.selectedRowKeys } });
+        p.props.dispatch({ type: 'purchaseStorage/multiConfirmStorage', payload: { ids: JSON.stringify(p.state.selectedRowKeys) } });
         p.setState({ selectedRowKeys: [] });
       },
     });
@@ -94,6 +94,13 @@ class PurchaseStorage extends Component {
     });
   }
 
+  exportDetail(id) {
+    this.props.dispatch({
+      type: 'purchaseStorage/exportDetail',
+      payload: { id },
+    });
+  }
+
   render() {
     const p = this;
     const { form, list = [], total, buyer = [], wareList = [], showModal, editInfo = {}, buyerTaskList = [] } = p.props;
@@ -122,8 +129,9 @@ class PurchaseStorage extends Component {
               <a href="javascript:void(0)" onClick={p.queryDetail.bind(p, record)} style={{ marginRight: 10 }}>查看</a>
               <a href="javascript:void(0)" style={{ margin: '0 10px 0 0' }} onClick={p.showModal.bind(p, 'update', record.id)}>修改</a>
               <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, record.id)} >
-                <a href="javascript:void(0)" >删除</a>
+                <a href="javascript:void(0)" style={{ marginRight: 10 }}>删除</a>
               </Popconfirm>
+              <a href="javascript:void(0)" onClick={p.exportDetail.bind(p, record.id)} >导出</a>
             </div>);
         },
       },
@@ -185,7 +193,7 @@ class PurchaseStorage extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('buyerId', {})(
-                  <Select placeholder="请选择用户" optionLabelProp="title" combobox>
+                  <Select placeholder="请选择用户" optionLabelProp="title" combobox allowClear>
                     {buyer.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>)}
               </FormItem>
@@ -206,7 +214,7 @@ class PurchaseStorage extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('warehouseId', {})(
-                  <Select placeholder="请选择仓库" optionLabelProp="title" combobox>
+                  <Select placeholder="请选择仓库" optionLabelProp="title" allowClear>
                     {wareList.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>)}
               </FormItem>

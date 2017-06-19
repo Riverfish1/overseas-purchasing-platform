@@ -111,7 +111,6 @@ class PurchaseModal extends Component {
       fieldsValue.purchaseStorageDetails = JSON.stringify(storageList.map((el) => {
         const item = {};
         item.skuId = restoreSkuId(el.skuId);
-
         if (el.id) item.id = el.id;
 
         if (!checkPassed(el.price) || !checkPassed(el.shelfNo)) {
@@ -242,10 +241,10 @@ class PurchaseModal extends Component {
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 50 },
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
-      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 44, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="32" height="32" /> : '无'; } },
+      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 100, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="80" height="80" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 40 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 44 },
-      { title: '采购数', dataIndex: 'count', key: 'count', width: 60 },
+      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 60 },
       { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
     ];
 
@@ -253,16 +252,18 @@ class PurchaseModal extends Component {
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 70 },
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
-      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 44, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="32" height="32" /> : '无'; } },
+      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 100, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="80" height="80" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 50 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 50 },
+      { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
       { title: '计划采购数', dataIndex: 'count', key: 'count', width: 60, render(t, r) { return t || r.taskDailyCount; } },
       { title: '数量',
         dataIndex: 'quantity',
         key: 'quantity',
         width: 70,
         render(t, r) {
-          return <InputNumber min={1} step="1" placeholder="输入" value={t} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
+          const quantity = r.count - r.inCount;
+          return <InputNumber min={1} step="1" placeholder="输入" defaultValue={(quantity && quantity > 0) ? quantity : 0} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
         },
       },
       { title: '在途数量',
@@ -347,7 +348,7 @@ class PurchaseModal extends Component {
                   initialValue: toString(purchaseStorageData.warehouseId, 'SELECT'),
                   rules: [{ required: true, message: '请选择仓库' }],
                 })(
-                  <Select placeholder="请选择仓库" optionLabelProp="title" combobox>
+                  <Select placeholder="请选择仓库" optionLabelProp="title">
                     {wareList.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>)}
               </FormItem>
@@ -373,7 +374,7 @@ class PurchaseModal extends Component {
               <Row style={{ margin: '10px 0' }}>
                 <Col><Button type="primary" size="large" style={{ float: 'right' }} onClick={this.sendToRight.bind(this)} disabled={selectedRowKeys.length < 1}>移到右边</Button></Col>
               </Row>
-              <Table columns={columnsTaskList} bordered scroll={{ x: '130%' }} dataSource={filteredBuyerTask} rowKey={r => `${r.skuId}__${r.taskDetailId}`} rowSelection={rowSelection} pagination={false} />
+              <Table columns={columnsTaskList} bordered scroll={{ x: '130%', y: 500 }} dataSource={filteredBuyerTask} rowKey={r => `${r.skuId}__${r.taskDetailId}`} rowSelection={rowSelection} pagination={false} />
             </Col>
             <Col span="12">
               <div className={styles.blockTitle}>入库明细</div>
@@ -381,7 +382,7 @@ class PurchaseModal extends Component {
                 <Col span="12"><Input placeholder="输入SKU代码或UPC码添加" size="large" ref={(c) => { this.upcInput = c; }} /></Col>
                 <Col span="6" style={{ marginLeft: 10 }}><Button type="primary" size="large" onClick={this.queryUpc.bind(this)}>添加</Button></Col>
               </Row>
-              <Table columns={columnsStorageList} bordered scroll={{ x: '140%' }} dataSource={storageList} rowKey={r => r.id} pagination={false} />
+              <Table columns={columnsStorageList} bordered scroll={{ x: '160%', y: 500 }} dataSource={storageList} rowKey={r => r.id} pagination={false} />
             </Col>
           </Row>
         </Form>

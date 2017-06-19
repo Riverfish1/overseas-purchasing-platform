@@ -24,14 +24,12 @@ class HistoryTab extends React.Component {
         this.setState({ panes: data }, () => {
           if (typeof route !== 'undefined') this.routeLink(route);
         });
-        console.log('重新渲染tab');
       }, 0);
     }
   }
   routeLink(key) {
     if (this.props.location.pathname !== key) {
       location.href = `#${key}`;
-      console.log('跳转');
     }
   }
   render() {

@@ -136,6 +136,12 @@ class Purchase extends Component {
           },
         });
         break;
+      case 'create':
+        this.props.dispatch({
+          type: 'purchase/createByOrder',
+          payload: {},
+        });
+        break;
       default: return false;
     }
   }
@@ -186,8 +192,8 @@ class Purchase extends Component {
           }
         },
       },
-      { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime', width: 150 },
-      { title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime', width: 150 },
+      { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime', width: 150, render(t) { return t ? t.slice(0, 11) : '-'; } },
+      { title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime', width: 150, render(t) { return t ? t.slice(0, 11) : '-'; } },
       { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
@@ -290,16 +296,11 @@ class Purchase extends Component {
             </Col>
           </Row>
         </Form>
-        <Row>
-          <Col className="operBtn" span="20">
-            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增采购</Button>
-          </Col>
-          <Col span="2" className="operBtn">
-            <Button type="primary" size="large" disabled={isNotSelected} onClick={p.handlePurchaseAction.bind(p, 'finish')}>完成采购</Button>
-          </Col>
-          <Col span="2" className="operBtn">
-            <Button size="large" disabled={isNotSelected} onClick={p.handlePurchaseAction.bind(p, 'close')}>取消采购</Button>
-          </Col>
+        <Row className="operBtn">
+          <Button style={{ float: 'left' }} type="primary" size="large" onClick={p.showModal.bind(p)}>新增采购</Button>
+          <Button style={{ float: 'right', marginLeft: 10 }} type="primary" size="large" disabled={isNotSelected} onClick={p.handlePurchaseAction.bind(p, 'finish')}>完成采购</Button>
+          <Button style={{ float: 'right', marginLeft: 10 }} size="large" disabled={isNotSelected} onClick={p.handlePurchaseAction.bind(p, 'close')}>取消采购</Button>
+          <Button style={{ float: 'right', marginLeft: 10 }} size="large" onClick={p.handlePurchaseAction.bind(p, 'create')}>根据当前订单生成采购任务</Button>
         </Row>
         <Row>
           <Col>

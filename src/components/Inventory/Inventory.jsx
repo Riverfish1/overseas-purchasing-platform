@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Button, Input, Popover, Select } from 'antd';
+import { Form, Table, Row, Col, Button, Input, Popover, Select, Icon } from 'antd';
 
 import TransTo from './components/trans-to';
 import CheckIn from './components/check-in';
@@ -22,9 +22,14 @@ class Inventory extends Component {
     const { form, dispatch } = this.props;
     form.validateFieldsAndScroll((err, values) => {
       if (err) return;
+      const warehouseId = values.warehouseId;
+      const skuCode = values.skuCode;
+      const upc = values.upc;
+      const itemName = values.itemName;
+      const positionNo = values.positionNo;
       dispatch({
         type: 'inventory/queryList',
-        payload: { ...values, pageIndex: typeof page === 'number' ? page : 1 },
+        payload: { warehouseId, skuCode, upc, itemName, positionNo, pageIndex: typeof page === 'number' ? page : 1 },
       });
     });
   }
@@ -33,6 +38,24 @@ class Inventory extends Component {
       previewVisible: true,
       previewImage: value,
     });
+  }
+  handleEmptyInput(type) { // 清空内容
+    const { setFieldsValue } = this.props.form;
+    switch (type) {
+      case 'positionNo': setFieldsValue({ positionNo: undefined }); break;
+      case 'skuCode': setFieldsValue({ skuCode: undefined }); break;
+      case 'itemName': setFieldsValue({ itemName: undefined }); break;
+      case 'upc': setFieldsValue({ upc: undefined }); break;
+      default: return false;
+    }
+  }
+  showClear(type) { // 是否显示清除按钮
+    const { getFieldValue } = this.props.form;
+    const data = getFieldValue(type);
+    if (data) {
+      return <Icon type="close-circle" onClick={this.handleEmptyInput.bind(this, type)} />;
+    }
+    return null;
   }
   render() {
     const p = this;
@@ -110,7 +133,7 @@ class Inventory extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('warehouseId', {})(
-                  <Select placeholder="请选择仓库" optionLabelProp="title" combobox>
+                  <Select placeholder="请选择仓库" optionLabelProp="title" allowClear>
                     {wareList.map(el => <Option key={el.id} title={el.name}>{el.name}</Option>)}
                   </Select>)}
               </FormItem>
@@ -121,7 +144,7 @@ class Inventory extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('skuCode', {})(
-                  <Input placeholder="请输入SKU代码" />,
+                  <Input placeholder="请输入SKU代码" suffix={p.showClear('skuCode')} />,
                 )}
               </FormItem>
             </Col>
@@ -131,7 +154,7 @@ class Inventory extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('upc', {})(
-                  <Input placeholder="请输入UPC" />,
+                  <Input placeholder="请输入UPC" suffix={p.showClear('upc')} />,
                 )}
               </FormItem>
             </Col>
@@ -141,17 +164,17 @@ class Inventory extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemName', {})(
-                  <Input placeholder="请输入商品名称" />,
+                  <Input placeholder="请输入商品名称" suffix={p.showClear('itemName')} />,
                 )}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
-                label="货位号"
+                label="货架号"
                 {...formItemLayout}
               >
                 {getFieldDecorator('positionNo', {})(
-                  <Input placeholder="请输入货位号" />,
+                  <Input placeholder="请输入货架号" suffix={p.showClear('positionNo')} />,
                 )}
               </FormItem>
             </Col>

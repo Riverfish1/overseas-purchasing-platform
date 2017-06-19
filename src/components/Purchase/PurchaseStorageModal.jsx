@@ -247,7 +247,7 @@ class PurchaseModal extends Component {
       { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 100, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="80" height="80" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 40 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 44 },
-      { title: '采购数', dataIndex: 'count', key: 'count', width: 60 },
+      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 60 },
       { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
     ];
 
@@ -255,16 +255,19 @@ class PurchaseModal extends Component {
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 70 },
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
-      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 100, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="80" height="80" /> : '无'; } },
+      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 90, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="80" height="80" /> : '无'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 50 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 50 },
+      { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
       { title: '计划采购数', dataIndex: 'count', key: 'count', width: 60, render(t, r) { return t || r.taskDailyCount; } },
       { title: '数量',
         dataIndex: 'quantity',
         key: 'quantity',
         width: 70,
         render(t, r) {
-          return <InputNumber min={1} step="1" placeholder="输入" value={t} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
+          console.log(r);
+          const quantity = r.count - r.inCount;
+          return <InputNumber min={1} step="1" placeholder="输入" value={(quantity && quantity > 0) ? quantity : 0} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
         },
       },
       { title: '在途数量',

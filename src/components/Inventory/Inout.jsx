@@ -83,8 +83,8 @@ class Inout extends Component {
             case 0: return '采购入库';
             case 1: return '销售出库';
             case 2: return '在途入库';
-            case 3: return '库存盘出';
-            case 4: return '库存盘入';
+            case 3: return '库存盘入';
+            case 4: return '库存盘出';
             default: return '-';
           }
         },
@@ -151,8 +151,8 @@ class Inout extends Component {
                     <Option value={0}>采购入库</Option>
                     <Option value={1}>销售出库</Option>
                     <Option value={2}>在途入库</Option>
-                    <Option value={3}>库存盘出</Option>
-                    <Option value={4}>库存盘入</Option>
+                    <Option value={3}>库存盘入</Option>
+                    <Option value={4}>库存盘出</Option>
                   </Select>)}
               </FormItem>
             </Col>

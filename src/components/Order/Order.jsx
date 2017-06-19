@@ -99,8 +99,8 @@ class Order extends Component {
       visible: true,
     }, () => {
       p.props.dispatch({
-        type: 'order/queryOrder',
-        payload: { id: record.id, type: 'snip' },
+        type: 'order/queryOrderDetail',
+        payload: { id: record.id },
       });
     });
   }
@@ -112,7 +112,7 @@ class Order extends Component {
     });
   }
 
-  handleEmpty(type) { // 清空内容
+  handleEmptyInput(type) { // 清空内容
     const { setFieldsValue } = this.props.form;
     switch (type) {
       case 'orderNo': setFieldsValue({ orderNo: undefined }); break;
@@ -120,6 +120,8 @@ class Order extends Component {
       case 'skuCode': setFieldsValue({ skuCode: undefined }); break;
       case 'itemName': setFieldsValue({ itemName: undefined }); break;
       case 'upc': setFieldsValue({ upc: undefined }); break;
+      case 'receiver': setFieldsValue({ receiver: undefined }); break;
+      case 'telephone': setFieldsValue({ telephone: undefined }); break;
       default: return false;
     }
   }
@@ -128,14 +130,14 @@ class Order extends Component {
     const { getFieldValue } = this.props.form;
     const data = getFieldValue(type);
     if (data) {
-      return <Icon type="close-circle" onClick={this.handleEmpty.bind(this, type)} />;
+      return <Icon type="close-circle" onClick={this.handleEmptyInput.bind(this, type)} />;
     }
     return null;
   }
 
   render() {
     const p = this;
-    const { form, dispatch, orderList = [], orderTotal, currentPage, orderValues = {}, orderSkuSnip = {}, agencyList = [] } = p.props;
+    const { form, dispatch, orderList = [], orderTotal, currentPage, orderValues = {}, agencyList = [], orderDetailList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { title, visible, isNotSelected, modalVisible } = p.state;
     const formItemLayout = {
@@ -309,7 +311,7 @@ class Order extends Component {
     ];
 
     const modalProps = {
-      title: `订单编号：${(orderSkuSnip.data && orderSkuSnip.data[0] && orderSkuSnip.data[0].orderNo) || '-'}`,
+      title: `订单编号：${(orderDetailList && orderDetailList[0] && orderDetailList[0].orderNo) || '-'}`,
       footer: null,
       visible,
       width: 1200,
@@ -368,7 +370,7 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('receiver', {})(
-                  <Input placeholder="请输入收件人" />)}
+                  <Input placeholder="请输入收件人" suffix={p.showClear('receiver')} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -377,7 +379,7 @@ class Order extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('telephone', {})(
-                  <Input placeholder="请输入联系电话" />)}
+                  <Input placeholder="请输入联系电话" suffix={p.showClear('telephone')} />)}
               </FormItem>
             </Col>
             <Col span={8}>
@@ -468,7 +470,7 @@ class Order extends Component {
         <Modal {...modalProps}>
           <Table
             columns={skuColumns}
-            dataSource={orderSkuSnip.data}
+            dataSource={orderDetailList}
             bordered
             size="large"
             rowKey={record => record.id}
@@ -490,15 +492,15 @@ class Order extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList, orderTotal, currentPage, orderValues, orderSkuSnip } = state.order;
+  const { orderList, orderTotal, currentPage, orderValues, orderDetailList } = state.order;
   const { list } = state.agency;
   return {
     orderList,
     orderTotal,
     currentPage,
     orderValues,
-    orderSkuSnip,
     agencyList: list,
+    orderDetailList,
   };
 }
 

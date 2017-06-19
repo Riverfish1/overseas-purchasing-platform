@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect, Modal, Popover } from 'antd';
+import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect, Modal, Popover, Icon } from 'antd';
 import ProductsModal from './ProductsModal';
 
 const FormItem = Form.Item;
@@ -110,6 +110,24 @@ class Products extends Component {
     const data = this.interator(tree, value);
     if (data && data[0] && data[0].level !== 3) cb('只能选择最后一级类目');
     cb();
+  }
+
+  handleEmptyInput(type) { // 清空内容
+    const { setFieldsValue } = this.props.form;
+    switch (type) {
+      case 'name': setFieldsValue({ name: undefined }); break;
+      case 'itemCode': setFieldsValue({ itemCode: undefined }); break;
+      default: return false;
+    }
+  }
+
+  showClear(type) { // 是否显示清除按钮
+    const { getFieldValue } = this.props.form;
+    const data = getFieldValue(type);
+    if (data) {
+      return <Icon type="close-circle" onClick={this.handleEmptyInput.bind(this, type)} />;
+    }
+    return null;
   }
 
   render() {
@@ -227,21 +245,19 @@ class Products extends Component {
             <Col span="8">
               <FormItem
                 label="商品代码"
-
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemCode', {})(
-                  <Input placeholder="请输入商品代码" />)}
+                  <Input placeholder="请输入商品代码" suffix={p.showClear('itemCode')} />)}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
                 label="商品名称"
-
                 {...formItemLayout}
               >
                 {getFieldDecorator('name', {})(
-                  <Input placeholder="请输入商品名称" />)}
+                  <Input placeholder="请输入商品名称" suffix={p.showClear('name')} />)}
               </FormItem>
             </Col>
             <Col span="8">

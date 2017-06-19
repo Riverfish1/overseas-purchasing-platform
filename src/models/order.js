@@ -5,7 +5,8 @@ const addOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/add', { data: 
 const updateOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/update', { data: payload }).catch(e => e);
 const deleteOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/delete', { data: payload }).catch(e => e);
 const queryOrderList = ({ payload }) => fetch.post('/haierp1/outerOrder/queryOuterOrderList', { data: payload }).catch(e => e);
-const queryOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/erpStockup', { data: payload }).catch(e => e);
+const queryOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/query', { data: payload }).catch(e => e);
+const queryOrderDetail = ({ payload }) => fetch.post('/haierp1/outerOrder/erpStockup', { data: payload }).catch(e => e);
 const confirmOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/confirm', { data: payload }).catch(e => e);
 const closeOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/close', { data: payload }).catch(e => e);
 // erp
@@ -38,8 +39,8 @@ export default {
   namespace: 'order',
   state: {
     orderList: [],
+    orderDetailList: [],
     orderTotal: 1,
-    orderSkuSnip: {},
     currentPage: 1,
     orderValues: {},
     // erp
@@ -65,8 +66,8 @@ export default {
     saveOrder(state, { payload }) {
       return { ...state, orderValues: payload };
     },
-    saveOrderSkuSnip(state, { payload }) {
-      return { ...state, orderSkuSnip: payload };
+    saveOrderDetail(state, { payload }) {
+      return { ...state, orderDetailList: payload.data };
     },
     // erp
     saveErpCurrentPage(state, { payload }) {
@@ -137,20 +138,21 @@ export default {
     },
     * queryOrder({ payload }, { call, put }) {
       const newPayload = { ...payload };
-      delete newPayload.type;
       const data = yield call(queryOrder, { payload: newPayload });
       if (data.success) {
-        if (payload.type === 'snip') {
-          yield put({
-            type: 'saveOrderSkuSnip',
-            payload: data,
-          });
-        } else {
-          yield put({
-            type: 'saveOrder',
-            payload: data,
-          });
-        }
+        yield put({
+          type: 'saveOrder',
+          payload: data,
+        });
+      }
+    },
+    * queryOrderDetail({ payload }, { call, put }) {
+      const data = yield call(queryOrderDetail, { payload });
+      if (data.success) {
+        yield put({
+          type: 'saveOrderDetail',
+          payload: data,
+        });
       }
     },
     * queryOrderList({ payload }, { call, put, select }) { // 订单管理列表

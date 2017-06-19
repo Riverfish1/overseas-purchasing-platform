@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Button, Row, Col, Form, Input, InputNumber, Popconfirm, Popover, Select, TreeSelect, Modal } from 'antd';
+import { Table, Button, Row, Col, Form, Input, InputNumber, Popconfirm, Popover, Select, TreeSelect, Modal, Icon } from 'antd';
 import SkuModal from './SkuModal';
 
 const FormItem = Form.Item;
@@ -107,6 +107,26 @@ class Sku extends Component {
         },
       });
     });
+  }
+
+  handleEmptyInput(type) { // 清空内容
+    const { setFieldsValue } = this.props.form;
+    switch (type) {
+      case 'itemCode': setFieldsValue({ itemCode: undefined }); break;
+      case 'skuCode': setFieldsValue({ skuCode: undefined }); break;
+      case 'itemName': setFieldsValue({ itemName: undefined }); break;
+      case 'upc': setFieldsValue({ upc: undefined }); break;
+      default: return false;
+    }
+  }
+
+  showClear(type) { // 是否显示清除按钮
+    const { getFieldValue } = this.props.form;
+    const data = getFieldValue(type);
+    if (data) {
+      return <Icon type="close-circle" onClick={this.handleEmptyInput.bind(this, type)} />;
+    }
+    return null;
   }
 
   render() {
@@ -226,7 +246,7 @@ class Sku extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemCode', {})(
-                  <Input placeholder="请输入商品代码" />)}
+                  <Input placeholder="请输入商品代码" suffix={p.showClear('itemCode')} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -235,17 +255,16 @@ class Sku extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('skuCode', {})(
-                  <Input placeholder="请输入SKU代码" />)}
+                  <Input placeholder="请输入SKU代码" suffix={p.showClear('skuCode')} />)}
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem
                 label="商品名称"
-
                 {...formItemLayout}
               >
                 {getFieldDecorator('itemName', {})(
-                  <Input placeholder="请输入商品名称" />)}
+                  <Input placeholder="请输入商品名称" suffix={p.showClear('itemName')} />)}
               </FormItem>
             </Col>
             <Col span="8">
@@ -266,6 +285,15 @@ class Sku extends Component {
                   <Select placeholder="请选择品牌" combobox>
                     {brands && brands.map(item => <Option key={item.name} value={item.name}>{item.name}</Option>)}
                   </Select>)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="UPC"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('upc', {})(
+                  <Input placeholder="请输入UPC" suffix={p.showClear('upc')} />)}
               </FormItem>
             </Col>
           </Row>

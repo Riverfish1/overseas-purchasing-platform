@@ -130,7 +130,7 @@ class ErpOrder extends Component {
       this.props.dispatch({ type: 'order/releaseInventory', payload: { id } });
     }
   }
-  handleEmpty(type) { // 清空内容
+  handleEmptyInput(type) { // 清空内容
     const { setFieldsValue } = this.props.form;
     switch (type) {
       case 'orderNo': setFieldsValue({ orderNo: undefined }); break;
@@ -139,6 +139,8 @@ class ErpOrder extends Component {
       case 'skuCode': setFieldsValue({ skuCode: undefined }); break;
       case 'itemName': setFieldsValue({ itemName: undefined }); break;
       case 'upc': setFieldsValue({ upc: undefined }); break;
+      case 'receiver': setFieldsValue({ receiver: undefined }); break;
+      case 'telephone': setFieldsValue({ telephone: undefined }); break;
       default: return false;
     }
   }
@@ -146,7 +148,7 @@ class ErpOrder extends Component {
     const { getFieldValue } = this.props.form;
     const data = getFieldValue(type);
     if (data) {
-      return <Icon type="close-circle" onClick={this.handleEmpty.bind(this, type)} />;
+      return <Icon type="close-circle" onClick={this.handleEmptyInput.bind(this, type)} />;
     }
     return null;
   }
@@ -377,7 +379,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('receiver', {})(
-                  <Input placeholder="请输入" />)}
+                  <Input placeholder="请输入" suffix={p.showClear('receiver')} />)}
               </FormItem>
             </Col>
           </Row>
@@ -415,7 +417,7 @@ class ErpOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('telephone', {})(
-                  <Input placeholder="请输入" />)}
+                  <Input placeholder="请输入" suffix={p.showClear('telephone')} />)}
               </FormItem>
             </Col>
           </Row>

@@ -101,7 +101,7 @@ export default {
         yield put({ type: 'queryPurchaseStorageList', payload: {} });
       }
     },
-    * exportDetail({ payload }) {
+    exportDetail({ payload }) {
       window.open(`http://${location.host}/haierp1/purchaseStorage/purchaseExport?id=${payload.id}`);
     },
   },

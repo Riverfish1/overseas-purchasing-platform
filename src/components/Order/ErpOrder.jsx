@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, Popconfirm, DatePicker, Icon } from 'antd';
 
 import DeliveryModal from './component/DeliveryModal';
+import BatchDeliveryModal from './component/BatchDeliveryModal';
 import ErpOrderModal from './ErpOrderModal';
 import SplitOrder from './component/SplitOrder';
 import RecordList from './component/RecordList';
@@ -23,10 +24,12 @@ class ErpOrder extends Component {
       needSplitId: '',
       deliveryModalVisible: false,
       type: 'add', // 发货的判断
+      batchDeliveryVisible: false,
     };
   }
   handleSubmit(e, page) {
     if (e) e.preventDefault();
+    console.log(this);
     // 清除多选
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFields((err, fieldsValue) => {
@@ -43,7 +46,7 @@ class ErpOrder extends Component {
       });
     });
   }
-  showDeliveryModal() { // 批量发货
+  showDeliveryModal() { // 合单发货
     const p = this;
     // 请求信息
     this.props.dispatch({
@@ -55,6 +58,9 @@ class ErpOrder extends Component {
         },
       },
     });
+  }
+  showBatchDeliveryModal() { // 批量发货
+    this.setState({ batchDeliveryVisible: true, isNotSelected: true });
   }
   replayAssign() {
     const p = this;
@@ -113,6 +119,9 @@ class ErpOrder extends Component {
     });
     this.setState({ deliveryModalVisible: false, checkId: [] }); // 取消选择 checkId
   }
+  closeBatchDeliveryModal() {
+    this.setState({ batchDeliveryVisible: false, checkId: [] });
+  }
   closeModal(modalVisible) {
     this.setState({
       modalVisible,
@@ -156,7 +165,7 @@ class ErpOrder extends Component {
     const p = this;
     const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { isNotSelected, deliveryModalVisible, checkId, type, modalVisible, title } = p.state;
+    const { isNotSelected, deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible } = p.state;
 
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -450,8 +459,11 @@ class ErpOrder extends Component {
           </Row>
         </Form>
         <Row className="operBtn">
+          <Col style={{ float: 'left', marginRight: 10 }} >
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>合单发货</Button>
+          </Col>
           <Col style={{ float: 'left' }} >
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>发货</Button>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showBatchDeliveryModal.bind(p)}>合单发货</Button>
           </Col>
           <Col style={{ float: 'right', marginLeft: 10 }} >
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.replayAssign.bind(p)}>重分配库存</Button>
@@ -460,7 +472,23 @@ class ErpOrder extends Component {
             <Button disabled={isNotSelected} size="large" onClick={p.closeErpOrder.bind(p)}>关闭</Button>
           </Col>
         </Row>
-        <DeliveryModal visible={deliveryModalVisible} deliveryCompanyList={deliveryCompanyList} checkId={checkId} data={erpOrderDetail} closeModal={this.closeDeliveryModal.bind(this)} dispatch={dispatch} type={type} />
+        <DeliveryModal
+          visible={deliveryModalVisible}
+          deliveryCompanyList={deliveryCompanyList}
+          checkId={checkId}
+          data={erpOrderDetail}
+          closeModal={this.closeDeliveryModal.bind(this)}
+          dispatch={dispatch}
+          type={type}
+        />
+        <BatchDeliveryModal
+          visible={batchDeliveryVisible}
+          deliveryCompanyList={deliveryCompanyList}
+          checkId={checkId}
+          closeModal={this.closeBatchDeliveryModal.bind(this)}
+          dispatch={dispatch}
+          submit={this.handleSubmit.bind(this)}
+        />
         <Table
           columns={columns}
           rowSelection={rowSelection}

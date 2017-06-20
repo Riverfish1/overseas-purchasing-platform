@@ -33,7 +33,7 @@ class DeliveryModal extends Component {
       }
       values.erpOrderId = JSON.stringify(checkId);
       dispatch({
-        type: 'order/multiDelivery',
+        type: 'order/mergeDelivery',
         payload: { ...values },
         callback() {
           p.handleCancel();
@@ -128,7 +128,7 @@ class DeliveryModal extends Component {
       <div>
         <Modal
           visible={visible}
-          title="批量发货"
+          title={<font color="#00f" size="4">合单发货</font>}
           onOk={p.handleSubmit.bind(p)}
           onCancel={p.handleCancel.bind(p)}
           width={900}
@@ -199,7 +199,6 @@ class DeliveryModal extends Component {
                 >
                   {getFieldDecorator('logisticNo', {
                     initialValue: data.logisticNo,
-                    rules: [{ required: true, message: '请输入' }],
                   })(
                     <Input placeholder="请输入物流运单号" />,
                   )}
@@ -212,7 +211,6 @@ class DeliveryModal extends Component {
                 >
                   {getFieldDecorator('logisticCompany', {
                     initialValue: data.logisticCompany || undefined,
-                    rules: [{ required: true, message: '请选择' }],
                   })(
                     <Select placeholder="请选择物流公司名称" allowClear>
                       {deliveryCompanyList.map(v => (

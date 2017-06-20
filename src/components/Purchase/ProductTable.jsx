@@ -15,6 +15,7 @@ const TabPane = Tabs.TabPane;
 let latestSearch = {};
 
 let isAdditional = false; // 是否追加
+let isOperating = false; // 是否正在添加
 
 class ProductTable extends Component {
   constructor() {
@@ -203,7 +204,7 @@ class ProductTable extends Component {
         // this[`r_${key}_skuCode`].refs.input.click();
         setTimeout(() => {
           // this.clearSelectedSku();
-          this.setState({ selectedSku: [] });
+          this.setState({ selectedSku: [] }, () => { isOperating = false; });
           if (isAddedItem) isAdditional = true;
         }, 300);
       }, 0);
@@ -328,6 +329,7 @@ class ProductTable extends Component {
     if (!visible) {
       this.setState({ selectedSku: [] });
       isAdditional = false;
+      isOperating = false;
     }
   }
 
@@ -393,27 +395,32 @@ class ProductTable extends Component {
       }
 
       function batchSelectSku() {
-        const { selectedSku } = p.state;
-        const batchSelectParams = [];
-        setTimeout(() => {
-          let j = -1;
-          for (let i = 0; i < selectedSku.length; i += 1) {
-            if (skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0) {
-              message.info('不能选择当前采购数量等于或者小于0的sku');
-              continue;
-            }
-            j += 1;
+        if (!isOperating) {
+          isOperating = true;
+          const { selectedSku } = p.state;
+          const batchSelectParams = [];
+          setTimeout(() => {
+            let j = -1;
+            for (let i = 0; i < selectedSku.length; i += 1) {
+              if (skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0) {
+                message.info('不能选择当前采购数量等于或者小于0的sku');
+                continue;
+              }
+              j += 1;
 
-            batchSelectParams.push({ key: key + j, skuCode: selectedSku[i].skuCode });
-            // if (j === 0 && !(skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0)) {
-            //   setTimeout(() => { updateValue(selectedSku[i]); }, 0);
-            // } else {
-            //   p.addProduct(1);
-            //   p.handleSelect(key + j, selectedSku[i].skuCode);
-            // }
-          }
-          p.batchAddProduct(batchSelectParams, key);
-        }, 0);
+              batchSelectParams.push({ key: key + j, skuCode: selectedSku[i].skuCode });
+              // if (j === 0 && !(skuSearchType === 'order' && selectedSku[i].purchaseNeed <= 0)) {
+              //   setTimeout(() => { updateValue(selectedSku[i]); }, 0);
+              // } else {
+              //   p.addProduct(1);
+              //   p.handleSelect(key + j, selectedSku[i].skuCode);
+              // }
+            }
+            p.batchAddProduct(batchSelectParams, key);
+          }, 0);
+        } else {
+          console.log('执行中无法操作');
+        }
       }
 
       function createTaskOrder() {

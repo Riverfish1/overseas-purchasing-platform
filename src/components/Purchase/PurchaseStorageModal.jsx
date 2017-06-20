@@ -136,6 +136,7 @@ class PurchaseModal extends Component {
       }));
 
       if (!hasError) {
+        console.log(p.state.id);
         fieldsValue.id = p.state.id;
         delete fieldsValue.stoOrderNo;
         if (type === 'save') {
@@ -174,7 +175,7 @@ class PurchaseModal extends Component {
     dispatch({ type: 'purchaseStorage/toggleShowModal' });
     dispatch({ type: 'purchaseStorage/clearEditInfo' });
     dispatch({ type: 'purchaseStorage/updateBuyerTaskList', payload: { data: [] } });
-    this.setState({ selectedRowKeys: [], storageList: [] });
+    this.setState({ selectedRowKeys: [], storageList: [], id: undefined });
     firstLoad = true;
   }
 

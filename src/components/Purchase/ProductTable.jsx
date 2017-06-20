@@ -14,6 +14,8 @@ const TabPane = Tabs.TabPane;
 
 let latestSearch = {};
 
+let isAdditional = false; // 是否追加
+
 class ProductTable extends Component {
   constructor() {
     super();
@@ -102,7 +104,7 @@ class ProductTable extends Component {
     });
   }
 
-  batchAddProduct(props, key) {
+  batchAddProduct(props) {
     let { skuData } = this.state;
     if (!skuData) skuData = [];
     const skuLen = skuData ? skuData.length : 0;
@@ -113,22 +115,42 @@ class ProductTable extends Component {
 
     let currentId = parseInt(lastId, 10);
 
+    // 本次是否有新增
+    let isAddedItem = false;
+
     // 当前先选择一把
-    this.props.skuList.forEach((value) => {
-      if (value.skuCode.toString() === props[0].skuCode.toString()) {
-        skuData.forEach((el) => {
-          if (el.key.toString() === props[0].key.toString()) {
-            el.skuId = value.id;
-            el.skuCode = value.skuCode;
-            el.skuPic = value.skuPic;
-            el.purchaseNeed = value.purchaseNeed || undefined;
-          }
-        });
-        batchUpdateFormValues[`r_${props[0].key}_skuId`] = value.id;
-        batchUpdateFormValues[`r_${props[0].key}_skuCode`] = value.skuCode;
-        batchUpdateFormValues[`r_${props[0].key}_count`] = value.purchaseNeed;
+    // 检验重复
+    let isDuplicatedFirst = false;
+    for (let j = 0; j < skuData.length; j += 1) {
+      if (skuData[j].skuCode.toString() === props[0].skuCode.toString()) {
+        isDuplicatedFirst = true;
+        break;
       }
-    });
+    }
+    if (!isDuplicatedFirst) {
+      // 不重复则先新增第一个
+      if (isAdditional) {
+        this.addProduct(1);
+        props[0].key = skuData[skuData.length - 1].key;
+      }
+
+      isAddedItem = true;
+      this.props.skuList.forEach((value) => {
+        if (value.skuCode.toString() === props[0].skuCode.toString()) {
+          skuData.forEach((el) => {
+            if (el.key.toString() === props[0].key.toString()) {
+              el.skuId = value.id;
+              el.skuCode = value.skuCode;
+              el.skuPic = value.skuPic;
+              el.purchaseNeed = value.purchaseNeed || undefined;
+            }
+          });
+          batchUpdateFormValues[`r_${props[0].key}_skuId`] = value.id;
+          batchUpdateFormValues[`r_${props[0].key}_skuCode`] = value.skuCode;
+          batchUpdateFormValues[`r_${props[0].key}_count`] = value.purchaseNeed;
+        }
+      });
+    }
 
     // 再进行追加
     for (let i = 1; i < looptime; i += 1) {
@@ -141,6 +163,8 @@ class ProductTable extends Component {
         }
       }
       if (!isDuplicated) {
+        isAddedItem = true;
+
         currentId += 1;
         const newId = currentId;
         const newItem = {
@@ -176,10 +200,12 @@ class ProductTable extends Component {
     this.setState({ skuData }, () => {
       this.props.form.setFieldsValue(batchUpdateFormValues);
       setTimeout(() => {
-        this[`r_${key}_skuCode`].refs.input.click();
+        // this[`r_${key}_skuCode`].refs.input.click();
         setTimeout(() => {
-          this.clearSelectedSku();
-        }, 500);
+          // this.clearSelectedSku();
+          this.setState({ selectedSku: [] });
+          if (isAddedItem) isAdditional = true;
+        }, 300);
       }, 0);
     });
   }
@@ -196,25 +222,44 @@ class ProductTable extends Component {
 
     const source = skuList;
 
-    source.forEach((value) => {
-      if (value.skuCode.toString() === skuCode.toString()) {
-        skuData.forEach((el) => {
-          if (el.key.toString() === key.toString()) {
-            el.skuId = value.id;
-            el.skuCode = value.skuCode;
-            el.skuPic = value.skuPic;
-            el.purchaseNeed = value.purchaseNeed || undefined;
-          }
-        });
-        this.setState({ skuData }, () => {
-          form.setFieldsValue({
-            [`r_${key}_skuId`]: value.id,
-            [`r_${key}_skuCode`]: value.skuCode,
-            [`r_${key}_count`]: value.purchaseNeed,
-          });
-        });
+    // 检验重复
+    let isDuplicatedFirst = false;
+    for (let j = 0; j < skuData.length; j += 1) {
+      if (skuData[j].skuCode.toString() === skuCode.toString()) {
+        isDuplicatedFirst = true;
+        break;
       }
-    });
+    }
+
+    if (!isDuplicatedFirst) {
+      // 不重复则先新增第一个
+      if (isAdditional) {
+        this.addProduct(1);
+        key = skuData[skuData.length - 1].key;
+      }
+
+      isAdditional = true;
+
+      source.forEach((value) => {
+        if (value.skuCode.toString() === skuCode.toString()) {
+          skuData.forEach((el) => {
+            if (el.key.toString() === key.toString()) {
+              el.skuId = value.id;
+              el.skuCode = value.skuCode;
+              el.skuPic = value.skuPic;
+              el.purchaseNeed = value.purchaseNeed || undefined;
+            }
+          });
+          this.setState({ skuData }, () => {
+            form.setFieldsValue({
+              [`r_${key}_skuId`]: value.id,
+              [`r_${key}_skuCode`]: value.skuCode,
+              [`r_${key}_count`]: value.purchaseNeed,
+            });
+          });
+        }
+      });
+    }
   }
 
   handleSearch(key, value) {
@@ -282,6 +327,7 @@ class ProductTable extends Component {
   clearSelectedSku(visible) {
     if (!visible) {
       this.setState({ selectedSku: [] });
+      isAdditional = false;
     }
   }
 
@@ -383,7 +429,7 @@ class ProductTable extends Component {
         total: skuTotal,
         current: currentPage,
         showQuickJumper: true,
-        pageSizeOptions: ['20', '30', '50', '100'],
+        pageSizeOptions: ['20', '50', '100', '200', '500'],
         onShowSizeChange(current, size) {
           p.props.dispatch({
             type: 'sku/querySkuList2',

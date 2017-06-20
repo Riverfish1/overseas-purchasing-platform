@@ -98,10 +98,12 @@ class ProductTable extends Component {
       skuData.push(newItem);
     }
     this.setState({ skuData }, () => {
-      setTimeout(() => {
-        this[`r_${currentId}_skuCode`].focus();
-        this[`r_${currentId}_skuCode`].refs.input.click();
-      }, 0);
+      if (typeof num !== 'boolean') {
+        setTimeout(() => {
+          this[`r_${currentId}_skuCode`].focus();
+          this[`r_${currentId}_skuCode`].refs.input.click();
+        }, 0);
+      }
     });
   }
 
@@ -131,7 +133,11 @@ class ProductTable extends Component {
     if (!isDuplicatedFirst) {
       // 不重复则先新增第一个
       if (isAdditional) {
-        this.addProduct(1);
+        this.addProduct(true);
+        currentId += 1;
+        props.forEach((prop) => {
+          prop.key += 1;
+        });
         props[0].key = skuData[skuData.length - 1].key;
       }
 
@@ -139,6 +145,7 @@ class ProductTable extends Component {
       this.props.skuList.forEach((value) => {
         if (value.skuCode.toString() === props[0].skuCode.toString()) {
           skuData.forEach((el) => {
+            console.log(el.key, props[0].key);
             if (el.key.toString() === props[0].key.toString()) {
               el.skuId = value.id;
               el.skuCode = value.skuCode;

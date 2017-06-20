@@ -463,7 +463,7 @@ class ErpOrder extends Component {
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>合单发货</Button>
           </Col>
           <Col style={{ float: 'left' }} >
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showBatchDeliveryModal.bind(p)}>合单发货</Button>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showBatchDeliveryModal.bind(p)}>批量发货</Button>
           </Col>
           <Col style={{ float: 'right', marginLeft: 10 }} >
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.replayAssign.bind(p)}>重分配库存</Button>
@@ -495,7 +495,7 @@ class ErpOrder extends Component {
           dataSource={erpOrderList}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: '130%' }}
+          scroll={{ x: '180%', y: 500 }}
           bordered={true}
         />
         <ErpOrderModal

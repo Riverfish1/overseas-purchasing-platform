@@ -91,8 +91,6 @@ class InvoiceModal extends Component {
                   )}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <FormItem
                   label="联系电话"
@@ -117,8 +115,6 @@ class InvoiceModal extends Component {
                     <Input placeholder="请输入详细地址" />)}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <FormItem
                   label="物流运单号"
@@ -126,7 +122,6 @@ class InvoiceModal extends Component {
                 >
                   {getFieldDecorator('logisticNo', {
                     initialValue: data.logisticNo,
-                    rules: [{ required: true, message: '请输入' }],
                   })(
                     <Input placeholder="请输入物流运单号" />,
                   )}
@@ -139,7 +134,6 @@ class InvoiceModal extends Component {
                 >
                   {getFieldDecorator('logisticCompany', {
                     initialValue: data.logisticCompany || undefined,
-                    rules: [{ required: true, message: '请选择' }],
                   })(
                     <Select placeholder="请选择物流公司名称" allowClear>
                       {deliveryCompanyList.map(v => (
@@ -149,8 +143,6 @@ class InvoiceModal extends Component {
                   )}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <FormItem
                   label="运单状态"
@@ -169,6 +161,22 @@ class InvoiceModal extends Component {
               </Col>
               <Col span={12}>
                 <FormItem
+                  label="渠道"
+                  {...formItemLayout}
+                >
+                  {getFieldDecorator('type', {
+                    initialValue: data.type ? data.type.toString() : undefined,
+                  })(
+                    <Select placeholder="请选择渠道" allowClear>
+                      <Option value="1" key="1">包税线</Option>
+                      <Option value="2" key="2">身份证线</Option>
+                      <Option value="3" key="3">BC线</Option>
+                    </Select>,
+                  )}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem
                   label="运费"
                   {...formItemLayout}
                 >
@@ -178,8 +186,6 @@ class InvoiceModal extends Component {
                     <Input placeholder="请输入运费" />)}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <FormItem
                   label="邮编"
@@ -203,8 +209,6 @@ class InvoiceModal extends Component {
                     <Input placeholder="请输入身份证号" />)}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <FormItem
                   label="备注"

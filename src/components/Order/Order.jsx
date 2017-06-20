@@ -217,9 +217,31 @@ class Order extends Component {
 
     const skuColumns = [
       {
+        title: '主订单号',
+        dataIndex: 'orderNo',
+        key: 'orderNo',
+        width: 150,
+        render(text) { return text || '-'; },
+      },
+      {
+        title: '子订单号',
+        dataIndex: 'erpNo',
+        key: 'erpNo',
+        width: 150,
+        render(text) { return text || '-'; },
+      },
+      {
+        title: '商品名称',
+        dataIndex: 'itemName',
+        key: 'itemName',
+        width: 150,
+        render(text) { return text || '-'; },
+      },
+      {
         title: 'SKU代码',
         dataIndex: 'skuCode',
         key: 'skuCode',
+        width: 150,
         render(text) { return text || '-'; },
       },
       {
@@ -301,12 +323,6 @@ class Order extends Component {
         dataIndex: 'quantity',
         key: 'quantity',
         render(text) { return text || 0; },
-      },
-      {
-        title: '商品名称',
-        dataIndex: 'itemName',
-        key: 'itemName',
-        render(text) { return text || '-'; },
       },
     ];
 

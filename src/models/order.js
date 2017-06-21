@@ -24,6 +24,8 @@ const replayAssign = ({ payload }) => fetch.post('/haierp1/erpOrder/replayAssign
 const mergeDelivery = ({ payload }) => fetch.post('/haierp1/shippingOrder/multiDelivery', { data: payload }).catch(e => e);
 // 批量发货
 const batchDelivery = ({ payload }) => fetch.post('/haierp1/shippingOrder/batchDelivery', { data: payload }).catch(e => e);
+// 批量发货表单
+const batchDeliveryForm = ({ payload }) => fetch.post('/haierp1/shippingOrder/batchDeliveryForm', { data: payload }).catch(e => e);
 // 发货单查询
 const queryShippingOrderList = ({ payload }) => fetch.post('/haierp1/shippingOrder/query', { data: payload }).catch(e => e);
 const updateShippingOrder = ({ payload }) => fetch.post('/haierp1/shippingOrder/update', { data: payload }).catch(e => e);
@@ -213,14 +215,14 @@ export default {
       const data = yield call(replayAssign, { payload: { orderIds: payload.orderIds } });
       if (data.success) {
         message.success('重新分配库存成功');
-        if (payload.callback) payload.callback();
+        if (payload.cb) payload.cb();
       }
     },
     * closeErpOrder({ payload }, { call }) {
       const data = yield call(closeErpOrder, { payload: { orderIds: payload.orderIds } });
       if (data.success) {
         message.success('关闭成功');
-        if (payload.callback) payload.callback();
+        if (payload.cb) payload.cb();
       }
     },
     * queryErpOrderDetail({ payload }, { call, put }) {
@@ -230,7 +232,7 @@ export default {
           type: 'saveErpOrderDetail',
           payload: data,
         });
-        if (payload.callback) payload.callback();
+        if (payload.cb) payload.cb();
       }
     },
     * queryShippingOrderList({ payload }, { call, put, select }) {
@@ -255,11 +257,11 @@ export default {
         if (cb) cb(data.data);
       }
     },
-    * updateShippingOrder({ payload, callback }, { call, put }) {
+    * updateShippingOrder({ payload, cb }, { call, put }) {
       const data = yield call(updateShippingOrder, { payload });
       if (data.success) {
         message.success('修改发货单完成');
-        if (callback) callback();
+        if (cb) cb();
         yield put({
           type: 'queryShippingOrderList',
           payload: {},
@@ -286,22 +288,30 @@ export default {
         });
       }
     },
-    * mergeDelivery({ payload, callback }, { call, put }) {
+    * mergeDelivery({ payload, cb }, { call, put }) {
       const data = yield call(mergeDelivery, { payload });
       if (data.success) {
         message.success('合单发货完成');
-        if (callback) callback();
+        if (cb) cb();
         yield put({
           type: 'queryErpOrderList',
           payload: {},
         });
       }
     },
-    * batchDelivery({ payload, callback }, { call }) {
+    * batchDelivery({ payload, cb }, { call }) {
       const data = yield call(batchDelivery, { payload });
       if (data.success) {
         message.success('批量发货完成');
-        if (callback) callback();
+        if (cb) cb();
+      }
+    },
+    * batchDeliveryForm({ payload, cb }, { call }) {
+      const data = yield call(batchDeliveryForm, { payload });
+      if (data.success) cb('success');
+      else {
+        message.destroy();
+        cb(data.msg);
       }
     },
     * splitOrder({ payload, success }, { call, put }) {

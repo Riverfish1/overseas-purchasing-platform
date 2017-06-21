@@ -308,7 +308,7 @@ export default {
     },
     * batchDeliveryForm({ payload, callback }, { call }) {
       const data = yield call(batchDeliveryForm, { payload });
-      if (data.success) callback();
+      if (data.success) callback('success');
       else {
         message.destroy();
         callback(data.msg);

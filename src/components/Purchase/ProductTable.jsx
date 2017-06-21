@@ -423,7 +423,8 @@ class ProductTable extends Component {
               //   p.handleSelect(key + j, selectedSku[i].skuCode);
               // }
             }
-            p.batchAddProduct(batchSelectParams, key);
+            if (batchSelectParams.length > 0) p.batchAddProduct(batchSelectParams, key);
+            else isOperating = false;
           }, 0);
         } else {
           console.log('执行中无法操作');

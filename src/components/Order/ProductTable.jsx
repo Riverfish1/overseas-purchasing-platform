@@ -166,7 +166,7 @@ class ProductTable extends Component {
 
   render() {
     const p = this;
-    const { form, skuList = [], parent, total, currentPage, pageSize } = p.props;
+    const { form, skuList = [], parent, total, pageSize } = p.props;
     const { skuData } = p.state;
     const { getFieldDecorator } = form;
 
@@ -204,7 +204,6 @@ class ProductTable extends Component {
         pageSize,
         showSizeChanger: true,
         total: skuTotal,
-        current: currentPage,
         showQuickJumper: true,
         pageSizeOptions: ['20', '30', '50', '100'],
         onShowSizeChange(current, size) {
@@ -447,11 +446,10 @@ class ProductTable extends Component {
 }
 
 function mapStateToProps(state) {
-  const { skuList, skuTotal, currentPage, pageSize } = state.sku;
+  const { skuList, skuTotal, pageSize } = state.sku;
   return {
     skuList,
     total: skuTotal,
-    currentPage,
     pageSize,
   };
 }

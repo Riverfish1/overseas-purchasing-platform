@@ -153,6 +153,7 @@ class ProductTable extends Component {
               el.purchaseNeed = value.purchaseNeed || undefined;
             }
           });
+          // console.log('first value: ', value);
           batchUpdateFormValues[`r_${props[0].key}_skuId`] = value.id;
           batchUpdateFormValues[`r_${props[0].key}_skuCode`] = value.skuCode;
           batchUpdateFormValues[`r_${props[0].key}_count`] = value.purchaseNeed;
@@ -174,7 +175,7 @@ class ProductTable extends Component {
         isAddedItem = true;
 
         currentId += 1;
-        const newId = currentId;
+        const newId = skuData[skuData.length - 1].key + 1;
         const newItem = {
           id: '',
           key: newId,
@@ -194,10 +195,11 @@ class ProductTable extends Component {
             newItem.skuCode = value.skuCode;
             newItem.skuPic = value.skuPic;
             newItem.purchaseNeed = value.purchaseNeed || undefined;
+            // console.log('value: ', value);
 
-            batchUpdateFormValues[`r_${props[i].key}_skuId`] = value.id;
-            batchUpdateFormValues[`r_${props[i].key}_skuCode`] = value.skuCode;
-            batchUpdateFormValues[`r_${props[i].key}_count`] = value.purchaseNeed;
+            batchUpdateFormValues[`r_${newId}_skuId`] = value.id;
+            batchUpdateFormValues[`r_${newId}_skuCode`] = value.skuCode;
+            batchUpdateFormValues[`r_${newId}_count`] = value.purchaseNeed;
           }
         });
 

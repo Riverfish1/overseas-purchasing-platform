@@ -28,7 +28,7 @@ class BatchDeliveryModal extends Component {
   }
   render() {
     const p = this;
-    const { visible, form, deliveryCompanyList } = this.props;
+    const { visible, form, deliveryCompanyList, isBatch } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -39,7 +39,7 @@ class BatchDeliveryModal extends Component {
       <div>
         <Modal
           visible={visible}
-          title={<font color="#00f" size="4">批量发货(每个子订单作为一个包裹)</font>}
+          title={<font color="#00f" size="4">{isBatch ? '批量发货(每个子订单作为一个包裹)' : '发货(一个子订单发货)'}</font>}
           onOk={p.handleSubmit.bind(p)}
           onCancel={p.handleCancel.bind(p)}
           width={900}

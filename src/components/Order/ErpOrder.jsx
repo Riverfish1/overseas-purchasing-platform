@@ -66,7 +66,7 @@ class ErpOrder extends Component {
     this.props.dispatch({
       type: 'order/batchDeliveryForm',
       payload: { erpOrderId: JSON.stringify(checkId) },
-      cb(data) {
+      callback(data) {
         if (data === 'success') {
           p.setState({ batchDeliveryVisible: true, isNotSelected: true, isBatch });
         } else {
@@ -205,27 +205,6 @@ class ErpOrder extends Component {
       { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 150, render(text) { return text || '-'; } },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150 },
-      { title: '图片',
-        dataIndex: 'skuPic',
-        key: 'skuPic',
-        width: 80,
-        render(text) {
-          if (!text) return '-';
-          const picList = JSON.parse(text).picList;
-          const t = picList.length ? JSON.parse(text).picList[0].url : '';
-          return (
-            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
-              <img role="presentation" src={t} width={60} height={60} />
-            </Popover> : '-'
-          );
-        },
-      },
-      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 100 },
-      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 100 },
-      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },
-      { title: '发货方式', dataIndex: 'logisticType', key: 'logisticType', width: 60, render(text) { return text === 0 ? '直邮' : (text === 1 ? '拼邮' : '-'); } },
-      { title: '仓库名', dataIndex: 'warehouseName', key: 'warehouseName', width: 100, render(text) { return text || '-'; } },
-      { title: '商品数量', dataIndex: 'quantity', key: 'quantity', width: 60, render(text) { return text || '-'; } },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
@@ -258,6 +237,27 @@ class ErpOrder extends Component {
           }
         },
       },
+      { title: '图片',
+        dataIndex: 'skuPic',
+        key: 'skuPic',
+        width: 80,
+        render(text) {
+          if (!text) return '-';
+          const picList = JSON.parse(text).picList;
+          const t = picList.length ? JSON.parse(text).picList[0].url : '';
+          return (
+            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+              <img role="presentation" src={t} width={60} height={60} />
+            </Popover> : '-'
+          );
+        },
+      },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 100 },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 100 },
+      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },
+      { title: '发货方式', dataIndex: 'logisticType', key: 'logisticType', width: 60, render(text) { return text === 0 ? '直邮' : (text === 1 ? '拼邮' : '-'); } },
+      { title: '仓库名', dataIndex: 'warehouseName', key: 'warehouseName', width: 100, render(text) { return text || '-'; } },
+      { title: '商品数量', dataIndex: 'quantity', key: 'quantity', width: 60, render(text) { return text || '-'; } },
       { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 50 },
       { title: '收件人地址',
         dataIndex: 'address',

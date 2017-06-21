@@ -215,14 +215,14 @@ export default {
       const data = yield call(replayAssign, { payload: { orderIds: payload.orderIds } });
       if (data.success) {
         message.success('重新分配库存成功');
-        if (payload.cb) payload.cb();
+        if (payload.callback) payload.callback();
       }
     },
     * closeErpOrder({ payload }, { call }) {
       const data = yield call(closeErpOrder, { payload: { orderIds: payload.orderIds } });
       if (data.success) {
         message.success('关闭成功');
-        if (payload.cb) payload.cb();
+        if (payload.callback) payload.callback();
       }
     },
     * queryErpOrderDetail({ payload }, { call, put }) {
@@ -232,7 +232,7 @@ export default {
           type: 'saveErpOrderDetail',
           payload: data,
         });
-        if (payload.cb) payload.cb();
+        if (payload.callback) payload.callback();
       }
     },
     * queryShippingOrderList({ payload }, { call, put, select }) {
@@ -257,11 +257,11 @@ export default {
         if (cb) cb(data.data);
       }
     },
-    * updateShippingOrder({ payload, cb }, { call, put }) {
+    * updateShippingOrder({ payload, callback }, { call, put }) {
       const data = yield call(updateShippingOrder, { payload });
       if (data.success) {
         message.success('修改发货单完成');
-        if (cb) cb();
+        if (callback) callback();
         yield put({
           type: 'queryShippingOrderList',
           payload: {},
@@ -288,30 +288,30 @@ export default {
         });
       }
     },
-    * mergeDelivery({ payload, cb }, { call, put }) {
+    * mergeDelivery({ payload, callback }, { call, put }) {
       const data = yield call(mergeDelivery, { payload });
       if (data.success) {
         message.success('合单发货完成');
-        if (cb) cb();
+        if (callback) callback();
         yield put({
           type: 'queryErpOrderList',
           payload: {},
         });
       }
     },
-    * batchDelivery({ payload, cb }, { call }) {
+    * batchDelivery({ payload, callback }, { call }) {
       const data = yield call(batchDelivery, { payload });
       if (data.success) {
         message.success('批量发货完成');
-        if (cb) cb();
+        if (callback) callback();
       }
     },
-    * batchDeliveryForm({ payload, cb }, { call }) {
+    * batchDeliveryForm({ payload, callback }, { call }) {
       const data = yield call(batchDeliveryForm, { payload });
-      if (data.success) cb('success');
+      if (data.success) callback();
       else {
         message.destroy();
-        cb(data.msg);
+        callback(data.msg);
       }
     },
     * splitOrder({ payload, success }, { call, put }) {

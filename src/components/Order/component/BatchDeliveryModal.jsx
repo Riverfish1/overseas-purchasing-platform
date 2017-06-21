@@ -39,7 +39,7 @@ class BatchDeliveryModal extends Component {
       <div>
         <Modal
           visible={visible}
-          title={<font color="#00f" size="4">批量发货</font>}
+          title={<font color="#00f" size="4">批量发货(每个子订单作为一个包裹)</font>}
           onOk={p.handleSubmit.bind(p)}
           onCancel={p.handleCancel.bind(p)}
           width={900}

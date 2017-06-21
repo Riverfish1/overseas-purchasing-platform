@@ -128,7 +128,7 @@ class DeliveryModal extends Component {
       <div>
         <Modal
           visible={visible}
-          title={<font color="#00f" size="4">合单发货</font>}
+          title={<font color="#00f" size="4">合单发货(将多个子订单合并成一个包裹)</font>}
           onOk={p.handleSubmit.bind(p)}
           onCancel={p.handleCancel.bind(p)}
           width={900}

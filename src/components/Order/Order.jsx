@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm, Popover, Icon } from 'antd';
+import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Modal, Popconfirm, Popover, Icon, message } from 'antd';
 import OrderModal from './OrderModal';
 
 const FormItem = Form.Item;
@@ -112,6 +112,29 @@ class Order extends Component {
     });
   }
 
+  exportMainOrder() { // 导出订单
+    const { form } = this.props;
+    const p = this;
+    form.validateFields((err, values) => {
+      if (err) return;
+      let startOrderTime;
+      let endOrderTime;
+      if (values.orderTime && values.orderTime[0] && values.orderTime[1]) {
+        startOrderTime = new Date(values.orderTime[0]).format('yyyy-MM-dd');
+        endOrderTime = new Date(values.orderTime[1]).format('yyyy-MM-dd');
+        p.props.dispatch({
+          type: 'order/exportMainOrder',
+          payload: {
+            startOrderTime,
+            endOrderTime,
+          },
+        });
+      } else {
+        message.error('请选择创建时间范围');
+      }
+    });
+  }
+
   handleEmptyInput(type) { // 清空内容
     const { setFieldsValue } = this.props.form;
     switch (type) {
@@ -186,7 +209,7 @@ class Order extends Component {
               {record.status !== -1 && <a href="javascript:void(0)" onClick={p.handleProDetail.bind(p, record)}>订单明细</a>}
               <a href="javascript:void(0)" style={{ margin: '0 10px' }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
               <Popconfirm title="确定删除此订单？" onConfirm={p.handleDelete.bind(p, record.id)}>
-                <a href="javascript:void(0)" style={{ marginRight: '10px' }}>删除</a>
+                <a href="javascript:void(0)" style={{ marginRight: 10 }}>删除</a>
               </Popconfirm>
             </div>);
         },
@@ -459,15 +482,11 @@ class Order extends Component {
             </Col>
           </Row>
         </Form>
-        <Row>
-          <Col className="operBtn" span={22}>
-            <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增订单</Button>
-          </Col>
-          {/* <Col className="operBtn" span={2}>
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.handleOrderAction.bind(p, 'confirm')}>订单确定</Button>
-          </Col> */}
-          <Col className="operBtn" span={2}>
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.handleOrderAction.bind(p, 'close')}>订单关闭</Button>
+        <Row className="operBtn">
+          <Col>
+            <Button type="primary" size="large" onClick={p.showModal.bind(p)} style={{ float: 'left' }}>新增订单</Button>
+            <Button type="primary" size="large" onClick={p.exportMainOrder.bind(p)} style={{ float: 'right', marginLeft: 10 }}>导出订单</Button>
+            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.handleOrderAction.bind(p, 'close')} style={{ float: 'right' }}>订单关闭</Button>
           </Col>
         </Row>
         <Row>

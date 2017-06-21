@@ -333,6 +333,9 @@ export default {
         message.error('请选择发货时间');
       }
     },
+    exportMainOrder({ payload }) {
+      window.open(`http://${location.host}/haierp1/outerOrder/OuterOrderExportExcel?startGmtCreate=${payload.startOrderTime}&endGmtCreate=${payload.endOrderTime}`);
+    },
     * lockErpOrder(payload, { call, put }) {
       const data = yield call(lockErpOrder, payload);
       if (data.success) {

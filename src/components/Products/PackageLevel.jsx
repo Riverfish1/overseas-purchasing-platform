@@ -144,6 +144,7 @@ class PackageLevel extends Component {
 
     return (
       <div>
+        <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
         <Row>
           <Col className={styles.productModalBtn}>
             <Button type="primary" size="large" onClick={p.showModal.bind(p)}>新增规格</Button>

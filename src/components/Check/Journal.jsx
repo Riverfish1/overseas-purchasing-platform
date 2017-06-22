@@ -71,6 +71,7 @@ class Journal extends Component {
     ];
     return (
       <div>
+        <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
         <Tabs>
           <Pane tab="未确定流水单" key="0">
             <Table columns={unCheckedColumns} dataSource={unCheckedList} pagination={false} rowKey={record => record.id} />

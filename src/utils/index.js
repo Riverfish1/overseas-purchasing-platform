@@ -83,6 +83,9 @@ export default () => {
     target.prototype.componentWillUnmount = function unmount() {
       setState(this);
     };
+    target.prototype._refreshData = function refresh() {
+      this.handleSubmit(null, 1);
+    };
   };
 
   window.getCacheState = getState;

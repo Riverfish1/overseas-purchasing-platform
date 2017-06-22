@@ -18,7 +18,6 @@ class Purchase extends Component {
       previewImage: '',
       previewVisible: false,
       taskDailyIds: [],
-      isNotSelected: true,
     };
   }
 
@@ -150,7 +149,7 @@ class Purchase extends Component {
     const p = this;
     const { form, list = [], total, purchaseValues = {}, buyer = [], dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { title, previewImage, isNotSelected } = p.state;
+    const { title, previewImage } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -223,8 +222,6 @@ class Purchase extends Component {
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         const listId = [];
-        if (selectedRows.length) p.setState({ isNotSelected: false });
-        else p.setState({ isNotSelected: true });
         selectedRows.forEach((el) => {
           listId.push(el.id);
         });
@@ -232,6 +229,9 @@ class Purchase extends Component {
       },
       selectedRowKeys: p.state.taskDailyIds,
     };
+
+    const isNotSelected = this.state.taskDailyIds.length === 0;
+
     return (
       <div>
         <Form onSubmit={this.handleSubmit.bind(this)}>

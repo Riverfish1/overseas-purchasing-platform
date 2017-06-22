@@ -123,6 +123,7 @@ class Agency extends Component {
 
     return (
       <div>
+        <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">

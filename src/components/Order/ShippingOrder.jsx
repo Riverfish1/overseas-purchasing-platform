@@ -17,7 +17,6 @@ class ShippingOrder extends Component {
       data: {}, // 修改的record
       type: 'update',
       checkId: [],
-      isNotSelected: true,
       shippingDetail: [],
       showDetail: false,
     };
@@ -53,7 +52,7 @@ class ShippingOrder extends Component {
       type: 'order/exportPdf',
       payload: JSON.stringify(checkId),
     });
-    this.setState({ checkId: [], isNotSelected: true });
+    this.setState({ checkId: [] });
   }
   queryDetail(r) { // 查看明细
     const p = this;
@@ -92,13 +91,11 @@ class ShippingOrder extends Component {
     const p = this;
     const { shippingOrderList, shippingOrderTotal, deliveryCompanyList = [], form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { visible, data, isNotSelected, shippingDetail, showDetail } = p.state;
+    const { visible, data, shippingDetail, showDetail } = p.state;
 
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
         const listId = [];
-        if (selectedRows.length) p.setState({ isNotSelected: false });
-        else p.setState({ isNotSelected: true });
         selectedRows.forEach((el) => {
           listId.push(el.id);
         });
@@ -196,8 +193,11 @@ class ShippingOrder extends Component {
       { title: '配货库位', dataIndex: 'positionNo', key: 'positionNo', width: 100 },
     ];
 
+    const isNotSelected = this.state.checkId.length === 0;
+
     return (
       <div>
+        <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">

@@ -17,7 +17,6 @@ class ErpOrder extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isNotSelected: true,
       modalVisible: false,
       title: '',
       checkId: [], // 发货时传的ID
@@ -55,7 +54,7 @@ class ErpOrder extends Component {
       payload: {
         erpOrderId: this.state.checkId,
         callback() {
-          p.setState({ deliveryModalVisible: true, isNotSelected: true });
+          p.setState({ deliveryModalVisible: true });
         },
       },
     });
@@ -68,7 +67,7 @@ class ErpOrder extends Component {
       payload: { erpOrderId: JSON.stringify(checkId) },
       callback(data) {
         if (data === 'success') {
-          p.setState({ batchDeliveryVisible: true, isNotSelected: true, isBatch });
+          p.setState({ batchDeliveryVisible: true, isBatch });
         } else {
           Modal.error({
             title: '提示',
@@ -86,7 +85,7 @@ class ErpOrder extends Component {
       payload: {
         orderIds: JSON.stringify(p.state.checkId),
         callback() {
-          p.setState({ isNotSelected: true, checkId: [] }); // 取消选择 checkId
+          p.setState({ checkId: [] }); // 取消选择 checkId
           dispatch({
             type: 'order/queryErpOrderList',
             payload: {},
@@ -107,7 +106,7 @@ class ErpOrder extends Component {
           payload: {
             orderIds: JSON.stringify(p.state.checkId),
             callback() {
-              p.setState({ isNotSelected: true, checkId: [] }); // 取消选择 checkId
+              p.setState({ checkId: [] }); // 取消选择 checkId
               dispatch({
                 type: 'order/queryErpOrderList',
                 payload: {},
@@ -181,7 +180,7 @@ class ErpOrder extends Component {
     const p = this;
     const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { isNotSelected, deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible, isBatch } = p.state;
+    const { deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible, isBatch } = p.state;
 
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -190,8 +189,6 @@ class ErpOrder extends Component {
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
         const listId = [];
-        if (selectedRows.length) p.setState({ isNotSelected: false });
-        else p.setState({ isNotSelected: true });
         selectedRows.forEach((el) => {
           listId.push(el.id);
         });
@@ -302,8 +299,10 @@ class ErpOrder extends Component {
         p.handleSubmit(null, pageIndex);
       },
     };
+    const isNotSelected = this.state.checkId.length === 0;
     return (
       <div>
+        <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">

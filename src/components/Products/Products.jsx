@@ -15,7 +15,7 @@ class Products extends Component {
     this.state = {
       modalVisible: false,
       previewImage: '',
-      isNotSelected: true,
+      checkId: [],
     };
   }
 
@@ -134,7 +134,7 @@ class Products extends Component {
     const p = this;
     const { form, currentPage, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
     const { getFieldDecorator, resetFields } = form;
-    const { previewImage, isNotSelected } = this.state;
+    const { previewImage } = this.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -228,8 +228,6 @@ class Products extends Component {
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
         const listId = [];
-        if (selectedRows.length) p.setState({ isNotSelected: false });
-        else p.setState({ isNotSelected: true });
         selectedRows.forEach((el) => {
           listId.push(el.id);
         });
@@ -238,8 +236,11 @@ class Products extends Component {
       selectedRowKeys: p.state.checkId,
     };
 
+    const isNotSelected = p.state.checkId.length === 0;
+
     return (
       <div>
+        <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">

@@ -99,6 +99,7 @@ class Category extends Component {
 
     return (
       <div>
+        <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
         <Row>
           <Col className="operBtn">
             <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button>

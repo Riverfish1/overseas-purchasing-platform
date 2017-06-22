@@ -17,7 +17,6 @@ class Order extends Component {
       visible: false,
       title: '', // modal的title
       checkId: [], // 审核时传的id
-      isNotSelected: true,
     };
   }
 
@@ -162,7 +161,7 @@ class Order extends Component {
     const p = this;
     const { form, dispatch, orderList = [], orderTotal, currentPage, orderValues = {}, agencyList = [], orderDetailList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { title, visible, isNotSelected, modalVisible } = p.state;
+    const { title, visible, modalVisible } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -220,8 +219,6 @@ class Order extends Component {
       selectedRowKeys: p.state.checkId,
       onChange(selectedRowKeys, selectedRows) {
         const listId = [];
-        if (selectedRows.length) p.setState({ isNotSelected: false });
-        else p.setState({ isNotSelected: true });
         selectedRows.forEach((el) => {
           listId.push(el.id);
         });
@@ -361,8 +358,11 @@ class Order extends Component {
       },
     };
 
+    const isNotSelected = this.state.checkId.length === 0;
+
     return (
       <div>
+        <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
         <Form onSubmit={this.handleSubmit.bind(this)}>
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">

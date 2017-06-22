@@ -84,6 +84,7 @@ class Brands extends Component {
     ];
     return (
       <div>
+        <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
         <Row>
           <Col className="operBtn">
             <Button type="primary" size="large" onClick={p.showModal.bind(p, 'add')}>新增品牌</Button>

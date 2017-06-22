@@ -7,7 +7,6 @@ class Receipt extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isNotSelected: true,
       checkId: [],
     };
   }
@@ -21,12 +20,9 @@ class Receipt extends Component {
   render() {
     const p = this;
     const { receiptList = [] } = this.props;
-    const { isNotSelected } = this.state;
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
         const listId = [];
-        if (selectedRows.length) p.setState({ isNotSelected: false });
-        else p.setState({ isNotSelected: true });
         selectedRows.forEach((el) => {
           listId.push(el.id);
         });
@@ -38,8 +34,10 @@ class Receipt extends Component {
       { title: '小票单号', dataIndex: 'receiptNo', key: 'receiptNo' },
       { title: '总价', dataIndex: 'totalPrice', key: 'totalPrice' },
     ];
+    const isNotSelected = p.state.checkId.length === 0;
     return (
       <div>
+        <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
         <Row className="operBtn">
           <Col span={2} push={22}>
             <Button type="primary" disabled={isNotSelected} size="large" onClick={p.handlePreStock.bind(p)}>确认入库</Button>

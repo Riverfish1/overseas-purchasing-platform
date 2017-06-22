@@ -368,6 +368,7 @@ class ProductTable extends Component {
     function renderSkuPopover(list, key, skuTotal) {
       let skuCode = null;
       let itemName = null;
+      let productName = null;
 
       function handleEmpty() {
         skuCode.refs.input.value = '';
@@ -380,14 +381,8 @@ class ProductTable extends Component {
       }
 
       function doSearchOrder() {
-        const { startOrderTime, endOrderTime } = p.state.timeQuery[key] || {};
         const params = {};
-        if (startOrderTime) {
-          params.startOrderTime = new Date(startOrderTime).format('yyyy-MM-dd');
-        }
-        if (endOrderTime) {
-          params.endOrderTime = new Date(endOrderTime).format('yyyy-MM-dd');
-        }
+        params.itemName = productName.refs.input.value;
         p.handleSearch(key, { ...params, isOrderQuery: 1 });
         p.setState({ skuSearchType: 'order' });
       }
@@ -555,11 +550,23 @@ class ProductTable extends Component {
             </TabPane>
             <TabPane tab="按订单查询" key="2">
               <Row gutter={20} style={{ width: '100%', marginBottom: 10 }}>
-                <Col className="listBtnGroup" span="2" style={{ paddingTop: 2 }}>
+                <Col span="7">
+                  <FormItem
+                    label="商品名称"
+                    {...formItemLayout}
+                  >
+                    <Input
+                      size="default"
+                      placeholder="请输入商品名称"
+                      ref={(c) => { productName = c; }}
+                    />
+                  </FormItem>
+                </Col>
+                <Col className="listBtnGroup" span="2" style={{ paddingTop: 2, marginLeft: 10 }}>
                   <Button type="primary" onClick={doSearchOrder}>查询</Button>
                 </Col>
-                <Col span="12">
-                  <Button onClick={createTaskOrder}>根据当前订单重新计算采购值</Button>
+                <Col span="12" style={{ paddingTop: 2 }}>
+                  <Button type="ghost" onClick={createTaskOrder}>根据当前订单重新计算采购值</Button>
                 </Col>
               </Row>
             </TabPane>
@@ -574,7 +581,7 @@ class ProductTable extends Component {
               rowSelection={rowSelection}
               rowKey={record => record.id}
               pagination={paginationProps}
-              scroll={{ y: 500 }}
+              scroll={{ y: 400 }}
             />
           </Row>
         </div>
@@ -810,6 +817,9 @@ class ProductTable extends Component {
       dataSource: skuData,
       bordered: false,
       pagination: false,
+      scroll: {
+        y: 500,
+      },
     };
     return (
       <div>

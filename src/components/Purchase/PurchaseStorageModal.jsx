@@ -287,10 +287,7 @@ class PurchaseModal extends Component {
         key: 'price',
         width: 90,
         render(t, r) {
-          let price;
-          if (r.type === 'add') price = 1;
-          else price = t;
-          return <InputNumber min={0} step="0.01" placeholder="输入" value={t || price} onChange={p.inputChange.bind(p, 'price', r.skuId)} />;
+          return <InputNumber min={0} step="0.01" placeholder="输入" value={t || 1} onChange={p.inputChange.bind(p, 'price', r.skuId)} />;
         },
       },
       { title: '货架号',

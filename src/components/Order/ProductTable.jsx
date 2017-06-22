@@ -298,7 +298,7 @@ class ProductTable extends Component {
                 />
               </FormItem>
             </Col>
-            <Col span="7">
+            <Col span="6">
               <FormItem
                 label="颜色"
                 {...formItemLayout}
@@ -311,9 +311,8 @@ class ProductTable extends Component {
                 />
               </FormItem>
             </Col>
-            <Col className="listBtnGroup" span="7" push="4" style={{ marginBottom: 12 }}>
+            <Col className="listBtnGroup" span="3" style={{ marginTop: 2 }}>
               <Button type="primary" onClick={doSearch}>查询</Button>
-              <Button type="ghost" onClick={handleEmpty}>清空</Button>
             </Col>
           </Row>
           <Row>

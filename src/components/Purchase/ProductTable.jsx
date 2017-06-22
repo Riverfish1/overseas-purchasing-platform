@@ -373,6 +373,7 @@ class ProductTable extends Component {
       function handleEmpty() {
         skuCode.refs.input.value = '';
         itemName.refs.input.value = '';
+        productName.refs.input.value = '';
       }
 
       function doSearch() {
@@ -549,7 +550,7 @@ class ProductTable extends Component {
               </Row>
             </TabPane>
             <TabPane tab="按订单查询" key="2">
-              <Row gutter={20} style={{ width: '100%', marginBottom: 10 }}>
+              <Row gutter={20} style={{ width: '100%' }}>
                 <Col span="7">
                   <FormItem
                     label="商品名称"
@@ -562,10 +563,8 @@ class ProductTable extends Component {
                     />
                   </FormItem>
                 </Col>
-                <Col className="listBtnGroup" span="2" style={{ paddingTop: 2, marginLeft: 10 }}>
+                <Col className="listBtnGroup" span="12" style={{ paddingTop: 2, marginLeft: 10 }}>
                   <Button type="primary" onClick={doSearchOrder}>查询</Button>
-                </Col>
-                <Col span="12" style={{ paddingTop: 2 }}>
                   <Button type="ghost" onClick={createTaskOrder}>根据当前订单重新计算采购值</Button>
                 </Col>
               </Row>
@@ -613,26 +612,6 @@ class ProductTable extends Component {
                 )}
               </FormItem>
             );
-          },
-        },
-        { title: <font color="#00f">图片</font>,
-          dataIndex: 'skuPic',
-          key: 'skuPic',
-          width: '8.5%',
-          render(t) {
-            if (t) {
-              const picObj = JSON.parse(t);
-              const picList = picObj.picList;
-              if (picList.length) {
-                const imgUrl = picList[0].url;
-                return (
-                  <Popover title={null} content={<img role="presentation" src={imgUrl} style={{ width: 400 }} />}>
-                    <img role="presentation" src={imgUrl} width={60} height={60} />
-                  </Popover>
-                );
-              }
-            }
-            return '-';
           },
         },
         { title: <font color="#00f">买手</font>,
@@ -803,6 +782,26 @@ class ProductTable extends Component {
                 )}
               </FormItem>
             );
+          },
+        },
+        { title: <font color="#00f">图片</font>,
+          dataIndex: 'skuPic',
+          key: 'skuPic',
+          width: '8.5%',
+          render(t) {
+            if (t) {
+              const picObj = JSON.parse(t);
+              const picList = picObj.picList;
+              if (picList.length) {
+                const imgUrl = picList[0].url;
+                return (
+                  <Popover title={null} content={<img role="presentation" src={imgUrl} style={{ width: 400 }} />}>
+                    <img role="presentation" src={imgUrl} width={60} height={60} />
+                  </Popover>
+                );
+              }
+            }
+            return '-';
           },
         },
         { title: '操作',

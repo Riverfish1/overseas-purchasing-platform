@@ -368,10 +368,12 @@ class ProductTable extends Component {
     function renderSkuPopover(list, key, skuTotal) {
       let skuCode = null;
       let itemName = null;
+      let productName = null;
 
       function handleEmpty() {
         skuCode.refs.input.value = '';
         itemName.refs.input.value = '';
+        productName.refs.input.value = '';
       }
 
       function doSearch() {
@@ -380,14 +382,8 @@ class ProductTable extends Component {
       }
 
       function doSearchOrder() {
-        const { startOrderTime, endOrderTime } = p.state.timeQuery[key] || {};
         const params = {};
-        if (startOrderTime) {
-          params.startOrderTime = new Date(startOrderTime).format('yyyy-MM-dd');
-        }
-        if (endOrderTime) {
-          params.endOrderTime = new Date(endOrderTime).format('yyyy-MM-dd');
-        }
+        params.itemName = productName.refs.input.value;
         p.handleSearch(key, { ...params, isOrderQuery: 1 });
         p.setState({ skuSearchType: 'order' });
       }
@@ -554,12 +550,22 @@ class ProductTable extends Component {
               </Row>
             </TabPane>
             <TabPane tab="按订单查询" key="2">
-              <Row gutter={20} style={{ width: '100%', marginBottom: 10 }}>
-                <Col className="listBtnGroup" span="2" style={{ paddingTop: 2 }}>
-                  <Button type="primary" onClick={doSearchOrder}>查询</Button>
+              <Row gutter={20} style={{ width: '100%' }}>
+                <Col span="7">
+                  <FormItem
+                    label="商品名称"
+                    {...formItemLayout}
+                  >
+                    <Input
+                      size="default"
+                      placeholder="请输入商品名称"
+                      ref={(c) => { productName = c; }}
+                    />
+                  </FormItem>
                 </Col>
-                <Col span="12">
-                  <Button onClick={createTaskOrder}>根据当前订单重新计算采购值</Button>
+                <Col className="listBtnGroup" span="12" style={{ paddingTop: 2, marginLeft: 10 }}>
+                  <Button type="primary" onClick={doSearchOrder}>查询</Button>
+                  <Button type="ghost" onClick={createTaskOrder}>根据当前订单重新计算采购值</Button>
                 </Col>
               </Row>
             </TabPane>
@@ -574,7 +580,7 @@ class ProductTable extends Component {
               rowSelection={rowSelection}
               rowKey={record => record.id}
               pagination={paginationProps}
-              scroll={{ y: 500 }}
+              scroll={{ y: 400 }}
             />
           </Row>
         </div>
@@ -606,26 +612,6 @@ class ProductTable extends Component {
                 )}
               </FormItem>
             );
-          },
-        },
-        { title: <font color="#00f">图片</font>,
-          dataIndex: 'skuPic',
-          key: 'skuPic',
-          width: '8.5%',
-          render(t) {
-            if (t) {
-              const picObj = JSON.parse(t);
-              const picList = picObj.picList;
-              if (picList.length) {
-                const imgUrl = picList[0].url;
-                return (
-                  <Popover title={null} content={<img role="presentation" src={imgUrl} style={{ width: 400 }} />}>
-                    <img role="presentation" src={imgUrl} width={60} height={60} />
-                  </Popover>
-                );
-              }
-            }
-            return '-';
           },
         },
         { title: <font color="#00f">买手</font>,
@@ -798,6 +784,26 @@ class ProductTable extends Component {
             );
           },
         },
+        { title: <font color="#00f">图片</font>,
+          dataIndex: 'skuPic',
+          key: 'skuPic',
+          width: '8.5%',
+          render(t) {
+            if (t) {
+              const picObj = JSON.parse(t);
+              const picList = picObj.picList;
+              if (picList.length) {
+                const imgUrl = picList[0].url;
+                return (
+                  <Popover title={null} content={<img role="presentation" src={imgUrl} style={{ width: 400 }} />}>
+                    <img role="presentation" src={imgUrl} width={60} height={60} />
+                  </Popover>
+                );
+              }
+            }
+            return '-';
+          },
+        },
         { title: '操作',
           key: 'operator',
           render(t, record) {
@@ -810,6 +816,9 @@ class ProductTable extends Component {
       dataSource: skuData,
       bordered: false,
       pagination: false,
+      scroll: {
+        y: 500,
+      },
     };
     return (
       <div>

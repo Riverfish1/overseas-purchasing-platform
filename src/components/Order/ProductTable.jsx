@@ -182,14 +182,20 @@ class ProductTable extends Component {
     function renderSkuPopover(list, key, skuTotal) {
       let skuCode = null;
       let itemName = null;
+      let color = null;
 
       function handleEmpty() {
         skuCode.refs.input.value = '';
         itemName.refs.input.value = '';
+        color.refs.input.value = '';
       }
 
       function doSearch() {
-        p.handleSearch(key, { skuCode: skuCode.refs.input.value, itemName: itemName.refs.input.value });
+        p.handleSearch(key, {
+          skuCode: skuCode.refs.input.value,
+          itemName: itemName.refs.input.value,
+          color: color.refs.input.value,
+        });
       }
 
       function updateValue(selectedSkuCode) {
@@ -214,6 +220,7 @@ class ProductTable extends Component {
               pageSize: size,
               skuCode: skuCode.refs.input.value,
               itemName: itemName.refs.input.value,
+              color: color.refs.input.value,
             },
           });
         },
@@ -225,6 +232,7 @@ class ProductTable extends Component {
               pageSize,
               skuCode: skuCode.refs.input.value,
               itemName: itemName.refs.input.value,
+              color: color.refs.input.value,
             },
           });
         },
@@ -290,7 +298,19 @@ class ProductTable extends Component {
                 />
               </FormItem>
             </Col>
-            <Col className="listBtnGroup" span="7" style={{ paddingTop: 2 }}>
+            <Col span="7">
+              <FormItem
+                label="颜色"
+                {...formItemLayout}
+              >
+                <Input
+                  size="default"
+                  placeholder="请输入颜色"
+                  ref={(c) => { color = c; }}
+                />
+              </FormItem>
+            </Col>
+            <Col className="listBtnGroup" span="7" push="4" style={{ marginBottom: 12 }}>
               <Button type="primary" onClick={doSearch}>查询</Button>
               <Button type="ghost" onClick={handleEmpty}>清空</Button>
             </Col>

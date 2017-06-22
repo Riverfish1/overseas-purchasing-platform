@@ -59,7 +59,10 @@ class PurchaseModal extends Component {
       const realKey = key.split('__')[0];
       const res = this.props.buyerTaskList.filter(el => el.skuId.toString() === realKey.toString());
       if (res.length > 0) {
+        console.log(res[0]);
         res[0].type = 'add';
+        res[0].price = 1;
+        res[0].quantity = typeof (res[0].count) === 'number' && typeof (res[0].inCount === 'number') && (res[0].count - res[0].inCount);
         storageList.push(res[0]);
       }
     });
@@ -267,11 +270,7 @@ class PurchaseModal extends Component {
         key: 'quantity',
         width: 70,
         render(t, r) {
-          let quantity;
-          if (r.type === 'add') quantity = r.count - r.inCount;
-          else quantity = t;
-          const defaultQuantity = (quantity && quantity > 0) ? quantity : 0;
-          return <InputNumber min={1} step="1" placeholder="输入" value={t || defaultQuantity} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
+          return <InputNumber min={1} step="1" placeholder="输入" value={t > 0 ? t : 0} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
         },
       },
       { title: '在途数量',
@@ -287,7 +286,7 @@ class PurchaseModal extends Component {
         key: 'price',
         width: 90,
         render(t, r) {
-          return <InputNumber min={0} step="0.01" placeholder="输入" value={t || 1} onChange={p.inputChange.bind(p, 'price', r.skuId)} />;
+          return <InputNumber min={0} step="0.01" placeholder="输入" value={t} onChange={p.inputChange.bind(p, 'price', r.skuId)} />;
         },
       },
       { title: '货架号',

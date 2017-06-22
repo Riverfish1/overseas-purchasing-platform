@@ -187,12 +187,6 @@ class ProductTable extends Component {
       let itemName = null;
       let color = null;
 
-      function handleEmpty() {
-        skuCode.refs.input.value = '';
-        itemName.refs.input.value = '';
-        color.refs.input.value = '';
-      }
-
       function doSearch() {
         skuQuery.skuCode = skuCode.refs.input.value;
         skuQuery.itemName = itemName.refs.input.value;

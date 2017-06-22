@@ -108,11 +108,11 @@ export default {
       //   pageIndex = payload.pageIndex;
       //   yield put({ type: 'saveCurrentPage', payload });
       // }
-      // if (payload.pageSize) {
-      //   pageSize = payload.pageSize;
-      //   yield put({ type: 'savePageSize', payload });
-      // }
-      const data = yield call(querySkuList, { payload: { ...payload, pageSize: 20 } });
+      let pageSize = 20;
+      if (payload.pageSize) {
+        pageSize = payload.pageSize;
+      }
+      const data = yield call(querySkuList, { payload: { ...payload, pageSize } });
       if (data.success) {
         yield put({
           type: 'saveItemSkuList',

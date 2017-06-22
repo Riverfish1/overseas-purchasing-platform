@@ -192,17 +192,6 @@ class Products extends Component {
         width: 100,
         render(text) { return text || '-'; },
       },
-      { title: '商品类别',
-        dataIndex: 'isSale',
-        key: 'isSale',
-        width: 80,
-        render(text) {
-          switch (text) {
-            case 1: return '可售';
-            default: return '不可销售';
-          }
-        },
-      },
       { title: '销售类型', dataIndex: 'saleType', key: 'saleType', width: 80, render(text) { return <span>{text === 0 ? '代购' : '现货' }</span>; } },
       { title: '商品类目',
         width: 100,
@@ -214,6 +203,17 @@ class Products extends Component {
         },
       },
       { title: '采购地点', dataIndex: 'buySite', key: 'buySite', width: 80, render(text) { return text || '-'; } },
+      { title: '是否可售',
+        dataIndex: 'isSale',
+        key: 'isSale',
+        width: 80,
+        render(text) {
+          switch (text) {
+            case 1: return '可售';
+            default: return '不可销售';
+          }
+        },
+      },
       { title: '开始销售时间', dataIndex: 'startDate', key: 'startDate', width: 80, render(text) { return text ? text.split(' ')[0] : '-'; } },
       { title: '结束销售时间', dataIndex: 'endDate', key: 'endDate', width: 80, render(text) { return text ? text.split(' ')[0] : '-'; } },
       { title: '操作',

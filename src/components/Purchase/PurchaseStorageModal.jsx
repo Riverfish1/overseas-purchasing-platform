@@ -122,6 +122,7 @@ class PurchaseModal extends Component {
           return false;
         } else {
           if (!checkPassed(el.quantity) && !checkPassed(el.transQuantity)) {
+            hasError = true;
             Modal.error({ title: '数量、在途数量请至少填写一项' });
             return false;
           }
@@ -270,7 +271,7 @@ class PurchaseModal extends Component {
           if (r.type === 'add') quantity = r.count - r.inCount;
           else quantity = t;
           const defaultQuantity = (quantity && quantity > 0) ? quantity : 0;
-          return <InputNumber min={1} step="1" placeholder="输入" defaultValue={defaultQuantity} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
+          return <InputNumber min={1} step="1" placeholder="输入" value={t || defaultQuantity} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
         },
       },
       { title: '在途数量',
@@ -286,7 +287,10 @@ class PurchaseModal extends Component {
         key: 'price',
         width: 90,
         render(t, r) {
-          return <InputNumber min={0} step="0.01" placeholder="输入" value={t} onChange={p.inputChange.bind(p, 'price', r.skuId)} />;
+          let price;
+          if (r.type === 'add') price = 1;
+          else price = t;
+          return <InputNumber min={0} step="0.01" placeholder="输入" value={t || price} onChange={p.inputChange.bind(p, 'price', r.skuId)} />;
         },
       },
       { title: '货架号',

@@ -10,6 +10,7 @@ class ProductTable extends Component {
     this.state = {
       skuData: [],
       popoverVisible: false,
+      skuQuery: {},
     };
   }
 
@@ -150,10 +151,12 @@ class ProductTable extends Component {
     });
   }
 
-  handleSearch(key, value) {
+  handleSearch() {
+    const { skuQuery } = this.state;
+    console.log(skuQuery);
     this.props.dispatch({
       type: 'sku/querySkuList',
-      payload: { ...value, pageIndex: 1 },
+      payload: { ...skuQuery, pageIndex: 1 },
     });
   }
 
@@ -167,7 +170,7 @@ class ProductTable extends Component {
   render() {
     const p = this;
     const { form, skuList = [], parent, total, pageSize } = p.props;
-    const { skuData } = p.state;
+    const { skuData, skuQuery } = p.state;
     const { getFieldDecorator } = form;
 
     const formItemLayout = {
@@ -191,10 +194,11 @@ class ProductTable extends Component {
       }
 
       function doSearch() {
-        p.handleSearch(key, {
-          skuCode: skuCode.refs.input.value,
-          itemName: itemName.refs.input.value,
-          color: color.refs.input.value,
+        skuQuery.skuCode = skuCode.refs.input.value;
+        skuQuery.itemName = itemName.refs.input.value;
+        skuQuery.color = color.refs.input.value;
+        p.setState({ skuQuery }, () => {
+          p.handleSearch();
         });
       }
 
@@ -207,20 +211,17 @@ class ProductTable extends Component {
 
       const paginationProps = {
         defaultPageSize: 20,
-        pageSize,
         showSizeChanger: true,
         total: skuTotal,
         showQuickJumper: true,
         pageSizeOptions: ['20', '30', '50', '100'],
         onShowSizeChange(current, size) {
+          console.log(current, size);
           p.props.dispatch({
             type: 'sku/querySkuList',
             payload: {
               pageIndex: current,
               pageSize: size,
-              skuCode: skuCode.refs.input.value,
-              itemName: itemName.refs.input.value,
-              color: color.refs.input.value,
             },
           });
         },
@@ -230,9 +231,6 @@ class ProductTable extends Component {
             payload: {
               pageIndex: page,
               pageSize,
-              skuCode: skuCode.refs.input.value,
-              itemName: itemName.refs.input.value,
-              color: color.refs.input.value,
             },
           });
         },
@@ -283,6 +281,7 @@ class ProductTable extends Component {
                   size="default"
                   placeholder="请输入SKU代码"
                   ref={(c) => { skuCode = c; }}
+                  defaultValue={skuQuery.skuCode}
                 />
               </FormItem>
             </Col>
@@ -295,6 +294,7 @@ class ProductTable extends Component {
                   size="default"
                   placeholder="请输入商品名称"
                   ref={(c) => { itemName = c; }}
+                  defaultValue={skuQuery.itemName}
                 />
               </FormItem>
             </Col>
@@ -307,6 +307,7 @@ class ProductTable extends Component {
                   size="default"
                   placeholder="请输入颜色"
                   ref={(c) => { color = c; }}
+                  defaultValue={skuQuery.color}
                 />
               </FormItem>
             </Col>
@@ -323,7 +324,7 @@ class ProductTable extends Component {
               bordered
               rowKey={record => record.id}
               pagination={paginationProps}
-              scroll={{ x: '100%', y: 500 }}
+              scroll={{ x: '100%', y: 400 }}
             />
           </Row>
         </div>
@@ -348,7 +349,7 @@ class ProductTable extends Component {
                     title="搜索SKU"
                     trigger="click"
                   >
-                    <Input onFocus={p.handleSearch.bind(p, r.key, {})} placeholder="请选择SKU" value={text || undefined} ref={(c) => { p[`r_${r.key}_skuCode_dom`] = c; }} />
+                    <Input onFocus={p.handleSearch.bind(p)} placeholder="请选择SKU" value={text || undefined} ref={(c) => { p[`r_${r.key}_skuCode_dom`] = c; }} />
                   </Popover>,
                 )}
               </FormItem>

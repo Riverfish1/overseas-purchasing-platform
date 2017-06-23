@@ -263,7 +263,9 @@ class PurchaseModal extends Component {
                 label="默认买手"
                 {...formItemLayout}
               >
-                {getFieldDecorator('defaultBuyer', {})(
+                {getFieldDecorator('defaultBuyer', {
+                  initialValue: toString(purchaseData.buyerId),
+                })(
                   <Select placeholder="请选择买手" optionLabelProp="title" onChange={this.handleChangeBuyer.bind(this)}>
                     {buyer.map((el) => {
                       return <Option key={el.id} title={el.name}>{el.name}</Option>;

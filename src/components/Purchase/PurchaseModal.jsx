@@ -40,6 +40,7 @@ class PurchaseModal extends Component {
     const { form, dispatch, modalValues } = p.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) { return; }
+      if (fieldsValue.defaultBuyer) fieldsValue.buyerId = fieldsValue.defaultBuyer;
       delete fieldsValue.defaultBuyer;
       p.getSkuValue((detailList) => {
         const values = {

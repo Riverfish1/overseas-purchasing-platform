@@ -288,12 +288,10 @@ class ShippingOrder extends Component {
             </Col>
           </Row>
         </Form>
-        <Row>
-          <Col className="operBtn" span={21}>
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={this.exportPdf.bind(this)}>导出发货标签</Button>
-          </Col>
-          <Col className="operBtn" span={3}>
-            <Button type="primary" size="large" onClick={this.exportOrderDetail.bind(this)}>导出发货明细</Button>
+        <Row className="operBtn">
+          <Col>
+            <Button type="primary" style={{ float: 'left' }} disabled={isNotSelected} size="large" onClick={this.exportPdf.bind(this)}>导出发货标签</Button>
+            <Button type="primary" style={{ float: 'right' }} size="large" onClick={this.exportOrderDetail.bind(this)}>导出发货明细</Button>
           </Col>
         </Row>
         <Row>

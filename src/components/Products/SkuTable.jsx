@@ -327,7 +327,7 @@ class SkuTable extends Component {
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_virtualInv`, {
-                  initialValue: t || '',
+                  initialValue: t === 0 ? '0' : (t || ''),
                   rules: [{ required: true, message: '请填写' }],
                 })(
                   <InputNumber step={1} min={0} placeholder="请填写" />)}

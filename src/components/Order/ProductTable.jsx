@@ -151,12 +151,14 @@ class ProductTable extends Component {
     });
   }
 
-  handleSearch() {
+  handleSearch(num, size) {
     const { skuQuery } = this.state;
     console.log(skuQuery);
+    const payload = { ...skuQuery, pageIndex: typeof num === 'number' ? num : 1 };
+    if (typeof size === 'number') payload.pageSize = size;
     this.props.dispatch({
       type: 'sku/querySkuList',
-      payload: { ...skuQuery, pageIndex: 1 },
+      payload,
     });
   }
 
@@ -220,13 +222,7 @@ class ProductTable extends Component {
           });
         },
         onChange(page) {
-          p.props.dispatch({
-            type: 'sku/querySkuList',
-            payload: {
-              pageIndex: page,
-              pageSize,
-            },
-          });
+          p.handleSearch(page, pageSize);
         },
       };
 

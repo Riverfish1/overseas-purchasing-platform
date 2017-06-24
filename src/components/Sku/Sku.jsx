@@ -72,6 +72,8 @@ class Sku extends Component {
         type: 'sku/saveSku',
         payload: {},
       });
+      // 记忆状态的刷新
+      this._refreshData();
     });
   }
 
@@ -131,7 +133,7 @@ class Sku extends Component {
 
   render() {
     const p = this;
-    const { skuList = {}, skuTotal, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
+    const { skuList = {}, skuTotal, currentPageSkuIndex, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
     const { previewImage } = this.state;
     const { getFieldDecorator } = form;
 
@@ -239,6 +241,7 @@ class Sku extends Component {
     const paginationProps = {
       total: skuTotal,
       pageSize: 20,
+      current: currentPageSkuIndex,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
       },
@@ -345,11 +348,12 @@ class Sku extends Component {
 }
 
 function mapStateToProps(state) {
-  const { skuList, skuTotal, skuData, packageScales } = state.sku;
+  const { skuList, skuTotal, currentPageSkuIndex, skuData, packageScales } = state.sku;
   const { brands, productsList, tree } = state.products;
   return {
     skuList,
     skuTotal,
+    currentPageSkuIndex,
     skuData,
     packageScales,
     brands,

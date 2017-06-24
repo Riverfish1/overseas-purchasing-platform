@@ -84,7 +84,7 @@ export default () => {
       setState(this);
     };
     target.prototype._refreshData = function refresh() {
-      this.handleSubmit(null, 1);
+      this.handleSubmit(null, this.props.currentPageSkuIndex || this.props.currentPage || 1);
     };
   };
 

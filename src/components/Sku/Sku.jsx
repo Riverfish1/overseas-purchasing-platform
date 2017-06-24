@@ -326,6 +326,7 @@ class Sku extends Component {
               bordered
               rowKey={record => record.id}
               pagination={paginationProps}
+              scroll={{ y: 540 }}
             />
           </Col>
         </Row>

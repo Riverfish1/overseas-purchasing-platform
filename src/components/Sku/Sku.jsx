@@ -146,14 +146,22 @@ class Sku extends Component {
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 100 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 200 },
       { title: '商品代码', dataIndex: 'itemCode', key: 'itemCode', width: 100 },
-      { title: '品牌',
-        dataIndex: 'brand',
-        key: 'brand',
+      { title: 'UPC码',
+        dataIndex: 'upc',
+        key: 'upc',
         width: 100,
         render(text) {
           return text || '-';
         },
       },
+      // { title: '品牌',
+      //   dataIndex: 'brand',
+      //   key: 'brand',
+      //   width: 100,
+      //   render(text) {
+      //     return text || '-';
+      //   },
+      // },
       {
         title: 'sku图片',
         dataIndex: 'skuPic',

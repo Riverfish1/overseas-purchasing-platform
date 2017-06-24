@@ -365,7 +365,7 @@ class PurchaseModal extends Component {
             </Col>
           </Row>
           <Row>
-            <ProductTable defaultBuyer={defaultBuyer} defaultStartTime={defaultStartTime || taskStartTime} defaultEndTime={defaultEndTime || taskEndTime} data={purchaseData.taskDetailList} parent={this} buyer={buyer} />
+            <ProductTable defaultBuyer={defaultBuyer || toString(purchaseData.buyerId)} defaultStartTime={defaultStartTime || taskStartTime} defaultEndTime={defaultEndTime || taskEndTime} data={purchaseData.taskDetailList} parent={this} buyer={buyer} />
           </Row>
         </Form>
       </Modal>

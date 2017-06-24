@@ -190,7 +190,7 @@ class Sku extends Component {
       { title: '销售价格(元)', dataIndex: 'salePrice', key: 'salePrice', width: 100, render(text) { return text || '-'; } },
       { title: '库存',
         key: 'inve',
-        width: 100,
+        width: 140,
         render(t, r) {
           return (
             <div>
@@ -212,14 +212,15 @@ class Sku extends Component {
         title: '操作',
         dataIndex: 'oper',
         key: 'oper',
-        width: 110,
+        width: 60,
+        fixed: 'right',
         render(text, record) {
           return (
             <div>
-              <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.updateModal.bind(p, record.id)}>修改</a>
+              <div><a href="javascript:void(0)" onClick={p.updateModal.bind(p, record.id)}>修改</a></div>
               <Popconfirm title="确定删除此类目？" onConfirm={p.handleDelete.bind(p, record.id)}>
-                <a href="javascript:void(0)" >删除</a>
-              </Popconfirm>&nbsp;&nbsp;
+                <div><a href="javascript:void(0)" >删除</a></div>
+              </Popconfirm>
               <Popover
                 content={<div>
                   <div>商品名称：{record.itemName}</div>
@@ -231,7 +232,7 @@ class Sku extends Component {
                 visible={p.state.lockedPopoverVisible[record.id] || false}
                 onVisibleChange={p.toggleLockedPopoverVisible.bind(p, record)}
               >
-                <a href="javascript:void(0)" style={{ marginRight: 10 }}>锁定</a>
+                <div><a href="javascript:void(0)">锁定</a></div>
               </Popover>
             </div>);
         },
@@ -329,7 +330,7 @@ class Sku extends Component {
               bordered
               rowKey={record => record.id}
               pagination={paginationProps}
-              scroll={{ y: 540 }}
+              scroll={{ x: '105%', y: 540 }}
             />
           </Col>
         </Row>

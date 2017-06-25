@@ -64,14 +64,14 @@ class BatchDeliveryModal extends Component {
               </Col>
               <Col span={12}>
                 <FormItem
-                  label="运单状态"
+                  label="物流状态"
                   {...formItemLayout}
                 >
                   {getFieldDecorator('status')(
-                    <Select placeholder="请选择运单状态" allowClear>
-                      <Option value="0" key="0">新建</Option>
-                      <Option value="1" key="1">已发货</Option>
-                      <Option value="2" key="2">已收货</Option>
+                    <Select placeholder="请选择物流状态" allowClear>
+                      <Option value="0" key="0">已预报</Option>
+                      <Option value="1" key="1">快递已发货</Option>
+                      <Option value="2" key="2">客户已收货</Option>
                     </Select>,
                   )}
                 </FormItem>

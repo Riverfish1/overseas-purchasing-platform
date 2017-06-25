@@ -124,15 +124,15 @@ class ShippingOrder extends Component {
       { title: '物流公司名称', dataIndex: 'logisticCompany', width: 100, key: 'logisticCompany', render(text) { return text || '-'; } },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 200, render(text) { return text || '-'; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200, render(text) { return text || '-'; } },
-      { title: '运单状态',
+      { title: '物流状态',
         dataIndex: 'status',
         key: 'status',
         width: 80,
         render(text) {
           switch (text) {
-            case 0: return '新建';
-            case 1: return '已发货';
-            case 2: return '已收货';
+            case 0: return '已预报';
+            case 1: return '快递已发货';
+            case 2: return '客户已收货';
             default: return '-';
           }
         },
@@ -204,14 +204,14 @@ class ShippingOrder extends Component {
           <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
-                label="运单状态"
+                label="物流状态"
                 {...formItemLayout}
               >
                 {getFieldDecorator('status', {})(
                   <Select placeholder="请选择" allowClear>
-                    <Option value="0">新建</Option>
-                    <Option value="1">已发货</Option>
-                    <Option value="2">已收货</Option>
+                    <Option value="0">已预报</Option>
+                    <Option value="1">快递已发货</Option>
+                    <Option value="2">客户已收货</Option>
                   </Select>,
                 )}
               </FormItem>

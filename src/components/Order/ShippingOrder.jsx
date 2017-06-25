@@ -221,7 +221,9 @@ class ShippingOrder extends Component {
                 label="物流公司名称"
                 {...formItemLayout}
               >
-                {getFieldDecorator('logisticCompany', {})(
+                {getFieldDecorator('logisticCompany', {
+                  rules: [{ required: true, message: '请选择物流公司名称' }],
+                })(
                   <Select placeholder="请选择物流公司名称" allowClear>
                     {deliveryCompanyList.map(v => (
                       <Option value={v.name} key={v.name}>{v.name}</Option>

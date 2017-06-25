@@ -255,6 +255,18 @@ class ErpOrder extends Component {
           }
         },
       },
+      { title: '颜色',
+        dataIndex: 'color',
+        key: 'color',
+        width: 80,
+        render(text) { return text || '-'; },
+      },
+      { title: '尺码',
+        dataIndex: 'scale',
+        key: 'scale',
+        width: 80,
+        render(text) { return text || '-'; },
+      },
       { title: '图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
@@ -524,7 +536,7 @@ class ErpOrder extends Component {
           dataSource={erpOrderList}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: '180%', y: 540 }}
+          scroll={{ x: '200%', y: 540 }}
           bordered={true}
         />
         <ErpOrderModal

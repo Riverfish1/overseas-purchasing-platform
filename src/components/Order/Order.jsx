@@ -126,9 +126,11 @@ class Order extends Component {
       if (values.orderTime && values.orderTime[0] && values.orderTime[1]) {
         startOrderTime = new Date(values.orderTime[0]).format('yyyy-MM-dd');
         endOrderTime = new Date(values.orderTime[1]).format('yyyy-MM-dd');
+        delete values.orderTime;
         p.props.dispatch({
           type: 'order/exportMainOrder',
           payload: {
+            ...values,
             startOrderTime,
             endOrderTime,
           },

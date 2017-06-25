@@ -190,9 +190,11 @@ class ErpOrder extends Component {
       if (values.orderTime && values.orderTime[0] && values.orderTime[1]) {
         startOrderTime = new Date(values.orderTime[0]).format('yyyy-MM-dd');
         endOrderTime = new Date(values.orderTime[1]).format('yyyy-MM-dd');
+        delete values.orderTime;
         p.props.dispatch({
           type: 'order/exportErpOrder',
           payload: {
+            ...values,
             startOrderTime,
             endOrderTime,
           },
@@ -521,7 +523,7 @@ class ErpOrder extends Component {
           <Button style={{ float: 'left' }} type="primary" disabled={isNotSelected} size="large" onClick={p.showBatchDeliveryModal.bind(p)}>批量发货</Button>
           <Button style={{ float: 'right', marginLeft: 10 }} type="primary" disabled={isNotSelected} size="large" onClick={p.replayAssign.bind(p)}>重分配库存</Button>
           <Button style={{ float: 'right', marginLeft: 10 }} disabled={isNotSelected} size="large" onClick={p.closeErpOrder.bind(p)}>关闭</Button>
-          <Button style={{ float: 'right' }} type="primary" disabled={isNotSelected} size="large" onClick={p.exportErpOrder.bind(p)}>导出订单</Button>
+          <Button style={{ float: 'right' }} type="primary" size="large" onClick={p.exportErpOrder.bind(p)}>导出订单</Button>
         </Row>
         <DeliveryModal
           visible={deliveryModalVisible}

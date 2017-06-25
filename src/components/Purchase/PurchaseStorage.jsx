@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Table, Input, Button, Row, Col, Select, DatePicker, Form, Popconfirm, Modal, Popover } from 'antd';
 import PurchaseStorageModal from './PurchaseStorageModal';
+import BarcodeModal from './component/BarcodeStorageModal';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -14,6 +15,7 @@ class PurchaseStorage extends Component {
     this.state = {
       selectedRowKeys: [],
       showDetail: false,
+      barcodeModalVisible: false,
     };
   }
 
@@ -108,10 +110,22 @@ class PurchaseStorage extends Component {
     }, 0);
   }
 
+  showBarcodeModal(type) {
+    switch (type) {
+      case 'add':
+        this.setState({ barcodeModalVisible: true });
+        break;
+      case 'update':
+        this.setState({ barcodeModalVisible: true });
+        break;
+      default: return false;
+    }
+  }
+
   render() {
     const p = this;
     const { form, list = [], total, buyer = [], wareList = [], showModal, editInfo = {}, buyerTaskList = [] } = p.props;
-    const { selectedRowKeys, showDetail } = p.state;
+    const { selectedRowKeys, showDetail, barcodeModalVisible } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -192,12 +206,14 @@ class PurchaseStorage extends Component {
     };
 
     const detailList = editInfo.purchaseStorageDetailList;
+    console.log(detailList);
     if (detailList && detailList.length) {
       detailList.push({
         skuCode: <font color="#00f" >明细合计</font>,
         quantity: editInfo.totalQuantity,
         transQuantity: editInfo.totalTransQuantity,
         taskDailyCount: editInfo.totalTaskDailyCount,
+        id: 0,
       });
     }
 
@@ -267,24 +283,23 @@ class PurchaseStorage extends Component {
             </Col>
           </Row>
         </Form>
+        <Row className="operBtn">
+          <Button type="primary" size="large" onClick={this.showModal.bind(this, 'add')} style={{ float: 'left', marginRight: 10 }}>新增入库</Button>
+          <Button type="primary" size="large" onClick={this.showBarcodeModal.bind(this, 'add')} style={{ float: 'left' }}>扫描入库</Button>
+          <Button type="primary" size="large" onClick={this.batchStorage.bind(this)} style={{ float: 'right' }} disabled={selectedRowKeys.length === 0}>批量入库</Button>
+        </Row>
         <Row>
-          <Col className="operBtn">
-            <Button type="primary" size="large" onClick={this.showModal.bind(this, 'add')}>新增入库</Button>
-            <Button type="primary" size="large" onClick={this.batchStorage.bind(this)} style={{ float: 'right' }} disabled={selectedRowKeys.length === 0}>批量入库</Button>
+          <Col>
+            <Table
+              columns={columnsList}
+              dataSource={list}
+              bordered
+              size="large"
+              rowKey={record => record.id}
+              pagination={paginationProps}
+              rowSelection={rowSelection}
+            />
           </Col>
-          <Row>
-            <Col>
-              <Table
-                columns={columnsList}
-                dataSource={list}
-                bordered
-                size="large"
-                rowKey={record => record.id}
-                pagination={paginationProps}
-                rowSelection={rowSelection}
-              />
-            </Col>
-          </Row>
         </Row>
         <Modal
           visible={showDetail}
@@ -304,6 +319,10 @@ class PurchaseStorage extends Component {
           purchaseStorageData={editInfo}
           isShowDetail={showDetail}
           dispatch={this.props.dispatch}
+        />
+        <BarcodeModal
+          visible={barcodeModalVisible}
+          title="新增"
         />
       </div>
     );

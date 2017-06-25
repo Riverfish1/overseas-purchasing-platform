@@ -44,7 +44,6 @@ class PurchaseModal extends Component {
   componentWillReceiveProps(...args) {
     const { purchaseStorageData, isShowDetail, dispatch } = args[0];
     if (!isShowDetail && purchaseStorageData && purchaseStorageData.purchaseStorageDetailList && firstLoad) {
-      console.log('first load');
       this.setState({ storageList: purchaseStorageData.purchaseStorageDetailList, id: purchaseStorageData.id });
       dispatch({ type: 'purchaseStorage/queryBuyerTaskList', payload: { buyerId: purchaseStorageData.buyerId } });
       firstLoad = false;
@@ -144,8 +143,8 @@ class PurchaseModal extends Component {
       }));
 
       if (!hasError) {
-        console.log(p.state.id);
         fieldsValue.id = p.state.id;
+        fieldsValue.storageType = 0;
         delete fieldsValue.stoOrderNo;
         if (type === 'save') {
           dispatch({
@@ -377,7 +376,7 @@ class PurchaseModal extends Component {
       },
     ];
 
-    const storageListMapKeys = storageList.map(el => parseInt(el.skuId.toString().split('__')[0], 10));
+    const storageListMapKeys = storageList.map(el => parseInt(el.skuId && el.skuId.toString().split('__')[0], 10));
 
     const filteredBuyerTask = buyerTaskList ? buyerTaskList.filter(el => storageListMapKeys.indexOf(el.skuId) === -1) : [];
 
@@ -385,17 +384,6 @@ class PurchaseModal extends Component {
       <Modal {...modalProps}>
         <Form>
           <Row gutter={10}>
-            <Col span={7}>
-              <FormItem
-                label="入库单号"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('stoOrderNo', {
-                  initialValue: toString(purchaseStorageData.stoOrderNo),
-                })(
-                  <Input placeholder="自动生成" disabled />)}
-              </FormItem>
-            </Col>
             <Col span={7}>
               <FormItem
                 label="选择买手"
@@ -425,8 +413,6 @@ class PurchaseModal extends Component {
                   </Select>)}
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={10}>
             <Col span={7}>
               <FormItem
                 label="备注"

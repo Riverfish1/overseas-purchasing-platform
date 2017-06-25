@@ -15,7 +15,7 @@ class PurchaseStorage extends Component {
     this.state = {
       selectedRowKeys: [],
       showDetail: false,
-      barcodeModalVisible: false,
+      data: [],
     };
   }
 
@@ -68,6 +68,13 @@ class PurchaseStorage extends Component {
     this.props.dispatch({ type: 'purchaseStorage/toggleShowModal' });
   }
 
+  showBarcodeModal(type, id) {
+    if (type === 'update') {
+      this.props.dispatch({ type: 'purchaseStorage/queryStorage', payload: { id } });
+    }
+    this.props.dispatch({ type: 'purchaseStorage/toggleBarcodeModal' });
+  }
+
   handleEmpty() {
     const { resetFields } = this.props.form;
     resetFields();
@@ -92,6 +99,18 @@ class PurchaseStorage extends Component {
       p.props.dispatch({
         type: 'purchaseStorage/queryStorage',
         payload: { id: r.id },
+        cb(data) {
+          if (data && data.purchaseStorageDetailList) {
+            data.purchaseStorageDetailList.push({
+              skuCode: <font color="#00f" >明细合计</font>,
+              quantity: data.totalQuantity,
+              transQuantity: data.totalTransQuantity,
+              taskDailyCount: data.totalTaskDailyCount,
+              id: 0,
+            });
+            p.setState({ data: data.purchaseStorageDetailList });
+          }
+        },
       });
     });
   }
@@ -104,28 +123,19 @@ class PurchaseStorage extends Component {
   }
 
   closeDetailModal() {
+    const detailList = this.props.editInfo.purchaseStorageDetailList || [];
+    const len = detailList.length;
+    if (detailList[len - 1].id === 0) detailList.pop();
     this.props.dispatch({ type: 'purchaseStorage/clearEditInfo' });
     setTimeout(() => {
       this.setState({ showDetail: false });
     }, 0);
   }
 
-  showBarcodeModal(type) {
-    switch (type) {
-      case 'add':
-        this.setState({ barcodeModalVisible: true });
-        break;
-      case 'update':
-        this.setState({ barcodeModalVisible: true });
-        break;
-      default: return false;
-    }
-  }
-
   render() {
     const p = this;
-    const { form, list = [], total, buyer = [], wareList = [], showModal, editInfo = {}, buyerTaskList = [] } = p.props;
-    const { selectedRowKeys, showDetail, barcodeModalVisible } = p.state;
+    const { form, dispatch, list = [], total, buyer = [], wareList = [], showModal, editInfo = {}, buyerTaskList = [], showBarcodeModal } = p.props;
+    const { selectedRowKeys, showDetail, data } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -139,21 +149,23 @@ class PurchaseStorage extends Component {
       { title: '新增时间', dataIndex: 'gmtCreate', key: 'gmtCreate', render(t) { return t && t.split(' ')[0]; } },
       { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(t) { return t && t.split(' ')[0]; } },
       { title: '入库时间', dataIndex: 'putInDate', key: 'putInDate', render(t) { return (t && t.split(' ')[0]) || '-'; } },
-      { title: '状态', dataIndex: 'status', key: 'status', render(text) { return text === 0 ? '未入库' : '已入库'; } },
+      { title: '状态', dataIndex: 'status', key: 'status', render(t) { return t === 0 ? '未入库' : '已入库'; } },
       { title: '备注', dataIndex: 'remark', key: 'remark', render(t) { return t || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
         width: 160,
-        render(text, record) {
+        render(t, r) {
           return (
             <div>
-              <a href="javascript:void(0)" onClick={p.queryDetail.bind(p, record)} style={{ marginRight: 10 }}>查看</a>
-              <a href="javascript:void(0)" style={{ margin: '0 10px 0 0' }} onClick={p.showModal.bind(p, 'update', record.id)}>修改</a>
-              <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, record.id)} >
+              <a href="javascript:void(0)" onClick={p.queryDetail.bind(p, r)} style={{ marginRight: 10 }}>查看</a>
+              {r.storageType === 1 ?
+                <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.showBarcodeModal.bind(p, 'update', r.id)}>修改</a> :
+                <a href="javascript:void(0)" style={{ marginRight: 10 }} onClick={p.showModal.bind(p, 'update', r.id)}>修改</a>}
+              <Popconfirm title="确认删除？" onConfirm={p.handleDelete.bind(p, r.id)} >
                 <a href="javascript:void(0)" style={{ marginRight: 10 }}>删除</a>
               </Popconfirm>
-              <a href="javascript:void(0)" onClick={p.exportDetail.bind(p, record.id)} >导出</a>
+              <a href="javascript:void(0)" onClick={p.exportDetail.bind(p, r.id)} >导出</a>
             </div>);
         },
       },
@@ -204,18 +216,6 @@ class PurchaseStorage extends Component {
         p.handleSubmit(null, pageIndex);
       },
     };
-
-    const detailList = editInfo.purchaseStorageDetailList;
-    console.log(detailList);
-    if (detailList && detailList.length) {
-      detailList.push({
-        skuCode: <font color="#00f" >明细合计</font>,
-        quantity: editInfo.totalQuantity,
-        transQuantity: editInfo.totalTransQuantity,
-        taskDailyCount: editInfo.totalTaskDailyCount,
-        id: 0,
-      });
-    }
 
     return (
       <div>
@@ -308,7 +308,7 @@ class PurchaseStorage extends Component {
           width={900}
           onCancel={this.closeDetailModal.bind(this)}
         >
-          <Table columns={columnsStorageList} pagination={false} dataSource={editInfo.purchaseStorageDetailList} rowKey={r => r.id} bordered scroll={{ y: 400 }} />
+          <Table columns={columnsStorageList} pagination={false} dataSource={data} rowKey={r => r.id} bordered scroll={{ y: 500 }} />
         </Modal>
         <PurchaseStorageModal
           visible={showModal}
@@ -318,11 +318,15 @@ class PurchaseStorage extends Component {
           buyerTaskList={buyerTaskList}
           purchaseStorageData={editInfo}
           isShowDetail={showDetail}
-          dispatch={this.props.dispatch}
+          dispatch={dispatch}
         />
         <BarcodeModal
-          visible={barcodeModalVisible}
-          title="新增"
+          visible={showBarcodeModal}
+          title={Object.keys(editInfo).length > 0 ? '修改入库单' : '新增入库单'}
+          wareList={wareList}
+          buyer={buyer}
+          barcodeStorageData={editInfo}
+          dispatch={dispatch}
         />
       </div>
     );
@@ -330,10 +334,10 @@ class PurchaseStorage extends Component {
 }
 
 function mapStateToProps(state) {
-  const { list, total, buyer, showModal, editInfo, buyerTaskList } = state.purchaseStorage;
+  const { list, total, buyer, showModal, editInfo, buyerTaskList, showBarcodeModal } = state.purchaseStorage;
   const { wareList } = state.inventory;
   return {
-    list, total, buyer, wareList, showModal, editInfo, buyerTaskList,
+    list, total, buyer, wareList, showModal, editInfo, buyerTaskList, showBarcodeModal,
   };
 }
 

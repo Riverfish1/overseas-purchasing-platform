@@ -24,6 +24,7 @@ export default {
     buyerTaskList: [],
     showModal: false,
     editInfo: {},
+    showBarcodeModal: false,
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -81,9 +82,12 @@ export default {
         yield put({ type: 'queryPurchaseStorageList', payload: {} });
       }
     },
-    * queryStorage({ payload }, { call, put }) {
+    * queryStorage({ payload, cb }, { call, put }) {
       const data = yield call(queryPurchaseStorage, { payload });
       if (data.success) {
+        if (cb) {
+          cb(data.data);
+        }
         yield put({ type: 'updateStorage', payload: data });
       }
     },
@@ -108,6 +112,7 @@ export default {
   reducers: {
     // 修改的状态
     toggleShowModal(state) { return { ...state, showModal: !state.showModal }; },
+    toggleBarcodeModal(state) { return { ...state, showBarcodeModal: !state.showBarcodeModal }; },
     clearEditInfo(state) { return { ...state, editInfo: {} }; },
     updateEditInfo(state, { payload }) { return { ...state, editInfo: { ...state.editInfo, ...payload } }; },
     updatePurchaseStorageList(state, { payload }) {

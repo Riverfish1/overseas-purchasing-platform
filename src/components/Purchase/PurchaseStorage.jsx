@@ -101,6 +101,13 @@ class PurchaseStorage extends Component {
     });
   }
 
+  closeDetailModal() {
+    this.props.dispatch({ type: 'purchaseStorage/clearEditInfo' });
+    setTimeout(() => {
+      this.setState({ showDetail: false });
+    }, 0);
+  }
+
   render() {
     const p = this;
     const { form, list = [], total, buyer = [], wareList = [], showModal, editInfo = {}, buyerTaskList = [] } = p.props;
@@ -271,8 +278,8 @@ class PurchaseStorage extends Component {
           visible={showDetail}
           title="详情"
           footer={null}
-          width="900"
-          onCancel={() => this.setState({ showDetail: false })}
+          width={900}
+          onCancel={this.closeDetailModal.bind(this)}
         >
           <Table columns={columnsStorageList} dataSource={editInfo.purchaseStorageDetailList} rowKey={r => r.id} bordered />
         </Modal>
@@ -283,6 +290,7 @@ class PurchaseStorage extends Component {
           wareList={wareList}
           buyerTaskList={buyerTaskList}
           purchaseStorageData={editInfo}
+          isShowDetail={showDetail}
           dispatch={this.props.dispatch}
         />
       </div>

@@ -42,8 +42,9 @@ class PurchaseModal extends Component {
   }
 
   componentWillReceiveProps(...args) {
-    const { purchaseStorageData, dispatch } = args[0];
-    if (purchaseStorageData && purchaseStorageData.purchaseStorageDetailList && firstLoad) {
+    const { purchaseStorageData, isShowDetail, dispatch } = args[0];
+    if (!isShowDetail && purchaseStorageData && purchaseStorageData.purchaseStorageDetailList && firstLoad) {
+      console.log('first load');
       this.setState({ storageList: purchaseStorageData.purchaseStorageDetailList, id: purchaseStorageData.id });
       dispatch({ type: 'purchaseStorage/queryBuyerTaskList', payload: { buyerId: purchaseStorageData.buyerId } });
       firstLoad = false;

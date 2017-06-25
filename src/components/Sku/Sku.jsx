@@ -213,7 +213,7 @@ class Sku extends Component {
         dataIndex: 'oper',
         key: 'oper',
         width: 60,
-        fixed: 'right',
+        // fixed: 'right',
         render(text, record) {
           return (
             <div>
@@ -317,6 +317,7 @@ class Sku extends Component {
             </Col>
           </Row>
         </Form>
+        <div style={{ height: 20 }} />
         <Row>
           <Col>
             <Table
@@ -325,7 +326,7 @@ class Sku extends Component {
               bordered
               rowKey={record => record.id}
               pagination={paginationProps}
-              scroll={{ x: '120%', y: 540 }}
+              scroll={{ y: 540 }}
             />
           </Col>
         </Row>

@@ -120,6 +120,7 @@ class PurchaseStorage extends Component {
     const columnsList = [
       { title: '入库单号', dataIndex: 'stoOrderNo', key: 'stoOrderNo' },
       { title: '买手姓名', dataIndex: 'buyerName', key: 'buyerName' },
+      { title: '操作员名字', dataIndex: 'userCreate', key: 'userCreate' },
       { title: '仓库名称', dataIndex: 'warehouseName', key: 'warehouseName' },
       { title: '新增时间', dataIndex: 'gmtCreate', key: 'gmtCreate', render(t) { return t && t.split(' ')[0]; } },
       { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(t) { return t && t.split(' ')[0]; } },
@@ -172,6 +173,7 @@ class PurchaseStorage extends Component {
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 80 },
       { title: '计划采购数', dataIndex: 'taskDailyCount', key: 'taskDailyCount', width: 60 },
       { title: '入库数', dataIndex: 'quantity', key: 'quantity', width: 70, render(t) { return t || 0; } },
+      { title: '在途入库数', dataIndex: 'transQuantity', key: 'transQuantity', width: 70, render(t) { return t || 0; } },
       { title: '仓库', dataIndex: 'warehouseName', key: 'warehouseName', width: 100 },
       { title: '货架号', dataIndex: 'shelfNo', key: 'shelfNo', width: 100 },
     ];
@@ -281,7 +283,7 @@ class PurchaseStorage extends Component {
           width={900}
           onCancel={this.closeDetailModal.bind(this)}
         >
-          <Table columns={columnsStorageList} dataSource={editInfo.purchaseStorageDetailList} rowKey={r => r.id} bordered />
+          <Table columns={columnsStorageList} dataSource={editInfo.purchaseStorageDetailList} rowKey={r => r.id} bordered scroll={{ y: 400 }} />
         </Modal>
         <PurchaseStorageModal
           visible={showModal}

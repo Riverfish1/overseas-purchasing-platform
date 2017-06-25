@@ -46,10 +46,12 @@ export default {
     orderDetailList: [],
     orderTotal: 1,
     currentPage: 1,
+    currentPageSize: 20,
     orderValues: {},
     // erp
     erpOrderList: [],
     erpCurrentPage: 1,
+    erpCurrentPageSize: 20,
     erpOrderTotal: 1,
     erpOrderDetail: {},
     erpOrderValues: {},
@@ -67,6 +69,9 @@ export default {
     saveCurrentPage(state, { payload }) {
       return { ...state, currentPage: payload.pageIndex };
     },
+    saveCurrentPageSize(state, { payload }) {
+      return { ...state, currentPageSize: payload.pageSize };
+    },
     saveOrder(state, { payload }) {
       return { ...state, orderValues: payload };
     },
@@ -76,6 +81,9 @@ export default {
     // erp
     saveErpCurrentPage(state, { payload }) {
       return { ...state, erpCurrentPage: payload.pageIndex };
+    },
+    saveErpCurrentPageSize(state, { payload }) {
+      return { ...state, erpCurrentPageSize: payload.pageSize };
     },
     saveErpOrderList(state, { payload }) {
       return { ...state, erpOrderList: payload.data, erpOrderTotal: payload.totalCount };
@@ -161,14 +169,19 @@ export default {
     },
     * queryOrderList({ payload }, { call, put, select }) { // 订单管理列表
       let pageIndex = yield select(({ order }) => order.currentPage);
+      let pageSize = yield select(({ order }) => order.currentPageSize);
       if (payload && payload.pageIndex) {
         pageIndex = payload.pageIndex;
         yield put({ type: 'saveCurrentPage', payload });
       }
+      if (payload && payload.pageSize) {
+        pageSize = payload.pageSize;
+        yield put({ type: 'saveCurrentPageSize', payload });
+      }
       if (payload.startGmt) payload.startGmt = payload.startGmt.format('YYYY-MM-DD');
       if (payload.endGmt) payload.endGmt = payload.endGmt.format('YYYY-MM-DD');
       if (!payload.status) payload.status = 10;
-      const data = yield call(queryOrderList, { payload: { ...payload, pageIndex } });
+      const data = yield call(queryOrderList, { payload: { ...payload, pageIndex, pageSize } });
       if (data.success) {
         yield put({
           type: 'saveOrderList',
@@ -178,13 +191,16 @@ export default {
     },
     * queryErpOrderList({ payload }, { call, put, select }) {
       let pageIndex = yield select(({ order }) => order.erpCurrentPage);
+      let pageSize = yield select(({ order }) => order.erpCurrentPageSize);
       if (payload && payload.pageIndex) {
         pageIndex = payload.pageIndex;
         yield put({ type: 'saveErpCurrentPage', payload });
       }
-      // if (payload.startGmt) payload.startGmt = payload.startGmt.format('YYYY-MM-DD');
-      // if (payload.endGmt) payload.endGmt = payload.endGmt.format('YYYY-MM-DD');
-      const data = yield call(queryErpOrderList, { payload: { ...payload, pageIndex } });
+      if (payload && payload.pageSize) {
+        pageSize = payload.pageSize;
+        yield put({ type: 'saveErpCurrentPageSize', payload });
+      }
+      const data = yield call(queryErpOrderList, { payload: { ...payload, pageIndex, pageSize } });
       if (data.success) {
         yield put({
           type: 'saveErpOrderList',

@@ -20,8 +20,9 @@ class Order extends Component {
     };
   }
 
-  handleSubmit(e, page) {
+  handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
+    const { currentPageSize } = this.props;
     // 清除多选
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
@@ -35,7 +36,11 @@ class Order extends Component {
         delete fieldsValue.orderTime;
         this.props.dispatch({
           type: 'order/queryOrderList',
-          payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
+          payload: {
+            ...fieldsValue,
+            pageIndex: typeof page === 'number' ? page : 1,
+            pageSize: pageSize || currentPageSize,
+          },
         });
       });
     });
@@ -159,7 +164,7 @@ class Order extends Component {
 
   render() {
     const p = this;
-    const { form, dispatch, orderList = [], orderTotal, currentPage, orderValues = {}, agencyList = [], orderDetailList = [] } = p.props;
+    const { form, dispatch, orderList = [], orderTotal, currentPageSize, orderValues = {}, agencyList = [], orderDetailList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { title, visible, modalVisible } = p.state;
     const formItemLayout = {
@@ -201,7 +206,8 @@ class Order extends Component {
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
-        width: 200,
+        width: 150,
+        fixed: 'right',
         render(text, record) {
           return (
             <div>
@@ -228,10 +234,14 @@ class Order extends Component {
 
     const listPaginationProps = {
       total: orderTotal,
-      current: currentPage,
-      pageSize: 20,
+      pageSize: currentPageSize,
+      showSizeChanger: true,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
+      },
+      pageSizeOptions: ['20', '50', '100', '200', '500'],
+      onShowSizeChange(current, size) {
+        p.handleSubmit(null, 1, size);
       },
     };
 
@@ -281,6 +291,7 @@ class Order extends Component {
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
+        width: 80,
         render(text) {
           switch (text) {
             case 0: return '新建';
@@ -295,6 +306,7 @@ class Order extends Component {
         title: '备货状态',
         dataIndex: 'stockStatus',
         key: 'stockStatus',
+        width: 100,
         render(text) {
           switch (text) {
             case 0: return '未备货';
@@ -499,6 +511,7 @@ class Order extends Component {
               rowKey={record => record.id}
               pagination={listPaginationProps}
               rowSelection={rowSelection}
+              scroll={{ x: '130%', y: 400 }}
             />
           </Col>
         </Row>
@@ -510,7 +523,7 @@ class Order extends Component {
             size="large"
             rowKey={record => record.id}
             pagination={false}
-            scroll={{ x: '130%' }}
+            scroll={{ x: '130%', y: 400 }}
           />
         </Modal>
         <OrderModal
@@ -527,12 +540,12 @@ class Order extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList, orderTotal, currentPage, orderValues, orderDetailList } = state.order;
+  const { orderList, orderTotal, currentPageSize, orderValues, orderDetailList } = state.order;
   const { list } = state.agency;
   return {
     orderList,
     orderTotal,
-    currentPage,
+    currentPageSize,
     orderValues,
     agencyList: list,
     orderDetailList,

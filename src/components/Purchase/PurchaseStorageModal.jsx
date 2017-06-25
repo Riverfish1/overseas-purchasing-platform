@@ -329,7 +329,7 @@ class PurchaseModal extends Component {
       { title: '颜色', dataIndex: 'color', key: 'color', width: 50 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 50 },
       { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
-      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 60, render(t, r) { return t || r.taskDailyCount; } },
+      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 80, render(t, r) { return t || r.taskDailyCount; } },
       { title: '数量',
         dataIndex: 'quantity',
         key: 'quantity',
@@ -457,7 +457,7 @@ class PurchaseModal extends Component {
                 <Col span="3" style={{ marginLeft: 10 }}><Button type="primary" size="large" onClick={this.queryUpc.bind(this)}>添加</Button></Col>
                 <Col span="3" style={{ marginTop: 6 }}>批量货架号：</Col>
                 <Col span="5">
-                  <Select onChange={p.batchSelectPositionNo.bind(p)} placeholder="请选择货架号">
+                  <Select onChange={p.batchSelectPositionNo.bind(p)} placeholder="请选择货架号" size="large">
                     {ARR.map((el) => {
                       return <Option key={`ZT${el}`}>{`ZT${el}`}</Option>;
                     })

@@ -26,9 +26,10 @@ class ErpOrder extends Component {
       batchDeliveryVisible: false,
     };
   }
-  handleSubmit(e, page) {
+  handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
     console.log(this);
+    const { erpCurrentPageSize } = this.props;
     // 清除多选
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFields((err, fieldsValue) => {
@@ -40,7 +41,11 @@ class ErpOrder extends Component {
         delete fieldsValue.orderTime;
         this.props.dispatch({
           type: 'order/queryErpOrderList',
-          payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
+          payload: {
+            ...fieldsValue,
+            pageIndex: typeof page === 'number' ? page : 1,
+            pageSize: pageSize || erpCurrentPageSize,
+          },
         });
       });
     });
@@ -199,7 +204,7 @@ class ErpOrder extends Component {
   }
   render() {
     const p = this;
-    const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
+    const { erpOrderList, erpOrderTotal, erpCurrentPageSize, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible } = p.state;
 
@@ -327,9 +332,14 @@ class ErpOrder extends Component {
     ];
     const pagination = {
       total: erpOrderTotal,
-      pageSize: 20,
+      pageSize: erpCurrentPageSize,
+      showSizeChanger: true,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
+      },
+      pageSizeOptions: ['20', '50', '100', '200', '500'],
+      onShowSizeChange(current, size) {
+        p.handleSubmit(null, 1, size);
       },
     };
     const isNotSelected = this.state.checkId.length === 0;
@@ -553,10 +563,10 @@ class ErpOrder extends Component {
 }
 
 function mapStateToProps(state) {
-  const { erpOrderList, erpOrderTotal, erpOrderDetail, erpOrderValues, deliveryCompanyList } = state.order;
+  const { erpOrderList, erpOrderTotal, erpCurrentPageSize, erpOrderDetail, erpOrderValues, deliveryCompanyList } = state.order;
   const { list } = state.agency;
   const { wareList } = state.inventory;
-  return { erpOrderList, erpOrderTotal, erpOrderDetail, agencyList: list, erpOrderValues, deliveryCompanyList, wareList };
+  return { erpOrderList, erpOrderTotal, erpCurrentPageSize, erpOrderDetail, agencyList: list, erpOrderValues, deliveryCompanyList, wareList };
 }
 
 export default connect(mapStateToProps)(Form.create()(ErpOrder));

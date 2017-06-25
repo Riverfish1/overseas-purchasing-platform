@@ -519,7 +519,7 @@ class Order extends Component {
               rowKey={record => record.id}
               pagination={listPaginationProps}
               rowSelection={rowSelection}
-              scroll={{ x: '130%', y: 500 }}
+              scroll={{ x: '130%', y: 550 }}
             />
           </Col>
         </Row>
@@ -531,7 +531,7 @@ class Order extends Component {
             size="large"
             rowKey={record => record.id}
             pagination={false}
-            scroll={{ x: '130%', y: 500 }}
+            scroll={{ x: '130%', y: 550 }}
           />
         </Modal>
         <OrderModal

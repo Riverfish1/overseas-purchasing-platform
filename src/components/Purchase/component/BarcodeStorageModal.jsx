@@ -168,7 +168,7 @@ class BarcodeModal extends Component {
       fetch.post('/haierp1/itemSku/queryBySkuCodeOrUpc', { data: { code: value } }).then((res) => {
         if (res.data && res.data.length > 0) {
           const obj = res.data[0];
-          obj.id = generateRandomSkuId(obj.id);
+          obj.skuId = generateRandomSkuId(obj.id);
           obj.price = 1;
           obj.quantity = 1;
           const { storageList } = p.state;

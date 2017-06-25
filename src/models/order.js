@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import qs from 'querystring';
 import fetch from '../utils/request';
 
 const addOrder = ({ payload }) => fetch.post('/haierp1/outerOrder/add', { data: payload }).catch(e => e);
@@ -356,10 +357,12 @@ export default {
       window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportExcel?startOrderTime=${payload.startOrderTime}&endOrderTime=${payload.endOrderTime}`);
     },
     exportMainOrder({ payload }) {
-      window.open(`http://${location.host}/haierp1/outerOrder/OuterOrderExportExcel?startGmtCreate=${payload.startOrderTime}&endGmtCreate=${payload.endOrderTime}`);
+      const param = qs.stringify(payload);
+      window.open(`http://${location.host}/haierp1/outerOrder/OuterOrderExportExcel?${param}`);
     },
     exportErpOrder({ payload }) {
-      window.open(`http://${location.host}/haierp1/erpOrder/erpOrderExport?startGmtCreate=${payload.startOrderTime}&endGmtCreate=${payload.endOrderTime}`);
+      const param = qs.stringify(payload);
+      window.open(`http://${location.host}/haierp1/erpOrder/erpOrderExport?${param}`);
     },
     * lockErpOrder(payload, { call, put }) {
       const data = yield call(lockErpOrder, payload);

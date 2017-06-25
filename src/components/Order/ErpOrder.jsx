@@ -185,18 +185,18 @@ class ErpOrder extends Component {
     const p = this;
     form.validateFields((err, values) => {
       if (err) return;
-      let startOrderTime;
-      let endOrderTime;
+      let startGmtCreate;
+      let endGmtCreate;
       if (values.orderTime && values.orderTime[0] && values.orderTime[1]) {
-        startOrderTime = new Date(values.orderTime[0]).format('yyyy-MM-dd');
-        endOrderTime = new Date(values.orderTime[1]).format('yyyy-MM-dd');
+        startGmtCreate = new Date(values.orderTime[0]).format('yyyy-MM-dd');
+        endGmtCreate = new Date(values.orderTime[1]).format('yyyy-MM-dd');
         delete values.orderTime;
         p.props.dispatch({
           type: 'order/exportErpOrder',
           payload: {
             ...values,
-            startOrderTime,
-            endOrderTime,
+            startGmtCreate,
+            endGmtCreate,
           },
         });
       } else {

@@ -39,8 +39,8 @@ class BarcodeModal extends Component {
   }
 
   componentWillReceiveProps(...args) {
-    const { barcodeStorageData } = args[0];
-    if (barcodeStorageData && barcodeStorageData.purchaseStorageDetailList) {
+    const { barcodeStorageData, isShowDetail } = args[0];
+    if (!isShowDetail && barcodeStorageData && barcodeStorageData.purchaseStorageDetailList) {
       this.setState({ storageList: barcodeStorageData.purchaseStorageDetailList, id: barcodeStorageData.id });
     }
   }
@@ -168,7 +168,7 @@ class BarcodeModal extends Component {
       fetch.post('/haierp1/itemSku/queryBySkuCodeOrUpc', { data: { code: value } }).then((res) => {
         if (res.data && res.data.length > 0) {
           const obj = res.data[0];
-          obj.skuId = generateRandomSkuId(obj.id);
+          obj.id = generateRandomSkuId(obj.id);
           obj.price = 1;
           obj.quantity = 1;
           const { storageList } = p.state;
@@ -247,7 +247,7 @@ class BarcodeModal extends Component {
       { title: 'UPC',
         dataIndex: 'upc',
         key: 'upc',
-        width: 80,
+        width: 90,
         render(t, r) {
           return <Input placeholder="请输入UPC" value={t} onChange={p.inputChange.bind(p, 'upc', r.skuId)} />;
         },
@@ -256,7 +256,7 @@ class BarcodeModal extends Component {
       { title: '图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
-        width: 70,
+        width: 80,
         render(text) {
           if (!text) return '-';
           const picList = JSON.parse(text).picList;
@@ -268,14 +268,14 @@ class BarcodeModal extends Component {
           );
         },
       },
-      { title: '颜色', dataIndex: 'color', key: 'color', width: 50 },
-      { title: '规格', dataIndex: 'scale', key: 'scale', width: 50 },
-      { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 60, render(t) { return t || 0; } },
-      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 60, render(t, r) { return t || r.taskDailyCount; } },
+      { title: '颜色', dataIndex: 'color', key: 'color', width: 60 },
+      { title: '规格', dataIndex: 'scale', key: 'scale', width: 60 },
+      { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 80, render(t) { return t || 0; } },
+      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 80, render(t, r) { return t || r.taskDailyCount; } },
       { title: '数量',
         dataIndex: 'quantity',
         key: 'quantity',
-        width: 40,
+        width: 60,
         render(t, r) {
           return <InputNumber min={1} step="1" placeholder="请输入" value={t > 0 ? t : 1} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
         },
@@ -291,7 +291,7 @@ class BarcodeModal extends Component {
       { title: '单价',
         dataIndex: 'price',
         key: 'price',
-        width: 50,
+        width: 60,
         render(t, r) {
           return <InputNumber min={0} step="0.01" placeholder="请输入" value={t} onChange={p.inputChange.bind(p, 'price', r.skuId)} />;
         },
@@ -307,7 +307,7 @@ class BarcodeModal extends Component {
       { title: '操作',
         dataIndex: 'op',
         key: 'op',
-        width: 60,
+        width: 80,
         render(t, r) {
           return (
             <span>

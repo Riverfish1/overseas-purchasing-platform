@@ -71,6 +71,8 @@ class PurchaseStorage extends Component {
   showBarcodeModal(type, id) {
     if (type === 'update') {
       this.props.dispatch({ type: 'purchaseStorage/queryStorage', payload: { id } });
+    } else {
+      this.setState({ data: [] });
     }
     this.props.dispatch({ type: 'purchaseStorage/toggleBarcodeModal' });
   }
@@ -137,6 +139,7 @@ class PurchaseStorage extends Component {
     const { form, dispatch, list = [], total, buyer = [], wareList = [], showModal, editInfo = {}, buyerTaskList = [], showBarcodeModal } = p.props;
     const { selectedRowKeys, showDetail, data } = p.state;
     const { getFieldDecorator } = form;
+    console.log(editInfo);
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -172,8 +175,8 @@ class PurchaseStorage extends Component {
     ];
 
     const columnsStorageList = [
-      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 50 },
-      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 80 },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 80 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
       { title: '图片',
         dataIndex: 'skuPic',
@@ -196,12 +199,12 @@ class PurchaseStorage extends Component {
         },
       },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 60 },
-      { title: '规格', dataIndex: 'scale', key: 'scale', width: 80 },
+      { title: '规格', dataIndex: 'scale', key: 'scale', width: 60 },
       { title: '计划采购数', dataIndex: 'taskDailyCount', key: 'taskDailyCount', width: 60 },
       { title: '入库数', dataIndex: 'quantity', key: 'quantity', width: 70, render(t) { return t || 0; } },
       { title: '在途入库数', dataIndex: 'transQuantity', key: 'transQuantity', width: 70, render(t) { return t || 0; } },
-      { title: '仓库', dataIndex: 'warehouseName', key: 'warehouseName', width: 100 },
-      { title: '货架号', dataIndex: 'shelfNo', key: 'shelfNo', width: 100 },
+      { title: '仓库', dataIndex: 'warehouseName', key: 'warehouseName', width: 80 },
+      { title: '货架号', dataIndex: 'shelfNo', key: 'shelfNo', width: 80 },
     ];
 
     const rowSelection = {
@@ -326,6 +329,7 @@ class PurchaseStorage extends Component {
           wareList={wareList}
           buyer={buyer}
           barcodeStorageData={editInfo}
+          isShowDetail={showDetail}
           dispatch={dispatch}
         />
       </div>

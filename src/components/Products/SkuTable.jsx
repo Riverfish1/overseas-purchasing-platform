@@ -204,9 +204,9 @@ class SkuTable extends Component {
   }
   changeBatchSkuType(type) {
     this.setState({ batchSkuSort: type });
-    if (type) {
-      this.setState({ batchSelected: getScaleOptions(type, this.props.scaleTypes).map(el => el.name) });
-    }
+    // if (type) {
+    //   this.setState({ batchSelected: getScaleOptions(type, this.props.scaleTypes).map(el => el.name) });
+    // }
   }
   handleBatchSelect(batchSelected) {
     this.setState({ batchSelected });
@@ -219,7 +219,7 @@ class SkuTable extends Component {
     const { form, parent, packageScales, scaleTypes } = this.props;
     const { getFieldDecorator } = form;
     const { skuData, batchSkuSort, batchSelected, previewImage, previewVisible, batchFileList } = this.state;
-
+    console.log(batchSelected);
     // 注册props
     if (!parent.clearSkuValue) parent.clearSkuValue = this.clearValue.bind(this);
     if (!parent.getSkuValue) parent.getSkuValue = this.getValue.bind(this);

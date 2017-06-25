@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, DatePicker } from 'antd';
+import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, DatePicker, message } from 'antd';
 
 import InvoiceModal from './component/InvoiceModal';
 
@@ -77,14 +77,16 @@ class ShippingOrder extends Component {
       if (values.orderTime && values.orderTime[0] && values.orderTime[1]) {
         startOrderTime = new Date(values.orderTime[0]).format('yyyy-MM-dd');
         endOrderTime = new Date(values.orderTime[1]).format('yyyy-MM-dd');
+        p.props.dispatch({
+          type: 'order/exportOrderDetail',
+          payload: {
+            startOrderTime,
+            endOrderTime,
+          },
+        });
+      } else {
+        message.error('请选择发货时间');
       }
-      p.props.dispatch({
-        type: 'order/exportOrderDetail',
-        payload: {
-          startOrderTime,
-          endOrderTime,
-        },
-      });
     });
   }
   render() {
@@ -219,7 +221,9 @@ class ShippingOrder extends Component {
                 label="物流公司名称"
                 {...formItemLayout}
               >
-                {getFieldDecorator('logisticCompany', {})(
+                {getFieldDecorator('logisticCompany', {
+                  rules: [{ required: true, message: '请选择物流公司名称' }],
+                })(
                   <Select placeholder="请选择物流公司名称" allowClear>
                     {deliveryCompanyList.map(v => (
                       <Option value={v.name} key={v.name}>{v.name}</Option>

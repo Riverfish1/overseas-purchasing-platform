@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, Popconfirm, DatePicker, Icon } from 'antd';
+import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, Popconfirm, DatePicker, Icon, message } from 'antd';
 
 import DeliveryModal from './component/DeliveryModal';
 import BatchDeliveryModal from './component/BatchDeliveryModal';
@@ -175,6 +175,28 @@ class ErpOrder extends Component {
     }
     return null;
   }
+  exportErpOrder() { // 导出订单
+    const { form } = this.props;
+    const p = this;
+    form.validateFields((err, values) => {
+      if (err) return;
+      let startOrderTime;
+      let endOrderTime;
+      if (values.orderTime && values.orderTime[0] && values.orderTime[1]) {
+        startOrderTime = new Date(values.orderTime[0]).format('yyyy-MM-dd');
+        endOrderTime = new Date(values.orderTime[1]).format('yyyy-MM-dd');
+        p.props.dispatch({
+          type: 'order/exportErpOrder',
+          payload: {
+            startOrderTime,
+            endOrderTime,
+          },
+        });
+      } else {
+        message.error('请选择创建时间范围');
+      }
+    });
+  }
   render() {
     const p = this;
     const { erpOrderList, erpOrderTotal, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
@@ -196,7 +218,7 @@ class ErpOrder extends Component {
       selectedRowKeys: p.state.checkId,
     };
     const columns = [
-      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 100 },
+      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 110 },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 150 },
       { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 150, render(text) { return text || '-'; } },
@@ -232,6 +254,18 @@ class ErpOrder extends Component {
             default: return '-';
           }
         },
+      },
+      { title: '颜色',
+        dataIndex: 'color',
+        key: 'color',
+        width: 80,
+        render(text) { return text || '-'; },
+      },
+      { title: '尺码',
+        dataIndex: 'scale',
+        key: 'scale',
+        width: 80,
+        render(text) { return text || '-'; },
       },
       { title: '图片',
         dataIndex: 'skuPic',
@@ -473,18 +507,11 @@ class ErpOrder extends Component {
           </Row>
         </Form>
         <Row className="operBtn">
-          <Col style={{ float: 'left', marginRight: 10 }} >
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>发货</Button>
-          </Col>
-          <Col style={{ float: 'left' }} >
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.showBatchDeliveryModal.bind(p)}>批量发货</Button>
-          </Col>
-          <Col style={{ float: 'right', marginLeft: 10 }} >
-            <Button type="primary" disabled={isNotSelected} size="large" onClick={p.replayAssign.bind(p)}>重分配库存</Button>
-          </Col>
-          <Col style={{ float: 'right' }} >
-            <Button disabled={isNotSelected} size="large" onClick={p.closeErpOrder.bind(p)}>关闭</Button>
-          </Col>
+          <Button style={{ float: 'left', marginRight: 10 }} type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>发货</Button>
+          <Button style={{ float: 'left' }} type="primary" disabled={isNotSelected} size="large" onClick={p.showBatchDeliveryModal.bind(p)}>批量发货</Button>
+          <Button style={{ float: 'right', marginLeft: 10 }} type="primary" disabled={isNotSelected} size="large" onClick={p.replayAssign.bind(p)}>重分配库存</Button>
+          <Button style={{ float: 'right', marginLeft: 10 }} disabled={isNotSelected} size="large" onClick={p.closeErpOrder.bind(p)}>关闭</Button>
+          <Button style={{ float: 'right' }} type="primary" disabled={isNotSelected} size="large" onClick={p.exportErpOrder.bind(p)}>导出订单</Button>
         </Row>
         <DeliveryModal
           visible={deliveryModalVisible}
@@ -509,7 +536,7 @@ class ErpOrder extends Component {
           dataSource={erpOrderList}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: '180%', y: 540 }}
+          scroll={{ x: '200%', y: 540 }}
           bordered={true}
         />
         <ErpOrderModal

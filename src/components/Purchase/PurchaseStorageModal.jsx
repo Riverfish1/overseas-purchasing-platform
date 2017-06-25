@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Input, InputNumber, Select, Row, Col, Table, Form } from 'antd';
+import { Modal, Button, Input, InputNumber, Select, Row, Col, Table, Form, Popover } from 'antd';
 import fetch from '../../utils/request';
 import styles from './Purchase.less';
 
@@ -279,7 +279,21 @@ class PurchaseModal extends Component {
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 50 },
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
-      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 100, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="80" height="80" /> : '无'; } },
+      { title: '图片',
+        dataIndex: 'skuPic',
+        key: 'skuPic',
+        width: 100,
+        render(text) {
+          if (!text) return '-';
+          const picList = JSON.parse(text).picList;
+          const t = picList.length ? JSON.parse(text).picList[0].url : '';
+          return (
+            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+              <img role="presentation" src={t} width={60} height={60} />
+            </Popover> : '-'
+          );
+        },
+      },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 40 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 44 },
       { title: '计划采购数', dataIndex: 'taskDailyCount', key: 'taskDailyCount', width: 60 },
@@ -297,7 +311,21 @@ class PurchaseModal extends Component {
         },
       },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
-      { title: '图片', dataIndex: 'skuPic', key: 'skuPic', width: 100, render(t) { return t ? <img alt="" src={JSON.parse(t).picList[0].url} width="80" height="80" /> : '无'; } },
+      { title: '图片',
+        dataIndex: 'skuPic',
+        key: 'skuPic',
+        width: 100,
+        render(text) {
+          if (!text) return '-';
+          const picList = JSON.parse(text).picList;
+          const t = picList.length ? JSON.parse(text).picList[0].url : '';
+          return (
+            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+              <img role="presentation" src={t} width={60} height={60} />
+            </Popover> : '-'
+          );
+        },
+      },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 50 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 50 },
       { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
@@ -437,7 +465,7 @@ class PurchaseModal extends Component {
                   </Select>
                 </Col>
               </Row>
-              <Table columns={columnsStorageList} bordered scroll={{ x: '160%', y: 500 }} dataSource={storageList} rowKey={r => r.id} pagination={false} />
+              <Table columns={columnsStorageList} bordered scroll={{ x: '180%', y: 500 }} dataSource={storageList} rowKey={r => r.id} pagination={false} />
             </Col>
           </Row>
         </Form>

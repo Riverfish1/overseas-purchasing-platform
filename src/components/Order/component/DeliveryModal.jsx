@@ -211,6 +211,7 @@ class DeliveryModal extends Component {
                 >
                   {getFieldDecorator('logisticCompany', {
                     initialValue: data.logisticCompany || undefined,
+                    rules: [{ required: true, message: '请选择物流公司名称' }],
                   })(
                     <Select placeholder="请选择物流公司名称" allowClear>
                       {deliveryCompanyList.map(v => (
@@ -243,6 +244,7 @@ class DeliveryModal extends Component {
                 >
                   {getFieldDecorator('type', {
                     initialValue: data.type ? data.type.toString() : undefined,
+                    rules: [{ required: true, message: '请选择渠道' }],
                   })(
                     <Select placeholder="请选择渠道" allowClear>
                       <Option value="1" key="1">包税线</Option>

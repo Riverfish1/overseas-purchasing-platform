@@ -51,7 +51,9 @@ class BatchDeliveryModal extends Component {
                   label="物流公司名称"
                   {...formItemLayout}
                 >
-                  {getFieldDecorator('logisticCompany')(
+                  {getFieldDecorator('logisticCompany', {
+                    rules: [{ required: true, message: '请选择物流公司名称' }],
+                  })(
                     <Select placeholder="请选择物流公司名称" allowClear>
                       {deliveryCompanyList.map(v => (
                         <Option value={v.name} key={v.name}>{v.name}</Option>
@@ -79,7 +81,9 @@ class BatchDeliveryModal extends Component {
                   label="渠道"
                   {...formItemLayout}
                 >
-                  {getFieldDecorator('type')(
+                  {getFieldDecorator('type', {
+                    rules: [{ required: true, message: '请选择渠道' }],
+                  })(
                     <Select placeholder="请选择渠道" allowClear>
                       <Option value="1" key="1">包税线</Option>
                       <Option value="2" key="2">身份证线</Option>

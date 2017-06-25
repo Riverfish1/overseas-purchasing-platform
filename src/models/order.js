@@ -337,14 +337,13 @@ export default {
       window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportPdf?shippingOrderIds=${payload}`);
     },
     exportOrderDetail({ payload }) {
-      if (payload.startOrderTime && payload.endOrderTime) {
-        window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportExcel?startOrderTime=${payload.startOrderTime}&endOrderTime=${payload.endOrderTime}`);
-      } else {
-        message.error('请选择发货时间');
-      }
+      window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportExcel?startOrderTime=${payload.startOrderTime}&endOrderTime=${payload.endOrderTime}`);
     },
     exportMainOrder({ payload }) {
       window.open(`http://${location.host}/haierp1/outerOrder/OuterOrderExportExcel?startGmtCreate=${payload.startOrderTime}&endGmtCreate=${payload.endOrderTime}`);
+    },
+    exportErpOrder({ payload }) {
+      window.open(`http://${location.host}/haierp1/erpOrder/erpOrderExport?startGmtCreate=${payload.startOrderTime}&endGmtCreate=${payload.endOrderTime}`);
     },
     * lockErpOrder(payload, { call, put }) {
       const data = yield call(lockErpOrder, payload);

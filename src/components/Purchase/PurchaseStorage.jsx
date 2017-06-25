@@ -191,6 +191,16 @@ class PurchaseStorage extends Component {
       },
     };
 
+    const detailList = editInfo.purchaseStorageDetailList;
+    if (detailList && detailList.length) {
+      detailList.push({
+        skuCode: <font color="#00f" >明细合计</font>,
+        quantity: editInfo.totalQuantity,
+        transQuantity: editInfo.totalTransQuantity,
+        taskDailyCount: editInfo.totalTaskDailyCount,
+      });
+    }
+
     return (
       <div>
         <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
@@ -283,7 +293,7 @@ class PurchaseStorage extends Component {
           width={900}
           onCancel={this.closeDetailModal.bind(this)}
         >
-          <Table columns={columnsStorageList} dataSource={editInfo.purchaseStorageDetailList} rowKey={r => r.id} bordered scroll={{ y: 400 }} />
+          <Table columns={columnsStorageList} pagination={false} dataSource={editInfo.purchaseStorageDetailList} rowKey={r => r.id} bordered scroll={{ y: 400 }} />
         </Modal>
         <PurchaseStorageModal
           visible={showModal}

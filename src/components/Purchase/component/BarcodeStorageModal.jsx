@@ -174,12 +174,13 @@ class BarcodeModal extends Component {
           const { storageList } = p.state;
           if (storageList.length) {
             console.log(storageList);
+            let first = true;
             storageList.forEach((el) => {
               if (el && el.id && el.id.toString() === obj.id.toString()) {
-                console.log(el.quantity);
                 el.quantity = el.quantity ? el.quantity + 1 : 2;
               } else {
-                storageList.push(obj);
+                if (first) storageList.push(obj);
+                first = false;
               }
             });
           } else {
@@ -211,7 +212,6 @@ class BarcodeModal extends Component {
     const p = this;
     const { form, title, visible, barcodeStorageData = {}, buyer = [], wareList = [] } = p.props;
     const { storageList } = p.state;
-    console.log(storageList);
     const { getFieldDecorator } = form;
     const ARR = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const modalProps = {

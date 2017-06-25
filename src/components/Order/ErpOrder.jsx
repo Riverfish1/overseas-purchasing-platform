@@ -196,7 +196,7 @@ class ErpOrder extends Component {
       selectedRowKeys: p.state.checkId,
     };
     const columns = [
-      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 100 },
+      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 110 },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 150 },
       { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 150, render(text) { return text || '-'; } },

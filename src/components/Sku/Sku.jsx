@@ -134,7 +134,8 @@ class Sku extends Component {
   render() {
     const p = this;
     const { skuList = {}, skuTotal, currentPageSkuIndex, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
-    const { previewImage } = this.state;
+    const { previewImage, lockedPopoverVisible } = this.state;
+    console.log(lockedPopoverVisible);
     const { getFieldDecorator } = form;
 
     const content = (
@@ -179,7 +180,7 @@ class Sku extends Component {
           }
           return (
             <Popover title={null} content={content}>
-              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />
+              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="80" height="80" />
             </Popover>
           );
         },
@@ -208,8 +209,7 @@ class Sku extends Component {
       { title: '重量(kg)', dataIndex: 'weight', key: 'weight', width: 80, render(text) { return text || '-'; } },
       { title: '运费', dataIndex: 'freightStr', key: 'freightStr', width: 60, render(text) { return text || '-'; } },
       { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', width: 100, render(text) { return text || '-'; } },
-      {
-        title: '操作',
+      { title: '操作',
         dataIndex: 'oper',
         key: 'oper',
         width: 60,
@@ -229,7 +229,7 @@ class Sku extends Component {
                 </div>}
                 title="锁定库存"
                 trigger="click"
-                visible={p.state.lockedPopoverVisible[record.id] || false}
+                visible={lockedPopoverVisible[record.id] || false}
                 onVisibleChange={p.toggleLockedPopoverVisible.bind(p, record)}
               >
                 <div><a href="javascript:void(0)">锁定</a></div>
@@ -318,11 +318,6 @@ class Sku extends Component {
           </Row>
         </Form>
         <Row>
-          <Col className="operBtn" style={{ paddingTop: 0, paddingBottom: 5, border: 'none' }}>
-            {/* <Button type="primary" size="large" onClick={this.showModal.bind(this)}>添加</Button> */}
-          </Col>
-        </Row>
-        <Row>
           <Col>
             <Table
               columns={columns}
@@ -330,7 +325,7 @@ class Sku extends Component {
               bordered
               rowKey={record => record.id}
               pagination={paginationProps}
-              scroll={{ x: '105%', y: 540 }}
+              scroll={{ x: '120%', y: 540 }}
             />
           </Col>
         </Row>

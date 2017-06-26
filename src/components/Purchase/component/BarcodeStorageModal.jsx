@@ -6,6 +6,8 @@ import styles from '../Purchase.less';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+let firstLoad = true;
+
 function toString(str, type) {
   if (typeof str !== 'undefined' && str !== null) {
     return str.toString();
@@ -40,8 +42,9 @@ class BarcodeModal extends Component {
 
   componentWillReceiveProps(...args) {
     const { barcodeStorageData, isShowDetail } = args[0];
-    if (!isShowDetail && barcodeStorageData && barcodeStorageData.purchaseStorageDetailList) {
+    if (!isShowDetail && barcodeStorageData && barcodeStorageData.purchaseStorageDetailList && firstLoad) {
       this.setState({ storageList: barcodeStorageData.purchaseStorageDetailList, id: barcodeStorageData.id });
+      firstLoad = false;
     }
   }
 
@@ -151,6 +154,7 @@ class BarcodeModal extends Component {
     dispatch({ type: 'purchaseStorage/toggleBarcodeModal' });
     dispatch({ type: 'purchaseStorage/clearEditInfo' });
     this.setState({ storageList: [], id: undefined });
+    firstLoad = true;
   }
 
   handleKeyUp(e) {

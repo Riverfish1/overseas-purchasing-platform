@@ -131,7 +131,7 @@ class PurchaseStorage extends Component {
     this.props.dispatch({ type: 'purchaseStorage/clearEditInfo' });
     setTimeout(() => {
       this.setState({ showDetail: false });
-    }, 0);
+    }, 300);
   }
 
   render() {
@@ -312,7 +312,7 @@ class PurchaseStorage extends Component {
         >
           <Table columns={columnsStorageList} pagination={false} dataSource={data} rowKey={r => r.id} bordered scroll={{ y: 500 }} />
         </Modal>
-        <PurchaseStorageModal
+        {showModal && <PurchaseStorageModal
           visible={showModal}
           title={Object.keys(editInfo).length > 0 ? '修改入库单' : '新增入库单'}
           buyer={buyer}
@@ -321,8 +321,8 @@ class PurchaseStorage extends Component {
           purchaseStorageData={editInfo}
           isShowDetail={showDetail}
           dispatch={dispatch}
-        />
-        <BarcodeModal
+        />}
+        {showBarcodeModal && <BarcodeModal
           visible={showBarcodeModal}
           title={Object.keys(editInfo).length > 0 ? '修改入库单' : '新增入库单'}
           wareList={wareList}
@@ -330,7 +330,7 @@ class PurchaseStorage extends Component {
           barcodeStorageData={editInfo}
           isShowDetail={showDetail}
           dispatch={dispatch}
-        />
+        />}
       </div>
     );
   }

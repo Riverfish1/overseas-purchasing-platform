@@ -287,7 +287,7 @@ class PurchaseStorage extends Component {
         </Form>
         <Row className="operBtn">
           <Button type="primary" size="large" onClick={this.showModal.bind(this, 'add')} style={{ float: 'left', marginRight: 10 }}>新增入库</Button>
-          {/* <Button type="primary" size="large" onClick={this.showBarcodeModal.bind(this, 'add')} style={{ float: 'left' }}>扫描入库</Button>*/}
+          <Button type="primary" size="large" onClick={this.showBarcodeModal.bind(this, 'add')} style={{ float: 'left' }}>扫描入库</Button>
           <Button type="primary" size="large" onClick={this.batchStorage.bind(this)} style={{ float: 'right' }} disabled={selectedRowKeys.length === 0}>批量入库</Button>
         </Row>
         <Row>

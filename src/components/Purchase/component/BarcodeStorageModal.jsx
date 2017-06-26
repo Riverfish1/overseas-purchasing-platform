@@ -182,11 +182,10 @@ class BarcodeModal extends Component {
             storageList.forEach((el) => {
               if (el && el.id && el.id.toString() === obj.id.toString()) {
                 el.quantity = el.quantity ? el.quantity + 1 : 2;
-              } else {
-                if (first) storageList.push(obj);
                 first = false;
               }
             });
+            if (first) storageList.push(obj);
           } else {
             storageList.push(obj);
           }

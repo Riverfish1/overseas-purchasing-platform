@@ -93,14 +93,16 @@ class BarcodeModal extends Component {
       }
 
       let hasError = false;
+      let first = true;
       fieldsValue.purchaseStorageDetails = JSON.stringify(storageList.map((el) => {
         const item = {};
         item.skuId = restoreSkuId(el.skuId);
         if (el.id) item.id = el.id;
-
+        if (!first) return false;
         if (!checkPassed(el.price) || !checkPassed(el.shelfNo)) {
           hasError = true;
           Modal.error({ title: '单价、货架号均为必填项' });
+          first = false;
           return false;
         } else {
           if (!checkPassed(el.quantity) && !checkPassed(el.transQuantity)) {
@@ -181,7 +183,9 @@ class BarcodeModal extends Component {
             let first = true;
             storageList.forEach((el) => {
               if (el && el.id && el.id.toString() === obj.id.toString()) {
-                el.quantity = el.quantity ? el.quantity + 1 : 2;
+                el.quantity = el.quantity ? el.quantity + 1 : 1;
+              } else {
+                if (first) storageList.push(obj);
                 first = false;
               }
             });

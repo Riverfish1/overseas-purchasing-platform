@@ -283,7 +283,7 @@ class OrderModal extends Component {
                   initialValue: initialAddress.length ? initialAddress : undefined,
                   rules: [{ required: true, message: '请选择' }],
                 })(
-                  <Cascader options={divisions} placeholder="请选择" style={{ marginLeft: 5 }} />,
+                  <Cascader options={divisions} placeholder="请选择" style={{ marginLeft: 5 }} popupClassName="cascaderPop" />,
                 )}
               </FormItem>
             </Col>

@@ -516,6 +516,7 @@ class Order extends Component {
               dataSource={orderList}
               bordered
               size="large"
+              onRowClick={record => p.handleProDetail(record)}
               rowKey={record => record.id}
               pagination={listPaginationProps}
               rowSelection={rowSelection}

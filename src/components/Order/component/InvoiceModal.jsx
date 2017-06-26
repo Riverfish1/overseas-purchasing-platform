@@ -80,14 +80,14 @@ class InvoiceModal extends Component {
               </Col>
               <Col span={12}>
                 <FormItem
-                  label="收件地址"
+                  label="收件人地址"
                   {...formItemLayout}
                 >
                   {getFieldDecorator('address', {
                     initialValue: initialAddress,
-                    rules: [{ required: true, message: '请输入收件地址' }],
+                    rules: [{ required: true, message: '请输入收件人地址' }],
                   })(
-                    <Cascader options={divisions} placeholder="请选择" />,
+                    <Cascader options={divisions} placeholder="请选择" popupClassName="cascaderPop" />,
                   )}
                 </FormItem>
               </Col>

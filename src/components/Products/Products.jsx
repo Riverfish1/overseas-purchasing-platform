@@ -159,11 +159,11 @@ class Products extends Component {
         width: 60,
         render(t) {
           switch (t) {
-            case 0: return '新建';
-            case 1: return '上架';
-            case 2: return '下架';
-            case 3: return '同步';
-            case -1: return '删除';
+            case 0: return <font color="">新建</font>;
+            case 1: return <font color="blue">上架</font>;
+            case 2: return <font color="red">下架</font>;
+            case 3: return <font color="">同步</font>;
+            case -1: return <font color="">删除</font>;
             default: return false;
           }
         },

@@ -157,14 +157,6 @@ class Sku extends Component {
           return text || '-';
         },
       },
-      // { title: '品牌',
-      //   dataIndex: 'brand',
-      //   key: 'brand',
-      //   width: 100,
-      //   render(text) {
-      //     return text || '-';
-      //   },
-      // },
       {
         title: 'sku图片',
         dataIndex: 'skuPic',
@@ -187,7 +179,7 @@ class Sku extends Component {
       },
       { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 80, render(text) { return text || '-'; } },
       { title: '尺寸', dataIndex: 'scale', key: 'scale', width: 50, render(text) { return text || '-'; } },
-      { title: '颜色', dataIndex: 'color', key: 'color', width: 100, render(text) { return text || '-'; } },
+      { title: '颜色', dataIndex: 'color', key: 'color', width: 60, render(text) { return text || '-'; } },
       { title: '销售价格(元)', dataIndex: 'salePrice', key: 'salePrice', width: 100, render(text) { return text || '-'; } },
       { title: '库存',
         key: 'inve',
@@ -326,7 +318,7 @@ class Sku extends Component {
               bordered
               rowKey={record => record.id}
               pagination={paginationProps}
-              scroll={{ y: 540 }}
+              scroll={{ y: 540, x: '120%' }}
             />
           </Col>
         </Row>

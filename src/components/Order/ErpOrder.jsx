@@ -236,10 +236,10 @@ class ErpOrder extends Component {
         width: 50,
         render(text) {
           switch (text) {
-            case 0: return '新建';
-            case 1: return '确认';
-            case 2: return '已发货';
-            case -1: return '已关闭';
+            case 0: return <font color="saddlebrown">新建</font>;
+            case 1: return <font color="chocolate">部分发货</font>;
+            case 2: return <font color="blue">全部发货</font>;
+            case -1: return <font color="red">已关闭</font>;
             default: return '-';
           }
         },
@@ -251,13 +251,13 @@ class ErpOrder extends Component {
         width: 80,
         render(text) {
           switch (text) {
-            case 0: return '未备货';
-            case 1: return '部分备货';
-            case 2: return '部分在途备货';
-            case 3: return '全部在途备货';
-            case 4: return '混合备货完成';
-            case 9: return '已释放';
-            case 10: return '已备货';
+            case 0: return <font>未备货</font>;
+            case 1: return <font color="sienna">部分备货</font>;
+            case 2: return <font color="saddlebrown">部分在途备货</font>;
+            case 3: return <font color="saddlebrown">全部在途备货</font>;
+            case 4: return <font color="sienna">混合备货完成</font>;
+            case 9: return <font color="red">已释放</font>;
+            case 10: return <font color="blue">已备货</font>;
             default: return '-';
           }
         },

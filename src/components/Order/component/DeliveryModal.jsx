@@ -164,7 +164,7 @@ class DeliveryModal extends Component {
                     initialValue: initialAddress,
                     rules: [{ required: true, message: '请输入收件地址' }],
                   })(
-                    <Cascader options={divisions} placeholder="请选择" />,
+                    <Cascader options={divisions} placeholder="请选择" popupClassName="cascaderPop" />,
                   )}
                 </FormItem>
               </Col>

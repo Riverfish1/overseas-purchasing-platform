@@ -11,9 +11,7 @@ export default class CheckIn extends Component {
     };
   }
   toggleVisible() {
-    this.setState({ visible: !this.state.visible }, () => {
-      setTimeout(() => { this.props.form.resetFields(); }, 0);
-    });
+    this.setState({ visible: !this.state.visible });
   }
   submit() {
     const { record, form } = this.props;

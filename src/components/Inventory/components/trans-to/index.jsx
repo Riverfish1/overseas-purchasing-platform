@@ -11,9 +11,7 @@ export default class TransTo extends Component {
     };
   }
   toggleVisible() {
-    this.setState({ visible: !this.state.visible }, () => {
-      setTimeout(() => { this.props.form.resetFields(); }, 0);
-    });
+    this.setState({ visible: !this.state.visible });
   }
   submit() {
     const { record, form } = this.props;
@@ -37,8 +35,8 @@ export default class TransTo extends Component {
           <div style={{ margin: '12px 0 12px' }}>商品名称：{record.itemName}</div>
           <FormItem
             label="入仓数量"
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 17 }}
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
           >
             {getFieldDecorator('toTrans', {
               initialValue: 1,
@@ -49,8 +47,8 @@ export default class TransTo extends Component {
           </FormItem>
           <FormItem
             label="货架号"
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 17 }}
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
           >
             {getFieldDecorator('no', {
               initialValue: record.positionNo,
@@ -62,6 +60,7 @@ export default class TransTo extends Component {
           <Button size="small" type="primary" onClick={this.submit.bind(this)}>保存</Button>
         </Form>}
         title="在途入仓"
+        style={{ minWidth: 200 }}
         trigger="click"
         visible={this.state.visible}
         onVisibleChange={this.toggleVisible.bind(this)}

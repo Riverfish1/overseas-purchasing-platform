@@ -19,7 +19,7 @@ class Products extends Component {
     };
   }
 
-  handleSubmit(e, page) {
+  handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
     // 清除多选
     this.setState({ checkId: [] }, () => {
@@ -36,7 +36,7 @@ class Products extends Component {
         });
         this.props.dispatch({
           type: 'products/queryItemList',
-          payload: { ...values, pageIndex: typeof page === 'number' ? page : 1 },
+          payload: { ...values, pageIndex: typeof page === 'number' ? page : 1, pageSize },
         });
       });
     });
@@ -132,7 +132,7 @@ class Products extends Component {
 
   render() {
     const p = this;
-    const { form, currentPage, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
+    const { form, currentPage, pageSize, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
     const { getFieldDecorator, resetFields } = form;
     const { previewImage } = this.state;
     const formItemLayout = {
@@ -229,10 +229,16 @@ class Products extends Component {
 
     const paginationProps = {
       total: productsTotal,
-      pageSize: 20,
+      defaultPageSize: 20,
+      showSizeChanger: true,
+      pageSizeOptions: ['20', '50', '100', '200', '500'],
+      onShowSizeChange(current, size) {
+        console.log(current, size);
+        p.handleSubmit(null, current, size);
+      },
       current: currentPage,
       onChange(pageIndex) {
-        p.handleSubmit(null, pageIndex);
+        p.handleSubmit(null, pageIndex, pageSize);
       },
     };
 
@@ -354,12 +360,13 @@ class Products extends Component {
 }
 
 function mapStateToProps(state) {
-  const { productsList, productsTotal, productsValues, brands, tree, currentPage } = state.products;
+  const { productsList, productsTotal, productsValues, brands, tree, currentPage, pageSize } = state.products;
   return {
     productsList,
     productsTotal,
     productsValues,
     currentPage,
+    pageSize,
     brands,
     tree,
   };

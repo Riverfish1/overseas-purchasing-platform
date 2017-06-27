@@ -114,16 +114,17 @@ class PurchaseModal extends Component {
         Modal.error({ title: '请至少添加一项SKU' });
         return;
       }
-
+      let first = true;
       let hasError = false;
       fieldsValue.purchaseStorageDetails = JSON.stringify(storageList.map((el) => {
         const item = {};
         item.skuId = restoreSkuId(el.skuId);
         if (el.id) item.id = el.id;
-
+        if (!first) return false;
         if (!checkPassed(el.price) || !checkPassed(el.shelfNo)) {
           hasError = true;
           Modal.error({ title: '单价、货架号均为必填项' });
+          first = false;
           return false;
         } else {
           if (!checkPassed(el.quantity) && !checkPassed(el.transQuantity)) {

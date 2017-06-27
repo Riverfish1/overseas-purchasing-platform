@@ -20,13 +20,13 @@ class Sku extends Component {
     };
   }
 
-  handleSubmit(e, page) {
+  handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) return;
       this.props.dispatch({
         type: 'sku/querySkuList',
-        payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
+        payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1, pageSize },
       });
     });
   }
@@ -133,7 +133,7 @@ class Sku extends Component {
 
   render() {
     const p = this;
-    const { skuList = {}, skuTotal, currentPageSkuIndex, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
+    const { skuList = {}, skuTotal, skuPageSize, currentPageSkuIndex, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
     const { previewImage, lockedPopoverVisible } = this.state;
     console.log(lockedPopoverVisible);
     const { getFieldDecorator } = form;
@@ -233,10 +233,16 @@ class Sku extends Component {
 
     const paginationProps = {
       total: skuTotal,
-      pageSize: 20,
+      defaultPageSize: 20,
+      showSizeChanger: true,
+      pageSizeOptions: ['20', '50', '100', '200', '500'],
+      onShowSizeChange(current, size) {
+        console.log(current, size);
+        p.handleSubmit(null, current, size);
+      },
       current: currentPageSkuIndex,
       onChange(pageIndex) {
-        p.handleSubmit(null, pageIndex);
+        p.handleSubmit(null, pageIndex, skuPageSize);
       },
     };
 
@@ -337,11 +343,12 @@ class Sku extends Component {
 }
 
 function mapStateToProps(state) {
-  const { skuList, skuTotal, currentPageSkuIndex, skuData, packageScales } = state.sku;
+  const { skuList, skuTotal, currentPageSkuIndex, skuData, packageScales, skuPageSize } = state.sku;
   const { brands, productsList, tree } = state.products;
   return {
     skuList,
     skuTotal,
+    skuPageSize,
     currentPageSkuIndex,
     skuData,
     packageScales,

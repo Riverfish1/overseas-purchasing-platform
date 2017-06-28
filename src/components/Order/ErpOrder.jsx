@@ -534,6 +534,7 @@ class ErpOrder extends Component {
           closeModal={this.closeDeliveryModal.bind(this)}
           dispatch={dispatch}
           type={type}
+          wareList={wareList}
         />
         <BatchDeliveryModal
           visible={batchDeliveryVisible}

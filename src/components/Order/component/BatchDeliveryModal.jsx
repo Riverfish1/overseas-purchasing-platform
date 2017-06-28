@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, Row, Col, Select } from 'antd';
+import { Form, Input, Modal, Row, Col, Select, Alert } from 'antd';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -28,13 +28,13 @@ class BatchDeliveryModal extends Component {
   }
   render() {
     const p = this;
-    const { visible, form, deliveryCompanyList } = this.props;
+    const { visible, form, deliveryCompanyList, formInfo } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     };
-
+    console.log(formInfo);
     return (
       <div>
         <Modal
@@ -45,6 +45,14 @@ class BatchDeliveryModal extends Component {
           width={900}
         >
           <Form>
+            {formInfo && <Row>
+              <Alert
+                message={formInfo}
+                type="info"
+                closable
+              />
+              <div style={{ height: 10 }} />
+            </Row>}
             <Row>
               <Col span={12}>
                 <FormItem

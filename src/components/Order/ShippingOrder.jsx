@@ -120,10 +120,11 @@ class ShippingOrder extends Component {
     };
     const columns = [
       { title: '发货单号', dataIndex: 'shippingNo', key: 'shippingNo', width: 120, render(text) { return text || '-'; } },
+      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 150, render(text) { return text || '-'; } },
+      { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 80, render(text) { return text || '-'; } },
+      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 90, render(text) { return text || '-'; } },
       { title: '物流订单号', dataIndex: 'logisticNo', key: 'logisticNo', width: 100, render(text) { return text || '-'; } },
       { title: '物流公司名称', dataIndex: 'logisticCompany', width: 100, key: 'logisticCompany', render(text) { return text || '-'; } },
-      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 200, render(text) { return text || '-'; } },
-      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200, render(text) { return text || '-'; } },
       { title: '物流状态',
         dataIndex: 'status',
         key: 'status',
@@ -137,8 +138,7 @@ class ShippingOrder extends Component {
           }
         },
       },
-      { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 80, render(text) { return text || '-'; } },
-      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 80, render(text) { return text || '-'; } },
+      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 150, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
@@ -270,12 +270,22 @@ class ShippingOrder extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row>
-            <Col>
+          <Row gutter={20} style={{ width: 800 }}>
+            <Col span={8}>
+              <FormItem
+                label="发货单号"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('shippingNo', {})(
+                  <Input placeholder="请输入" />,
+                )}
+              </FormItem>
+            </Col>
+            <Col span={16}>
               <FormItem
                 label="发货时间"
                 {...formItemLayout}
-                labelCol={{ span: 2 }}
+                labelCol={{ span: 6 }}
               >
                 {getFieldDecorator('orderTime', {})(
                   <RangePicker />,

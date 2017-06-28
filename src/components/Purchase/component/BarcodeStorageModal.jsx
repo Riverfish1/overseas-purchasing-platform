@@ -282,7 +282,7 @@ class BarcodeModal extends Component {
         key: 'quantity',
         width: 60,
         render(t, r) {
-          return <InputNumber min={0} step="1" placeholder="请输入" value={t > 0 ? t : 1} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
+          return <InputNumber min={0} step="1" placeholder="请输入" value={t > 0 ? t : 0} onChange={p.inputChange.bind(p, 'quantity', r.skuId)} />;
         },
       },
       { title: '在途数量',

@@ -24,6 +24,7 @@ class ErpOrder extends Component {
       deliveryModalVisible: false,
       type: 'add', // 发货的判断
       batchDeliveryVisible: false,
+      formInfo: '',
     };
   }
   handleSubmit(e, page, pageSize) {
@@ -70,8 +71,9 @@ class ErpOrder extends Component {
       type: 'order/batchDeliveryForm',
       payload: { erpOrderId: JSON.stringify(checkId) },
       callback(data) {
-        if (data === 'success') {
-          p.setState({ batchDeliveryVisible: true });
+        console.log(data);
+        if (data.success) {
+          p.setState({ batchDeliveryVisible: true, formInfo: data.data });
         } else {
           Modal.error({
             title: '提示',
@@ -208,7 +210,7 @@ class ErpOrder extends Component {
     const p = this;
     const { erpOrderList, erpOrderTotal, erpCurrentPageSize, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible } = p.state;
+    const { deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible, formInfo } = p.state;
 
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -225,15 +227,23 @@ class ErpOrder extends Component {
       selectedRowKeys: p.state.checkId,
     };
     const columns = [
-      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 110 },
-      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 150 },
-      { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
-      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 150, render(text) { return text || '-'; } },
-      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150 },
+      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 100 },
+      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 110 },
+      { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 50 },
+      { title: '收件人地址',
+        dataIndex: 'address',
+        key: 'address',
+        width: 120,
+        render(text, r) {
+          return <span>{r.receiverState ? `${r.receiverState} ${r.receiverCity} ${r.receiverDistrict} ${r.addressDetail}` : '-'}</span>;
+        },
+      },
+      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 80 },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 120 },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
-        width: 50,
+        width: 40,
         render(text) {
           switch (text) {
             case 0: return <font color="saddlebrown">新建</font>;
@@ -248,7 +258,7 @@ class ErpOrder extends Component {
         title: '备货状态',
         dataIndex: 'stockStatus',
         key: 'stockStatus',
-        width: 80,
+        width: 40,
         render(text) {
           switch (text) {
             case 0: return <font>未备货</font>;
@@ -262,6 +272,8 @@ class ErpOrder extends Component {
           }
         },
       },
+      { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 80, render(text) { return text ? text.slice(0, 10) : '-'; } },
+      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 110, render(text) { return text || '-'; } },
       { title: '颜色',
         dataIndex: 'color',
         key: 'color',
@@ -295,16 +307,6 @@ class ErpOrder extends Component {
       { title: '发货方式', dataIndex: 'logisticType', key: 'logisticType', width: 60, render(text) { return text === 0 ? '直邮' : (text === 1 ? '拼邮' : '-'); } },
       { title: '仓库名', dataIndex: 'warehouseName', key: 'warehouseName', width: 100, render(text) { return text || '-'; } },
       { title: '商品数量', dataIndex: 'quantity', key: 'quantity', width: 60, render(text) { return text || '-'; } },
-      { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 50 },
-      { title: '收件人地址',
-        dataIndex: 'address',
-        key: 'address',
-        width: 200,
-        render(text, r) {
-          return <span>{r.receiverState ? `${r.receiverState} ${r.receiverCity} ${r.receiverDistrict} ${r.addressDetail}` : '-'}</span>;
-        },
-      },
-      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 150 },
       // { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: 220 },
       // { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
       { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
@@ -540,6 +542,7 @@ class ErpOrder extends Component {
           checkId={checkId}
           closeModal={this.closeBatchDeliveryModal.bind(this)}
           dispatch={dispatch}
+          formInfo={formInfo}
           submit={this.handleSubmit.bind(this)}
         />
         <Table

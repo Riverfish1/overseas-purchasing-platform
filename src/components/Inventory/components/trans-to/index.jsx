@@ -11,7 +11,9 @@ export default class TransTo extends Component {
     };
   }
   toggleVisible() {
-    this.setState({ visible: !this.state.visible });
+    this.setState({ visible: !this.state.visible }, () => {
+      setTimeout(() => { this.props.form.resetFields(['toTrans', 'no']); }, 0);
+    });
   }
   submit() {
     const { record, form } = this.props;

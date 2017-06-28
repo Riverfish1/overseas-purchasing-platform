@@ -12,9 +12,7 @@ export default class CheckOut extends Component {
     };
   }
   toggleVisible() {
-    this.setState({ visible: !this.state.visible, quantity: 1, showError: false }, () => {
-      setTimeout(() => { this.props.form.resetFields(); }, 0);
-    });
+    this.setState({ visible: !this.state.visible, quantity: 1, showError: false });
   }
   submit() {
     const { record } = this.props;

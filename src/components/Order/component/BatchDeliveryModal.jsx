@@ -34,7 +34,6 @@ class BatchDeliveryModal extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     };
-    console.log(formInfo);
     return (
       <div>
         <Modal

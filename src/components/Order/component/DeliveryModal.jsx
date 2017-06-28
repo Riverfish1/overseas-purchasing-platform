@@ -65,9 +65,41 @@ class DeliveryModal extends Component {
     };
 
     const columns = [
-      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 100 },
-      { title: 'SKU编号', dataIndex: 'skuCode', key: 'skuCode', width: 200 },
-      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150 },
+      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 120 },
+      { title: 'SKU编号', dataIndex: 'skuCode', key: 'skuCode', width: 120 },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 120 },
+      { title: '订单状态',
+        dataIndex: 'status',
+        key: 'status',
+        width: 80,
+        render(text) {
+          switch (text) {
+            case 0: return <font color="saddlebrown">新建</font>;
+            case 1: return <font color="chocolate">部分发货</font>;
+            case 2: return <font color="blue">全部发货</font>;
+            case -1: return <font color="red">已关闭</font>;
+            default: return '-';
+          }
+        },
+      },
+      {
+        title: '备货状态',
+        dataIndex: 'stockStatus',
+        key: 'stockStatus',
+        width: 80,
+        render(text) {
+          switch (text) {
+            case 0: return <font>未备货</font>;
+            case 1: return <font color="sienna">部分备货</font>;
+            case 2: return <font color="saddlebrown">部分在途备货</font>;
+            case 3: return <font color="saddlebrown">全部在途备货</font>;
+            case 4: return <font color="sienna">混合备货完成</font>;
+            case 9: return <font color="red">已释放</font>;
+            case 10: return <font color="blue">已备货</font>;
+            default: return '-';
+          }
+        },
+      },
       { title: '商品图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
@@ -116,6 +148,7 @@ class DeliveryModal extends Component {
       selectedRowKeys: p.state.checkId,
       getCheckboxProps: r => ({
         defaultChecked: p.state.checkId.forEach(el => el === r.id),
+        disabled: !(r.status === 0 && r.stockStatus === 10),
       }),
     };
 

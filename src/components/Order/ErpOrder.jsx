@@ -71,7 +71,6 @@ class ErpOrder extends Component {
       type: 'order/batchDeliveryForm',
       payload: { erpOrderId: JSON.stringify(checkId) },
       callback(data) {
-        console.log(data);
         if (data.success) {
           p.setState({ batchDeliveryVisible: true, formInfo: data.data });
         } else {

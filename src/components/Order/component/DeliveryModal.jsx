@@ -57,7 +57,7 @@ class DeliveryModal extends Component {
   }
   render() {
     const p = this;
-    const { visible, form, data, deliveryCompanyList } = this.props;
+    const { visible, form, data, deliveryCompanyList, wareList = [] } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -135,7 +135,18 @@ class DeliveryModal extends Component {
       { title: '颜色', dataIndex: 'color', key: 'color', width: 100 },
       { title: '尺码', dataIndex: 'scale', key: 'scale', width: 100 },
       { title: '购买数量', dataIndex: 'quantity', key: 'quantity', width: 100 },
-      { title: '发货仓库', dataIndex: 'warehouseName', key: 'warehouseName', width: 100 },
+      { title: '发货仓库',
+        dataIndex: 'warehouseId',
+        key: 'warehouseId',
+        width: 100,
+        render(t) {
+          let name = '';
+          wareList.forEach((el) => {
+            if (el.id === t) name = el.name;
+          });
+          return name;
+        },
+      },
     ];
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {

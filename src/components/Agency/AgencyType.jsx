@@ -41,14 +41,13 @@ class AgencyType extends Component {
   }
 
   closeModal(visible) {
-    this.setState({
-      visible,
-    });
+    this.setState({ visible });
     this.props.dispatch({
       type: 'agency/saveAgencyType',
       payload: {},
+    }, () => {
+      this._refreshData();
     });
-    this.props.form.resetFields();
   }
 
   handleQuery(record) {

@@ -78,13 +78,13 @@ export default {
     * addSku({ payload }, { call }) { // 新建SKU
       const data = yield call(addSku, { payload });
       if (data.success) {
-        message.success('新增订单成功');
+        message.success('新增SKU成功');
       }
     },
     * updateSku({ payload }, { call }) {
       const data = yield call(updateSku, { payload });
       if (data.success) {
-        message.success('更新订单成功');
+        message.success('更新SKU成功');
       }
     },
     * querySku({ payload }, { call, put }) {

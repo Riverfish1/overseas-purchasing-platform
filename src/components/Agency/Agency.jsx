@@ -51,10 +51,12 @@ class Agency extends Component {
   closeModal(modalVisible) {
     this.setState({
       modalVisible,
-    });
-    this.props.dispatch({
-      type: 'agency/saveAgency',
-      payload: {},
+    }, () => {
+      this.props.dispatch({
+        type: 'agency/saveAgency',
+        payload: {},
+      });
+      this._refreshData();
     });
   }
 
@@ -71,9 +73,16 @@ class Agency extends Component {
   }
 
   handleDelete(id) {
-    this.props.dispatch({
+    const p = this;
+    const { currentPage, dispatch, list = [] } = this.props;
+    dispatch({
       type: 'agency/deleteAgency',
       payload: { id },
+      cb() {
+        if (list.length < 2 && currentPage > 1) {
+          p.handleSubmit(null, currentPage - 1);
+        } else p.handleSubmit(null, currentPage);
+      },
     });
   }
 
@@ -87,13 +96,8 @@ class Agency extends Component {
       wrapperCol: { span: 14 },
     };
     const columnsList = [
-      // { title: '销售名称', dataIndex: 'name', key: 'name' },
-      // { title: '用户id', dataIndex: 'userId', key: 'userId', render(text) { return text || '-'; } },
       { title: '用户名称', dataIndex: 'name', key: 'name', render(text) { return text || '-'; } },
-      // { title: '销售代码', dataIndex: 'code', key: 'code', render(text) { return text || '-'; } },
-      // { title: '销售类别Id', dataIndex: 'typeId', key: 'typeId', render(text) { return text || '-'; } },
       { title: '销售类别名称', dataIndex: 'typeName', key: 'typeName', render(text) { return text || '-'; } },
-      // { title: '销售类别代码', dataIndex: 'typeCode', key: 'typeCode', render(text) { return text || '-'; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', render(text) { return text || '-'; } },
       { title: '修改时间', dataIndex: 'gmtModify', key: 'gmtModify', render(text) { return text || '-'; } },
       { title: '操作',

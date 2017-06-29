@@ -61,42 +61,35 @@ export default {
         });
       }
     },
-    * addAgency({ payload }, { call, put }) {
+    * addAgency({ payload }, { call }) {
       const data = yield call(addAgency, { payload });
       if (data.success) {
-        message.success('新增类别成功');
-        yield put({
-          type: 'queryAgencyList',
-          payload: {},
-        });
+        message.success('新增销售类别成功');
       }
     },
-    * deleteAgency({ payload }, { call, put, select }) {
+    * deleteAgency({ payload, cb }, { call }) {
       const data = yield call(deleteAgency, { payload });
       if (data.success) {
         message.success('删除类目成功');
-        const agency = yield select(model => model.agency);
-        if (agency.list.length < 2 && agency.current > 1) {
-          yield put({
-            type: 'queryAgencyList',
-            payload: { payload: agency.current - 1 },
-          });
-          return;
-        }
-        yield put({
-          type: 'queryAgencyList',
-          payload: {},
-        });
+        cb();
+        // const agency = yield select(model => model.agency);
+        // if (agency.list.length < 2 && agency.current > 1) {
+        //   yield put({
+        //     type: 'queryAgencyList',
+        //     payload: { payload: agency.current - 1 },
+        //   });
+        //   return;
+        // }
+        // yield put({
+        //   type: 'queryAgencyList',
+        //   payload: {},
+        // });
       }
     },
-    * updateAgency({ payload }, { call, put }) {
+    * updateAgency({ payload }, { call }) {
       const data = yield call(updateAgency, { payload });
       if (data.success) {
         message.success('修改类目成功');
-        yield put({
-          type: 'queryAgencyList',
-          payload: {},
-        });
       }
     },
     * queryAgencyTypeList({ payload }, { call, put, select }) {
@@ -119,14 +112,10 @@ export default {
         });
       }
     },
-    * addAgencyType({ payload }, { call, put }) {
+    * addAgencyType({ payload }, { call }) {
       const data = yield call(addAgencyType, { payload });
       if (data.success) {
         message.success('新增类别成功');
-        yield put({
-          type: 'queryAgencyTypeList',
-          payload: {},
-        });
       }
     },
     * deleteAgencyType({ payload }, { call, put, select }) {
@@ -147,14 +136,10 @@ export default {
         });
       }
     },
-    * updateAgencyType({ payload }, { call, put }) {
+    * updateAgencyType({ payload }, { call }) {
       const data = yield call(updateAgencyType, { payload });
       if (data.success) {
         message.success('修改类目成功');
-        yield put({
-          type: 'queryAgencyTypeList',
-          payload: {},
-        });
       }
     },
   },

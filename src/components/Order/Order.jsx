@@ -22,13 +22,11 @@ class Order extends Component {
 
   handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
-    const { currentPageSize } = this.props;
+    const { currentPageSize, currentPage } = this.props;
     // 清除多选
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
-        if (err) {
-          return;
-        }
+        if (err) return;
         if (fieldsValue.orderTime && fieldsValue.orderTime[0] && fieldsValue.orderTime[1]) {
           fieldsValue.startGmtCreate = new Date(fieldsValue.orderTime[0]).format('yyyy-MM-dd');
           fieldsValue.endGmtCreate = new Date(fieldsValue.orderTime[1]).format('yyyy-MM-dd');
@@ -38,7 +36,7 @@ class Order extends Component {
           type: 'order/queryOrderList',
           payload: {
             ...fieldsValue,
-            pageIndex: typeof page === 'number' ? page : 1,
+            pageIndex: typeof page === 'number' ? page : currentPage,
             pageSize: pageSize || currentPageSize,
           },
         });
@@ -58,20 +56,23 @@ class Order extends Component {
   }
 
   handleOrderAction(type) {
+    const p = this;
     const { dispatch } = this.props;
     const { checkId } = this.state;
-    switch (type) {
-      case 'confirm': dispatch({ type: 'order/confirmOrder', payload: { orderIds: JSON.stringify(checkId) } }); break;
-      case 'close':
-        Modal.confirm({
-          title: '关闭订单',
-          content: '确认要关闭此订单吗？',
-          onOk() {
-            dispatch({ type: 'order/closeOrder', payload: { orderIds: JSON.stringify(checkId) } });
-          },
-        });
-        break;
-      default: return false;
+    if (type === 'close') {
+      Modal.confirm({
+        title: '关闭订单',
+        content: '确认要关闭此订单吗？',
+        onOk() {
+          dispatch({
+            type: 'order/closeOrder',
+            payload: { orderIds: JSON.stringify(checkId) },
+            cb() {
+              p.handleSubmit();
+            },
+          });
+        },
+      });
     }
   }
 
@@ -90,14 +91,17 @@ class Order extends Component {
   closeModal(modalVisible) {
     this.setState({
       modalVisible,
-    });
-    this.props.dispatch({
-      type: 'order/saveOrder',
-      payload: {},
+    }, () => {
+      this.props.dispatch({
+        type: 'order/saveOrder',
+        payload: {},
+      });
+      this._refreshData();
     });
   }
 
-  handleProDetail(record) {
+  handleProDetail(record, e) {
+    e.stopPropagation();
     const p = this;
     p.setState({
       visible: true,
@@ -109,10 +113,18 @@ class Order extends Component {
     });
   }
 
-  handleDelete(id) {
+  handleDelete(id, e) {
+    e.stopPropagation();
+    const p = this;
+    const { currentPage, orderList = [] } = this.props;
     this.props.dispatch({
       type: 'order/deleteOrder',
       payload: { id },
+      cb() {
+        if (orderList.length < 2 && currentPage > 1) {
+          p.handleSubmit(null, currentPage - 1);
+        } else p.handleSubmit();
+      },
     });
   }
 
@@ -248,36 +260,11 @@ class Order extends Component {
     };
 
     const skuColumns = [
-      {
-        title: '主订单号',
-        dataIndex: 'orderNo',
-        key: 'orderNo',
-        width: 150,
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '子订单号',
-        dataIndex: 'erpNo',
-        key: 'erpNo',
-        width: 150,
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '商品名称',
-        dataIndex: 'itemName',
-        key: 'itemName',
-        width: 150,
-        render(text) { return text || '-'; },
-      },
-      {
-        title: 'SKU代码',
-        dataIndex: 'skuCode',
-        key: 'skuCode',
-        width: 150,
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '图片',
+      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 150, render(text) { return text || '-'; } },
+      { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 150, render(text) { return text || '-'; } },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150, render(text) { return text || '-'; } },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 150, render(text) { return text || '-'; } },
+      { title: '图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
         width: 80,
@@ -304,8 +291,7 @@ class Order extends Component {
           }
         },
       },
-      {
-        title: '备货状态',
+      { title: '备货状态',
         dataIndex: 'stockStatus',
         key: 'stockStatus',
         width: 100,
@@ -322,48 +308,12 @@ class Order extends Component {
           }
         },
       },
-      {
-        title: '颜色',
-        dataIndex: 'color',
-        key: 'color',
-        width: 60,
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '尺码',
-        dataIndex: 'scale',
-        key: 'scale',
-        width: 60,
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '品牌',
-        dataIndex: 'brand',
-        key: 'brand',
-        width: 60,
-        render(text) { return text || '-'; },
-      },
-      {
-        title: '销售价',
-        dataIndex: 'salePrice',
-        key: 'salePrice',
-        width: 60,
-        render(text) { return text || 0; },
-      },
-      {
-        title: '运费',
-        dataIndex: 'freight',
-        key: 'freight',
-        width: 60,
-        render(text) { return text || 0; },
-      },
-      {
-        title: '数量',
-        dataIndex: 'quantity',
-        key: 'quantity',
-        width: 60,
-        render(text) { return text || 0; },
-      },
+      { title: '颜色', dataIndex: 'color', key: 'color', width: 60, render(text) { return text || '-'; } },
+      { title: '尺码', dataIndex: 'scale', key: 'scale', width: 60, render(text) { return text || '-'; } },
+      { title: '品牌', dataIndex: 'brand', key: 'brand', width: 60, render(text) { return text || '-'; } },
+      { title: '销售价', dataIndex: 'salePrice', key: 'salePrice', width: 60, render(text) { return text || 0; } },
+      { title: '运费', dataIndex: 'freight', key: 'freight', width: 60, render(text) { return text || 0; } },
+      { title: '数量', dataIndex: 'quantity', key: 'quantity', width: 60, render(text) { return text || 0; } },
     ];
 
     const modalProps = {
@@ -549,12 +499,13 @@ class Order extends Component {
 }
 
 function mapStateToProps(state) {
-  const { orderList, orderTotal, currentPageSize, orderValues, orderDetailList } = state.order;
+  const { orderList, orderTotal, currentPage, currentPageSize, orderValues, orderDetailList } = state.order;
   const { list } = state.agency;
   return {
     orderList,
     orderTotal,
     currentPageSize,
+    currentPage,
     orderValues,
     agencyList: list,
     orderDetailList,

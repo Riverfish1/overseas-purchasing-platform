@@ -15,7 +15,6 @@ class ShippingOrder extends Component {
     this.state = {
       visible: false,
       data: {}, // 修改的record
-      type: 'update',
       checkId: [],
       shippingDetail: [],
       showDetail: false,
@@ -40,11 +39,13 @@ class ShippingOrder extends Component {
     this.setState({ visible: true, data: r });
   }
   closeModal() {
-    this.props.dispatch({
-      type: 'order/saveErpOrderDetail',
-      payload: {},
+    this.setState({ visible: false }, () => {
+      this.props.dispatch({
+        type: 'order/saveErpOrderDetail',
+        payload: {},
+      });
+      this._refreshData();
     });
-    this.setState({ visible: false });
   }
   exportPdf() { // 导出发货标签
     const p = this;
@@ -58,10 +59,10 @@ class ShippingOrder extends Component {
     });
     this.setState({ checkId: [] });
   }
-  queryDetail(r) { // 查看明细
+  queryShippingOrderDetail(r) { // 查看明细
     const p = this;
     this.props.dispatch({
-      type: 'order/queryDetail',
+      type: 'order/queryShippingOrderDetail',
       payload: { shippingOrderId: r.id },
       cb(data) {
         p.setState({
@@ -142,9 +143,9 @@ class ShippingOrder extends Component {
           }
         },
       },
-      { title: '创建者', dataIndex: 'userCreate', key: 'userCreate', width: 60, render(t) { return <font color="blue">{t}</font>; } },
-      { title: '打印者', dataIndex: 'userPrinter', key: 'userPrinter', width: 60, render(t) { return <font color="red">{t}</font>; } },
-      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 150, render(text) { return text || '-'; } },
+      { title: '创建者', dataIndex: 'userCreate', key: 'userCreate', width: 80, render(t) { return <font color="blue">{t}</font>; } },
+      { title: '打印者', dataIndex: 'userPrinter', key: 'userPrinter', width: 80, render(t) { return <font color="red">{t}</font>; } },
+      { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 70, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
@@ -152,7 +153,7 @@ class ShippingOrder extends Component {
         render(text, r) {
           return (
             <div>
-              <a href="javascript:void(0)" onClick={p.queryDetail.bind(p, r)} style={{ marginRight: 10 }}>查看</a>
+              <a href="javascript:void(0)" onClick={p.queryShippingOrderDetail.bind(p, r)} style={{ marginRight: 10 }}>查看</a>
               <a href="javascript:void(0)" onClick={p.updateModal.bind(p, r)} style={{ marginRight: 10 }}>修改</a>
             </div>);
         },

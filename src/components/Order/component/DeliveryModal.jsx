@@ -35,7 +35,7 @@ class DeliveryModal extends Component {
       dispatch({
         type: 'order/mergeDelivery',
         payload: { ...values },
-        callback() {
+        cb() {
           p.handleCancel();
         },
       });

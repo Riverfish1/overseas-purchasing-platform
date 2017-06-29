@@ -7,7 +7,7 @@ const Option = Select.Option;
 class BatchDeliveryModal extends Component {
   handleSubmit() {
     const p = this;
-    const { form, dispatch, checkId, submit } = this.props;
+    const { form, dispatch, checkId } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
       values.erpOrderId = JSON.stringify(checkId);
@@ -16,7 +16,6 @@ class BatchDeliveryModal extends Component {
         payload: { ...values },
         callback() {
           p.handleCancel();
-          submit();
         },
       });
     });

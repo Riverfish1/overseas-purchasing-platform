@@ -15,7 +15,7 @@ export default class extends Component {
     this.setState({ visible: !this.state.visible, splitCount: 1, showError: false });
   }
   submit() {
-    const { record } = this.props;
+    const { record, handleSubmit } = this.props;
     const { splitCount } = this.state;
     if (!splitCount) {
       this.setState({ showError: true });
@@ -25,6 +25,7 @@ export default class extends Component {
     this.props.dispatch({
       type: 'order/splitOrder',
       payload: { splitCount, orderId: record.id },
+      cb() { handleSubmit(); },
     });
   }
   render() {

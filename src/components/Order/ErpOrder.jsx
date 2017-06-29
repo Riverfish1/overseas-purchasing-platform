@@ -30,7 +30,7 @@ class ErpOrder extends Component {
   handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
     console.log(this);
-    const { erpCurrentPageSize } = this.props;
+    const { currentPageSize, currentPage } = this.props;
     // 清除多选
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFields((err, fieldsValue) => {
@@ -44,8 +44,8 @@ class ErpOrder extends Component {
           type: 'order/queryErpOrderList',
           payload: {
             ...fieldsValue,
-            pageIndex: typeof page === 'number' ? page : 1,
-            pageSize: pageSize || erpCurrentPageSize,
+            pageIndex: typeof page === 'number' ? page : currentPage,
+            pageSize: pageSize || currentPageSize,
           },
         });
       });
@@ -76,7 +76,7 @@ class ErpOrder extends Component {
         } else {
           Modal.error({
             title: '提示',
-            content: data,
+            content: data.msg,
           });
         }
       },
@@ -91,10 +91,7 @@ class ErpOrder extends Component {
         orderIds: JSON.stringify(p.state.checkId),
         callback() {
           p.setState({ checkId: [] }); // 取消选择 checkId
-          dispatch({
-            type: 'order/queryErpOrderList',
-            payload: {},
-          });
+          p._refreshData();
         },
       },
     });
@@ -112,10 +109,7 @@ class ErpOrder extends Component {
             orderIds: JSON.stringify(p.state.checkId),
             callback() {
               p.setState({ checkId: [] }); // 取消选择 checkId
-              dispatch({
-                type: 'order/queryErpOrderList',
-                payload: {},
-              });
+              p._refreshData();
             },
           },
         });
@@ -137,26 +131,44 @@ class ErpOrder extends Component {
       type: 'order/saveErpOrderDetail',
       payload: {},
     });
-    this.setState({ deliveryModalVisible: false, checkId: [] }); // 取消选择 checkId
+    this.setState({ deliveryModalVisible: false, checkId: [] }, () => {
+      this._refreshData();
+    });
   }
   closeBatchDeliveryModal() {
-    this.setState({ batchDeliveryVisible: false, checkId: [] });
+    this.setState({ batchDeliveryVisible: false, checkId: [] }, () => {
+      this._refreshData();
+    });
   }
   closeModal(modalVisible) {
     this.setState({
       modalVisible,
-    });
-    this.props.dispatch({
-      type: 'order/saveErpOrder',
-      payload: {},
+    }, () => {
+      this.props.dispatch({
+        type: 'order/saveErpOrder',
+        payload: {},
+      });
+      this._refreshData();
     });
   }
   handleInventory(type, id) {
-    if (type === 'lock') {
-      this.props.dispatch({ type: 'order/lockErpOrder', payload: { id } });
-    }
-    if (type === 'release') {
-      this.props.dispatch({ type: 'order/releaseInventory', payload: { id } });
+    const p = this;
+    switch (type) {
+      case 'lock':
+        this.props.dispatch({
+          type: 'order/lockErpOrder',
+          payload: { id },
+          cb() { p.handleSubmit(); },
+        });
+        break;
+      case 'release':
+        this.props.dispatch({
+          type: 'order/releaseInventory',
+          payload: { id },
+          cb() { p.handleSubmit(); },
+        });
+        break;
+      default: return false;
     }
   }
   handleEmptyInput(type) { // 清空内容
@@ -207,7 +219,7 @@ class ErpOrder extends Component {
   }
   render() {
     const p = this;
-    const { erpOrderList, erpOrderTotal, erpCurrentPageSize, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
+    const { erpOrderList, erpOrderTotal, currentPageSize, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible, formInfo } = p.state;
 
@@ -317,7 +329,7 @@ class ErpOrder extends Component {
         render(t, r) {
           return (
             <div>
-              {r.status === 0 && r.quantity > 1 && <SplitOrder dispatch={dispatch} record={r} />}
+              {r.status === 0 && r.quantity > 1 && <SplitOrder dispatch={dispatch} record={r} handleSubmit={p.handleSubmit.bind(p)} />}
               {r.stockStatus !== 0 && r.stockStatus !== 9 && <RecordList dispatch={dispatch} record={r} />}
               {r.status === 0 && <a href="javascript:void(0)" onClick={p.showModal.bind(p, r.id)} >修改</a>}
               {r.status === 0 && [0, 1, 2, 9].indexOf(r.stockStatus) > -1 &&
@@ -335,7 +347,7 @@ class ErpOrder extends Component {
     ];
     const pagination = {
       total: erpOrderTotal,
-      pageSize: erpCurrentPageSize,
+      pageSize: currentPageSize,
       showSizeChanger: true,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
@@ -543,7 +555,6 @@ class ErpOrder extends Component {
           closeModal={this.closeBatchDeliveryModal.bind(this)}
           dispatch={dispatch}
           formInfo={formInfo}
-          submit={this.handleSubmit.bind(this)}
         />
         <Table
           columns={columns}
@@ -568,10 +579,20 @@ class ErpOrder extends Component {
 }
 
 function mapStateToProps(state) {
-  const { erpOrderList, erpOrderTotal, erpCurrentPageSize, erpOrderDetail, erpOrderValues, deliveryCompanyList } = state.order;
+  const { erpOrderList, erpOrderTotal, erpCurrentPage, erpCurrentPageSize, erpOrderDetail, erpOrderValues, deliveryCompanyList } = state.order;
   const { list } = state.agency;
   const { wareList } = state.inventory;
-  return { erpOrderList, erpOrderTotal, erpCurrentPageSize, erpOrderDetail, agencyList: list, erpOrderValues, deliveryCompanyList, wareList };
+  return {
+    erpOrderList,
+    erpOrderTotal,
+    currentPage: erpCurrentPage,
+    currentPageSize: erpCurrentPageSize,
+    erpOrderDetail,
+    agencyList: list,
+    erpOrderValues,
+    deliveryCompanyList,
+    wareList,
+  };
 }
 
 export default connect(mapStateToProps)(Form.create()(ErpOrder));

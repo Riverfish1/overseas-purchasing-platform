@@ -96,7 +96,7 @@ class ShippingOrder extends Component {
   }
   render() {
     const p = this;
-    const { shippingOrderList, shippingOrderTotal, deliveryCompanyList = [], form, dispatch } = p.props;
+    const { shippingOrderList, shippingOrderTotal, currentPage, deliveryCompanyList = [], form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { visible, data, shippingDetail, showDetail } = p.state;
 
@@ -113,6 +113,7 @@ class ShippingOrder extends Component {
 
     const pagination = {
       pageSize: 20,
+      current: currentPage,
       total: shippingOrderTotal,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
@@ -338,8 +339,8 @@ class ShippingOrder extends Component {
 }
 
 function mapStateToProps(state) {
-  const { shippingOrderList, deliveryCompanyList, shippingOrderTotal } = state.order;
-  return { shippingOrderList, deliveryCompanyList, shippingOrderTotal };
+  const { shippingOrderList, deliveryCompanyList, shippingOrderTotal, shippingCurrentPage } = state.order;
+  return { shippingOrderList, deliveryCompanyList, shippingOrderTotal, currentPage: shippingCurrentPage };
 }
 
 export default connect(mapStateToProps)(Form.create()(ShippingOrder));

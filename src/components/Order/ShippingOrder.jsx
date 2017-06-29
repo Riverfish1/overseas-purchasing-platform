@@ -47,10 +47,14 @@ class ShippingOrder extends Component {
     this.setState({ visible: false });
   }
   exportPdf() { // 导出发货标签
+    const p = this;
     const { checkId } = this.state;
     this.props.dispatch({
       type: 'order/exportPdf',
       payload: JSON.stringify(checkId),
+      success() {
+        p._refreshData();
+      },
     });
     this.setState({ checkId: [] });
   }

@@ -350,8 +350,11 @@ export default {
         });
       }
     },
-    exportPdf({ payload }) {
+    exportPdf({ payload, success }) {
       window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportPdf?shippingOrderIds=${payload}`);
+      if (success) {
+        setTimeout(() => { success(); }, 1000);
+      }
     },
     exportOrderDetail({ payload }) {
       window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportExcel?startOrderTime=${payload.startOrderTime}&endOrderTime=${payload.endOrderTime}`);

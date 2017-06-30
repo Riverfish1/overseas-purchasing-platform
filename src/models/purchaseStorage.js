@@ -5,7 +5,7 @@ import fetch from '../utils/request';
 const queryPurchaseStorageList = ({ payload }) => fetch.post('/haierp1/purchaseStorage/queryPurStorages', { data: payload }).catch(e => e);
 const queryBuyerTaskList = ({ payload }) => fetch.post('/haierp1/purchase/queryBuyerTaskList', { data: payload }).catch(e => e);
 const addStorage = ({ payload }) => fetch.post('/haierp1/purchaseStorage/add', { data: payload }).catch(e => e);
-const saveStorage = ({ payload }) => fetch.post('/haierp1/purchaseStorage/update', { data: payload }).catch(e => e);
+const updateStorage = ({ payload }) => fetch.post('/haierp1/purchaseStorage/update', { data: payload }).catch(e => e);
 const confirmStorage = ({ payload }) => fetch.post('/haierp1/purchaseStorage/confirm', { data: payload }).catch(e => e);
 const deleteStorage = ({ payload }) => fetch.post('/haierp1/purchaseStorage/delete', { data: payload }).catch(e => e);
 const queryPurchaseStorage = ({ payload }) => fetch.post('/haierp1/purchaseStorage/query', { data: payload }).catch(e => e);
@@ -17,7 +17,7 @@ export default {
   state: {
     list: [],
     total: '',
-    currentPage: '',
+    currentPage: 1,
     purchaseValues: {},
     buyer: [],
     // 修改的状态
@@ -40,8 +40,13 @@ export default {
     },
   },
   effects: {
-    * queryPurchaseStorageList({ payload }, { call, put }) {
-      const data = yield call(queryPurchaseStorageList, { payload });
+    * queryPurchaseStorageList({ payload }, { call, put, select }) {
+      let pageIndex = yield select(({ purchaseStorage }) => purchaseStorage.currentPage);
+      if (payload && payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({ type: 'saveCurrentPage', payload });
+      }
+      const data = yield call(queryPurchaseStorageList, { payload: { ...payload, pageIndex } });
       if (typeof data.success !== 'undefined') {
         yield put({ type: 'updatePurchaseStorageList', payload: data });
       }
@@ -58,28 +63,25 @@ export default {
         yield put({ type: 'updateBuyerTaskList', payload: data });
       }
     },
-    * addStorage({ payload }, { call, put }) {
+    * addStorage({ payload, cb }, { call }) {
       const data = yield call(addStorage, { payload: payload.fieldsValue });
       if (data.success) {
         message.success('添加入库单成功');
-        if (payload.success) payload.success();
-        yield put({ type: 'queryPurchaseStorageList', payload: {} });
+        if (cb) cb();
       }
     },
-    * saveStorage({ payload }, { call, put }) {
-      const data = yield call(saveStorage, { payload: payload.fieldsValue });
+    * updateStorage({ payload, cb }, { call }) {
+      const data = yield call(updateStorage, { payload: payload.fieldsValue });
       if (data.success) {
         message.success('修改入库单成功');
-        if (payload.success) payload.success();
-        yield put({ type: 'queryPurchaseStorageList', payload: {} });
+        if (cb) cb();
       }
     },
-    * confirmStorage({ payload }, { call, put }) {
+    * confirmStorage({ payload, cb }, { call }) {
       const data = yield call(confirmStorage, { payload: payload.fieldsValue });
       if (data.success) {
         message.success('确认入库成功');
-        if (payload.success) payload.success();
-        yield put({ type: 'queryPurchaseStorageList', payload: {} });
+        if (cb) cb();
       }
     },
     * queryStorage({ payload, cb }, { call, put }) {
@@ -88,21 +90,21 @@ export default {
         if (cb) {
           cb(data.data);
         }
-        yield put({ type: 'updateStorage', payload: data });
+        yield put({ type: 'saveStorage', payload: data });
       }
     },
-    * deleteStorage({ payload }, { call, put }) {
+    * deleteStorage({ payload, cb }, { call }) {
       const data = yield call(deleteStorage, { payload });
       if (data.success) {
         message.success('删除入库单成功');
-        yield put({ type: 'queryPurchaseStorageList', payload: {} });
+        cb();
       }
     },
-    * multiConfirmStorage({ payload }, { call, put }) {
+    * multiConfirmStorage({ payload, cb }, { call }) {
       const data = yield call(multiConfirmStorage, { payload });
       if (data.success) {
         message.success('批量入库成功');
-        yield put({ type: 'queryPurchaseStorageList', payload: {} });
+        cb();
       }
     },
     exportDetail({ payload }) {
@@ -124,8 +126,11 @@ export default {
     updateBuyerTaskList(state, { payload }) {
       return { ...state, buyerTaskList: payload.data };
     },
-    updateStorage(state, { payload }) {
+    saveStorage(state, { payload }) {
       return { ...state, editInfo: payload.data };
+    },
+    saveCurrentPage(state, { payload }) {
+      return { ...state, currentPage: payload.pageIndex };
     },
   },
 };

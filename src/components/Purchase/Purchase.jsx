@@ -21,14 +21,13 @@ class Purchase extends Component {
     };
   }
 
-  handleSubmit(e, page) {
+  handleSubmit(e, page, pageSize) {
     const p = this;
+    const { currentPage, currentPageSize } = this.props;
     if (e) e.preventDefault();
     p.setState({ taskDailyIds: [] }, () => {
       this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
-        if (err) {
-          return;
-        }
+        if (err) return;
         if (fieldsValue.taskStart && fieldsValue.taskStart[0] && fieldsValue.taskStart[1]) {
           fieldsValue.taskStart1 = new Date(fieldsValue.taskStart[0]).format('yyyy-MM-dd');
           fieldsValue.taskStart2 = new Date(fieldsValue.taskStart[1]).format('yyyy-MM-dd');
@@ -41,7 +40,11 @@ class Purchase extends Component {
         delete fieldsValue.taskEnd;
         this.props.dispatch({
           type: 'purchase/queryPurchaseList',
-          payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1 },
+          payload: {
+            ...fieldsValue,
+            pageIndex: typeof page === 'number' ? page : currentPage,
+            pageSize: pageSize || currentPageSize,
+          },
         });
       });
     });
@@ -66,25 +69,32 @@ class Purchase extends Component {
   }
 
   closeModal(modalVisible) {
-    this.setState({ modalVisible });
-    this.props.dispatch({
-      type: 'purchase/savePurchase',
-      payload: {},
+    this.setState({ modalVisible }, () => {
+      this.props.dispatch({
+        type: 'purchase/savePurchase',
+        payload: {},
+      });
+      this._refreshData();
     });
   }
 
   handleDelete(record) {
-    this.props.dispatch({
+    const p = this;
+    const { list = [], currentPage, dispatch } = this.props;
+    dispatch({
       type: 'purchase/deletePurchase',
       payload: { id: record.id },
+      cb() {
+        if (list.length < 2 && currentPage > 1) {
+          p.handleSubmit(null, currentPage - 1);
+        } else p.handleSubmit();
+      },
     });
   }
 
   handleBigPic(value) {
     if (value) {
-      this.setState({
-        previewImage: value,
-      });
+      this.setState({ previewImage: value });
     }
   }
 
@@ -97,6 +107,7 @@ class Purchase extends Component {
 
   handlePurchaseAction(type) {
     const p = this;
+    const { currentPage, currentPageSize } = this.props;
     const { taskDailyIds } = this.state;
     switch (type) {
       case 'finish':
@@ -107,12 +118,7 @@ class Purchase extends Component {
             p.props.dispatch({
               type: 'purchase/finishTaskDaily',
               payload: { taskDailyIds: JSON.stringify(taskDailyIds) },
-              success() {
-                p.props.dispatch({
-                  type: 'purchase/queryPurchaseList',
-                  payload: {},
-                });
-              },
+              cb() { p.handleSubmit(null, currentPage, currentPageSize); },
             });
           },
         });
@@ -125,12 +131,7 @@ class Purchase extends Component {
             p.props.dispatch({
               type: 'purchase/closeTaskDaily',
               payload: { taskDailyIds: JSON.stringify(taskDailyIds) },
-              success() {
-                p.props.dispatch({
-                  type: 'purchase/queryPurchaseList',
-                  payload: {},
-                });
-              },
+              cb() { p.handleSubmit(null, currentPage, currentPageSize); },
             });
           },
         });
@@ -139,6 +140,9 @@ class Purchase extends Component {
         this.props.dispatch({
           type: 'purchase/createByOrder',
           payload: {},
+          cb() {
+            p.handleSubmit();
+          },
         });
         break;
       default: return false;
@@ -149,33 +153,29 @@ class Purchase extends Component {
     const p = this;
     const { form, list = [], total, purchaseValues = {}, buyer = [], dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { title, previewImage } = p.state;
+    const { title } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
-    const content = (
-      <img role="presentation" src={previewImage} style={{ width: 400 }} />
-    );
     const columnsList = [
       { title: '任务单号', dataIndex: 'taskOrderNo', key: 'taskOrderNo', width: 150 },
-      { title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle', width: 150 },
-      { title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc', width: 80 },
-      // { title: '任务分配人', dataIndex: 'ownerName', key: 'ownerName' },
+      { title: '任务名称', dataIndex: 'taskTitle', key: 'taskTitle', width: 100 },
+      { title: '任务描述', dataIndex: 'taskDesc', key: 'taskDesc', width: 100 },
       { title: '买手', dataIndex: 'buyerName', key: 'buyerName', width: 60, render(text) { return text || '-'; } },
       { title: '图片',
         dataIndex: 'imageUrl',
         key: 'imageUrl',
         width: 80,
         render(text) {
-          if (text) {
-            return (
-              <Popover title={null} content={content}>
-                <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, text)} src={text} width="50" height="50" />
-              </Popover>
-            );
-          }
-          return '-';
+          if (!text) return '-';
+          const picList = JSON.parse(text).picList;
+          const t = picList.length ? JSON.parse(text).picList[0].url : '';
+          return (
+            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, text)} src={text} width={60} height={60} />
+            </Popover> : '-'
+          );
         },
       },
       { title: '状态',
@@ -191,8 +191,8 @@ class Purchase extends Component {
           }
         },
       },
-      { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime', width: 150, render(t) { return t ? t.slice(0, 11) : '-'; } },
-      { title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime', width: 150, render(t) { return t ? t.slice(0, 11) : '-'; } },
+      { title: '任务开始时间', dataIndex: 'taskStartTime', key: 'taskStartTime', width: 120, render(t) { return t ? t.slice(0, 11) : '-'; } },
+      { title: '任务结束时间', dataIndex: 'taskEndTime', key: 'taskEndTime', width: 120, render(t) { return t ? t.slice(0, 11) : '-'; } },
       { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
@@ -330,10 +330,12 @@ class Purchase extends Component {
 }
 
 function mapStateToProps(state) {
-  const { list, total, purchaseValues, buyer } = state.purchase;
+  const { list, total, currentPage, currentPageSize, purchaseValues, buyer } = state.purchase;
   return {
     list,
     total,
+    currentPage,
+    currentPageSize,
     purchaseValues,
     buyer,
   };

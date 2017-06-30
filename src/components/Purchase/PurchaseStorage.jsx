@@ -29,7 +29,11 @@ class PurchaseStorage extends Component {
       title: '确认将选中项批量入库？',
       content: '操作不可撤回，请预先核对',
       onOk() {
-        p.props.dispatch({ type: 'purchaseStorage/multiConfirmStorage', payload: { ids: JSON.stringify(p.state.selectedRowKeys) } });
+        p.props.dispatch({
+          type: 'purchaseStorage/multiConfirmStorage',
+          payload: { ids: JSON.stringify(p.state.selectedRowKeys) },
+          cb() { p.handleSubmit(); },
+        });
         p.setState({ selectedRowKeys: [] });
       },
     });
@@ -37,12 +41,11 @@ class PurchaseStorage extends Component {
 
   handleSubmit(e, page) {
     if (e) e.preventDefault();
+    const { currentPage } = this.props;
     // 清除多选
     this.setState({ selectedRowKeys: [] }, () => {
       this.props.form.validateFieldsAndScroll((err, values) => {
-        if (err) {
-          return;
-        }
+        if (err) return;
         if (values.orderDate && values.orderDate[0] && values.orderDate[1]) {
           values.startTime = new Date(values.orderDate[0]).format('yyyy-MM-dd');
           values.endTime = new Date(values.orderDate[1]).format('yyyy-MM-dd');
@@ -55,10 +58,17 @@ class PurchaseStorage extends Component {
         delete values.storageDate;
         this.props.dispatch({
           type: 'purchaseStorage/queryPurchaseStorageList',
-          payload: { ...values, pageIndex: typeof page === 'number' ? page : 1 },
+          payload: {
+            ...values,
+            pageIndex: typeof page === 'number' ? page : currentPage,
+          },
         });
       });
     });
+  }
+
+  closeModal() {
+    this._refreshData();
   }
 
   showModal(type, id) {
@@ -77,20 +87,23 @@ class PurchaseStorage extends Component {
     this.props.dispatch({ type: 'purchaseStorage/toggleBarcodeModal' });
   }
 
-  handleEmpty() {
-    const { resetFields } = this.props.form;
-    resetFields();
-  }
-
   handleDelete(id) {
-    this.props.dispatch({ type: 'purchaseStorage/deleteStorage', payload: { id } });
+    const p = this;
+    const { list = [], currentPage, dispatch } = this.props;
+    dispatch({
+      type: 'purchaseStorage/deleteStorage',
+      payload: { id },
+      cb() {
+        if (list.length < 2 && currentPage > 1) {
+          p.handleSubmit(null, currentPage - 1);
+        } else p.handleSubmit();
+      },
+    });
   }
 
   updateModal(id) {
     const p = this;
-    this.setState({
-      modalVisible: true,
-    }, () => {
+    this.setState({ modalVisible: true }, () => {
       p.props.dispatch({ type: 'products/queryProduct', payload: { id } });
     });
   }
@@ -281,7 +294,7 @@ class PurchaseStorage extends Component {
           <Row>
             <Col className="listBtnGroup" style={{ marginLeft: 14 }}>
               <Button htmlType="submit" size="large" type="primary">查询</Button>
-              <Button size="large" type="ghost" onClick={this.handleEmpty.bind(this)}>清空</Button>
+              <Button size="large" type="ghost" onClick={() => form.resetFields()}>清空</Button>
             </Col>
           </Row>
         </Form>
@@ -321,6 +334,7 @@ class PurchaseStorage extends Component {
           purchaseStorageData={editInfo}
           isShowDetail={showDetail}
           dispatch={dispatch}
+          close={this.closeModal.bind(this)}
         />}
         {showBarcodeModal && <BarcodeModal
           visible={showBarcodeModal}
@@ -330,6 +344,7 @@ class PurchaseStorage extends Component {
           barcodeStorageData={editInfo}
           isShowDetail={showDetail}
           dispatch={dispatch}
+          close={this.closeModal.bind(this)}
         />}
       </div>
     );
@@ -337,10 +352,10 @@ class PurchaseStorage extends Component {
 }
 
 function mapStateToProps(state) {
-  const { list, total, buyer, showModal, editInfo, buyerTaskList, showBarcodeModal } = state.purchaseStorage;
+  const { list, total, currentPage, buyer, showModal, editInfo, buyerTaskList, showBarcodeModal } = state.purchaseStorage;
   const { wareList } = state.inventory;
   return {
-    list, total, buyer, wareList, showModal, editInfo, buyerTaskList, showBarcodeModal,
+    list, total, currentPage, buyer, wareList, showModal, editInfo, buyerTaskList, showBarcodeModal,
   };
 }
 

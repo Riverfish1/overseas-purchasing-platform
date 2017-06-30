@@ -127,23 +127,19 @@ class BarcodeModal extends Component {
         delete fieldsValue.stoOrderNo;
         if (type === 'save') {
           dispatch({
-            type: fieldsValue.id ? 'purchaseStorage/saveStorage' : 'purchaseStorage/addStorage',
+            type: fieldsValue.id ? 'purchaseStorage/updateStorage' : 'purchaseStorage/addStorage',
             payload: {
               fieldsValue,
-              success() {
-                p.closeModal();
-              },
             },
+            cb() { p.closeModal(); },
           });
         } else {
           dispatch({
             type: 'purchaseStorage/confirmStorage',
             payload: {
               fieldsValue,
-              success() {
-                p.closeModal();
-              },
             },
+            cb() { p.closeModal(); },
           });
         }
       }
@@ -151,12 +147,13 @@ class BarcodeModal extends Component {
   }
 
   closeModal() {
-    const { form, dispatch } = this.props;
+    const { form, dispatch, close } = this.props;
     form.resetFields();
     dispatch({ type: 'purchaseStorage/toggleBarcodeModal' });
     dispatch({ type: 'purchaseStorage/clearEditInfo' });
     this.setState({ storageList: [], id: undefined });
     firstLoad = true;
+    close();
   }
 
   handleKeyUp(e) {

@@ -149,23 +149,15 @@ class PurchaseModal extends Component {
         delete fieldsValue.stoOrderNo;
         if (type === 'save') {
           dispatch({
-            type: fieldsValue.id ? 'purchaseStorage/saveStorage' : 'purchaseStorage/addStorage',
-            payload: {
-              fieldsValue,
-              success() {
-                p.closeModal();
-              },
-            },
+            type: fieldsValue.id ? 'purchaseStorage/updateStorage' : 'purchaseStorage/addStorage',
+            payload: { fieldsValue },
+            cb() { p.closeModal(); },
           });
         } else {
           dispatch({
             type: 'purchaseStorage/confirmStorage',
-            payload: {
-              fieldsValue,
-              success() {
-                p.closeModal();
-              },
-            },
+            payload: { fieldsValue },
+            cb() { p.closeModal(); },
           });
         }
       }
@@ -178,12 +170,13 @@ class PurchaseModal extends Component {
   }
 
   closeModal() {
-    const { form, dispatch } = this.props;
+    const { form, dispatch, close } = this.props;
     form.resetFields();
     dispatch({ type: 'purchaseStorage/toggleShowModal' });
     dispatch({ type: 'purchaseStorage/clearEditInfo' });
     dispatch({ type: 'purchaseStorage/updateBuyerTaskList', payload: { data: [] } });
     this.setState({ selectedRowKeys: [], storageList: [], id: undefined });
+    close();
     firstLoad = true;
   }
 
@@ -257,12 +250,6 @@ class PurchaseModal extends Component {
           <Button type="primary" size="large" onClick={p.handleSave.bind(p, 'save')}>保存入库单</Button>
         </div>
       ),
-      onOk() {
-        p.handleSubmit();
-      },
-      onCancel() {
-        p.closeModal();
-      },
     };
 
     const formItemLayout = {

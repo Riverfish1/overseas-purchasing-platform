@@ -19,7 +19,8 @@ export default {
   state: {
     list: [],
     total: '',
-    currentPage: '',
+    currentPage: 1,
+    currentPageSize: 20,
     purchaseValues: {},
     buyer: [],
   },
@@ -42,34 +43,32 @@ export default {
     },
   },
   effects: {
-    * queryPurchaseList({ payload }, { call, put }) {
-      const data = yield call(queryPurchaseList, { payload });
-      if (data.success && data.data) {
-        data.data.forEach((el) => {
-          const url = JSON.parse(decodeURIComponent(el.imageUrl).replace(/&quot;/g, '"')) || [];
-          el.imageUrl = url.picList.length ? url.picList[0].url : '';
-        });
+    * queryPurchaseList({ payload }, { call, put, select }) {
+      let pageIndex = yield select(({ purchase }) => purchase.currentPage);
+      let pageSize = yield select(({ purchase }) => purchase.currentPageSize);
+      if (payload && payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({ type: 'saveCurrentPage', payload });
+      }
+      if (payload && payload.pageSize) {
+        pageSize = payload.pageSize;
+        yield put({ type: 'saveCurrentPageSize', payload });
+      }
+      const data = yield call(queryPurchaseList, { payload: { ...payload, pageIndex, pageSize } });
+      if (data.success) {
         yield put({ type: 'updatePurchaseList', payload: data });
       }
     },
-    * addPurchase({ payload }, { call, put }) {
+    * addPurchase({ payload }, { call }) {
       const data = yield call(addPurchase, { payload });
       if (data.success) {
         message.success('新增成功');
-        yield put({
-          type: 'queryPurchaseList',
-          payload: {},
-        });
       }
     },
-    * updatePurchase({ payload }, { call, put }) {
+    * updatePurchase({ payload }, { call }) {
       const data = yield call(updatePurchase, { payload });
       if (data.success) {
         message.success('修改成功');
-        yield put({
-          type: 'queryPurchaseList',
-          payload: {},
-        });
       }
     },
     * queryPurchase({ payload }, { call, put }) {
@@ -89,41 +88,45 @@ export default {
         yield put({ type: 'updateBuyers', payload: data });
       }
     },
-    * deletePurchase({ payload }, { call, put }) {
+    * deletePurchase({ payload, cb }, { call }) {
       const data = yield call(deletePurchase, { payload });
-      if (data.success) {
-        yield put({ type: 'queryPurchaseList', payload: {} });
-      }
+      if (data.success) cb();
     },
-    * createByOrder({ payload }, { call, put }) {
+    * createByOrder({ payload, cb }, { call }) {
       const data = yield call(createByOrder);
       if (data.success) {
         message.success('生产采购任务成功');
-        yield put({ type: 'queryPurchaseList', payload: {} });
+        cb();
       }
     },
     * exportPurchase({ payload }, { put }) {
       window.open(`http://${location.host}/haierp1/purchase/taskDailyExport?id=${payload.id}`);
       yield put({ type: 'queryPurchaseList', payload: {} });
     },
-    * finishTaskDaily({ payload, success }, { call }) {
+    * finishTaskDaily({ payload, cb }, { call }) {
       const data = yield call(finishTaskDaily, { payload });
       if (data.success) {
         message.success('完成采购成功');
-        if (success) success();
+        if (cb) cb();
       }
     },
-    * closeTaskDaily({ payload, success }, { call }) {
+    * closeTaskDaily({ payload, cb }, { call }) {
       const data = yield call(closeTaskDaily, { payload });
       if (data.success) {
         message.success('取消采购成功');
-        if (success) success();
+        if (cb) cb();
       }
     },
   },
   reducers: {
     updatePurchaseList(state, { payload }) {
       return { ...state, list: payload.data, total: payload.totalCount };
+    },
+    saveCurrentPage(state, { payload }) {
+      return { ...state, currentPage: payload.pageIndex };
+    },
+    saveCurrentPageSize(state, { payload }) {
+      return { ...state, currentPageSize: payload.pageSize };
     },
     savePurchase(state, { payload }) {
       return { ...state, purchaseValues: payload };

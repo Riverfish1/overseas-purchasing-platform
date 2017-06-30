@@ -238,7 +238,7 @@ class ErpOrder extends Component {
       selectedRowKeys: p.state.checkId,
     };
     const columns = [
-      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 100 },
+      { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 110 },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 110 },
       { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 50 },
       { title: '收件人地址',
@@ -254,7 +254,7 @@ class ErpOrder extends Component {
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
-        width: 40,
+        width: 60,
         render(text) {
           switch (text) {
             case 0: return <font color="saddlebrown">新建</font>;
@@ -269,7 +269,7 @@ class ErpOrder extends Component {
         title: '备货状态',
         dataIndex: 'stockStatus',
         key: 'stockStatus',
-        width: 40,
+        width: 60,
         render(text) {
           switch (text) {
             case 0: return <font>未备货</font>;
@@ -285,18 +285,8 @@ class ErpOrder extends Component {
       },
       { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 80, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 110, render(text) { return text || '-'; } },
-      { title: '颜色',
-        dataIndex: 'color',
-        key: 'color',
-        width: 80,
-        render(text) { return text || '-'; },
-      },
-      { title: '尺码',
-        dataIndex: 'scale',
-        key: 'scale',
-        width: 80,
-        render(text) { return text || '-'; },
-      },
+      { title: '颜色', dataIndex: 'color', key: 'color', width: 70, render(text) { return text || '-'; } },
+      { title: '尺码', dataIndex: 'scale', key: 'scale', width: 50, render(text) { return text || '-'; } },
       { title: '图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
@@ -312,15 +302,15 @@ class ErpOrder extends Component {
           );
         },
       },
-      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 100 },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 60 },
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 100 },
-      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },
+      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 110, render(text) { return text || '-'; } },
       { title: '发货方式', dataIndex: 'logisticType', key: 'logisticType', width: 60, render(text) { return text === 0 ? '直邮' : (text === 1 ? '拼邮' : '-'); } },
-      { title: '仓库名', dataIndex: 'warehouseName', key: 'warehouseName', width: 100, render(text) { return text || '-'; } },
-      { title: '商品数量', dataIndex: 'quantity', key: 'quantity', width: 60, render(text) { return text || '-'; } },
+      { title: '仓库名', dataIndex: 'warehouseName', key: 'warehouseName', width: 60, render(text) { return text || '-'; } },
+      { title: '商品数量', dataIndex: 'quantity', key: 'quantity', width: 50, render(text) { return text || '-'; } },
       // { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: 220 },
       // { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
-      { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
+      { title: '备注', dataIndex: 'remark', key: 'remark', width: 60, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
@@ -562,7 +552,7 @@ class ErpOrder extends Component {
           dataSource={erpOrderList}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: '200%', y: 540 }}
+          scroll={{ x: '145%', y: 500 }}
           bordered={true}
         />
         <ErpOrderModal

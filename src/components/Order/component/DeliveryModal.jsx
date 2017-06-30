@@ -67,6 +67,7 @@ class DeliveryModal extends Component {
     const columns = [
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 120 },
       { title: 'SKU编号', dataIndex: 'skuCode', key: 'skuCode', width: 120 },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 120 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 120 },
       { title: '订单状态',
         dataIndex: 'status',

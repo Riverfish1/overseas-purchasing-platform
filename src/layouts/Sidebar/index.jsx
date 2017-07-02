@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Menu, Icon } from 'antd';
 import { Link } from 'dva/router';
+import classNames from 'classnames';
 import { getNavigation } from '../../constants';
 import styles from './style.less';
 
@@ -49,8 +50,11 @@ class Menus extends Component {
   changeOpenKeys(navOpenKeys) {
     this.setState({ navOpenKeys });
   }
+  handleOpen() {
+    if (this.props.onOpenChange) this.props.onOpenChange(!this.props.close);
+  }
   render() {
-    const { location } = this.props;
+    const { location, close } = this.props;
     const { /* navOpenKeys, */siderFold } = this.state;
     let navArr = [];
     let navParentPath = '/';
@@ -85,8 +89,17 @@ class Menus extends Component {
     //   openKeys: navOpenKeys,
     // } : {};
 
+    const asideClass = classNames({
+      [styles.sidebar]: true,
+      [styles.sidebarClose]: close,
+    });
+
+    const iconClass = classNames({
+      [styles.iconClose]: close,
+    });
+
     return (
-      <aside className={styles.sidebar}>
+      <aside className={asideClass}>
         <Menu
           /* ...menuProps */
           mode={siderFold ? 'vertical' : 'inline'}
@@ -95,6 +108,7 @@ class Menus extends Component {
         >
           {menuItems}
         </Menu>
+        <div className={styles.sideSwitch} onClick={this.handleOpen.bind(this)}><Icon type="caret-left" className={iconClass} /></div>
       </aside>
     );
   }

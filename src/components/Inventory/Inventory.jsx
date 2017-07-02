@@ -40,6 +40,16 @@ class Inventory extends Component {
       });
     });
   }
+  exportInv() {
+    const { form, dispatch } = this.props;
+    form.validateFields((err, values) => {
+      if (err) return;
+      dispatch({
+        type: 'inventory/exportInv',
+        payload: { ...values },
+      });
+    });
+  }
   handleEmptyInput(type) { // 清空内容
     const { setFieldsValue } = this.props.form;
     switch (type) {
@@ -192,6 +202,9 @@ class Inventory extends Component {
               <Button htmlType="submit" size="large" type="primary">查询</Button>
               <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>
             </Col>
+          </Row>
+          <Row className="operBtn">
+            <Button style={{ float: 'right' }} type="primary" size="large" onClick={p.exportInv.bind(p)}>导出库存</Button>
           </Row>
         </Form>
         <Row style={{ marginTop: 15 }}>

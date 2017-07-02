@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import qs from 'querystring';
 import fetch from '../utils/request';
 
 const queryInventoryList = ({ payload }) => fetch.post('/haierp1/inventory/area/queryList', { data: payload }).catch(e => e);
@@ -66,6 +67,10 @@ export default {
           payload: data,
         });
       }
+    },
+    exportInv({ payload }) {
+      const param = qs.stringify(payload);
+      window.open(`http://${location.host}/haierp1/inventory/inventoryAreaExport?${param}`);
     },
     * queryRecordList({ payload, success }, { call }) {
       const data = yield call(queryInventoryRecordList, { payload });

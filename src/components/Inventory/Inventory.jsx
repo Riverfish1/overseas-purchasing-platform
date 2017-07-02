@@ -44,9 +44,17 @@ class Inventory extends Component {
     const { form, dispatch } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
+      const warehouseId = values.warehouseId;
+      const skuCode = values.skuCode;
+      const upc = values.upc;
+      const itemName = values.itemName;
+      const positionNo = values.positionNo;
+
+      const payload = { warehouseId, skuCode, upc, itemName, positionNo };
+
       dispatch({
         type: 'inventory/exportInv',
-        payload: { ...values },
+        payload: { ...payload },
       });
     });
   }

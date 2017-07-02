@@ -213,6 +213,8 @@ class DeliveryModal extends Component {
                   )}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="联系电话"
@@ -237,6 +239,8 @@ class DeliveryModal extends Component {
                     <Input placeholder="请输入详细地址" />)}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="物流运单号"
@@ -266,6 +270,8 @@ class DeliveryModal extends Component {
                   )}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="物流状态"
@@ -299,6 +305,8 @@ class DeliveryModal extends Component {
                   )}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="运费"
@@ -321,6 +329,8 @@ class DeliveryModal extends Component {
                     <Input placeholder="请输入邮编" />)}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="身份证号"

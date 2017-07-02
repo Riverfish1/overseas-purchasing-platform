@@ -82,6 +82,8 @@ class BatchDeliveryModal extends Component {
                   )}
                 </FormItem>
               </Col>
+            </Row>
+            <Row>
               <Col span={12}>
                 <FormItem
                   label="渠道"

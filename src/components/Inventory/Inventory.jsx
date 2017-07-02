@@ -13,9 +13,7 @@ const Option = Select.Option;
 class Inventory extends Component {
   constructor() {
     super();
-    this.state = {
-      previewImage: null,
-    };
+    this.state = {};
   }
   handleSubmit(e, page) {
     if (e) e.preventDefault();
@@ -31,12 +29,6 @@ class Inventory extends Component {
         type: 'inventory/queryList',
         payload: { warehouseId, skuCode, upc, itemName, positionNo, pageIndex: typeof page === 'number' ? page : 1 },
       });
-    });
-  }
-  handleBigPic(value) {
-    this.setState({
-      previewVisible: true,
-      previewImage: value,
     });
   }
   handleEmptyInput(type) { // 清空内容
@@ -60,15 +52,11 @@ class Inventory extends Component {
   render() {
     const p = this;
     const { list = [], total, form, dispatch, wareList = [] } = this.props;
-    const { previewImage } = this.state;
     const { getFieldDecorator, resetFields } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
-    const content = (
-      <img role="presentation" src={previewImage} style={{ width: 400 }} />
-    );
     const columns = [
       { title: 'SKU代码', key: 'skuCode', dataIndex: 'skuCode', width: 150 },
       { title: '商品名称', key: 'itemName', dataIndex: 'itemName', width: 200 },
@@ -77,17 +65,13 @@ class Inventory extends Component {
         dataIndex: 'skuPic',
         width: 88,
         render(text) {
-          let imgUrl = '';
-          try {
-            const imgObj = JSON.parse(text);
-            imgUrl = imgObj.picList[0].url;
-          } catch (e) {
-            return '-';
-          }
+          if (!text) return '-';
+          const picList = JSON.parse(text).picList;
+          const t = picList.length ? picList[0].url : '';
           return (
-            <Popover title={null} content={content}>
-              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />
-            </Popover>
+            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+              <img role="presentation" src={t} width={60} height={60} />
+            </Popover> : '-'
           );
         },
       },

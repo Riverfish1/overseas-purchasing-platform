@@ -13,8 +13,6 @@ class Products extends Component {
   constructor() {
     super();
     this.state = {
-      modalVisible: false,
-      previewImage: '',
       checkId: [],
     };
   }
@@ -65,10 +63,6 @@ class Products extends Component {
       });
       this._refreshData();
     });
-  }
-
-  handleBigPic(value) {
-    this.setState({ previewImage: value });
   }
 
   batchAction(batchType) {
@@ -136,14 +130,10 @@ class Products extends Component {
     const { form, currentPage, currentPageSize, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
     console.log(productsValues);
     const { getFieldDecorator, resetFields } = form;
-    const { previewImage } = this.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
-    const content = (
-      <img role="presentation" src={previewImage} style={{ width: 400 }} />
-    );
     const yzBasicUrl = 'https://h5.youzan.com/v2/goods/';
     const columns = [
       { title: '商品名称',
@@ -175,17 +165,14 @@ class Products extends Component {
         key: 'mainPic',
         width: 80,
         render(text) {
-          let imgUrl = '';
-          try {
-            const imgObj = JSON.parse(text);
-            imgUrl = imgObj.picList[parseInt(imgObj.mainPicNum, 10) - 1].url;
-          } catch (e) {
-            return '-';
-          }
+          if (!text) return '-';
+          const picList = JSON.parse(text).picList;
+          const t = picList.length ? picList[0].url : '';
           return (
-            <Popover title={null} content={content}>
-              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />
-            </Popover>);
+            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+              <img role="presentation" src={t} width={60} height={60} />
+            </Popover> : '-'
+          );
         },
       },
       { title: '商品品牌',

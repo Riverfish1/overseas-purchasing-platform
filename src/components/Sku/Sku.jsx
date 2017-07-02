@@ -13,7 +13,6 @@ class Sku extends Component {
     super();
     this.state = {
       modalVisible: false,
-      previewImage: '',
       lockedNumGroup: {},
       lockedPopoverVisible: {},
     };
@@ -73,12 +72,6 @@ class Sku extends Component {
     });
   }
 
-  handleBigPic(value) {
-    this.setState({
-      previewImage: value,
-    });
-  }
-
   toggleLockedPopoverVisible(record) {
     const { lockedPopoverVisible } = this.state;
     lockedPopoverVisible[record.id] = !lockedPopoverVisible[record.id];
@@ -129,13 +122,9 @@ class Sku extends Component {
   render() {
     const p = this;
     const { skuList = {}, skuTotal, currentPageSkuIndex, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
-    const { previewImage, lockedPopoverVisible } = this.state;
+    const { lockedPopoverVisible } = this.state;
     console.log(lockedPopoverVisible);
     const { getFieldDecorator } = form;
-
-    const content = (
-      <img role="presentation" src={previewImage} style={{ width: 400 }} />
-    );
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -158,17 +147,13 @@ class Sku extends Component {
         key: 'skuPic',
         width: 100,
         render(text) {
-          let imgUrl = '';
-          try {
-            const imgObj = JSON.parse(text);
-            imgUrl = imgObj.picList[0].url;
-          } catch (e) {
-            return '-';
-          }
+          if (!text) return '-';
+          const picList = JSON.parse(text).picList;
+          const t = picList.length ? picList[0].url : '';
           return (
-            <Popover title={null} content={content}>
-              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="80" height="80" />
-            </Popover>
+            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+              <img role="presentation" src={t} width={60} height={60} />
+            </Popover> : '-'
           );
         },
       },

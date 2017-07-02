@@ -39,7 +39,7 @@ class ShippingOrder extends Component {
     this.setState({ visible: true, data: r });
   }
   closeModal() {
-    this.setState({ visible: false }, () => {
+    this.setState({ visible: false, checkId: [] }, () => {
       this.props.dispatch({
         type: 'order/saveErpOrderDetail',
         payload: {},

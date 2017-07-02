@@ -75,7 +75,7 @@ class Order extends Component {
   }
 
   updateModal(id, e) {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     const p = this;
     p.setState({
       modalVisible: true,

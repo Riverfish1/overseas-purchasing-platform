@@ -250,6 +250,9 @@ class PurchaseModal extends Component {
           <Button type="primary" size="large" onClick={p.handleSave.bind(p, 'save')}>保存入库单</Button>
         </div>
       ),
+      onCancel() {
+        p.closeModal();
+      },
     };
 
     const formItemLayout = {

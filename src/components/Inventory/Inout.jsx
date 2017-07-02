@@ -9,9 +9,7 @@ const Option = Select.Option;
 class Inout extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      previewImage: '',
-    };
+    this.state = {};
   }
 
   handleSubmit(e, page) {
@@ -30,21 +28,10 @@ class Inout extends Component {
     resetFields();
   }
 
-  handleBigPic(value) {
-    this.setState({
-      previewImage: value,
-    });
-  }
-
   render() {
     const p = this;
     const { inoutTotal, inoutList = [], form, wareList = [] } = this.props;
-    const { previewImage } = this.state;
     const { getFieldDecorator } = form;
-
-    const content = (
-      <img role="presentation" src={previewImage} style={{ width: 400 }} />
-    );
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -58,17 +45,14 @@ class Inout extends Component {
         key: 'skuPic',
         width: 100,
         render(text) {
-          let imgUrl = '';
-          if (text) {
-            const imgObj = JSON.parse(text);
-            imgUrl = imgObj.picList[0].url;
-            return (
-              <Popover title={null} content={content}>
-                <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, imgUrl)} src={imgUrl} width="50" height="50" />
-              </Popover>
-            );
-          }
-          return '-';
+          if (!text) return '-';
+          const picList = JSON.parse(text).picList;
+          const t = picList.length ? picList[0].url : '';
+          return (
+            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+              <img role="presentation" src={t} width={60} height={60} />
+            </Popover> : '-'
+          );
         },
       },
       { title: '仓库名称', dataIndex: 'warehouseName', key: 'warehouseName', width: 80, render(text) { return text || '-'; } },

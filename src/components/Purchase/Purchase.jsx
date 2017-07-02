@@ -15,8 +15,6 @@ class Purchase extends Component {
     this.state = {
       modalVisible: false,
       title: '', // modal的title
-      previewImage: '',
-      previewVisible: false,
       taskDailyIds: [],
     };
   }
@@ -58,7 +56,7 @@ class Purchase extends Component {
   }
 
   updateModal(id, e) {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     const p = this;
     p.setState({
       modalVisible: true,
@@ -90,12 +88,6 @@ class Purchase extends Component {
         } else p.handleSubmit(null, currentPage);
       },
     });
-  }
-
-  handleBigPic(value) {
-    if (value) {
-      this.setState({ previewImage: value });
-    }
   }
 
   exportPurchase(id) { // 导出采购单
@@ -170,10 +162,10 @@ class Purchase extends Component {
         render(text) {
           if (!text) return '-';
           const picList = JSON.parse(text).picList;
-          const t = picList.length ? JSON.parse(text).picList[0].url : '';
+          const t = picList.length ? picList[0].url : '';
           return (
             t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
-              <img role="presentation" onMouseEnter={p.handleBigPic.bind(p, text)} src={text} width={60} height={60} />
+              <img role="presentation" src={t} width={60} height={60} />
             </Popover> : '-'
           );
         },

@@ -7,6 +7,8 @@ import check from '../../../utils/checkLib';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+let firstLoad = true;
+
 class DeliveryModal extends Component {
   constructor(props) {
     super(props);
@@ -15,8 +17,10 @@ class DeliveryModal extends Component {
     };
   }
   componentWillReceiveProps({ checkId }) {
-    if (checkId) {
+    console.log(checkId);
+    if (checkId && firstLoad) {
       this.setState({ checkId });
+      firstLoad = false;
     }
   }
   handleSubmit() {

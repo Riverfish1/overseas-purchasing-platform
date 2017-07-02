@@ -183,14 +183,14 @@ class Order extends Component {
     };
     const columnsList = [
       { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 150 },
-      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 150, render(text) { return text || '-'; } },
+      { title: '外部订单号', dataIndex: 'targetNo', key: 'targetNo', width: 120, render(text) { return text || '-'; } },
       { title: '销售员', dataIndex: 'salesName', key: 'salesName', width: 80, render(text) { return text || '-'; } },
       { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 150, render(text) { return text || '-'; } },
       { title: '订单状态',
         dataIndex: 'status',
         key: 'status',
-        width: 50,
+        width: 80,
         render(text) {
           switch (text) {
             case 0: return <font color="saddlebrown">新建</font>;
@@ -210,9 +210,9 @@ class Order extends Component {
           return <span>{`${r.receiverState} ${r.receiverCity} ${r.receiverDistrict} ${r.addressDetail}`}</span>;
         },
       },
-      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 200 },
+      { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 100 },
       // { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
-      { title: '备注', dataIndex: 'remark', key: 'remark', width: 100, render(text) { return text || '-'; } },
+      { title: '备注', dataIndex: 'remark', key: 'remark', render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
@@ -467,7 +467,7 @@ class Order extends Component {
               rowKey={record => record.id}
               pagination={listPaginationProps}
               rowSelection={rowSelection}
-              scroll={{ x: '130%', y: 550 }}
+              scroll={{ x: 1400, y: 500 }}
             />
           </Col>
         </Row>
@@ -479,7 +479,7 @@ class Order extends Component {
             size="large"
             rowKey={record => record.id}
             pagination={false}
-            scroll={{ x: '130%', y: 550 }}
+            scroll={{ x: 1400, y: 550 }}
           />
         </Modal>
         <OrderModal

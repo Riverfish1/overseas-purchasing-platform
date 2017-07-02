@@ -345,7 +345,7 @@ class ErpOrder extends Component {
       { title: '商品数量', dataIndex: 'quantity', key: 'quantity', width: 50, render(text) { return text || '-'; } },
       // { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: 220 },
       // { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
-      { title: '备注', dataIndex: 'remark', key: 'remark', width: 60, render(text) { return text || '-'; } },
+      { title: '备注', dataIndex: 'remark', key: 'remark', render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
@@ -587,7 +587,7 @@ class ErpOrder extends Component {
           dataSource={erpOrderList}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: '145%', y: 500 }}
+          scroll={{ x: 1800, y: 500 }}
           bordered={true}
         />
         <ErpOrderModal

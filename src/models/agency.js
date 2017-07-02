@@ -21,7 +21,7 @@ export default {
     agencyTypeValues: {},
     total: 1,
     typeTotal: 1,
-    current: 1,
+    currentPage: 1,
     typeCurrent: 1,
   },
   subscriptions: {
@@ -42,7 +42,7 @@ export default {
   },
   effects: {
     * queryAgencyList({ payload }, { call, put, select }) {
-      let pageIndex = yield select(({ agency }) => agency.current);
+      let pageIndex = yield select(({ agency }) => agency.currentPage);
       if (payload && payload.pageIndex) {
         pageIndex = payload.pageIndex;
         yield put({ type: 'saveCurrentPage', payload });
@@ -72,18 +72,6 @@ export default {
       if (data.success) {
         message.success('删除类目成功');
         cb();
-        // const agency = yield select(model => model.agency);
-        // if (agency.list.length < 2 && agency.current > 1) {
-        //   yield put({
-        //     type: 'queryAgencyList',
-        //     payload: { payload: agency.current - 1 },
-        //   });
-        //   return;
-        // }
-        // yield put({
-        //   type: 'queryAgencyList',
-        //   payload: {},
-        // });
       }
     },
     * updateAgency({ payload }, { call }) {
@@ -118,22 +106,11 @@ export default {
         message.success('新增类别成功');
       }
     },
-    * deleteAgencyType({ payload }, { call, put, select }) {
+    * deleteAgencyType({ payload, cb }, { call }) {
       const data = yield call(deleteAgencyType, { payload });
       if (data.success) {
         message.success('删除类目成功');
-        const agency = yield select(model => model.agency);
-        if (agency.typeList.length < 2 && agency.typeCurrent > 1) {
-          yield put({
-            type: 'queryAgencyTypeList',
-            payload: { pageIndex: agency.typeCurrent - 1 },
-          });
-          return;
-        }
-        yield put({
-          type: 'queryAgencyTypeList',
-          payload: {},
-        });
+        cb();
       }
     },
     * updateAgencyType({ payload }, { call }) {
@@ -157,7 +134,7 @@ export default {
       return { ...state, agencyValues: payload };
     },
     saveCurrentPage(state, { payload }) {
-      return { ...state, current: payload.pageIndex };
+      return { ...state, currentPage: payload.pageIndex };
     },
     saveTypeCurrentPage(state, { payload }) {
       return { ...state, typeCurrent: payload.pageIndex };

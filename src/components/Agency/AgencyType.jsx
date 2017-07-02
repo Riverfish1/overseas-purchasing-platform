@@ -67,6 +67,7 @@ class AgencyType extends Component {
     this.props.dispatch({
       type: 'agency/deleteAgencyType',
       payload: { id: record.id },
+      cb() { this._refreshData(); },
     });
   }
 

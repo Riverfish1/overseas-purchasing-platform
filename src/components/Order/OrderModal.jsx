@@ -16,7 +16,6 @@ class OrderModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      previewVisible: false,
       previewImage: '',
     };
 
@@ -63,15 +62,11 @@ class OrderModal extends Component {
   closeModal() {
     const { form, close } = this.props;
     form.resetFields();
-    close(false);
+    close();
     // 清理skuTable
     setTimeout(() => {
       this.clearSkuValue();
     }, 100);
-  }
-
-  handleCancel() {
-    this.setState({ previewVisible: false });
   }
 
   checkPhone(rules, value, callback) {

@@ -30,7 +30,7 @@ class ErpOrder extends Component {
   handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
     console.log(this);
-    const { currentPageSize, currentPage } = this.props;
+    const { currentPageSize } = this.props;
     // 清除多选
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFields((err, fieldsValue) => {
@@ -44,7 +44,7 @@ class ErpOrder extends Component {
           type: 'order/queryErpOrderList',
           payload: {
             ...fieldsValue,
-            pageIndex: typeof page === 'number' ? page : currentPage,
+            pageIndex: typeof page === 'number' ? page : 1,
             pageSize: pageSize || currentPageSize,
           },
         });
@@ -117,7 +117,7 @@ class ErpOrder extends Component {
     });
   }
   showModal(id, e) {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     const p = this;
     p.setState({
       modalVisible: true,
@@ -158,14 +158,14 @@ class ErpOrder extends Component {
         this.props.dispatch({
           type: 'order/lockErpOrder',
           payload: { id },
-          cb() { p.handleSubmit(); },
+          cb() { p._refreshData(); },
         });
         break;
       case 'release':
         this.props.dispatch({
           type: 'order/releaseInventory',
           payload: { id },
-          cb() { p.handleSubmit(); },
+          cb() { p._refreshData(); },
         });
         break;
       default: return false;
@@ -235,7 +235,7 @@ class ErpOrder extends Component {
   }
   render() {
     const p = this;
-    const { erpOrderList, erpOrderTotal, currentPageSize, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
+    const { erpOrderList, erpOrderTotal, currentPage, currentPageSize, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible, formInfo } = p.state;
 
@@ -372,6 +372,7 @@ class ErpOrder extends Component {
     ];
     const pagination = {
       total: erpOrderTotal,
+      current: currentPage,
       pageSize: currentPageSize,
       showSizeChanger: true,
       onChange(pageIndex) {

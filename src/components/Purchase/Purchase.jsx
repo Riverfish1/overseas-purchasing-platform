@@ -23,7 +23,7 @@ class Purchase extends Component {
 
   handleSubmit(e, page, pageSize) {
     const p = this;
-    const { currentPage, currentPageSize } = this.props;
+    const { currentPageSize } = this.props;
     if (e) e.preventDefault();
     p.setState({ taskDailyIds: [] }, () => {
       this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
@@ -42,7 +42,7 @@ class Purchase extends Component {
           type: 'purchase/queryPurchaseList',
           payload: {
             ...fieldsValue,
-            pageIndex: typeof page === 'number' ? page : currentPage,
+            pageIndex: typeof page === 'number' ? page : 1,
             pageSize: pageSize || currentPageSize,
           },
         });
@@ -87,7 +87,7 @@ class Purchase extends Component {
       cb() {
         if (list.length < 2 && currentPage > 1) {
           p.handleSubmit(null, currentPage - 1);
-        } else p.handleSubmit();
+        } else p.handleSubmit(null, currentPage);
       },
     });
   }
@@ -151,7 +151,7 @@ class Purchase extends Component {
 
   render() {
     const p = this;
-    const { form, list = [], total, purchaseValues = {}, buyer = [], dispatch } = p.props;
+    const { form, list = [], currentPage, total, purchaseValues = {}, buyer = [], dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { title } = p.state;
     const formItemLayout = {
@@ -184,9 +184,9 @@ class Purchase extends Component {
         width: 60,
         render(t) {
           switch (t) {
-            case 0: return '采购中';
-            case 1: return '已完成';
-            case -1: return '已取消';
+            case 0: return <font color="">采购中</font>;
+            case 1: return <font color="blue">已完成</font>;
+            case -1: return <font color="red">已取消</font>;
             default: return '-';
           }
         },
@@ -213,6 +213,7 @@ class Purchase extends Component {
 
     const paginationProps = {
       total,
+      current: currentPage,
       pageSize: 20,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);

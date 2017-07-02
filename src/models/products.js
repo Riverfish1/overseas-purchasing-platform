@@ -25,7 +25,7 @@ export default {
     productsTotal: 0,
     productsValues: {}, // 修改商品时的值
     currentPage: 1, // 默认页码
-    pageSize: 20,
+    currentPageSize: 20,
     tree: [], // 类目树
     searchValues: {},
     brands: [], // 品牌
@@ -47,7 +47,7 @@ export default {
     saveCurrentPage(state, { payload }) {
       return { ...state, currentPage: payload.pageIndex };
     },
-    savePageSize(state, { payload }) {
+    saveCurrentPageSize(state, { payload }) {
       return { ...state, pageSize: payload.pageSize };
     },
     saveSearchValues(state, { payload }) {
@@ -58,14 +58,10 @@ export default {
     },
   },
   effects: {
-    * addProducts({ payload }, { call, put }) { // 新建商品
+    * addProducts({ payload }, { call }) { // 新建商品
       const data = yield call(addProducts, { payload });
       if (data.success) {
         message.success('新增商品成功');
-        yield put({
-          type: 'queryItemList',
-          payload: {},
-        });
       }
     },
     * queryProduct({ payload }, { call, put }) { // 修改商品
@@ -87,27 +83,22 @@ export default {
         });
       }
     },
-    * updateProducts({ payload }, { call, put, select }) { // 修改商品
+    * updateProducts({ payload }, { call }) { // 修改商品
       const data = yield call(updateProducts, { payload });
       if (data.success) {
         message.success('修改商品成功');
-        const values = yield select(({ products }) => products.searchValues);
-        yield put({
-          type: 'queryItemList',
-          payload: { ...values },
-        });
       }
     },
     * queryItemList({ payload = {} }, { call, put, select }) { // 商品管理列表
       let pageIndex = yield select(({ products }) => products.currentPage);
-      let pageSize = yield select(({ products }) => products.pageSize);
+      let pageSize = yield select(({ products }) => products.currentPageSize);
       if (payload && payload.pageIndex) {
         pageIndex = payload.pageIndex;
         yield put({ type: 'saveCurrentPage', payload });
       }
       if (payload && payload.pageSize) {
         pageSize = payload.pageSize;
-        yield put({ type: 'savePageSize', payload });
+        yield put({ type: 'saveCurrentPageSize', payload });
       }
       const data = yield call(queryItemList, { payload: { ...payload, pageIndex, pageSize } });
       if (data.success) {
@@ -162,34 +153,25 @@ export default {
         });
       }
     },
-    * batchDelistingYouzan({ payload }, { call, put }) {
+    * batchDelistingYouzan({ payload, cb }, { call }) {
       const data = yield call(batchDelistingYouzan, { payload });
       if (data.success) {
         message.success('批量下架成功');
-        yield put({
-          type: 'queryItemList',
-          payload: {},
-        });
+        cb();
       }
     },
-    * batchListingYouzan({ payload }, { call, put }) {
+    * batchListingYouzan({ payload, cb }, { call }) {
       const data = yield call(batchListingYouzan, { payload });
       if (data.success) {
         message.success('批量上架成功');
-        yield put({
-          type: 'queryItemList',
-          payload: {},
-        });
+        cb();
       }
     },
-    * batchSynItemYouzan({ payload }, { call, put }) {
+    * batchSynItemYouzan({ payload, cb }, { call }) {
       const data = yield call(batchSynItemYouzan, { payload });
       if (data.success) {
         message.success('批量同步成功');
-        yield put({
-          type: 'queryItemList',
-          payload: {},
-        });
+        cb();
       }
     },
   },

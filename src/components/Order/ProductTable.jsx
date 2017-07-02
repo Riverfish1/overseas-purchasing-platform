@@ -212,7 +212,6 @@ class ProductTable extends Component {
         showQuickJumper: true,
         pageSizeOptions: ['20', '30', '50', '100'],
         onShowSizeChange(current, size) {
-          console.log(current, size);
           p.props.dispatch({
             type: 'sku/querySkuList',
             payload: {

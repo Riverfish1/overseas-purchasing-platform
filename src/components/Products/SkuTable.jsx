@@ -219,7 +219,6 @@ class SkuTable extends Component {
     const { form, parent, packageScales, scaleTypes } = this.props;
     const { getFieldDecorator } = form;
     const { skuData, batchSkuSort, batchSelected, previewImage, previewVisible, batchFileList } = this.state;
-    console.log(batchSelected);
     // 注册props
     if (!parent.clearSkuValue) parent.clearSkuValue = this.clearValue.bind(this);
     if (!parent.getSkuValue) parent.getSkuValue = this.getValue.bind(this);

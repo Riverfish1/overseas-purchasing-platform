@@ -22,7 +22,7 @@ class Order extends Component {
 
   handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
-    const { currentPageSize, currentPage } = this.props;
+    const { currentPageSize } = this.props;
     // 清除多选
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
@@ -36,7 +36,7 @@ class Order extends Component {
           type: 'order/queryOrderList',
           payload: {
             ...fieldsValue,
-            pageIndex: typeof page === 'number' ? page : currentPage,
+            pageIndex: typeof page === 'number' ? page : 1,
             pageSize: pageSize || currentPageSize,
           },
         });
@@ -67,9 +67,7 @@ class Order extends Component {
           dispatch({
             type: 'order/closeOrder',
             payload: { orderIds: JSON.stringify(checkId) },
-            cb() {
-              p.handleSubmit();
-            },
+            cb() { p.handleSubmit(); },
           });
         },
       });
@@ -88,10 +86,8 @@ class Order extends Component {
     });
   }
 
-  closeModal(modalVisible) {
-    this.setState({
-      modalVisible,
-    }, () => {
+  closeModal() {
+    this.setState({ modalVisible: false }, () => {
       this.props.dispatch({
         type: 'order/saveOrder',
         payload: {},
@@ -101,7 +97,7 @@ class Order extends Component {
   }
 
   handleProDetail(record, e) {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     const p = this;
     p.setState({
       visible: true,
@@ -114,7 +110,7 @@ class Order extends Component {
   }
 
   handleDelete(id, e) {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     const p = this;
     const { currentPage, orderList = [] } = this.props;
     this.props.dispatch({
@@ -123,7 +119,7 @@ class Order extends Component {
       cb() {
         if (orderList.length < 2 && currentPage > 1) {
           p.handleSubmit(null, currentPage - 1);
-        } else p.handleSubmit();
+        } else p.handleSubmit(null, currentPage);
       },
     });
   }
@@ -178,7 +174,7 @@ class Order extends Component {
 
   render() {
     const p = this;
-    const { form, dispatch, orderList = [], orderTotal, currentPageSize, orderValues = {}, agencyList = [], orderDetailList = [] } = p.props;
+    const { form, dispatch, currentPage, orderList = [], orderTotal, currentPageSize, orderValues = {}, agencyList = [], orderDetailList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { title, visible, modalVisible } = p.state;
     const formItemLayout = {
@@ -248,6 +244,7 @@ class Order extends Component {
 
     const listPaginationProps = {
       total: orderTotal,
+      current: currentPage,
       pageSize: currentPageSize,
       showSizeChanger: true,
       onChange(pageIndex) {

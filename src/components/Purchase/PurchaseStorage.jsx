@@ -41,7 +41,6 @@ class PurchaseStorage extends Component {
 
   handleSubmit(e, page) {
     if (e) e.preventDefault();
-    const { currentPage } = this.props;
     // 清除多选
     this.setState({ selectedRowKeys: [] }, () => {
       this.props.form.validateFieldsAndScroll((err, values) => {
@@ -60,7 +59,7 @@ class PurchaseStorage extends Component {
           type: 'purchaseStorage/queryPurchaseStorageList',
           payload: {
             ...values,
-            pageIndex: typeof page === 'number' ? page : currentPage,
+            pageIndex: typeof page === 'number' ? page : 1,
           },
         });
       });
@@ -96,7 +95,7 @@ class PurchaseStorage extends Component {
       cb() {
         if (list.length < 2 && currentPage > 1) {
           p.handleSubmit(null, currentPage - 1);
-        } else p.handleSubmit();
+        } else p.handleSubmit(null, currentPage);
       },
     });
   }
@@ -149,7 +148,7 @@ class PurchaseStorage extends Component {
 
   render() {
     const p = this;
-    const { form, dispatch, list = [], total, buyer = [], wareList = [], showModal, editInfo = {}, buyerTaskList = [], showBarcodeModal } = p.props;
+    const { form, dispatch, list = [], currentPage, total, buyer = [], wareList = [], showModal, editInfo = {}, buyerTaskList = [], showBarcodeModal } = p.props;
     const { selectedRowKeys, showDetail, data } = p.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
@@ -226,6 +225,7 @@ class PurchaseStorage extends Component {
 
     const paginationProps = {
       total,
+      current: currentPage,
       pageSize: 20,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);

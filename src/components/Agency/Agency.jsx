@@ -191,10 +191,11 @@ class Agency extends Component {
 }
 
 function mapStateToProps(state) {
-  const { list, typeList, total, agencyValues } = state.agency;
+  const { list, currentPage, typeList, total, agencyValues } = state.agency;
   return {
     list,
     typeList,
+    currentPage,
     total,
     agencyValues,
   };

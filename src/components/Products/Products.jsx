@@ -21,6 +21,7 @@ class Products extends Component {
 
   handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
+    const { currentPageSize } = this.props;
     // 清除多选
     this.setState({ checkId: [] }, () => {
       this.props.form.validateFieldsAndScroll((err, values) => {
@@ -36,15 +37,13 @@ class Products extends Component {
         });
         this.props.dispatch({
           type: 'products/queryItemList',
-          payload: { ...values, pageIndex: typeof page === 'number' ? page : 1, pageSize },
+          payload: {
+            ...values,
+            pageIndex: typeof page === 'number' ? page : 1,
+            pageSize: pageSize || currentPageSize,
+          },
         });
       });
-    });
-  }
-
-  addModal() {
-    this.setState({
-      modalVisible: true,
     });
   }
 
@@ -57,23 +56,19 @@ class Products extends Component {
     });
   }
 
-  closeModal(modalVisible) {
+  closeModal() {
     const { dispatch } = this.props;
-
-    this.setState({
-      modalVisible,
-    });
-
-    dispatch({
-      type: 'products/saveProductsValue',
-      payload: {},
+    this.setState({ modalVisible: false }, () => {
+      dispatch({
+        type: 'products/saveProductsValue',
+        payload: {},
+      });
+      this._refreshData();
     });
   }
 
   handleBigPic(value) {
-    this.setState({
-      previewImage: value,
-    });
+    this.setState({ previewImage: value });
   }
 
   batchAction(batchType) {
@@ -91,7 +86,13 @@ class Products extends Component {
       title: '确定',
       content: `确定要${action}id为${JSON.stringify(checkId)}的产品吗？`,
       onOk() {
-        p.props.dispatch({ type, payload: { itemIds: JSON.stringify(checkId) } });
+        p.props.dispatch({
+          type,
+          payload: { itemIds: JSON.stringify(checkId) },
+          cb() {
+            p._refreshData();
+          },
+        });
       },
     });
   }
@@ -132,7 +133,8 @@ class Products extends Component {
 
   render() {
     const p = this;
-    const { form, currentPage, pageSize, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
+    const { form, currentPage, currentPageSize, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
+    console.log(productsValues);
     const { getFieldDecorator, resetFields } = form;
     const { previewImage } = this.state;
     const formItemLayout = {
@@ -233,12 +235,11 @@ class Products extends Component {
       showSizeChanger: true,
       pageSizeOptions: ['20', '50', '100', '200', '500'],
       onShowSizeChange(current, size) {
-        console.log(current, size);
-        p.handleSubmit(null, current, size);
+        p.handleSubmit(null, 1, size);
       },
       current: currentPage,
       onChange(pageIndex) {
-        p.handleSubmit(null, pageIndex, pageSize);
+        p.handleSubmit(null, pageIndex, currentPageSize);
       },
     };
 
@@ -327,7 +328,7 @@ class Products extends Component {
         </Form>
         <Row className="operBtn">
           <Col>
-            <Button type="primary" style={{ float: 'left' }} size="large" onClick={this.addModal.bind(this)}>添加商品</Button>
+            <Button type="primary" style={{ float: 'left' }} size="large" onClick={() => this.setState({ modalVisible: true })}>添加商品</Button>
             <Button type="primary" style={{ float: 'right', marginLeft: 10 }} disabled={isNotSelected} size="large" onClick={p.batchAction.bind(p, 'syn')}>批量同步</Button>
             <Button type="primary" style={{ float: 'right', marginLeft: 10 }} disabled={isNotSelected} size="large" onClick={p.batchAction.bind(p, 'onSell')}>批量上架</Button>
             <Button type="primary" style={{ float: 'right', marginLeft: 10 }} disabled={isNotSelected} size="large" onClick={p.batchAction.bind(p, 'offSell')}>批量下架</Button>
@@ -360,13 +361,13 @@ class Products extends Component {
 }
 
 function mapStateToProps(state) {
-  const { productsList, productsTotal, productsValues, brands, tree, currentPage, pageSize } = state.products;
+  const { productsList, productsTotal, productsValues, brands, tree, currentPage, currentPageSize } = state.products;
   return {
     productsList,
     productsTotal,
     productsValues,
     currentPage,
-    pageSize,
+    currentPageSize,
     brands,
     tree,
   };

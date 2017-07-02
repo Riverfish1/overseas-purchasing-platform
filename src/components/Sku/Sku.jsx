@@ -13,7 +13,6 @@ class Sku extends Component {
     super();
     this.state = {
       modalVisible: false,
-      previewVisible: false,
       previewImage: '',
       lockedNumGroup: {},
       lockedPopoverVisible: {},
@@ -22,11 +21,12 @@ class Sku extends Component {
 
   handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
+    const { skuPageSize } = this.props;
     this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) return;
       this.props.dispatch({
         type: 'sku/querySkuList',
-        payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1, pageSize },
+        payload: { ...fieldsValue, pageIndex: typeof page === 'number' ? page : 1, pageSize: pageSize || skuPageSize },
       });
     });
   }
@@ -60,10 +60,6 @@ class Sku extends Component {
     });
   }
 
-  handleCancel() {
-    this.setState({ previewVisible: false });
-  }
-
   closeModal(modalVisible) {
     this.setState({
       modalVisible,
@@ -79,7 +75,6 @@ class Sku extends Component {
 
   handleBigPic(value) {
     this.setState({
-      previewVisible: true,
       previewImage: value,
     });
   }
@@ -133,7 +128,7 @@ class Sku extends Component {
 
   render() {
     const p = this;
-    const { skuList = {}, skuTotal, skuPageSize, currentPageSkuIndex, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
+    const { skuList = {}, skuTotal, currentPageSkuIndex, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
     const { previewImage, lockedPopoverVisible } = this.state;
     console.log(lockedPopoverVisible);
     const { getFieldDecorator } = form;
@@ -237,12 +232,11 @@ class Sku extends Component {
       showSizeChanger: true,
       pageSizeOptions: ['20', '50', '100', '200', '500'],
       onShowSizeChange(current, size) {
-        console.log(current, size);
-        p.handleSubmit(null, current, size);
+        p.handleSubmit(null, 1, size);
       },
       current: currentPageSkuIndex,
       onChange(pageIndex) {
-        p.handleSubmit(null, pageIndex, skuPageSize);
+        p.handleSubmit(null, pageIndex);
       },
     };
 
@@ -343,7 +337,7 @@ class Sku extends Component {
 }
 
 function mapStateToProps(state) {
-  const { skuList, skuTotal, currentPageSkuIndex, skuData, packageScales, skuPageSize } = state.sku;
+  const { skuList, skuTotal, skuPageSize, currentPageSkuIndex, skuData, packageScales } = state.sku;
   const { brands, productsList, tree } = state.products;
   return {
     skuList,

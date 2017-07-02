@@ -16,9 +16,10 @@ class DeliveryModal extends Component {
       checkId: [],
     };
   }
-  componentWillReceiveProps({ checkId }) {
-    console.log(checkId);
-    if (checkId && firstLoad) {
+  componentWillReceiveProps(...args) {
+    console.log(args, firstLoad);
+    const { checkId, visible } = args[0];
+    if (checkId && visible && firstLoad) {
       this.setState({ checkId });
       firstLoad = false;
     }
@@ -48,6 +49,7 @@ class DeliveryModal extends Component {
   handleCancel() {
     const { form, closeModal } = this.props;
     form.resetFields();
+    firstLoad = true;
     closeModal();
   }
   checkPhone(rules, value, cb) {
@@ -67,7 +69,7 @@ class DeliveryModal extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     };
-
+    console.log(this.state.checkId);
     const columns = [
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 120 },
       { title: 'SKU编号', dataIndex: 'skuCode', key: 'skuCode', width: 120 },

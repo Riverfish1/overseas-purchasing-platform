@@ -148,6 +148,7 @@ class DeliveryModal extends Component {
           return name;
         },
       },
+      { title: '货架号', dataIndex: 'positionNo', key: 'positionNo', width: 100, render(t) { return t ? t.replace(/:/gi, ': ').split(',').map(w => <div>{w}</div>) : '-'; } },
     ];
     const rowSelection = {
       onChange(selectedRowKeys, selectedRows) {
@@ -176,7 +177,7 @@ class DeliveryModal extends Component {
           title={<font color="#00f" size="4">发货(将多个子订单合并成一个包裹)</font>}
           onOk={p.handleSubmit.bind(p)}
           onCancel={p.handleCancel.bind(p)}
-          width={900}
+          width={1000}
         >
           <Form>
             {data.info && <Row>

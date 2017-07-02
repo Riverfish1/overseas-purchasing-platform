@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, Popconfirm, DatePicker, Icon, message } from 'antd';
+import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, Popconfirm, DatePicker, Icon, message, Checkbox } from 'antd';
 
 import DeliveryModal from './component/DeliveryModal';
 import BatchDeliveryModal from './component/BatchDeliveryModal';
@@ -217,6 +217,22 @@ class ErpOrder extends Component {
       }
     });
   }
+  handleSelect(r, type, e) {
+    const checked = e.target.checked;
+    if (type === 'ALL') {
+      this.setState({ checkId: checked ? this.props.erpOrderList.map(el => el.id) : [] });
+    } else {
+      const checkId = this.state.checkId;
+      const newCheckId = [];
+      checkId.forEach((id) => {
+        if (id !== r.id) {
+          newCheckId.push(id);
+        }
+      });
+      if (checked) newCheckId.push(r.id);
+      this.setState({ checkId: newCheckId });
+    }
+  }
   render() {
     const p = this;
     const { erpOrderList, erpOrderTotal, currentPageSize, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
@@ -227,17 +243,36 @@ class ErpOrder extends Component {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
     };
-    const rowSelection = {
-      onChange(selectedRowKeys, selectedRows) {
-        const listId = [];
-        selectedRows.forEach((el) => {
-          listId.push(el.id);
-        });
-        p.setState({ checkId: listId });
-      },
-      selectedRowKeys: p.state.checkId,
-    };
+    // const rowSelection = {
+    //   onChange(selectedRowKeys, selectedRows) {
+    //     const listId = [];
+    //     selectedRows.forEach((el) => {
+    //       listId.push(el.id);
+    //     });
+    //     p.setState({ checkId: listId });
+    //   },
+    //   selectedRowKeys: p.state.checkId,
+    // };
     const columns = [
+      { title: (
+        <Checkbox
+          indeterminate={checkId.length > 0 && checkId.length !== erpOrderList.length}
+          checked={erpOrderList.length > 0 && checkId.length === erpOrderList.length}
+          onChange={p.handleSelect.bind(p, null, 'ALL')}
+        />),
+        dataIndex: 'selection',
+        key: 'selection',
+        width: 30,
+        fixed: 'left',
+        render(t, r) {
+          return (
+            <Checkbox
+              checked={checkId.indexOf(r.id) > -1}
+              onChange={p.handleSelect.bind(p, r, null)}
+            />
+          );
+        },
+      },
       { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 110 },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 110 },
       { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 50 },
@@ -548,7 +583,6 @@ class ErpOrder extends Component {
         />
         <Table
           columns={columns}
-          rowSelection={rowSelection}
           dataSource={erpOrderList}
           rowKey={r => r.id}
           pagination={pagination}

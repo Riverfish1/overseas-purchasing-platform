@@ -13,7 +13,10 @@ const Option = Select.Option;
 class Inventory extends Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      sortField: null,
+      sortOrder: null,
+    };
   }
   handleSubmit(e, page) {
     if (e) e.preventDefault();
@@ -25,9 +28,15 @@ class Inventory extends Component {
       const upc = values.upc;
       const itemName = values.itemName;
       const positionNo = values.positionNo;
+
+      const payload = { warehouseId, skuCode, upc, itemName, positionNo, pageIndex: typeof page === 'number' ? page : 1 };
+
+      if (this.state.sortField) payload.orderBy = this.state.sortField;
+      if (this.state.sortOrder) payload.sort = this.state.sortOrder.match('asc') ? 'asc' : 'desc';
+
       dispatch({
         type: 'inventory/queryList',
-        payload: { warehouseId, skuCode, upc, itemName, positionNo, pageIndex: typeof page === 'number' ? page : 1 },
+        payload,
       });
     });
   }
@@ -49,9 +58,22 @@ class Inventory extends Component {
     }
     return null;
   }
+  handleTableChange(pagination, filters, sorter) {
+    const { sortField, sortOrder } = this.state;
+    const { field, order } = sorter;
+    if (field !== sortField || order !== sortOrder) {
+      if (field === undefined && order === undefined && sortField === null && sortOrder === null) {
+        // do nothing.
+      } else {
+        this.setState({ sortField: field || null, sortOrder: order || null }, () => {
+          this.handleSubmit(null, this.props.currentPage);
+        });
+      }
+    }
+  }
   render() {
     const p = this;
-    const { list = [], total, form, dispatch, wareList = [] } = this.props;
+    const { list = [], total, form, dispatch, wareList = [], currentPage } = this.props;
     const { getFieldDecorator, resetFields } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -80,11 +102,11 @@ class Inventory extends Component {
       { title: '颜色', key: 'color', dataIndex: 'color', width: 80 },
       { title: '尺寸', key: 'scale', dataIndex: 'scale', width: 80 },
       { title: '可售库存', key: 'totalAvailableInv', dataIndex: 'totalAvailableInv', width: 80 },
-      { title: '现货库存', key: 'inventory', dataIndex: 'inventory', width: 80 },
-      { title: '现货占用', key: 'lockedInv', dataIndex: 'lockedInv', width: 80 },
+      { title: '现货库存', key: 'inventory', dataIndex: 'inventory', sorter: true, width: 80 },
+      { title: '现货占用', key: 'lockedInv', dataIndex: 'lockedInv', sorter: true, width: 80 },
       // { title: '虚拟库存', key: 'virtualInv', dataIndex: 'virtualInv' },
-      { title: '在途库存', key: 'transInv', dataIndex: 'transInv', width: 80 },
-      { title: '在途占用', key: 'lockedTransInv', dataIndex: 'lockedTransInv', width: 80 },
+      { title: '在途库存', key: 'transInv', dataIndex: 'transInv', sorter: true, width: 80 },
+      { title: '在途占用', key: 'lockedTransInv', dataIndex: 'lockedTransInv', sorter: true, width: 80 },
       { title: '货架号', key: 'positionNo', dataIndex: 'positionNo', width: 60 },
       { title: '操作',
         key: 'oper',
@@ -103,6 +125,7 @@ class Inventory extends Component {
     const paginationProps = {
       total,
       pageSize: 20,
+      current: currentPage,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
       },
@@ -179,6 +202,7 @@ class Inventory extends Component {
               columns={columns}
               pagination={paginationProps}
               rowKey={record => record.id}
+              onChange={this.handleTableChange.bind(this)}
               scroll={{ y: 500, x: 1500 }}
             />
           </Col>
@@ -188,8 +212,8 @@ class Inventory extends Component {
 }
 
 function mapStateToProps(state) {
-  const { list, total, wareList } = state.inventory;
-  return { list, total, wareList };
+  const { list, total, wareList, currentPage } = state.inventory;
+  return { list, total, wareList, currentPage };
 }
 
 export default connect(mapStateToProps)(Form.create()(Inventory));

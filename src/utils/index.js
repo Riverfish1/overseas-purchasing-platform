@@ -49,6 +49,8 @@ export default () => {
     const data = pageStorage.getItem(`airuhua_${pathname}`);
     if (data) {
       setTimeout(() => {
+        if (data.state.sortField) data.state.sortField = null;
+        if (data.state.sortOrder) data.state.sortOrder = null;
         _this.setState(data.state);
         _this.props.form.setFieldsValue(data.search);
       }, 0);

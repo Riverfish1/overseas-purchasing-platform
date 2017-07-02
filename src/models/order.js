@@ -256,7 +256,7 @@ export default {
       if (data.success) callback(data);
       else {
         message.destroy();
-        callback(data.msg);
+        callback(data);
       }
     },
     * splitOrder({ payload, cb }, { call }) {

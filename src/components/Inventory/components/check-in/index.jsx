@@ -16,7 +16,7 @@ export default class CheckIn extends Component {
     });
   }
   submit() {
-    const { record, form } = this.props;
+    const { record, form, handleSubmit, page } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
       const positionNo = values.num;
@@ -25,6 +25,7 @@ export default class CheckIn extends Component {
       this.props.dispatch({
         type: 'inventory/checkIn',
         payload: { positionNo, quantity, skuId: record.skuId, warehouseId: record.warehouseId },
+        cb() { handleSubmit(null, page); },
       });
     });
   }

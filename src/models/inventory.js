@@ -107,25 +107,25 @@ export default {
         yield put({ type: 'queryWareList', payload: {} });
       }
     },
-    * transTo({ payload }, { call, put }) {
+    * transTo({ payload, cb }, { call }) {
       const data = yield call(transTo, { payload });
       if (data.success) {
         message.success('操作成功');
-        yield put({ type: 'queryList', payload: {} });
+        cb();
       }
     },
-    * checkIn({ payload }, { call, put }) {
+    * checkIn({ payload, cb }, { call }) {
       const data = yield call(checkIn, { payload });
       if (data.success) {
         message.success('操作成功');
-        yield put({ type: 'queryList', payload: {} });
+        cb();
       }
     },
-    * checkOut({ payload }, { call, put }) {
+    * checkOut({ payload, cb }, { call }) {
       const data = yield call(checkOut, { payload });
       if (data.success) {
         message.success('操作成功');
-        yield put({ type: 'queryList', payload: {} });
+        cb();
       }
     },
     * queryInoutList({ payload = {} }, { call, put, select }) {

@@ -81,7 +81,11 @@ class ProductTable extends Component {
       quantity: '',
     };
     skuData.push(newItem);
-    this.setState({ skuData });
+    this.setState({ skuData }, () => {
+      setTimeout(() => {
+        this[`r_${newId}_skuCode_dom`].refs.input.click();
+      }, 0);
+    });
   }
 
   handleDelete(key) {

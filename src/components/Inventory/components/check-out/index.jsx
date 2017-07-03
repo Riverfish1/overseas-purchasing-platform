@@ -15,7 +15,7 @@ export default class CheckOut extends Component {
     this.setState({ visible: !this.state.visible, quantity: 1, showError: false });
   }
   submit() {
-    const { record } = this.props;
+    const { record, handleSubmit, page } = this.props;
     const { quantity } = this.state;
     if (!quantity) {
       this.setState({ showError: true });
@@ -25,6 +25,7 @@ export default class CheckOut extends Component {
     this.props.dispatch({
       type: 'inventory/checkOut',
       payload: { quantity, inventoryAreaId: record.id },
+      cb() { handleSubmit(null, page); },
     });
   }
   render() {

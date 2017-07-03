@@ -65,14 +65,11 @@ export default {
     },
   },
   effects: {
-    * lockVirtualInv({ payload }, { call, put }) { // 新建SKU
+    * lockVirtualInv({ payload, cb }, { call }) { // 新建SKU
       const data = yield call(lockVirtualInv, { payload });
       if (data.success) {
         message.success('锁定库存成功');
-        yield put({
-          type: 'querySkuList',
-          payload: {},
-        });
+        cb();
       }
     },
     * addSku({ payload }, { call }) { // 新建SKU

@@ -16,7 +16,7 @@ export default class TransTo extends Component {
     });
   }
   submit() {
-    const { record, form } = this.props;
+    const { record, form, handleSubmit, page } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
       const positionNo = values.no;
@@ -25,6 +25,7 @@ export default class TransTo extends Component {
       this.props.dispatch({
         type: 'inventory/transTo',
         payload: { positionNo, toTrans, inventoryAreaId: record.id },
+        cb() { handleSubmit(null, page); },
       });
     });
   }

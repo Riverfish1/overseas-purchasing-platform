@@ -79,6 +79,8 @@ class Sku extends Component {
   }
 
   updateLockedSku(record) {
+    const p = this;
+    const { skuPageSize, currentPageSkuIndex } = this.props;
     const { lockedNumGroup } = this.state;
     const num = lockedNumGroup[record.id];
     if (!num) {
@@ -95,6 +97,7 @@ class Sku extends Component {
           itemId: record.itemId,
           id: record.id,
         },
+        cb() { p.handleSubmit(null, currentPageSkuIndex, skuPageSize); },
       });
     });
   }

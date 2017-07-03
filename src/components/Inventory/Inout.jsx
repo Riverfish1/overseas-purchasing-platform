@@ -38,8 +38,8 @@ class Inout extends Component {
     };
     const columns = [
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 100 },
-      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 200 },
-      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 100 },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 150 },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 80 },
       { title: 'SKU图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
@@ -55,9 +55,9 @@ class Inout extends Component {
           );
         },
       },
-      { title: '操作人', dataIndex: 'userCreate', key: 'userCreate', width: 80, render(text) { return text || '-'; } },
+      { title: '操作人', dataIndex: 'userCreate', key: 'userCreate', width: 70, render(text) { return text || '-'; } },
       { title: '操作时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 100, render(text) { return text || '-'; } },
-      { title: '仓库名称', dataIndex: 'warehouseName', key: 'warehouseName', width: 80, render(text) { return text || '-'; } },
+      { title: '仓库名称', dataIndex: 'warehouseName', key: 'warehouseName', width: 70, render(text) { return text || '-'; } },
       { title: '货架号', dataIndex: 'positionNo', key: 'positionNo', width: 50, render(text) { return text || '-'; } },
       { title: '数量', dataIndex: 'quantity', key: 'quantity', width: 50, render(text) { return text || '-'; } },
       { title: '操作类型',
@@ -141,6 +141,7 @@ class Inout extends Component {
                     <Option value={2}>在途入库</Option>
                     <Option value={3}>库存盘入</Option>
                     <Option value={4}>库存盘出</Option>
+                    <Option value={5}>采购在途</Option>
                   </Select>)}
               </FormItem>
             </Col>

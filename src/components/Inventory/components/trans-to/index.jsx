@@ -19,12 +19,12 @@ export default class TransTo extends Component {
     const { record, form, handleSubmit, page } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
-      const positionNo = values.no;
+      const no = values.no;
       const toTrans = values.toTrans;
       this.toggleVisible();
       this.props.dispatch({
         type: 'inventory/transTo',
-        payload: { positionNo, toTrans, inventoryAreaId: record.id },
+        payload: { positionNo: no, toTrans, inventoryAreaId: record.id },
         cb() { handleSubmit(null, page); },
       });
     });

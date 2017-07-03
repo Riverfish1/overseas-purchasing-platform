@@ -3,7 +3,7 @@ import { Form, Input, Button, Popover, InputNumber } from 'antd';
 
 const FormItem = Form.Item;
 
-export default class CheckIn extends Component {
+class CheckIn extends Component {
   constructor() {
     super();
     this.state = {
@@ -12,20 +12,17 @@ export default class CheckIn extends Component {
   }
   toggleVisible() {
     this.setState({ visible: !this.state.visible }, () => {
-      setTimeout(() => { this.props.form.resetFields(['quantity', 'num']); }, 0);
+      setTimeout(() => { this.props.form.resetFields(['quantity', 'positionNo']); }, 0);
     });
   }
   submit() {
     const { record, form, handleSubmit, page } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
-      const num = values.num;
-      console.log(num);
-      const quantity = values.quantity;
       this.toggleVisible();
       this.props.dispatch({
         type: 'inventory/checkIn',
-        payload: { positionNo: num, quantity, skuId: record.skuId, warehouseId: record.warehouseId },
+        payload: { ...values, skuId: record.skuId, warehouseId: record.warehouseId },
         cb() { handleSubmit(null, page); },
       });
     });
@@ -54,7 +51,7 @@ export default class CheckIn extends Component {
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 17 }}
           >
-            {getFieldDecorator('num', {
+            {getFieldDecorator('positionNo', {
               initialValue: record.positionNo,
               rules: [{ required: true, message: '请输入' }],
             })(
@@ -73,3 +70,5 @@ export default class CheckIn extends Component {
     );
   }
 }
+
+export default Form.create()(CheckIn);

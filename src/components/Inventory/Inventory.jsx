@@ -132,8 +132,8 @@ class Inventory extends Component {
         render(text, record) {
           return (
             <div>
-              <TransTo dispatch={dispatch} record={record} form={form} handleSubmit={p.handleSubmit.bind(p)} page={currentPage} />
-              <CheckIn dispatch={dispatch} record={record} form={form} handleSubmit={p.handleSubmit.bind(p)} page={currentPage} />
+              <TransTo dispatch={dispatch} record={record} handleSubmit={p.handleSubmit.bind(p)} page={currentPage} />
+              <CheckIn dispatch={dispatch} record={record} handleSubmit={p.handleSubmit.bind(p)} page={currentPage} />
               <CheckOut dispatch={dispatch} record={record} handleSubmit={p.handleSubmit.bind(p)} page={currentPage} />
             </div>
           );

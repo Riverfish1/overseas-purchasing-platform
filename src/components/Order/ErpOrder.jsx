@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Form, Table, Row, Col, Input, Select, Button, Modal, Popover, Popconfirm, DatePicker, Icon, message, Checkbox } from 'antd';
 
-import DeliveryModal from './component/DeliveryModal';
-import BatchDeliveryModal from './component/BatchDeliveryModal';
-import ErpOrderModal from './ErpOrderModal';
-import SplitOrder from './component/SplitOrder';
-import RecordList from './component/RecordList';
+import DeliveryModal from './component/DeliveryModal'; // 发货
+import BatchDeliveryModal from './component/BatchDeliveryModal'; // 批量发货
+import ErpOrderModal from './ErpOrderModal'; //
+import SplitOrder from './component/SplitOrder'; // 拆分订单
+import RecordList from './component/RecordList'; // 记录
+import ReturnOrderModal from './component/ReturnOrderModal'; // 退单
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -22,6 +23,8 @@ class ErpOrder extends Component {
       checkId: [], // 发货时传的ID
       needSplitId: '',
       deliveryModalVisible: false,
+      returnModalVisible: false,
+      returnType: '',
       type: 'add', // 发货的判断
       batchDeliveryVisible: false,
       formInfo: '',
@@ -151,6 +154,36 @@ class ErpOrder extends Component {
       this._refreshData();
     });
   }
+  showReturnOrderModal(type, r) {
+    switch (type) {
+      case 'check':
+        this.setState({ returnModalVisible: true, returnType: '查看' }, () => {
+          this.props.dispatch({
+            type: 'order/queryReturnOrderById',
+            payload: { id: r.id },
+          });
+        });
+        break;
+      case 'add':
+        this.setState({ returnModalVisible: true, returnType: '新增' }, () => {
+          this.props.dispatch({
+            type: 'order/saveReturnValues',
+            payload: { data: r },
+          });
+        });
+        break;
+      default: return false;
+    }
+  }
+  closeReturnModal() {
+    this.setState({ returnModalVisible: false }, () => {
+      this.props.dispatch({
+        type: 'order/saveReturnValues',
+        payload: {},
+      });
+      this._refreshData();
+    });
+  }
   handleInventory(type, id) {
     const p = this;
     switch (type) {
@@ -235,10 +268,10 @@ class ErpOrder extends Component {
   }
   render() {
     const p = this;
-    const { erpOrderList, erpOrderTotal, currentPage, currentPageSize, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [] } = p.props;
+    const { erpOrderList, erpOrderTotal, currentPage, currentPageSize, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [], returnOrderValues = {} } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible, formInfo } = p.state;
-
+    const { deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible, formInfo, returnModalVisible, returnType } = p.state;
+    console.log(returnOrderValues);
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -359,13 +392,16 @@ class ErpOrder extends Component {
               {r.status === 0 && <a href="javascript:void(0)" onClick={p.showModal.bind(p, r.id)} >修改</a>}
               {r.status === 0 && [0, 1, 2, 9].indexOf(r.stockStatus) > -1 &&
               <Popconfirm title="确定分配库存吗？" onConfirm={p.handleInventory.bind(p, 'lock', r.id)}>
-                <a href="javascript:void(0)" style={{ marginLeft: '10px' }} >分配库存</a>
+                <a href="javascript:void(0)" style={{ marginLeft: 10 }} >分配库存</a>
               </Popconfirm>}
               {r.status === 0 && [0, 9].indexOf(r.stockStatus) === -1 &&
               <Popconfirm title="确定释放库存吗？" onConfirm={p.handleInventory.bind(p, 'release', r.id)}>
-                <a href="javascript:void(0)" style={{ marginLeft: '10px' }} >释放库存</a>
+                <a href="javascript:void(0)" style={{ marginLeft: 10 }} >释放库存</a>
               </Popconfirm>}
-              {r.status !== 0 && <span style={{ color: '#ccc' }}>暂无</span>}
+              {r.erpReturnOrderId ?
+                <a href="javascript:void(0)" style={{ marginLeft: 10 }} onClick={p.showReturnOrderModal.bind(p, 'check', r)}>查看退单</a> :
+                <a href="javascript:void(0)" style={{ marginLeft: 10 }} onClick={p.showReturnOrderModal.bind(p, 'add', r)}>退单</a>}
+              {r.status !== 0 && <span style={{ color: '#ccc', marginLeft: 10 }}>暂无</span>}
             </div>);
         },
       },
@@ -598,13 +634,20 @@ class ErpOrder extends Component {
           title={title}
           dispatch={dispatch}
         />
+        <ReturnOrderModal
+          visible={returnModalVisible}
+          close={this.closeReturnModal.bind(this)}
+          data={returnOrderValues}
+          returnType={returnType}
+          dispatch={dispatch}
+        />
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { erpOrderList, erpOrderTotal, erpCurrentPage, erpCurrentPageSize, erpOrderDetail, erpOrderValues, deliveryCompanyList } = state.order;
+  const { erpOrderList, erpOrderTotal, erpCurrentPage, erpCurrentPageSize, erpOrderDetail, erpOrderValues, deliveryCompanyList, returnOrderValues } = state.order;
   const { list } = state.agency;
   const { wareList } = state.inventory;
   return {
@@ -617,6 +660,7 @@ function mapStateToProps(state) {
     erpOrderValues,
     deliveryCompanyList,
     wareList,
+    returnOrderValues,
   };
 }
 

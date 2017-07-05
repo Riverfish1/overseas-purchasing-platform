@@ -13,6 +13,7 @@ export const backendCfg = {
   orderList: 'sale_outerorder',
   erpOrder: 'sale_erporder',
   shippingOrder: 'sale_shippingorder',
+  returnOrder: 'sale_erpreturnorder',
   purchase: 'purchase',
   purchaseList: 'purchase_task',
   purchaseStorage: 'purchase_storage',
@@ -51,6 +52,7 @@ export const routerCfg = {
   ORDER_LIST: 'orderList',
   ERP_ORDER: 'erpOrder',
   SHIPPING_ORDER: 'shippingOrder',
+  RETURN_ORDER: 'returnOrder',
   // 采购管理
   PURCHASE: 'purchase',
   PURCHASE_LIST: 'purchaseList',
@@ -93,6 +95,7 @@ export const originalNavigation = [
       { key: routerCfg.ORDER_LIST, name: '主订单管理' },
       { key: routerCfg.ERP_ORDER, name: '子订单管理' },
       { key: routerCfg.SHIPPING_ORDER, name: '发货单管理' },
+      { key: routerCfg.RETURN_ORDER, name: '退单管理' },
     ],
   },
   { key: routerCfg.PURCHASE, name: '采购管理', icon: 'appstore-o',

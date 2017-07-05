@@ -17,7 +17,6 @@ class DeliveryModal extends Component {
     };
   }
   componentWillReceiveProps(...args) {
-    console.log(args, firstLoad);
     const { checkId, visible } = args[0];
     if (checkId && visible && firstLoad) {
       this.setState({ checkId });
@@ -69,7 +68,6 @@ class DeliveryModal extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     };
-    console.log(this.state.checkId);
     const columns = [
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 120 },
       { title: 'SKU编号', dataIndex: 'skuCode', key: 'skuCode', width: 120 },

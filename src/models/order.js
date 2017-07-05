@@ -38,6 +38,11 @@ const queryDeliveryCompanyList = ({ payload }) => fetch.post('/haierp1/shippingO
 const lockErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/lockErpOrder', { data: payload }).catch(e => e);
 // 释放库存
 const releaseInventory = ({ payload }) => fetch.post('/haierp1/erpOrder/releaseInventory', { data: payload }).catch(e => e);
+// 退单管理
+const queryReturnOrderById = ({ payload }) => fetch.post('/haierp1/erpReturnOrder/queryById', { data: payload }).catch(e => e);
+const updateReturnOrder = ({ payload }) => fetch.post('/haierp1/erpReturnOrder/update', { data: payload }).catch(e => e);
+const addReturnOrder = ({ payload }) => fetch.post('/haierp1/erpReturnOrder/add', { data: payload }).catch(e => e);
+const queryReturnOrderList = ({ payload }) => fetch.post('/haierp1/erpReturnOrder/query', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'order',
@@ -61,6 +66,11 @@ export default {
     shippingOrderTotal: 1,
     // 物流公司列表
     deliveryCompanyList: [],
+    // 退单
+    returnOrderList: [],
+    returnCurrentPage: 1,
+    returnOrderTotal: 1,
+    returnOrderValues: {},
   },
   reducers: {
     saveOrderList(state, { payload }) {
@@ -103,6 +113,17 @@ export default {
     },
     saveDeliveryCompanyList(state, { payload }) {
       return { ...state, deliveryCompanyList: payload.data };
+    },
+    // 退货单
+    saveReturnCurrentPage(state, { payload }) {
+      return { ...state, returnCurrentPage: payload.pageIndex };
+    },
+    saveReturnOrderList(state, { payload }) {
+      return { ...state, returnOrderList: payload.data, returnOrderTotal: payload.totalCount };
+    },
+    saveReturnValues(state, { payload }) {
+      console.log(payload);
+      return { ...state, returnOrderValues: payload.data };
     },
   },
   effects: {
@@ -317,6 +338,44 @@ export default {
         });
       }
     },
+    // 退单管理
+    * queryReturnOrderList({ payload }, { call, put, select }) {
+      let pageIndex = yield select(({ order }) => order.returnCurrentPage);
+      if (payload && payload.pageIndex) {
+        pageIndex = payload.pageIndex;
+        yield put({ type: 'saveReturnCurrentPage', payload });
+      }
+      const data = yield call(queryReturnOrderList, { payload: { ...payload, pageIndex } });
+      if (data.success) {
+        yield put({
+          type: 'saveReturnOrderList',
+          payload: data,
+        });
+      }
+    },
+    * queryReturnOrderById({ payload, cb }, { call, put }) {
+      const data = yield call(queryReturnOrderById, { payload });
+      if (data.success) {
+        yield put({
+          type: 'saveReturnValues',
+          payload: data,
+        });
+      }
+    },
+    * addReturnOrder({ payload, cb }, { call }) {
+      const data = yield call(addReturnOrder, { payload });
+      if (data.success) {
+        message.success('退单增加完成');
+        if (cb) cb();
+      }
+    },
+    * updateReturnOrder({ payload, cb }, { call }) {
+      const data = yield call(updateReturnOrder, { payload });
+      if (data.success) {
+        message.success('修改退单完成');
+        if (cb) cb();
+      }
+    },
     exportPdf({ payload, success }) {
       window.open(`http://${location.host}/haierp1/shippingOrder/shippingOrderExportPdf?shippingOrderIds=${payload}`);
       if (success) {
@@ -356,6 +415,11 @@ export default {
           setTimeout(() => {
             dispatch({ type: 'queryShippingOrderList', payload: query });
             dispatch({ type: 'queryDeliveryCompanyList', payload: query });
+          }, 0);
+        }
+        if (pathname === '/sale/returnOrder' && !window.existCacheState('/sale/returnOrder')) {
+          setTimeout(() => {
+            dispatch({ type: 'queryReturnOrderList', payload: query });
           }, 0);
         }
       });

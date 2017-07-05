@@ -14,6 +14,7 @@ import Category from './components/Category/Category';
 import Order from './components/Order/Order';
 import ErpOrder from './components/Order/ErpOrder';
 import ShippingOrder from './components/Order/ShippingOrder';
+import ReturnOrder from './components/Order/ReturnOrder';
 import Purchase from './components/Purchase/Purchase'; // 采购管理
 import PurchaseStorage from './components/Purchase/PurchaseStorage'; // 采购入库管理
 import Journal from './components/Check/Journal'; // 流水管理
@@ -65,6 +66,7 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.SALE}/${routerCfg.ORDER_LIST}`} component={Order} />
         <Route path={`/${routerCfg.SALE}/${routerCfg.ERP_ORDER}`} component={ErpOrder} />
         <Route path={`/${routerCfg.SALE}/${routerCfg.SHIPPING_ORDER}`} component={ShippingOrder} />
+        <Route path={`/${routerCfg.SALE}/${routerCfg.RETURN_ORDER}`} component={ReturnOrder} />
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} component={Purchase} />
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_STORAGE}`} component={PurchaseStorage} />
         <Route path={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.JOURNAL}`} component={Journal} />

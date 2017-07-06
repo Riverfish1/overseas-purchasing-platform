@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Modal, Row, Col, Select, DatePicker } from 'antd';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -10,6 +12,12 @@ class ReturnOrderModal extends Component {
     const { form, dispatch, data, returnType } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
+      if (values.returnPayTime) {
+        values.returnPayTime = values.returnPayTime.format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (values.receiveTime) {
+        values.receiveTime = values.receiveTime.format('YYYY-MM-DD HH:mm:ss');
+      }
       if (returnType === '新增') {
         const { orderNo, outerOrderId, erpNo } = data;
         const erpOrderId = data.id;
@@ -41,7 +49,6 @@ class ReturnOrderModal extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     };
-    console.log(data);
     return (
       <div>
         <Modal
@@ -59,13 +66,14 @@ class ReturnOrderModal extends Component {
                   {...formItemLayout}
                 >
                   {getFieldDecorator('status', {
-                    initialValue: typeof data.status === 'number' ? data.status.toString : undefined,
+                    initialValue: typeof data.status === 'number' ? data.status.toString() : undefined,
                     rules: [{ required: true, message: '请选择' }],
                   })(
-                    <Select placeholder="请选择退单状态" allowClear disabled={returnType === '查看'}>
-                      <Option value="0" key="0">退单中</Option>
-                      <Option value="1" key="1">已退货</Option>
-                      <Option value="2" key="2">已退款</Option>
+                    <Select placeholder="请选择退单状态" allowClear>
+                      <Option key="0">退单中</Option>
+                      <Option key="1">已退货</Option>
+                      <Option key="2">已退款</Option>
+                      <Option key="-1">关闭</Option>
                     </Select>,
                   )}
                 </FormItem>
@@ -78,7 +86,7 @@ class ReturnOrderModal extends Component {
                   {getFieldDecorator('returnQuantity', {
                     initialValue: data.returnQuantity,
                   })(
-                    <Input placeholder="请输入" disabled={returnType === '查看'} />,
+                    <Input placeholder="请输入" />,
                   )}
                 </FormItem>
               </Col>
@@ -92,7 +100,7 @@ class ReturnOrderModal extends Component {
                   {getFieldDecorator('returnPrice', {
                     initialValue: data.returnPrice,
                   })(
-                    <Input placeholder="请输入" disabled={returnType === '查看'} />)}
+                    <Input placeholder="请输入" />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -104,9 +112,9 @@ class ReturnOrderModal extends Component {
                     initialValue: typeof (data.isGn) === 'number' ? data.isGn.toString() : '1',
                     rules: [{ required: true, message: '请选择' }],
                   })(
-                    <Select placeholder="请选择" allowClear disabled={returnType === '查看'}>
-                      <Option value="1" key="1">是</Option>
-                      <Option value="0" key="0">否</Option>
+                    <Select placeholder="请选择" allowClear>
+                      <Option key="1">是</Option>
+                      <Option key="0">否</Option>
                     </Select>,
                   )}
                 </FormItem>
@@ -119,9 +127,9 @@ class ReturnOrderModal extends Component {
                   {...formItemLayout}
                 >
                   {getFieldDecorator('receiveTime', {
-                    initialValue: data.receiveTime,
+                    initialValue: data.receiveTime && moment(data.receiveTime, 'YYYY-MM-DD HH:mm:ss'),
                   })(
-                    <DatePicker showTime disabled={returnType === '查看'} placeholder="请输入收货时间" style={{ width: '100%' }} />)}
+                    <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" placeholder="请输入收货时间" style={{ width: '100%' }} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -133,9 +141,9 @@ class ReturnOrderModal extends Component {
                     initialValue: typeof data.isCheckin === 'number' ? data.isCheckin.toString() : '1',
                     rules: [{ required: true, message: '请选择' }],
                   })(
-                    <Select placeholder="请选择" allowClear disabled={returnType === '查看'}>
-                      <Option value="1" key="1">是</Option>
-                      <Option value="0" key="0">否</Option>
+                    <Select placeholder="请选择" allowClear>
+                      <Option key="1">是</Option>
+                      <Option key="0">否</Option>
                     </Select>,
                   )}
                 </FormItem>
@@ -148,9 +156,9 @@ class ReturnOrderModal extends Component {
                   {...formItemLayout}
                 >
                   {getFieldDecorator('returnPayTime', {
-                    initialValue: data.returnPayTime,
+                    initialValue: data.returnPayTime && moment(data.returnPayTime, 'YYYY-MM-DD HH:mm:ss'),
                   })(
-                    <DatePicker disabled={returnType === '查看'} placeholder="请输入退款时间" style={{ width: '100%' }} showTime />,
+                    <DatePicker placeholder="请输入退款时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} showTime />,
                   )}
                 </FormItem>
               </Col>
@@ -163,12 +171,12 @@ class ReturnOrderModal extends Component {
                     initialValue: data.returnReason,
                     rules: [{ required: true, message: '请选择' }],
                   })(
-                    <Select placeholder="请选择退单原因" disabled={returnType === '查看'} >
-                      <Option value="发错货">发错货</Option>
-                      <Option value="多发货">多发货</Option>
-                      <Option value="质量问题">质量问题</Option>
-                      <Option value="尺码问题">尺码问题</Option>
-                      <Option value="其他">其他</Option>
+                    <Select placeholder="请选择退单原因" allowClear>
+                      <Option key="发错货">发错货</Option>
+                      <Option key="多发货">多发货</Option>
+                      <Option key="质量问题">质量问题</Option>
+                      <Option key="尺码问题">尺码问题</Option>
+                      <Option key="其他">其他</Option>
                     </Select>,
                   )}
                 </FormItem>
@@ -177,13 +185,13 @@ class ReturnOrderModal extends Component {
             <Row>
               <Col span={12}>
                 <FormItem
-                  label="退单原因"
+                  label="退单原因详情"
                   {...formItemLayout}
                 >
                   {getFieldDecorator('returnReasonDetail', {
                     initialValue: data.returnReasonDetail,
                   })(
-                    <Input disabled={returnType === '查看'} type="textarea" placeholder="请输入退单原因详情" />,
+                    <Input type="textarea" placeholder="请输入退单原因详情" />,
                   )}
                 </FormItem>
               </Col>
@@ -195,7 +203,7 @@ class ReturnOrderModal extends Component {
                   {getFieldDecorator('remark', {
                     initialValue: data.remark,
                   })(
-                    <Input disabled={returnType === '查看'} type="textarea" placeholder="请输入备注详情" />,
+                    <Input type="textarea" placeholder="请输入备注详情" />,
                   )}
                 </FormItem>
               </Col>

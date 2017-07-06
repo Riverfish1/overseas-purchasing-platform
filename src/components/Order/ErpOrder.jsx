@@ -32,7 +32,6 @@ class ErpOrder extends Component {
   }
   handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
-    console.log(this);
     const { currentPageSize } = this.props;
     // 清除多选
     this.setState({ checkId: [] }, () => {
@@ -156,11 +155,11 @@ class ErpOrder extends Component {
   }
   showReturnOrderModal(type, r) {
     switch (type) {
-      case 'check':
-        this.setState({ returnModalVisible: true, returnType: '查看' }, () => {
+      case 'update':
+        this.setState({ returnModalVisible: true, returnType: '修改' }, () => {
           this.props.dispatch({
             type: 'order/queryReturnOrderById',
-            payload: { id: r.id },
+            payload: { id: r.erpReturnOrderId },
           });
         });
         break;
@@ -271,7 +270,6 @@ class ErpOrder extends Component {
     const { erpOrderList, erpOrderTotal, currentPage, currentPageSize, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [], returnOrderValues = {} } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible, formInfo, returnModalVisible, returnType } = p.state;
-    console.log(returnOrderValues);
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -399,7 +397,7 @@ class ErpOrder extends Component {
                 <a href="javascript:void(0)" style={{ marginLeft: 10 }} >释放库存</a>
               </Popconfirm>}
               {r.erpReturnOrderId ?
-                <a href="javascript:void(0)" style={{ marginLeft: 10 }} onClick={p.showReturnOrderModal.bind(p, 'check', r)}>查看退单</a> :
+                <a href="javascript:void(0)" style={{ marginLeft: 10 }} onClick={p.showReturnOrderModal.bind(p, 'update', r)}>修改退单</a> :
                 <a href="javascript:void(0)" style={{ marginLeft: 10 }} onClick={p.showReturnOrderModal.bind(p, 'add', r)}>退单</a>}
               {r.status !== 0 && <span style={{ color: '#ccc', marginLeft: 10 }}>暂无</span>}
             </div>);

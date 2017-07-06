@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Icon } from 'antd';
+import { Table, Input, DatePicker, Button, Row, Col, Select, Form, Icon, Popover } from 'antd';
 import ReturnOrderModal from './component/ReturnOrderModal';
 
 const FormItem = Form.Item;
@@ -30,7 +30,7 @@ class ReturnOrder extends Component {
         }
         delete fieldsValue.orderTime;
         this.props.dispatch({
-          type: 'order/queryOrderList',
+          type: 'order/queryReturnOrderList',
           payload: {
             ...fieldsValue,
             pageIndex: typeof page === 'number' ? page : 1,
@@ -91,32 +91,51 @@ class ReturnOrder extends Component {
     const columnsList = [
       { title: '主订单号', dataIndex: 'orderNo', key: 'orderNo', width: 120 },
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 120, render(text) { return text || '-'; } },
+      { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 100 },
+      { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 200 },
+      { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 100, render(text) { return text || '-'; } },
+      { title: 'sku图片',
+        dataIndex: 'skuPic',
+        key: 'skuPic',
+        width: 100,
+        render(text) {
+          if (!text) return '-';
+          const picList = JSON.parse(text).picList;
+          const t = picList.length ? picList[0].url : '';
+          return (
+            t ? <Popover title={null} content={<img role="presentation" src={t} style={{ width: 400 }} />}>
+              <img role="presentation" src={t} width={60} height={60} />
+            </Popover> : '-'
+          );
+        },
+      },
       { title: '退单原因', dataIndex: 'returnReason', key: 'returnReason', width: 80, render(text) { return text || '-'; } },
-      { title: '退单原因详情', dataIndex: 'returnReasonDetail', key: 'returnReasonDetail', width: 150, render(text) { return text ? text.slice(0, 10) : '-'; } },
+      { title: '退单原因详情', dataIndex: 'returnReasonDetail', key: 'returnReasonDetail', width: 130, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '状态',
         dataIndex: 'status',
         key: 'status',
-        width: 80,
+        width: 60,
         render(text) {
           switch (text) {
             case 0: return <font color="">退单中</font>;
             case 1: return <font color="chocolate">已退货</font>;
             case 2: return <font color="blue">已退款</font>;
+            case -1: return <font color="red">关闭</font>;
             default: return '-';
           }
         },
       },
       { title: '退货数量', dataIndex: 'returnQuantity', key: 'returnQuantity', width: 60, render(text) { return text || '-'; } },
       { title: '退款金额', dataIndex: 'returnPrice', key: 'returnPrice', width: 60, render(text) { return text || '-'; } },
-      { title: '是否国内退货', dataIndex: 'isGn', key: 'isGn', width: 80, render(text) { return text || '-'; } },
-      { title: '是否入库', dataIndex: 'isCheckin', key: 'isCheckin', width: 80, render(text) { return text || '-'; } },
-      { title: '收货时间', dataIndex: 'receiveTime', key: 'receiveTime', width: 120, render(text) { return text || '-'; } },
-      { title: '退款时间', dataIndex: 'returnPayTime', key: 'returnPayTime', width: 120, render(text) { return text || '-'; } },
-      { title: '备注', dataIndex: 'remark', key: 'remark', width: 80, render(text) { return text || '-'; } },
+      { title: '是否国内退货', dataIndex: 'isGn', key: 'isGn', width: 60, render(text) { return text === 1 ? '是' : '否'; } },
+      { title: '是否入库', dataIndex: 'isCheckin', key: 'isCheckin', width: 80, render(text) { return text === 1 ? '是' : '否'; } },
+      { title: '收货时间', dataIndex: 'receiveTime', key: 'receiveTime', width: 100, render(text) { return text || '-'; } },
+      { title: '退款时间', dataIndex: 'returnPayTime', key: 'returnPayTime', width: 100, render(text) { return text || '-'; } },
+      { title: '备注', dataIndex: 'remark', key: 'remark', width: 60, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
-        width: 150,
+        width: 60,
         fixed: 'right',
         render(text, record) {
           return (
@@ -229,7 +248,7 @@ class ReturnOrder extends Component {
               size="large"
               rowKey={record => record.id}
               pagination={listPaginationProps}
-              scroll={{ x: 1200, y: 500 }}
+              scroll={{ x: 1620, y: 500 }}
             />
           </Col>
         </Row>

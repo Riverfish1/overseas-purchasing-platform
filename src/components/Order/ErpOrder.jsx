@@ -106,21 +106,29 @@ class ErpOrder extends Component {
   handleCloseReason(value) {
     this.setState({ closeReason: value });
   }
-  closeErpOrder() { // 子订单关闭
+  closeErpOrder(type) { // 子订单关闭
     const p = this;
     console.log(p.state.closeReason);
     const { dispatch } = this.props;
-    dispatch({
-      type: 'order/closeErpOrder',
-      payload: {
-        orderIds: JSON.stringify(p.state.checkId),
-        closeReason: p.state.closeReason,
-        callback() {
-          p.setState({ checkId: [], closeModalVisible: false }); // 取消选择 checkId
-          p._refreshData();
-        },
-      },
-    });
+    switch (type) {
+      case 'save':
+        dispatch({
+          type: 'order/closeErpOrder',
+          payload: {
+            orderIds: JSON.stringify(p.state.checkId),
+            closeReason: p.state.closeReason,
+            callback() {
+              p.setState({ checkId: [], closeModalVisible: false }); // 取消选择 checkId
+              p._refreshData();
+            },
+          },
+        });
+        break;
+      case 'close':
+        p.setState({ closeModalVisible: false });
+        break;
+      default: return false;
+    }
   }
   showModal(id, e) {
     if (e) e.stopPropagation();
@@ -335,6 +343,7 @@ class ErpOrder extends Component {
           }
         },
       },
+      { title: '关闭理由', dataIndex: 'closeReason', key: 'closeReason', width: 50, render(t) { return t || '-'; } },
       {
         title: '备货状态',
         dataIndex: 'stockStatus',
@@ -579,10 +588,25 @@ class ErpOrder extends Component {
                   </Select>)}
               </FormItem>
             </Col>
+            <Col span="8">
+              <FormItem
+                label="关闭理由"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('closeReason', {})(
+                  <Select placeholder="请选择" allowClear>
+                    <Option key="退款">退款</Option>
+                    <Option key="做错单">做错单</Option>
+                    <Option key="其它">其它</Option>
+                  </Select>)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
             <Col span={16}>
               <FormItem
                 label="创建时间范围"
-                labelCol={{ span: 6 }}
+                labelCol={{ span: 3 }}
               >
                 {getFieldDecorator('orderTime', {})(<RangePicker />)}
               </FormItem>
@@ -601,13 +625,12 @@ class ErpOrder extends Component {
           <Button style={{ float: 'right', marginLeft: 10 }} type="primary" disabled={isNotSelected} size="large" onClick={p.replayAssign.bind(p)}>重分配库存</Button>
           <Popover
             title="关闭"
-            style={{ width: 200 }}
             trigger="click"
             visible={closeModalVisible}
             onVisibleChange={this.handleCloseModalVisible.bind(this)}
-            content={<div>
+            content={<div style={{ width: 200 }}>
               <Row>
-                <Col span="8">关闭理由：</Col>
+                <Col span="8" style={{ marginTop: 6 }}>关闭理由：</Col>
                 <Col span="16">
                   <Select placeholder="请选择" onChange={p.handleCloseReason.bind(p)} style={{ width: '100%' }} value={closeReason || undefined}>
                     <Option key="退款">退款</Option>
@@ -616,7 +639,10 @@ class ErpOrder extends Component {
                   </Select>
                 </Col>
               </Row>
-              <Row style={{ marginTop: 10 }}><Col><Button type="primary" size="small" onClick={p.closeErpOrder.bind(p)}>保存</Button></Col></Row>
+              <Row style={{ marginTop: 10 }}>
+                <Col style={{ float: 'left' }}><Button type="primary" size="small" onClick={p.closeErpOrder.bind(p, 'save')}>保存</Button></Col>
+                <Col style={{ float: 'right' }}><Button type="ghost" size="small" onClick={p.closeErpOrder.bind(p, 'close')}>关闭</Button></Col>
+              </Row>
             </div>}
           >
             <Button style={{ float: 'right', marginLeft: 10 }} disabled={isNotSelected} size="large">关闭</Button>

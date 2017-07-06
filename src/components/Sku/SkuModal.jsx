@@ -62,14 +62,15 @@ class SkuModal extends Component {
         dispatch({
           type: 'sku/updateSku',
           payload: { ...fieldsValue, id: modalValues.data.id, itemId: proSearchList.data ? proSearchList.data[0].id : modalValues.data.itemId },
+          cb() { p.closeModal(); },
         });
       } else {
         dispatch({
           type: 'sku/addSku',
           payload: { ...fieldsValue, itemId: proSearchList.data[0].id },
+          cb() { p.closeModal(); },
         });
       }
-      p.closeModal();
     });
   }
 

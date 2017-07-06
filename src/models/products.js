@@ -58,10 +58,11 @@ export default {
     },
   },
   effects: {
-    * addProducts({ payload }, { call }) { // 新建商品
+    * addProducts({ payload, cb }, { call }) { // 新建商品
       const data = yield call(addProducts, { payload });
       if (data.success) {
         message.success('新增商品成功');
+        cb();
       }
     },
     * queryProduct({ payload }, { call, put }) { // 修改商品
@@ -83,10 +84,11 @@ export default {
         });
       }
     },
-    * updateProducts({ payload }, { call }) { // 修改商品
+    * updateProducts({ payload, cb }, { call }) { // 修改商品
       const data = yield call(updateProducts, { payload });
       if (data.success) {
         message.success('修改商品成功');
+        cb();
       }
     },
     * queryItemList({ payload = {} }, { call, put, select }) { // 商品管理列表

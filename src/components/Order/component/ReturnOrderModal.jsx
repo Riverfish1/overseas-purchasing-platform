@@ -13,10 +13,10 @@ class ReturnOrderModal extends Component {
     form.validateFields((err, values) => {
       if (err) return;
       if (values.returnPayTime) {
-        values.returnPayTime = values.returnPayTime.format('YYYY-MM-DD HH:mm:ss');
+        values.returnPayTime = values.returnPayTime.format('YYYY-MM-DD');
       }
       if (values.receiveTime) {
-        values.receiveTime = values.receiveTime.format('YYYY-MM-DD HH:mm:ss');
+        values.receiveTime = values.receiveTime.format('YYYY-MM-DD');
       }
       if (returnType === '新增') {
         const { orderNo, outerOrderId, erpNo } = data;
@@ -127,9 +127,9 @@ class ReturnOrderModal extends Component {
                   {...formItemLayout}
                 >
                   {getFieldDecorator('receiveTime', {
-                    initialValue: data.receiveTime && moment(data.receiveTime, 'YYYY-MM-DD HH:mm:ss'),
+                    initialValue: data.receiveTime && moment(data.receiveTime, 'YYYY-MM-DD'),
                   })(
-                    <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" placeholder="请输入收货时间" style={{ width: '100%' }} />)}
+                    <DatePicker placeholder="请输入收货时间" style={{ width: '100%' }} />)}
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -156,9 +156,9 @@ class ReturnOrderModal extends Component {
                   {...formItemLayout}
                 >
                   {getFieldDecorator('returnPayTime', {
-                    initialValue: data.returnPayTime && moment(data.returnPayTime, 'YYYY-MM-DD HH:mm:ss'),
+                    initialValue: data.returnPayTime && moment(data.returnPayTime, 'YYYY-MM-DD'),
                   })(
-                    <DatePicker placeholder="请输入退款时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} showTime />,
+                    <DatePicker placeholder="请输入退款时间" style={{ width: '100%' }} />,
                   )}
                 </FormItem>
               </Col>

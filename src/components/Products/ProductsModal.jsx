@@ -107,14 +107,15 @@ class ProductsModal extends Component {
           dispatch({
             type: 'products/updateProducts',
             payload: { ...values, id: modalValues.data.id },
+            cb() { p.closeModal(); },
           });
         } else {
           dispatch({
             type: 'products/addProducts',
             payload: { ...values },
+            cb() { p.closeModal(); },
           });
         }
-        this.closeModal();
       });
     });
   }
@@ -151,6 +152,7 @@ class ProductsModal extends Component {
 
   checkEndDate(rules, value, cb) {
     const { getFieldValue } = this.props.form;
+    if (!value) cb('请选择');
     if (!getFieldValue('startDate') && value) cb('请先填写开始时间');
     cb();
   }
@@ -287,7 +289,7 @@ class ProductsModal extends Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={7}>
+                <Col span={9}>
                   <FormItem
                     label="商品名称"
                     {...formItemLayout}
@@ -328,7 +330,7 @@ class ProductsModal extends Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={7}>
+                <Col span={9}>
                   <FormItem
                     label="所属类目"
                     {...formItemLayout}
@@ -382,7 +384,7 @@ class ProductsModal extends Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={7}>
+                <Col span={9}>
                   <FormItem
                     label="币种"
                     {...formItemLayout}
@@ -423,21 +425,22 @@ class ProductsModal extends Component {
                   >
                     {getFieldDecorator('startDate', {
                       initialValue: (productData.startDateStr && moment(productData.startDateStr, 'YYYY-MM-DD')) || undefined,
+                      rules: [{ required: true, message: '请选择' }],
                     })(
                       <DatePicker format="YYYY-MM-DD" />,
                     )}
                   </FormItem>
                 </Col>
-                <Col span={7}>
+                <Col span={9}>
                   <FormItem
                     label="销售结束时间"
                     {...formItemLayout}
                   >
                     {getFieldDecorator('endDate', {
                       initialValue: (productData.endDateStr && moment(modalValues.data.endDateStr, 'YYYY-MM-DD')) || undefined,
-                      rules: [{ validator: this.checkEndDate.bind(this) }],
+                      rules: [{ required: true, validator: this.checkEndDate.bind(this) }],
                     })(
-                      <DatePicker format="YYYY-MM-DD" disabledDate={this.disabledEndDate.bind(this)} />,
+                      <DatePicker format="YYYY-MM-DD" disabledDate={this.disabledEndDate.bind(this)} style={{ width: '100%' }} />,
                     )}
                   </FormItem>
                 </Col>
@@ -469,7 +472,7 @@ class ProductsModal extends Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={7}>
+                <Col span={9}>
                   <FormItem
                     label="产地"
                     {...formItemLayout}
@@ -509,7 +512,7 @@ class ProductsModal extends Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={7}>
+                <Col span={9}>
                   <FormItem
                     label="发货方式"
                     {...formItemLayout}

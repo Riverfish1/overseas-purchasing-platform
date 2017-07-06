@@ -62,6 +62,16 @@ class ReturnOrderModal extends Component {
             <Row>
               <Col span={12}>
                 <FormItem
+                  label="商品名称"
+                  {...formItemLayout}
+                >
+                  {data.itemName}
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <FormItem
                   label="退单状态"
                   {...formItemLayout}
                 >

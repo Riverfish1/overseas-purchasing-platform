@@ -27,6 +27,8 @@ class ErpOrder extends Component {
       returnType: '',
       type: 'add', // 发货的判断
       batchDeliveryVisible: false,
+      closeModalVisible: false,
+      closeReason: undefined,
       formInfo: '',
     };
   }
@@ -98,23 +100,25 @@ class ErpOrder extends Component {
       },
     });
   }
+  handleCloseModalVisible() {
+    this.setState({ closeModalVisible: true, closeReason: undefined });
+  }
+  handleCloseReason(value) {
+    this.setState({ closeReason: value });
+  }
   closeErpOrder() { // 子订单关闭
     const p = this;
+    console.log(p.state.closeReason);
     const { dispatch } = this.props;
-    Modal.confirm({
-      title: '关闭',
-      content: '确定要关闭吗？',
-      onOk: () => {
-        dispatch({
-          type: 'order/closeErpOrder',
-          payload: {
-            orderIds: JSON.stringify(p.state.checkId),
-            callback() {
-              p.setState({ checkId: [] }); // 取消选择 checkId
-              p._refreshData();
-            },
-          },
-        });
+    dispatch({
+      type: 'order/closeErpOrder',
+      payload: {
+        orderIds: JSON.stringify(p.state.checkId),
+        closeReason: p.state.closeReason,
+        callback() {
+          p.setState({ checkId: [], closeModalVisible: false }); // 取消选择 checkId
+          p._refreshData();
+        },
       },
     });
   }
@@ -269,7 +273,7 @@ class ErpOrder extends Component {
     const p = this;
     const { erpOrderList, erpOrderTotal, currentPage, currentPageSize, erpOrderDetail, form, dispatch, agencyList = [], erpOrderValues = {}, deliveryCompanyList = [], wareList = [], returnOrderValues = {} } = p.props;
     const { getFieldDecorator, resetFields } = form;
-    const { deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible, formInfo, returnModalVisible, returnType } = p.state;
+    const { deliveryModalVisible, checkId, type, modalVisible, title, batchDeliveryVisible, formInfo, returnModalVisible, returnType, closeModalVisible, closeReason } = p.state;
     const formItemLayout = {
       labelCol: { span: 10 },
       wrapperCol: { span: 14 },
@@ -595,7 +599,28 @@ class ErpOrder extends Component {
           <Button style={{ float: 'left', marginRight: 10 }} type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>发货</Button>
           <Button style={{ float: 'left' }} type="primary" disabled={isNotSelected} size="large" onClick={p.showBatchDeliveryModal.bind(p)}>批量发货</Button>
           <Button style={{ float: 'right', marginLeft: 10 }} type="primary" disabled={isNotSelected} size="large" onClick={p.replayAssign.bind(p)}>重分配库存</Button>
-          <Button style={{ float: 'right', marginLeft: 10 }} disabled={isNotSelected} size="large" onClick={p.closeErpOrder.bind(p)}>关闭</Button>
+          <Popover
+            title="关闭"
+            style={{ width: 200 }}
+            trigger="click"
+            visible={closeModalVisible}
+            onVisibleChange={this.handleCloseModalVisible.bind(this)}
+            content={<div>
+              <Row>
+                <Col span="8">关闭理由：</Col>
+                <Col span="16">
+                  <Select placeholder="请选择" onChange={p.handleCloseReason.bind(p)} style={{ width: '100%' }} value={closeReason || undefined}>
+                    <Option key="退款">退款</Option>
+                    <Option key="做错单">做错单</Option>
+                    <Option key="其它">其它</Option>
+                  </Select>
+                </Col>
+              </Row>
+              <Row style={{ marginTop: 10 }}><Col><Button type="primary" size="small" onClick={p.closeErpOrder.bind(p)}>保存</Button></Col></Row>
+            </div>}
+          >
+            <Button style={{ float: 'right', marginLeft: 10 }} disabled={isNotSelected} size="large">关闭</Button>
+          </Popover>
           <Button style={{ float: 'right' }} type="primary" size="large" onClick={p.exportErpOrder.bind(p)}>导出订单</Button>
         </Row>
         <DeliveryModal

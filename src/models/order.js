@@ -241,8 +241,9 @@ export default {
         if (payload.callback) payload.callback();
       }
     },
-    * closeErpOrder({ payload }, { call }) {
-      const data = yield call(closeErpOrder, { payload: { orderIds: payload.orderIds } });
+    * closeErpOrder({ payload = {} }, { call }) {
+      const { closeReason, orderIds } = payload;
+      const data = yield call(closeErpOrder, { payload: { orderIds, closeReason } });
       if (data.success) {
         message.success('关闭成功');
         if (payload.callback) payload.callback();

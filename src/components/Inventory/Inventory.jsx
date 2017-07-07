@@ -5,6 +5,7 @@ import { Form, Table, Row, Col, Button, Input, Popover, Select, Icon } from 'ant
 import TransTo from './components/trans-to';
 import CheckIn from './components/check-in';
 import CheckOut from './components/check-out';
+import ChangePosition from './components/change-position';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -128,13 +129,14 @@ class Inventory extends Component {
       { title: '货架号', key: 'positionNo', dataIndex: 'positionNo', width: 60 },
       { title: '操作',
         key: 'oper',
-        width: 200,
+        width: 130,
         render(text, record) {
           return (
             <div>
               <TransTo dispatch={dispatch} record={record} handleSubmit={p.handleSubmit.bind(p)} page={currentPage} />
               <CheckIn dispatch={dispatch} record={record} handleSubmit={p.handleSubmit.bind(p)} page={currentPage} />
               <CheckOut dispatch={dispatch} record={record} handleSubmit={p.handleSubmit.bind(p)} page={currentPage} />
+              <ChangePosition dispatch={dispatch} record={record} handleSubmit={p.handleSubmit.bind(p)} page={currentPage} />
             </div>
           );
         },

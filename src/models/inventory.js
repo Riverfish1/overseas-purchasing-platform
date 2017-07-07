@@ -4,18 +4,22 @@ import fetch from '../utils/request';
 
 const queryInventoryList = ({ payload }) => fetch.post('/haierp1/inventory/area/queryList', { data: payload }).catch(e => e);
 const queryInventoryRecordList = ({ payload }) => fetch.post('/haierp1/inventory/record/queryList', { data: payload }).catch(e => e);
+// 在途入仓
 const transTo = ({ payload }) => fetch.post('/haierp1/inventory/area/transTo', { data: payload }).catch(e => e);
+// 库存盘进
 const checkIn = ({ payload }) => fetch.post('/haierp1/inventory/inventoryCheckIn', { data: payload }).catch(e => e);
+// 库存盘出
 const checkOut = ({ payload }) => fetch.post('/haierp1/inventory/inventoryCheckOut', { data: payload }).catch(e => e);
 // 仓库管理
 const queryWareList = ({ payload }) => fetch.get('/haierp1/warehouse/queryWarehouses', { data: payload }).catch(e => e);
 const addWare = ({ payload }) => fetch.get('/haierp1/warehouse/add', { data: payload }).catch(e => e);
 const updateWare = ({ payload }) => fetch.get('/haierp1/warehouse/update', { data: payload }).catch(e => e);
 const queryWare = ({ payload }) => fetch.get('/haierp1/warehouse/query', { data: payload }).catch(e => e);
-// 在途入仓
 
 // 出入库记录
 const queryInoutList = ({ payload }) => fetch.post('/haierp1/inventory/queryInventoryInout', { data: payload }).catch(e => e);
+// 换货架号
+const changePositionNo = ({ payload }) => fetch.post('/haierp1/inventory/changePositionNo', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'inventory',
@@ -137,10 +141,14 @@ export default {
           payload,
         });
       }
-      const data = yield call(queryInoutList, { payload });
+      const data = yield call(queryInoutList, { payload: { ...payload, pageIndex } });
       if (data.success) {
         yield put({ type: 'updateInoutList', payload: data });
       }
+    },
+    * changePositionNo({ payload, cb }, { call }) {
+      const data = yield call(changePositionNo, { payload });
+      if (data.success) { cb(); }
     },
   },
   reducers: {

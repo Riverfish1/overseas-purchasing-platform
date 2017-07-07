@@ -219,7 +219,7 @@ class ErpOrder extends Component {
     const p = this;
     this.props.dispatch({
       type: 'order/prepareShipping',
-      payload: { erpOrderId: this.state.checkId },
+      payload: { erpOrderId: JSON.stringify(this.state.checkId) },
       cb() { p._refreshData(); },
     });
   }

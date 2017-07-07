@@ -301,6 +301,7 @@ class Order extends Component {
             case 4: return <font color="sienna">混合备货完成</font>;
             case 9: return <font color="red">已释放</font>;
             case 10: return <font color="blue">已备货</font>;
+            case 11: return <font color="blue">预出库</font>;
             default: return '-';
           }
         },

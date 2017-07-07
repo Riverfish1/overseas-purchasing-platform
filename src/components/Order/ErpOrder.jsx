@@ -215,6 +215,14 @@ class ErpOrder extends Component {
       default: return false;
     }
   }
+  prepareShipping() { // 预出库
+    const p = this;
+    this.props.dispatch({
+      type: 'order/prepareShipping',
+      payload: { erpOrderId: this.state.checkId },
+      cb() { p._refreshData(); },
+    });
+  }
   handleEmptyInput(type) { // 清空内容
     const { setFieldsValue } = this.props.form;
     switch (type) {
@@ -358,6 +366,7 @@ class ErpOrder extends Component {
             case 4: return <font color="sienna">混合备货完成</font>;
             case 9: return <font color="red">已释放</font>;
             case 10: return <font color="blue">已备货</font>;
+            case 11: return <font color="blue">预出库</font>;
             default: return '-';
           }
         },
@@ -495,6 +504,7 @@ class ErpOrder extends Component {
                     <Option value="4">混合备货完成</Option>
                     <Option value="9">已释放</Option>
                     <Option value="10">已备货</Option>
+                    <Option value="11">预出库</Option>
                   </Select>,
                 )}
               </FormItem>
@@ -621,7 +631,8 @@ class ErpOrder extends Component {
         </Form>
         <Row className="operBtn">
           <Button style={{ float: 'left', marginRight: 10 }} type="primary" disabled={isNotSelected} size="large" onClick={p.showDeliveryModal.bind(p)}>发货</Button>
-          <Button style={{ float: 'left' }} type="primary" disabled={isNotSelected} size="large" onClick={p.showBatchDeliveryModal.bind(p)}>批量发货</Button>
+          <Button style={{ float: 'left', marginRight: 10 }} type="primary" disabled={isNotSelected} size="large" onClick={p.showBatchDeliveryModal.bind(p)}>批量发货</Button>
+          <Button style={{ float: 'left', marginRight: 10 }} type="primary" disabled={isNotSelected} size="large" onClick={p.prepareShipping.bind(p)}>预出库</Button>
           <Button style={{ float: 'right', marginLeft: 10 }} type="primary" disabled={isNotSelected} size="large" onClick={p.replayAssign.bind(p)}>重分配库存</Button>
           <Popover
             title="关闭"

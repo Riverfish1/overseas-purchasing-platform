@@ -17,6 +17,9 @@ const queryErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/queryById',
 const updateErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/update', { data: payload }).catch(e => e);
 // 订单关闭
 const closeErpOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/close', { data: payload }).catch(e => e);
+// 预出库
+const prepareShipping = ({ payload }) => fetch.post('/haierp1/erpOrder/prepareShipping', { data: payload }).catch(e => e);
+// 订单拆分
 const splitOrder = ({ payload }) => fetch.post('/haierp1/erpOrder/splitErpOrder', { data: payload }).catch(e => e);
 // 重分配库存
 const replayAssign = ({ payload }) => fetch.post('/haierp1/erpOrder/replayAssign', { data: payload }).catch(e => e);
@@ -248,6 +251,10 @@ export default {
         message.success('关闭成功');
         if (payload.callback) payload.callback();
       }
+    },
+    * prepareShipping({ payload, cb }, { call }) {
+      const data = yield call(prepareShipping, { payload });
+      if (data.success) { cb(); }
     },
     * queryErpOrderDetail({ payload }, { call, put }) {
       const data = yield call(multiDeliveryForm, { payload: { erpOrderId: JSON.stringify(payload.erpOrderId) } });

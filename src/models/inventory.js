@@ -148,7 +148,10 @@ export default {
     },
     * changePositionNo({ payload, cb }, { call }) {
       const data = yield call(changePositionNo, { payload });
-      if (data.success) { cb(); }
+      if (data.success) {
+        message.success('更换货架号成功');
+        cb();
+      }
     },
   },
   reducers: {

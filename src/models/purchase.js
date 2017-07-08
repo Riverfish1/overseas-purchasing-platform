@@ -59,16 +59,18 @@ export default {
         yield put({ type: 'updatePurchaseList', payload: data });
       }
     },
-    * addPurchase({ payload }, { call }) {
+    * addPurchase({ payload, cb }, { call }) {
       const data = yield call(addPurchase, { payload });
       if (data.success) {
-        message.success('新增成功');
+        message.success('新增采购成功');
+        cb();
       }
     },
-    * updatePurchase({ payload }, { call }) {
+    * updatePurchase({ payload, cb }, { call }) {
       const data = yield call(updatePurchase, { payload });
       if (data.success) {
-        message.success('修改成功');
+        message.success('修改采购成功');
+        cb();
       }
     },
     * queryPurchase({ payload }, { call, put }) {

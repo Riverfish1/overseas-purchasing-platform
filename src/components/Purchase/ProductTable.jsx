@@ -522,7 +522,7 @@ class ProductTable extends Component {
         { title: '现货占用', dataIndex: 'lockedInv', key: 'lockedInv', width: 45, render(text) { return text || '-'; } },
         { title: '在途占用', dataIndex: 'lockedTransInv', key: 'lockedTransInv', width: 45, render(text) { return text || '-'; } },
         // { title: '重量(kg)', dataIndex: 'weight', key: 'weight', width: '8%', render(text) { return text || '-'; } },
-        { title: '操作', dataIndex: 'oper', fixed: 'right', key: 'oper', width: 40, render(t, r) { return <a onClick={() => { updateValue(r); }}>选择</a>; } },
+        { title: '操作', dataIndex: 'oper', fixed: 'right', key: 'oper', width: 60, render(t, r) { return <a onClick={() => { updateValue(r); }}>选择</a>; } },
       ];
 
       return (

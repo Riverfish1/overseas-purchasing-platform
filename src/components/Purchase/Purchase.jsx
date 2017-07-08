@@ -66,8 +66,8 @@ class Purchase extends Component {
     });
   }
 
-  closeModal(modalVisible) {
-    this.setState({ modalVisible }, () => {
+  closeModal() {
+    this.setState({ modalVisible: false }, () => {
       this.props.dispatch({
         type: 'purchase/savePurchase',
         payload: {},

@@ -66,14 +66,15 @@ class PurchaseModal extends Component {
           dispatch({
             type: 'purchase/updatePurchase',
             payload: { ...values, id: modalValues.data.id, detailList: JSON.stringify(detailList) },
+            cb() { p.closeModal(); },
           });
         } else {
           dispatch({
             type: 'purchase/addPurchase',
             payload: { ...values, detailList: JSON.stringify(detailList) },
+            cb() { p.closeModal(); },
           });
         }
-        p.closeModal();
       });
     });
   }
@@ -81,7 +82,7 @@ class PurchaseModal extends Component {
   closeModal() {
     const { form, close } = this.props;
     form.resetFields();
-    close(false);
+    close();
     // 清理skuTable
     setTimeout(() => {
       this.clearSkuValue();

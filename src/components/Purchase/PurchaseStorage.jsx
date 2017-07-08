@@ -189,6 +189,7 @@ class PurchaseStorage extends Component {
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 80 },
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 80 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
+      { title: '采购站点', dataIndex: 'buySite', key: 'buySite', width: 70 },
       { title: '图片',
         dataIndex: 'skuPic',
         key: 'skuPic',

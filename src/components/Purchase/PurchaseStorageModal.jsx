@@ -271,7 +271,7 @@ class PurchaseModal extends Component {
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 50 },
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
-      { title: '采购站点', dataIndex: 'buySite', key: 'buySite', width: 100 },
+      { title: '采购站点', dataIndex: 'buySite', key: 'buySite', width: 60 },
       { title: '图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
@@ -304,7 +304,7 @@ class PurchaseModal extends Component {
         },
       },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
-      { title: '采购站点', dataIndex: 'buySite', key: 'buySite', width: 80 },
+      { title: '采购站点', dataIndex: 'buySite', key: 'buySite', width: 60 },
       { title: '图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
@@ -426,7 +426,7 @@ class PurchaseModal extends Component {
               <div className={styles.blockTitle}>采购明细</div>
               <Row style={{ margin: '10px 0' }}>
                 <Col span="8"><Input placeholder="请输入商品名称" size="large" ref={(c) => { this.itemName = c; }} /></Col>
-                <Col span="8"><Input placeholder="请输入采购站点" size="large" style={{ marginLeft: 10 }} ref={(c) => { this.buySite = c; }} /></Col>
+                <Col span="4"><Input placeholder="采购站点" size="large" style={{ marginLeft: 10 }} ref={(c) => { this.buySite = c; }} /></Col>
                 <Col span="5"><Button type="primary" size="large" style={{ float: 'left', marginLeft: 20 }} onClick={p.checkByItem.bind(p)}>查询</Button></Col>
                 <Col span="3"><Button type="primary" size="large" style={{ float: 'right' }} onClick={this.sendToRight.bind(this)} disabled={selectedRowKeys.length < 1}>移到右边</Button></Col>
               </Row>

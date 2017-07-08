@@ -28,6 +28,11 @@ import Resource from './components/Permission/Resource';
 import Role from './components/Permission/Role';
 import User from './components/Permission/User';
 import Organization from './components/Permission/Organization';
+import ReportSaleByDay from './components/Report/ReportSaleByDay';
+import ReportSaleByCategory from './components/Report/ReportSaleByCategory';
+import ReportSaleByBrand from './components/Report/ReportSaleByBrand';
+import ReportItemListing from './components/Report/ReportItemListing';
+import ReportShippingByDay from './components/Report/ReportShippingByDay';
 
 function redirectHelper(...args) {
   // 传入参数3，为onEnter
@@ -76,6 +81,11 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} component={Inventory} />
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.WAREHOUSE}`} component={Warehouse} />
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INOUT}`} component={Inout} />
+        <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_SALE_BY_DAY}`} component={ReportSaleByDay} />
+        <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_SALE_BY_CATEGORY}`} component={ReportSaleByCategory} />
+        <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_SALE_BY_BRAND}`} component={ReportSaleByBrand} />
+        <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_ITEM_LISTING}`} component={ReportItemListing} />
+        <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_SHIPPING_BY_DAY}`} component={ReportShippingByDay} />
         {/* 一级导航重定向 */}
         <Redirect from={`/${routerCfg.PERMISSION}`} to={`/${routerCfg.PERMISSION}/${routerCfg.RESOURCE}`} />
         <Redirect from={`/${routerCfg.PRODUCTS}`} to={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} />
@@ -83,6 +93,7 @@ function RouterConfig({ history }) {
         <Redirect from={`/${routerCfg.PURCHASE}`} to={`/${routerCfg.PURCHASE}/${routerCfg.PURCHASE_LIST}`} />
         <Redirect from={`/${routerCfg.PERSON}`} to={`/${routerCfg.PERSON}/${routerCfg.AGENCY_LIST}`} />
         <Redirect from={`/${routerCfg.INVENTORY}`} to={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} />
+        <Redirect from={`/${routerCfg.REPORT}`} to={`/${routerCfg.REPORT}/${routerCfg.REPORT_SHIPPING_BY_DAY}`} />
         {/* 二级导航重定向 */}
         <Redirect from={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}`} to={`/${routerCfg.PURCHASE}/${routerCfg.CHECK}/${routerCfg.JOURNAL}`} />
       </Route>

@@ -48,7 +48,7 @@ export default {
       return { ...state, currentPage: payload.pageIndex };
     },
     saveCurrentPageSize(state, { payload }) {
-      return { ...state, pageSize: payload.pageSize };
+      return { ...state, currentPageSize: payload.pageSize };
     },
     saveSearchValues(state, { payload }) {
       return { ...state, searchValues: payload };

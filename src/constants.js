@@ -24,6 +24,12 @@ export const backendCfg = {
   inventoryList: 'inventory_list',
   warehouse: 'inventory_warehouse',
   inout: 'inventory_inout',
+  report: 'report',
+  reportSaleByDay: 'report_sale_byday',
+  reportSaleByCategory: 'report_sale_bycategory',
+  reportSaleByBrand: 'report_sale_bybrand',
+  reportItemListing: 'report_item_listing',
+  reportShippingByDay: 'report_shipping_byday',
   // 内置
   overview: 'overview',
 };
@@ -69,6 +75,13 @@ export const routerCfg = {
   INVENTORY_LIST: 'inventoryList',
   WAREHOUSE: 'warehouse', // 仓库管理
   INOUT: 'inout', // 出入库管理
+  // 报表管理
+  REPORT: 'report',
+  REPORT_SALE_BY_DAY: 'reportSaleByDay',
+  REPORT_SALE_BY_CATEGORY: 'reportSaleByCategory',
+  REPORT_SALE_BY_BRAND: 'reportSaleByBrand',
+  REPORT_ITEM_LISTING: 'reportItemListing',
+  REPORT_SHIPPING_BY_DAY: 'reportShippingByDay',
 };
 
 export const originalNavigation = [
@@ -122,6 +135,15 @@ export const originalNavigation = [
       { key: routerCfg.INVENTORY_LIST, name: '库存管理' },
       { key: routerCfg.WAREHOUSE, name: '仓库管理' },
       { key: routerCfg.INOUT, name: '出入库记录' },
+    ],
+  },
+  { key: routerCfg.REPORT, name: '报表管理', icon: 'file',
+    child: [
+      { key: routerCfg.REPORT_SALE_BY_DAY, name: '销售报表(按天)' },
+      { key: routerCfg.REPORT_SALE_BY_CATEGORY, name: '销售报表(按类目)' },
+      { key: routerCfg.REPORT_SALE_BY_BRAND, name: '销售报表(按品牌)' },
+      { key: routerCfg.REPORT_ITEM_LISTING, name: '上新报表' },
+      { key: routerCfg.REPORT_SHIPPING_BY_DAY, name: '发货报表' },
     ],
   },
 ];

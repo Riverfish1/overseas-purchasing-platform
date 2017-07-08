@@ -61,7 +61,7 @@ class Products extends Component {
         type: 'products/saveProductsValue',
         payload: {},
       });
-      this._refreshData();
+      this.handleSubmit();
     });
   }
 

@@ -36,7 +36,7 @@ function redirectHelper(...args) {
   const replace = args[len - 2];
   const callback = args[len - 1];
   const lastLoginTime = parseInt(localStorage.getItem('HAIERP_LAST_LOGIN') || 0, 10);
-  const isTimeout = new Date().getTime() - lastLoginTime > (15 * 60 * 1000) - 10000; // 15分钟超时
+  const isTimeout = new Date().getTime() - lastLoginTime > (60 * 24 * 60 * 1000) - 10000; // 24小时超时
   if (isTimeout && location.pathname !== `/${routerCfg.LOGIN}`) replace(`/${routerCfg.LOGIN}`);
   else if (location.pathname === '/') replace(`/${routerCfg.OVERVIEW}`);
   callback();

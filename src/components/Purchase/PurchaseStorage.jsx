@@ -321,7 +321,7 @@ class PurchaseStorage extends Component {
           visible={showDetail}
           title="详情"
           footer={null}
-          width={900}
+          width={1200}
           onCancel={this.closeDetailModal.bind(this)}
         >
           <Table columns={columnsStorageList} pagination={false} dataSource={data} rowKey={r => r.id} bordered scroll={{ y: 500 }} />

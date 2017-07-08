@@ -128,7 +128,6 @@ class Products extends Component {
   render() {
     const p = this;
     const { form, currentPage, currentPageSize, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
-    console.log(productsValues);
     const { getFieldDecorator, resetFields } = form;
     const formItemLayout = {
       labelCol: { span: 10 },

@@ -369,21 +369,31 @@ class ProductTable extends Component {
       let skuCode = null;
       let itemName = null;
       let productName = null;
+      let buySite = null;
+      let buySiteOrder = null;
 
       function handleEmpty() {
         skuCode.refs.input.value = '';
         itemName.refs.input.value = '';
         productName.refs.input.value = '';
+        buySite.refs.input.value = '';
+        buySiteOrder.refs.input.value = '';
       }
 
       function doSearch() {
-        p.handleSearch(key, { skuCode: skuCode.refs.input.value, itemName: itemName.refs.input.value, isOrderQuery: 0 });
+        p.handleSearch(key,
+          { skuCode: skuCode.refs.input.value,
+            itemName: itemName.refs.input.value,
+            buySite: buySite.refs.input.value,
+            isOrderQuery: 0,
+          });
         p.setState({ skuSearchType: 'product' });
       }
 
       function doSearchOrder() {
         const params = {};
         params.itemName = productName.refs.input.value;
+        params.buySite = buySiteOrder.refs.input.value;
         p.handleSearch(key, { ...params, isOrderQuery: 1 });
         p.setState({ skuSearchType: 'order' });
       }
@@ -477,9 +487,10 @@ class ProductTable extends Component {
       };
 
       const columns = [
-        { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 84 },
-        { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 130 },
-        { title: '品牌', dataIndex: 'brand', key: 'brand', width: 112 },
+        { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 90 },
+        { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 90 },
+        { title: '品牌', dataIndex: 'brand', key: 'brand', width: 80 },
+        { title: '采购站点', dataIndex: 'buySite', key: 'buySite', width: 80 },
         { title: '所属分类', dataIndex: 'categoryName', key: 'categoryName', width: 75, render(text) { return text || '-'; } },
         { title: '图片',
           dataIndex: 'skuPic',
@@ -511,15 +522,15 @@ class ProductTable extends Component {
         { title: '现货占用', dataIndex: 'lockedInv', key: 'lockedInv', width: 45, render(text) { return text || '-'; } },
         { title: '在途占用', dataIndex: 'lockedTransInv', key: 'lockedTransInv', width: 45, render(text) { return text || '-'; } },
         // { title: '重量(kg)', dataIndex: 'weight', key: 'weight', width: '8%', render(text) { return text || '-'; } },
-        { title: '操作', dataIndex: 'oper', key: 'oper', render(t, r) { return <a onClick={() => { updateValue(r); }}>选择</a>; } },
+        { title: '操作', dataIndex: 'oper', fixed: 'right', key: 'oper', width: 40, render(t, r) { return <a onClick={() => { updateValue(r); }}>选择</a>; } },
       ];
 
       return (
         <div style={{ width: 970 }}>
           <Tabs size="small">
             <TabPane tab="按商品查询" key="1">
-              <Row gutter={20} style={{ width: 720 }}>
-                <Col span="7">
+              <Row gutter={20} style={{ width: 970 }}>
+                <Col span="6">
                   <FormItem
                     label="SKU代码"
                     {...formItemLayout}
@@ -531,7 +542,7 @@ class ProductTable extends Component {
                     />
                   </FormItem>
                 </Col>
-                <Col span="7">
+                <Col span="6">
                   <FormItem
                     label="商品名称"
                     {...formItemLayout}
@@ -543,7 +554,19 @@ class ProductTable extends Component {
                     />
                   </FormItem>
                 </Col>
-                <Col className="listBtnGroup" span="10" style={{ paddingTop: 2 }}>
+                <Col span="6">
+                  <FormItem
+                    label="采购站点"
+                    {...formItemLayout}
+                  >
+                    <Input
+                      size="default"
+                      placeholder="请输入采购站点"
+                      ref={(c) => { buySite = c; }}
+                    />
+                  </FormItem>
+                </Col>
+                <Col className="listBtnGroup" span="4" style={{ paddingTop: 2 }}>
                   <Button type="primary" onClick={doSearch}>查询</Button>
                   <Button type="ghost" onClick={handleEmpty}>清空</Button>
                 </Col>
@@ -563,7 +586,19 @@ class ProductTable extends Component {
                     />
                   </FormItem>
                 </Col>
-                <Col className="listBtnGroup" span="12" style={{ paddingTop: 2, marginLeft: 10 }}>
+                <Col span="6">
+                  <FormItem
+                    label="采购站点"
+                    {...formItemLayout}
+                  >
+                    <Input
+                      size="default"
+                      placeholder="请输入采购站点"
+                      ref={(c) => { buySiteOrder = c; }}
+                    />
+                  </FormItem>
+                </Col>
+                <Col className="listBtnGroup" span="10" style={{ paddingTop: 2, marginLeft: 10 }}>
                   <Button type="primary" onClick={doSearchOrder}>查询</Button>
                   <Button type="ghost" onClick={createTaskOrder}>根据当前订单重新计算采购值</Button>
                 </Col>
@@ -580,7 +615,7 @@ class ProductTable extends Component {
               rowSelection={rowSelection}
               rowKey={record => record.id}
               pagination={paginationProps}
-              scroll={{ y: 400 }}
+              scroll={{ x: 1100, y: 400 }}
             />
           </Row>
         </div>

@@ -216,13 +216,15 @@ class PurchaseModal extends Component {
   checkByItem() {
     const { form, dispatch } = this.props;
     const itemName = this.itemName.refs.input.value;
+    const buySite = this.buySite.refs.input.value;
     form.validateFields((err, values) => {
-      console.log(values, itemName);
+      console.log(values, itemName, buySite);
       dispatch({
         type: 'purchaseStorage/queryBuyerTaskList',
         payload: {
           buyerId: values.buyerId,
           itemName,
+          buySite,
         },
       });
     });
@@ -269,6 +271,7 @@ class PurchaseModal extends Component {
       { title: 'SKU代码', dataIndex: 'skuCode', key: 'skuCode', width: 50 },
       { title: 'UPC', dataIndex: 'upc', key: 'upc', width: 50 },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
+      { title: '采购站点', dataIndex: 'buySite', key: 'buySite', width: 100 },
       { title: '图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
@@ -301,10 +304,11 @@ class PurchaseModal extends Component {
         },
       },
       { title: '商品名称', dataIndex: 'itemName', key: 'itemName', width: 100 },
+      { title: '采购站点', dataIndex: 'buySite', key: 'buySite', width: 80 },
       { title: '图片',
         dataIndex: 'skuPic',
         key: 'skuPic',
-        width: 100,
+        width: 80,
         render(text) {
           if (!text) return '-';
           const picList = JSON.parse(text).picList;
@@ -318,8 +322,8 @@ class PurchaseModal extends Component {
       },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 50 },
       { title: '规格', dataIndex: 'scale', key: 'scale', width: 50 },
-      { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 70, render(t) { return t || 0; } },
-      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 80, render(t, r) { return t || r.taskDailyCount; } },
+      { title: '已入库数', dataIndex: 'inCount', key: 'inCount', width: 60, render(t) { return t || 0; } },
+      { title: '计划采购数', dataIndex: 'count', key: 'count', width: 60, render(t, r) { return t || r.taskDailyCount; } },
       { title: '数量',
         dataIndex: 'quantity',
         key: 'quantity',
@@ -355,12 +359,12 @@ class PurchaseModal extends Component {
       { title: '操作',
         dataIndex: 'op',
         key: 'op',
-        width: 70,
+        width: 50,
         render(t, r) {
           return (
             <span>
               <a href="javascript:void(0)" onClick={p.addRightList.bind(p, r.skuId)}>拆分</a>
-              <a style={{ marginLeft: 5 }} href="javascript:void(0)" onClick={p.delRightList.bind(p, r.skuId)}>删除</a>
+              <a href="javascript:void(0)" onClick={p.delRightList.bind(p, r.skuId)}>删除</a>
             </span>
           );
         },
@@ -421,9 +425,10 @@ class PurchaseModal extends Component {
             <Col span="12">
               <div className={styles.blockTitle}>采购明细</div>
               <Row style={{ margin: '10px 0' }}>
-                <Col span="10"><Input placeholder="请输入商品名称" size="large" ref={(c) => { this.itemName = c; }} /></Col>
-                <Col span="3"><Button type="primary" size="large" style={{ float: 'left', marginLeft: 10 }} onClick={p.checkByItem.bind(p)}>查询</Button></Col>
-                <Col span="11"><Button type="primary" size="large" style={{ float: 'right' }} onClick={this.sendToRight.bind(this)} disabled={selectedRowKeys.length < 1}>移到右边</Button></Col>
+                <Col span="8"><Input placeholder="请输入商品名称" size="large" ref={(c) => { this.itemName = c; }} /></Col>
+                <Col span="8"><Input placeholder="请输入采购站点" size="large" style={{ marginLeft: 10 }} ref={(c) => { this.buySite = c; }} /></Col>
+                <Col span="5"><Button type="primary" size="large" style={{ float: 'left', marginLeft: 20 }} onClick={p.checkByItem.bind(p)}>查询</Button></Col>
+                <Col span="3"><Button type="primary" size="large" style={{ float: 'right' }} onClick={this.sendToRight.bind(this)} disabled={selectedRowKeys.length < 1}>移到右边</Button></Col>
               </Row>
               <Table columns={columnsTaskList} bordered scroll={{ x: '130%', y: 500 }} dataSource={filteredBuyerTask} rowKey={r => `${r.skuId}__${r.taskDailyDetailId}`} rowSelection={rowSelection} pagination={false} />
             </Col>
@@ -442,7 +447,7 @@ class PurchaseModal extends Component {
                   </Select>
                 </Col>
               </Row>
-              <Table columns={columnsStorageList} bordered scroll={{ x: '180%', y: 500 }} dataSource={storageList} rowKey={r => r.id} pagination={false} />
+              <Table columns={columnsStorageList} bordered scroll={{ x: 1100, y: 500 }} dataSource={storageList} rowKey={r => r.id} pagination={false} />
             </Col>
           </Row>
         </Form>

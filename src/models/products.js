@@ -13,10 +13,11 @@ const batchListingYouzan = ({ payload }) => fetch.post('/haierp1/youzanSyn/batch
 // 批量下架
 const batchDelistingYouzan = ({ payload }) => fetch.post('/haierp1/youzanSyn/batchDelistingYouzan', { data: payload }).catch(e => e);
 // 品牌
-const queryBrands = () => fetch.post('/haierp1/item/brand/queryBrands').catch(e => e);
+const queryBrands = ({ payload }) => fetch.post('/haierp1/item/brand/queryBrands', { data: payload }).catch(e => e);
 const addBrand = ({ payload }) => fetch.post('/haierp1/item/brand/add', { data: payload }).catch(e => e);
 const updateBrand = ({ payload }) => fetch.post('/haierp1/item/brand/update', { data: payload }).catch(e => e);
-const queryBrandById = ({ payload }) => fetch.post('/haierp1/item/brand/query', { data: payload }).catch(e => e);
+const queryBrand = ({ payload }) => fetch.post('/haierp1/item/brand/query', { data: payload }).catch(e => e);
+const deleteBrand = ({ payload }) => fetch.post('/haierp1/item/brand/delete', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'products',
@@ -28,8 +29,9 @@ export default {
     currentPageSize: 20,
     tree: [], // 类目树
     searchValues: {},
-    brands: [], // 品牌
+    brandList: [], // 品牌
     brandValue: {},
+    brandTotal: 1,
   },
   reducers: {
     saveCatesTree(state, { payload }) {
@@ -39,7 +41,7 @@ export default {
       return { ...state, productsList: payload.rows, productsTotal: payload.total };
     },
     saveBrands(state, { payload }) { // 保存品牌
-      return { ...state, brands: payload.data };
+      return { ...state, brandList: payload.data, brandTotal: payload.totalCount };
     },
     saveProductsValue(state, { payload }) {
       return { ...state, productsValues: payload };
@@ -54,7 +56,7 @@ export default {
       return { ...state, searchValues: payload };
     },
     saveBrand(state, { payload }) {
-      return { ...state, brandValue: payload };
+      return { ...state, brandValue: payload.data };
     },
   },
   effects: {
@@ -110,8 +112,9 @@ export default {
         });
       }
     },
-    * queryBrands(param, { call, put }) { // 获取品牌
-      const data = yield call(queryBrands);
+    // 品牌管理
+    * queryBrands({ payload }, { call, put }) { // 获取品牌
+      const data = yield call(queryBrands, { payload });
       if (data.success) {
         yield put({
           type: 'saveBrands',
@@ -119,8 +122,8 @@ export default {
         });
       }
     },
-    * queryBrandById({ payload }, { call, put }) {
-      const data = yield call(queryBrandById, payload);
+    * queryBrand({ payload }, { call, put }) {
+      const data = yield call(queryBrand, { payload });
       if (data.success) {
         yield put({
           type: 'saveBrand',
@@ -128,23 +131,23 @@ export default {
         });
       }
     },
-    * updateBrand({ payload }, { call, put }) {
-      const data = yield call(updateBrand, payload);
+    * updateBrand({ payload, cb }, { call }) {
+      const data = yield call(updateBrand, { payload });
       if (data.success) {
-        yield put({
-          type: 'queryBrands',
-          payload: {},
-        });
+        message.success('修改品牌成功');
+        cb();
       }
     },
-    * addBrand({ payload }, { call, put }) {
-      const data = yield call(addBrand, payload);
+    * addBrand({ payload, cb }, { call }) {
+      const data = yield call(addBrand, { payload });
       if (data.success) {
-        yield put({
-          type: 'queryBrands',
-          payload: {},
-        });
+        message.success('新增品牌成功');
+        cb();
       }
+    },
+    * deleteBrand({ payload, cb }, { call }) {
+      const data = yield call(deleteBrand, { payload });
+      if (data.success) cb();
     },
     * queryCatesTree(param, { call, put }) {
       const data = yield call(queryCatesTree);
@@ -191,6 +194,11 @@ export default {
           setTimeout(() => {
             dispatch({ type: 'sku/queryPackageScales', payload: query });
             dispatch({ type: 'sku/queryScaleTypes', payload: query });
+          }, 0);
+        }
+        if (pathname === '/products/brandList' && !window.existCacheState('/products/brandList')) {
+          setTimeout(() => {
+            dispatch({ type: 'queryBrands', payload: query });
           }, 0);
         }
       });

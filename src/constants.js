@@ -5,6 +5,7 @@ export const API_URL = 'http://118.178.126.143/haierp1/haiLogin';
 export const backendCfg = {
   products: 'item',
   productsList: 'item_list',
+  brandList: 'item_brand',
   skuList: 'item_skulist',
   packageScale: 'item_scale',
   packageLevel: 'item_level',
@@ -49,6 +50,7 @@ export const routerCfg = {
   // 商品管理
   PRODUCTS: 'products',
   PRODUCTS_LIST: 'productsList',
+  BRAND_LIST: 'brandList',
   SKU_LIST: 'skuList',
   CATE_LIST: 'cateList',
   PACKAGE_SCALE: 'packageScale',
@@ -99,6 +101,7 @@ export const originalNavigation = [
       { key: routerCfg.PRODUCTS_LIST, name: '商品列表' },
       { key: routerCfg.SKU_LIST, name: 'SKU管理' },
       { key: routerCfg.CATE_LIST, name: '类目管理' },
+      { key: routerCfg.BRAND_LIST, name: '品牌管理' },
       { key: routerCfg.PACKAGE_SCALE, name: '包装规格类别' },
       { key: routerCfg.PACKAGE_LEVEL, name: '包装规格' },
     ],

@@ -318,7 +318,7 @@ class ProductsModal extends Component {
                     {getFieldDecorator('sexStyle', {
                       initialValue: productData.sexStyle,
                     })(
-                      <Select placeholder="请选择" >
+                      <Select placeholder="请选择" allowClear>
                         <Option key="男款">男款</Option>
                         <Option key="女款">女款</Option>
                       </Select>,

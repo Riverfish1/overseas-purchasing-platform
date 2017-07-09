@@ -16,10 +16,10 @@ class Brands extends Component {
   handleSubmit(e) {
     if (e) e.preventDefault();
     this.props.form.validateFields((err, fieldsValue) => {
-      if (err) return;
+      const { name, nameChina } = fieldsValue;
       this.props.dispatch({
         type: 'products/queryBrands',
-        payload: { ...fieldsValue },
+        payload: { name, nameChina },
       });
     });
   }
@@ -58,10 +58,12 @@ class Brands extends Component {
     const p = this;
     const { dispatch, brandValue, form } = this.props;
     form.validateFields((err, values) => {
+      if (err) return;
+      const { enName, cnName, nameAlias } = values;
       if (brandValue.id) {
         dispatch({
           type: 'products/updateBrand',
-          payload: { ...values, id: brandValue.id },
+          payload: { name: enName, nameChina: cnName, nameAlias, id: brandValue.id },
           cb() {
             p.handleCancel();
             p._refreshData();
@@ -70,7 +72,7 @@ class Brands extends Component {
       } else {
         dispatch({
           type: 'products/addBrand',
-          payload: { ...values },
+          payload: { name: enName, nameChina: cnName, nameAlias },
           cb() {
             p.handleCancel();
             p._refreshData();
@@ -86,7 +88,7 @@ class Brands extends Component {
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 8 },
-      wrapperCol: { span: 10 },
+      wrapperCol: { span: 15 },
     };
     const columns = [
       { title: '品牌英文名', dataIndex: 'name', key: 'name' },
@@ -158,8 +160,9 @@ class Brands extends Component {
                 label="品牌英文名"
                 {...formItemLayout}
               >
-                {getFieldDecorator('name', {
+                {getFieldDecorator('enName', {
                   initialValue: brandValue.name,
+                  rules: [{ required: true, message: '请输入' }],
                 })(
                   <Input placeholder="请输入品牌名称" />,
                 )}
@@ -172,7 +175,7 @@ class Brands extends Component {
                 label="品牌中文名"
                 {...formItemLayout}
               >
-                {getFieldDecorator('nameChina', {
+                {getFieldDecorator('cnName', {
                   initialValue: brandValue.nameChina,
                 })(
                   <Input placeholder="请输入品牌中文名" />)}

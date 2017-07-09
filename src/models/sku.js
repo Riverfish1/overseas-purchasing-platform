@@ -137,22 +137,11 @@ export default {
       });
       // }
     },
-    * deleteSku({ payload }, { call, put, select }) {
+    * deleteSku({ payload, cb }, { call }) {
       const data = yield call(deleteSku, { payload });
       if (data.success) {
         message.success('删除SKU成功');
-        const sku = yield select(model => model.sku);
-        if (sku.skuList.length < 2 && sku.currentPage > 1) {
-          yield put({
-            type: 'querySkuList',
-            payload: { pageIndex: sku.currentPage - 1 },
-          });
-          return;
-        }
-        yield put({
-          type: 'querySkuList',
-          payload: {},
-        });
+        cb();
       }
     },
     * searchProducts({ payload }, { call }) {

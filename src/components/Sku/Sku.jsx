@@ -36,9 +36,11 @@ class Sku extends Component {
   }
 
   handleDelete(id) {
+    const p = this;
     this.props.dispatch({
       type: 'sku/deleteSku',
       payload: { id },
+      cb() { p._refreshData(); },
     });
   }
 

@@ -67,7 +67,7 @@ class Order extends Component {
           dispatch({
             type: 'order/closeOrder',
             payload: { orderIds: JSON.stringify(checkId) },
-            cb() { p.handleSubmit(); },
+            cb() { p._refreshData(); },
           });
         },
       });

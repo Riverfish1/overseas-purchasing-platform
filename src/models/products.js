@@ -56,7 +56,7 @@ export default {
       return { ...state, searchValues: payload };
     },
     saveBrand(state, { payload }) {
-      return { ...state, brandValue: payload.data };
+      return { ...state, brandValue: payload };
     },
   },
   effects: {
@@ -127,7 +127,7 @@ export default {
       if (data.success) {
         yield put({
           type: 'saveBrand',
-          payload: data,
+          payload: data.data,
         });
       }
     },

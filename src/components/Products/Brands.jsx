@@ -28,7 +28,6 @@ class Brands extends Component {
     });
   }
   showModal(id) {
-    console.log(id);
     this.setState({
       visible: true,
       title: id ? '修改' : '新增',
@@ -89,7 +88,7 @@ class Brands extends Component {
     const { form, brandList = [], brandTotal, brandValue = {} } = this.props;
     const { visible, title } = this.state;
     const { getFieldDecorator } = form;
-
+    console.log(brandValue);
     const formItemLayout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 10 },

@@ -28,7 +28,7 @@ class SkuModal extends Component {
 
   handleSubmit() {
     const p = this;
-    const { form, dispatch, modalValues, brands } = this.props;
+    const { form, dispatch, modalValues, brandList } = this.props;
     const { proSearchList } = this.state;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
@@ -48,7 +48,7 @@ class SkuModal extends Component {
       }
       // 结束处理图片
       if (fieldsValue.brand) {
-        brands.forEach((item) => {
+        brandList.forEach((item) => {
           if (item.id.toString() === fieldsValue.brand) {
             fieldsValue.brand = item.name;
           }
@@ -121,7 +121,7 @@ class SkuModal extends Component {
   render() {
     const p = this;
     const { previewVisible, previewImage, proSearchList, picList } = p.state;
-    const { form, visible, modalValues = {}, brands = [], productsList = [], packageScales } = p.props;
+    const { form, visible, modalValues = {}, brandList = [], productsList = [], packageScales } = p.props;
     const { getFieldDecorator } = form;
     const skuModalData = modalValues.data || {};
     const list = proSearchList.data || productsList;
@@ -311,7 +311,7 @@ class SkuModal extends Component {
                   initialValue: toString(skuModalData.brand, 'SELECT'),
                 })(
                   <Select placeholder="请选择品牌" combobox>
-                    {brands.map(item => <Option key={item.id} value={item.name}>{item.name}</Option>)}
+                    {brandList.map(item => <Option key={item.id} value={item.name}>{item.name}</Option>)}
                   </Select>,
                 )}
               </FormItem>

@@ -13,6 +13,7 @@ const batchListingYouzan = ({ payload }) => fetch.post('/haierp1/youzanSyn/batch
 // 批量下架
 const batchDelistingYouzan = ({ payload }) => fetch.post('/haierp1/youzanSyn/batchDelistingYouzan', { data: payload }).catch(e => e);
 // 品牌
+const queryAllBrand = () => fetch.post('/haierp1/item/brand/queryAllBrand').catch(e => e);
 const queryBrands = ({ payload }) => fetch.post('/haierp1/item/brand/queryBrands', { data: payload }).catch(e => e);
 const addBrand = ({ payload }) => fetch.post('/haierp1/item/brand/add', { data: payload }).catch(e => e);
 const updateBrand = ({ payload }) => fetch.post('/haierp1/item/brand/update', { data: payload }).catch(e => e);
@@ -30,6 +31,7 @@ export default {
     tree: [], // 类目树
     searchValues: {},
     brandList: [], // 品牌
+    allBrands: [],
     brandValue: {},
     brandTotal: 1,
   },
@@ -39,6 +41,9 @@ export default {
     },
     saveItemList(state, { payload }) {
       return { ...state, productsList: payload.rows, productsTotal: payload.total };
+    },
+    saveAllBrand(state, { payload }) {
+      return { ...state, allBrands: payload.data };
     },
     saveBrands(state, { payload }) { // 保存品牌
       return { ...state, brandList: payload.data, brandTotal: payload.totalCount };
@@ -113,6 +118,15 @@ export default {
       }
     },
     // 品牌管理
+    * queryAllBrand(param, { call, put }) {
+      const data = yield call(queryAllBrand);
+      if (data.success) {
+        yield put({
+          type: 'saveAllBrand',
+          payload: data,
+        });
+      }
+    },
     * queryBrands({ payload }, { call, put }) { // 获取品牌
       const data = yield call(queryBrands, { payload });
       if (data.success) {
@@ -186,7 +200,7 @@ export default {
         if (pathname === '/products/productsList' && !window.existCacheState('/products/productsList')) {
           setTimeout(() => {
             dispatch({ type: 'queryItemList', payload: { pageIndex: 1 } });
-            dispatch({ type: 'queryBrands', payload: query });
+            dispatch({ type: 'queryAllBrand', payload: query });
             dispatch({ type: 'queryCatesTree', payload: query });
           }, 0);
         }

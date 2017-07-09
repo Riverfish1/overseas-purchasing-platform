@@ -191,7 +191,7 @@ class ProductsModal extends Component {
 
   render() {
     const p = this;
-    const { form, visible, brands = [], modalValues = {}, tree = [], packageScales, scaleTypes } = this.props;
+    const { form, visible, allBrands = [], modalValues = {}, tree = [], packageScales, scaleTypes } = this.props;
     const { previewVisible, previewImage, activeTab } = this.state;
     const { getFieldDecorator } = form;
 
@@ -275,62 +275,8 @@ class ProductsModal extends Component {
         <Tabs activeKey={activeTab} type="card" onChange={this.changeActiveKey.bind(this)}>
           <TabPane tab="基本信息" key="1">
             <Form onSubmit={this.handleSubmit.bind(this)}>
-              <Row gutter={10}>
+              <Row>
                 <Col span={7}>
-                  <FormItem
-                    label="商品代码"
-                    {...formItemLayout}
-                  >
-                    {getFieldDecorator('itemCode', {
-                      initialValue: toString(productData.itemCode),
-                      rules: [{ message: '请输入商品代码' }],
-                    })(
-                      <Input placeholder="请输入商品代码" />,
-                    )}
-                  </FormItem>
-                </Col>
-                <Col span={9}>
-                  <FormItem
-                    label="商品名称"
-                    {...formItemLayout}
-                  >
-                    {getFieldDecorator('name', {
-                      initialValue: toString(productData.name),
-                      rules: [{ required: true, message: '请输入商品名称' }],
-                    })(
-                      <Input placeholder="请输入商品名称" />,
-                    )}
-                  </FormItem>
-                </Col>
-                <Col span={7}>
-                  <FormItem
-                    label="英文名称"
-                    {...formItemLayout}
-                  >
-                    {getFieldDecorator('enName', {
-                      initialValue: toString(productData.enName),
-                      rules: [{ message: '请输入英文名称' }],
-                    })(
-                      <Input placeholder="请输入英文名称" />,
-                    )}
-                  </FormItem>
-                </Col>
-              </Row>
-              <Row gutter={10}>
-                <Col span={7}>
-                  <FormItem
-                    label="商品简称"
-                    {...formItemLayout}
-                  >
-                    {getFieldDecorator('itemShort', {
-                      initialValue: toString(productData.itemShort),
-                      rules: [{ message: '请输入商品简称' }],
-                    })(
-                      <Input placeholder="请输入商品简称" />,
-                    )}
-                  </FormItem>
-                </Col>
-                <Col span={9}>
                   <FormItem
                     label="所属类目"
                     {...formItemLayout}
@@ -359,13 +305,58 @@ class ProductsModal extends Component {
                         optionFilterProp="children"
                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       >
-                        {brands && brands.map(item => <Option key={item.id.toString()} value={item.name}>{item.name}</Option>)}
+                        {allBrands && allBrands.map(item => <Option key={item.name}>{item.name}</Option>)}
+                      </Select>,
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={7}>
+                  <FormItem
+                    label="男女款"
+                    {...formItemLayout}
+                  >
+                    {getFieldDecorator('sexStyle', {
+                      initialValue: productData.sexStyle,
+                    })(
+                      <Select placeholder="请选择" >
+                        <Option key="男款">男款</Option>
+                        <Option key="女款">女款</Option>
                       </Select>,
                     )}
                   </FormItem>
                 </Col>
               </Row>
-              <Row gutter={10}>
+              <Row>
+                <Col span={7}>
+                  <FormItem
+                    label="英文名称"
+                    {...formItemLayout}
+                  >
+                    {getFieldDecorator('enName', {
+                      initialValue: toString(productData.enName),
+                      rules: [{ message: '请输入英文名称' }],
+                    })(
+                      <Input placeholder="请输入英文名称" />,
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={14}>
+                  <FormItem
+                    label="商品名称"
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 19 }}
+                    style={{ marginLeft: 10 }}
+                  >
+                    {getFieldDecorator('name', {
+                      initialValue: toString(productData.name),
+                      rules: [{ required: true, message: '请输入商品名称' }],
+                    })(
+                      <Input placeholder="请输入商品名称" />,
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
                 <Col span={7}>
                   <FormItem
                     label="国家"
@@ -384,7 +375,7 @@ class ProductsModal extends Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={9}>
+                <Col span={7}>
                   <FormItem
                     label="币种"
                     {...formItemLayout}
@@ -417,7 +408,7 @@ class ProductsModal extends Component {
                   </FormItem>
                 </Col>
               </Row>
-              <Row gutter={10}>
+              <Row>
                 <Col span={7}>
                   <FormItem
                     label="销售开始时间"
@@ -431,7 +422,7 @@ class ProductsModal extends Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={9}>
+                <Col span={7}>
                   <FormItem
                     label="销售结束时间"
                     {...formItemLayout}
@@ -458,48 +449,7 @@ class ProductsModal extends Component {
                   </FormItem>
                 </Col>
               </Row>
-              <Row gutter={10}>
-                <Col span={7}>
-                  <FormItem
-                    label="联系人"
-                    {...formItemLayout}
-                  >
-                    {getFieldDecorator('contactPerson', {
-                      initialValue: toString(productData.contactPerson),
-                      rules: [{ message: '请输入联系人' }],
-                    })(
-                      <Input placeholder="请输入联系人" />,
-                    )}
-                  </FormItem>
-                </Col>
-                <Col span={9}>
-                  <FormItem
-                    label="产地"
-                    {...formItemLayout}
-                  >
-                    {getFieldDecorator('origin', {
-                      initialValue: toString(productData.origin),
-                      rules: [{ message: '请输入产地' }],
-                    })(
-                      <Input placeholder="请输入产地" />,
-                    )}
-                  </FormItem>
-                </Col>
-                <Col span={7}>
-                  <FormItem
-                    label="联系电话"
-                    {...formItemLayout}
-                  >
-                    {getFieldDecorator('contactTel', {
-                      initialValue: toString(productData.contactTel),
-                      rules: [{ validator: this.checkTel.bind(this) }],
-                    })(
-                      <Input placeholder="请输入联系电话" />,
-                    )}
-                  </FormItem>
-                </Col>
-              </Row>
-              <Row gutter={10}>
+              <Row>
                 <Col span={7}>
                   <FormItem
                     label="运费"
@@ -512,7 +462,7 @@ class ProductsModal extends Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={9}>
+                <Col span={7}>
                   <FormItem
                     label="发货方式"
                     {...formItemLayout}
@@ -575,7 +525,7 @@ class ProductsModal extends Component {
                   </FormItem>
                 </Col>
               </Row>
-              <Row gutter={10}>
+              <Row>
                 {fileListSource.length > 0 && <Col span={7}>
                   <FormItem
                     label="选择主图"
@@ -615,7 +565,7 @@ class ProductsModal extends Component {
 
 function mapStateToProps(state) {
   const { packageScales, scaleTypes } = state.sku;
-  // const { brands } = state.products;
+  // const { allBrands } = state.products;
   return {
     packageScales,
     scaleTypes,

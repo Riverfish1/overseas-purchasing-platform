@@ -127,7 +127,7 @@ class Products extends Component {
 
   render() {
     const p = this;
-    const { form, currentPage, currentPageSize, productsList = [], productsTotal, brands = [], productsValues = {}, tree = [] } = this.props;
+    const { form, currentPage, currentPageSize, productsList = [], productsTotal, allBrands = [], productsValues = {}, tree = [] } = this.props;
     const { getFieldDecorator, resetFields } = form;
     const formItemLayout = {
       labelCol: { span: 10 },
@@ -291,7 +291,7 @@ class Products extends Component {
                     optionFilterProp="children"
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
-                    {brands && brands.map(item => <Option key={item.name}>{item.name}</Option>)}
+                    {allBrands && allBrands.map(item => <Option key={item.name}>{item.name}</Option>)}
                   </Select>)}
               </FormItem>
             </Col>
@@ -338,7 +338,7 @@ class Products extends Component {
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
           modalValues={productsValues}
-          brands={brands}
+          allBrands={allBrands}
           tree={tree}
         />
       </div>
@@ -347,14 +347,14 @@ class Products extends Component {
 }
 
 function mapStateToProps(state) {
-  const { productsList, productsTotal, productsValues, brands, tree, currentPage, currentPageSize } = state.products;
+  const { productsList, productsTotal, productsValues, allBrands, tree, currentPage, currentPageSize } = state.products;
   return {
     productsList,
     productsTotal,
     productsValues,
     currentPage,
     currentPageSize,
-    brands,
+    allBrands,
     tree,
   };
 }

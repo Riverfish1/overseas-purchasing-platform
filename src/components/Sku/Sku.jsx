@@ -21,7 +21,7 @@ class Sku extends Component {
   handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
     const { skuPageSize } = this.props;
-    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
+    this.props.form.validateFields((err, fieldsValue) => {
       if (err) return;
       this.props.dispatch({
         type: 'sku/querySkuList',
@@ -82,7 +82,6 @@ class Sku extends Component {
 
   updateLockedSku(record) {
     const p = this;
-    const { skuPageSize, currentPageSkuIndex } = this.props;
     const { lockedNumGroup } = this.state;
     const num = lockedNumGroup[record.id];
     if (!num) {
@@ -99,7 +98,7 @@ class Sku extends Component {
           itemId: record.itemId,
           id: record.id,
         },
-        cb() { p.handleSubmit(null, currentPageSkuIndex, skuPageSize); },
+        cb() { p._refreshData(); },
       });
     });
   }
@@ -126,7 +125,7 @@ class Sku extends Component {
 
   render() {
     const p = this;
-    const { skuList = {}, skuTotal, currentPageSkuIndex, skuData, brands = [], productsList = [], form, tree = [], packageScales } = this.props;
+    const { skuList = {}, skuTotal, currentPageSkuIndex, skuData, brandList = [], productsList = [], form, tree = [], packageScales } = this.props;
     const { lockedPopoverVisible } = this.state;
     console.log(lockedPopoverVisible);
     const { getFieldDecorator } = form;
@@ -278,7 +277,7 @@ class Sku extends Component {
               >
                 {getFieldDecorator('brand', {})(
                   <Select placeholder="请选择品牌" combobox>
-                    {brands && brands.map(item => <Option key={item.name} value={item.name}>{item.name}</Option>)}
+                    {brandList && brandList.map(item => <Option key={item.name} value={item.name}>{item.name}</Option>)}
                   </Select>)}
               </FormItem>
             </Col>
@@ -316,7 +315,7 @@ class Sku extends Component {
           visible={this.state.modalVisible}
           close={this.closeModal.bind(this)}
           modalValues={skuData}
-          brands={brands}
+          brandList={brandList}
           productsList={productsList}
           packageScales={packageScales}
           dispatch={this.props.dispatch}
@@ -328,7 +327,7 @@ class Sku extends Component {
 
 function mapStateToProps(state) {
   const { skuList, skuTotal, skuPageSize, currentPageSkuIndex, skuData, packageScales } = state.sku;
-  const { brands, productsList, tree } = state.products;
+  const { brandList, productsList, tree } = state.products;
   return {
     skuList,
     skuTotal,
@@ -336,7 +335,7 @@ function mapStateToProps(state) {
     currentPageSkuIndex,
     skuData,
     packageScales,
-    brands,
+    brandList,
     productsList,
     tree,
   };

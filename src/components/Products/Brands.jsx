@@ -13,10 +13,14 @@ class Brands extends Component {
       title: '',
     };
   }
-  handleSubmit() {
-    this.props.dispatch({
-      type: 'products/queryBrands',
-      payload: {},
+  handleSubmit(e) {
+    if (e) e.preventDefault();
+    this.props.form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      this.props.dispatch({
+        type: 'products/queryBrands',
+        payload: { ...fieldsValue },
+      });
     });
   }
   handleCancel() {
@@ -46,9 +50,7 @@ class Brands extends Component {
       type: 'products/deleteBrand',
       payload: { id },
       cb() {
-        p.props.dispatch({
-          type: 'products/queryBrands',
-        });
+        p._refreshData();
       },
     });
   }
@@ -62,10 +64,7 @@ class Brands extends Component {
           payload: { ...values, id: brandValue.id },
           cb() {
             p.handleCancel();
-            p.props.dispatch({
-              type: 'products/queryBrands',
-              payload: {},
-            });
+            p._refreshData();
           },
         });
       } else {
@@ -74,10 +73,7 @@ class Brands extends Component {
           payload: { ...values },
           cb() {
             p.handleCancel();
-            p.props.dispatch({
-              type: 'products/queryBrands',
-              payload: {},
-            });
+            p._refreshData();
           },
         });
       }
@@ -88,7 +84,6 @@ class Brands extends Component {
     const { form, brandList = [], brandTotal, brandValue = {} } = this.props;
     const { visible, title } = this.state;
     const { getFieldDecorator } = form;
-    console.log(brandValue);
     const formItemLayout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 10 },
@@ -122,6 +117,34 @@ class Brands extends Component {
     return (
       <div>
         <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
+        <Form onSubmit={this.handleSubmit.bind(this)}>
+          <Row gutter={20} style={{ width: 800 }}>
+            <Col span="8">
+              <FormItem
+                label="中文名"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('nameChina', {})(
+                  <Input placeholder="请输入中文名" />)}
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="英文名"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('name', {})(
+                  <Input placeholder="请输入英文名" />)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row style={{ marginLeft: 13 }}>
+            <Col className="listBtnGroup">
+              <Button htmlType="submit" size="large" type="primary">查询</Button>
+              <Button size="large" type="ghost" onClick={() => { form.resetFields(); }}>清空</Button>
+            </Col>
+          </Row>
+        </Form>
         <Row className="operBtn">
           <Col>
             <Button type="primary" size="large" onClick={p.showModal.bind(p, null)}>新增品牌</Button>
@@ -137,7 +160,6 @@ class Brands extends Component {
               >
                 {getFieldDecorator('name', {
                   initialValue: brandValue.name,
-                  rules: [{ required: true, message: '请输入品牌名称' }],
                 })(
                   <Input placeholder="请输入品牌名称" />,
                 )}

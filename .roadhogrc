@@ -6,7 +6,7 @@
   "autoprefixer": null,
   "proxy": {
     "/": {
-      "target": "http://118.178.126.143/",
+      "target": "http://192.168.3.35:8080/",
       "changeOrigin": true,
       "pathRewrite": { "^/" : "" }
     }

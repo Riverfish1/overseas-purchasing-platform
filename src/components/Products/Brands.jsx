@@ -100,7 +100,7 @@ class Brands extends Component {
           return (
             <div>
               <a href="javascript:void(0)" onClick={p.showModal.bind(p, r.id)} >修改</a>
-              {/* <a href="javascript:void(0)" onClick={p.handleDelete.bind(p, r.id)} style={{ margin: '0 10px' }} >删除</a>*/}
+              <a href="javascript:void(0)" onClick={p.handleDelete.bind(p, r.id)} style={{ margin: '0 10px' }} >删除</a>
             </div>
           );
         },

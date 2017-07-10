@@ -321,6 +321,11 @@ class ProductsModal extends Component {
                       <Select placeholder="请选择" allowClear>
                         <Option key="男款">男款</Option>
                         <Option key="女款">女款</Option>
+                        <Option key="大童男款">大童男款</Option>
+                        <Option key="大童女款">大童女款</Option>
+                        <Option key="小童男款">小童男款</Option>
+                        <Option key="小童女款">小童女款</Option>
+                        <Option key="婴儿款">婴儿款</Option>
                       </Select>,
                     )}
                   </FormItem>

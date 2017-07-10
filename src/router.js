@@ -25,6 +25,7 @@ import AgencyType from './components/Agency/AgencyType';
 import Inventory from './components/Inventory/Inventory';
 import Warehouse from './components/Inventory/Warehouse'; // 仓库管理
 import Inout from './components/Inventory/Inout'; // 仓库管理
+import Out from './components/Inventory/Out'; // 仓库管理
 import Resource from './components/Permission/Resource';
 import Role from './components/Permission/Role';
 import User from './components/Permission/User';
@@ -83,6 +84,7 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INVENTORY_LIST}`} component={Inventory} />
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.WAREHOUSE}`} component={Warehouse} />
         <Route path={`/${routerCfg.INVENTORY}/${routerCfg.INOUT}`} component={Inout} />
+        <Route path={`/${routerCfg.INVENTORY}/${routerCfg.OUT}`} component={Out} />
         <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_SALE_BY_DAY}`} component={ReportSaleByDay} />
         <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_SALE_BY_CATEGORY}`} component={ReportSaleByCategory} />
         <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_SALE_BY_BRAND}`} component={ReportSaleByBrand} />

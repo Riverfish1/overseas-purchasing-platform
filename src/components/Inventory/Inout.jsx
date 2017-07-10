@@ -136,12 +136,12 @@ class Inout extends Component {
               >
                 {getFieldDecorator('operatorType', {})(
                   <Select placeholder="请选择操作类型" allowClear>
-                    <Option value={0}>采购入库</Option>
-                    <Option value={1}>销售出库</Option>
-                    <Option value={2}>在途入库</Option>
-                    <Option value={3}>库存盘入</Option>
-                    <Option value={4}>库存盘出</Option>
-                    <Option value={5}>采购在途</Option>
+                    <Option value="0">采购入库</Option>
+                    <Option value="1">销售出库</Option>
+                    <Option value="2">在途入库</Option>
+                    <Option value="3">库存盘入</Option>
+                    <Option value="4">库存盘出</Option>
+                    <Option value="5">采购在途</Option>
                   </Select>)}
               </FormItem>
             </Col>

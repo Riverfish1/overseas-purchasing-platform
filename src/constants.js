@@ -25,6 +25,7 @@ export const backendCfg = {
   inventoryList: 'inventory_list',
   warehouse: 'inventory_warehouse',
   inout: 'inventory_inout',
+  out: 'inventory_out',
   report: 'report',
   reportSaleByDay: 'report_sale_byday',
   reportSaleByCategory: 'report_sale_bycategory',
@@ -77,6 +78,7 @@ export const routerCfg = {
   INVENTORY_LIST: 'inventoryList',
   WAREHOUSE: 'warehouse', // 仓库管理
   INOUT: 'inout', // 出入库管理
+  OUT: 'out', // 出库单管理
   // 报表管理
   REPORT: 'report',
   REPORT_SALE_BY_DAY: 'reportSaleByDay',
@@ -138,6 +140,7 @@ export const originalNavigation = [
       { key: routerCfg.INVENTORY_LIST, name: '库存管理' },
       { key: routerCfg.WAREHOUSE, name: '仓库管理' },
       { key: routerCfg.INOUT, name: '出入库记录' },
+      { key: routerCfg.OUT, name: '出库单管理' },
     ],
   },
   { key: routerCfg.REPORT, name: '报表管理', icon: 'file',

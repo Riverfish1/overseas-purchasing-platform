@@ -77,7 +77,7 @@ class Warehouse extends Component {
         </Row>
         <Row>
           <Col>
-            <Table columns={columns} dataSource={wareList} rowKey={record => record.id} pagination={paginationProps} />
+            <Table columns={columns} bordered dataSource={wareList} rowKey={record => record.id} pagination={paginationProps} />
           </Col>
         </Row>
         <Modal

@@ -482,6 +482,19 @@ class ProductsModal extends Component {
                     )}
                   </FormItem>
                 </Col>
+                <Col span={7}>
+                  <FormItem
+                    label="商品代码"
+                    {...formItemLayout}
+                  >
+                    {getFieldDecorator('itemCode', {
+                      initialValue: toString(productData.itemCode),
+                      rules: [{ message: '请输入商品代码' }],
+                    })(
+                      <Input disabled={true} placeholder="请输入商品代码" />,
+                    )}
+                  </FormItem>
+                </Col>
                 <Col span={14}>
                   <FormItem
                     label="备注"

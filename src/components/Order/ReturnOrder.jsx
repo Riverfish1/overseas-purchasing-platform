@@ -228,7 +228,7 @@ class ReturnOrder extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('returnReason', {})(
-                  <Select placeholder="请选择">
+                  <Select placeholder="请选择" allowClear>
                     <Option key="发错货">发错货</Option>
                     <Option key="多发货">多发货</Option>
                     <Option key="采购不到">采购不到</Option>

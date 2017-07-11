@@ -222,10 +222,29 @@ class ReturnOrder extends Component {
             </Col>
           </Row>
           <Row gutter={20} style={{ width: 800 }}>
-            <Col style={{ marginLeft: 6 }}>
+            <Col span="8">
+              <FormItem
+                label="退单原因"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('returnReason', {})(
+                  <Select placeholder="请选择">
+                    <Option key="发错货">发错货</Option>
+                    <Option key="多发货">多发货</Option>
+                    <Option key="采购不到">采购不到</Option>
+                    <Option key="质量问题">质量问题</Option>
+                    <Option key="尺码问题">尺码问题</Option>
+                    <Option key="物流原因">物流原因</Option>
+                    <Option key="客户错误下单">客户错误下单</Option>
+                    <Option key="其他">其他</Option>
+                  </Select>,
+                )}
+              </FormItem>
+            </Col>
+            <Col span="12" style={{ marginLeft: 6 }}>
               <FormItem
                 label="退款时间"
-                labelCol={{ span: 3 }}
+                labelCol={{ span: 6 }}
               >
                 {getFieldDecorator('orderTime', {})(<RangePicker />)}
               </FormItem>

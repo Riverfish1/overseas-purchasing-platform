@@ -605,9 +605,9 @@ class ErpOrder extends Component {
               >
                 {getFieldDecorator('closeReason', {})(
                   <Select placeholder="请选择" allowClear>
-                    <Option key="退款">退款</Option>
+                    <Option key="退单">退单</Option>
                     <Option key="做错单">做错单</Option>
-                    <Option key="其它">其它</Option>
+                    <Option key="其他">其他</Option>
                   </Select>)}
               </FormItem>
             </Col>
@@ -644,9 +644,9 @@ class ErpOrder extends Component {
                 <Col span="8" style={{ marginTop: 6 }}>关闭理由：</Col>
                 <Col span="16">
                   <Select placeholder="请选择" onChange={p.handleCloseReason.bind(p)} style={{ width: '100%' }} value={closeReason || undefined}>
-                    <Option key="退款">退款</Option>
+                    <Option key="退单">退单</Option>
                     <Option key="做错单">做错单</Option>
-                    <Option key="其它">其它</Option>
+                    <Option key="其他">其他</Option>
                   </Select>
                 </Col>
               </Row>

@@ -184,8 +184,11 @@ class ReturnOrderModal extends Component {
                     <Select placeholder="请选择退单原因" allowClear>
                       <Option key="发错货">发错货</Option>
                       <Option key="多发货">多发货</Option>
+                      <Option key="采购不到">采购不到</Option>
                       <Option key="质量问题">质量问题</Option>
                       <Option key="尺码问题">尺码问题</Option>
+                      <Option key="物流原因">物流原因</Option>
+                      <Option key="客户错误下单">客户错误下单</Option>
                       <Option key="其他">其他</Option>
                     </Select>,
                   )}

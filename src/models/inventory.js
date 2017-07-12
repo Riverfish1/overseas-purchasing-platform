@@ -26,6 +26,7 @@ const addOut = ({ payload }) => fetch.post('/haierp1/inventory/inventoryOutAdd',
 const updateOut = ({ payload }) => fetch.post('/haierp1/inventory/inventoryOutUpdate', { data: payload }).catch(e => e);
 const queryOut = ({ payload }) => fetch.post('/haierp1/inventory/inventoryOutQuery', { data: payload }).catch(e => e);
 const confirmOut = ({ payload }) => fetch.post('/haierp1/inventory/inventoryOutConfirm', { data: payload }).catch(e => e);
+const deleteOut = ({ payload }) => fetch.post('/haierp1/inventory/inventoryOutDelete', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'inventory',
@@ -210,6 +211,13 @@ export default {
       const data = yield call(confirmOut, { payload });
       if (data.success) {
         message.success('确认出库成功');
+        cb();
+      }
+    },
+    * deleteOut({ payload, cb }, { call }) {
+      const data = yield call(deleteOut, { payload });
+      if (data.success) {
+        message.success('删除出库成功');
         cb();
       }
     },

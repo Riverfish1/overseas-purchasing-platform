@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Table, Row, Col, Button, Select, Input, DatePicker } from 'antd';
+import { Form, Table, Row, Col, Button, Select, Input, DatePicker, Popconfirm } from 'antd';
 
 import OutModal from './components/OutModal';
 
@@ -57,6 +57,14 @@ class Out extends Component {
     this.handleSubmit();
     this.setState({ visible: false });
   }
+  handleDelete(r) {
+    const p = this;
+    this.props.dispatch({
+      type: 'inventory/deleteOut',
+      payload: { id: r.id },
+      cb() { p.handleSubmit(); },
+    });
+  }
   render() {
     const p = this;
     const { list = [], total, form, wareList = [], currentPage, outValues } = this.props;
@@ -92,6 +100,9 @@ class Out extends Component {
           return (
             <div>
               <a onClick={p.showModal.bind(p, 'update', record)} style={{ marginRight: 10 }}>修改</a>
+              <Popconfirm onConfirm={p.handleDelete.bind(p, record)} title="确认删除？">
+                <a style={{ marginRight: 10 }}>删除</a>
+              </Popconfirm>
             </div>
           );
         },

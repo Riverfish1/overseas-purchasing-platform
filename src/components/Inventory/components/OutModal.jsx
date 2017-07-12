@@ -31,7 +31,7 @@ class OutModal extends Component {
       firstLoad = false;
     }
   }
-  handleConfirmOut() {
+  handleSave(type) {
     const p = this;
     const { form, wareList, data = {} } = this.props;
     const skuList = [];
@@ -65,18 +65,30 @@ class OutModal extends Component {
       }
       console.log(skuList);
       const outObj = { inventoryOutDetailListStr: JSON.stringify(skuList), warehouseId, warehouseName, remark };
-      if (data.id) {
-        p.props.dispatch({
-          type: 'inventory/updateOut',
-          payload: { ...outObj, id: data.id },
-          cb() { p.handleCancel(); },
-        });
-      } else {
-        p.props.dispatch({
-          type: 'inventory/addOut',
-          payload: { ...outObj },
-          cb() { p.handleCancel(); },
-        });
+      switch (type) {
+        case 'save':
+          if (data.id) {
+            p.props.dispatch({
+              type: 'inventory/updateOut',
+              payload: { ...outObj, id: data.id },
+              cb() { p.handleCancel(); },
+            });
+          } else {
+            p.props.dispatch({
+              type: 'inventory/addOut',
+              payload: { ...outObj },
+              cb() { p.handleCancel(); },
+            });
+          }
+          break;
+        case 'confirm':
+          p.props.dispatch({
+            type: 'inventory/confirmOut',
+            payload: { ...outObj, id: data.id },
+            cb() { p.handleCancel(); },
+          });
+          break;
+        default: return false;
       }
     });
   }
@@ -301,9 +313,16 @@ class OutModal extends Component {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
     };
+    const footerContent = (
+      <div>
+        <Button type="ghost" size="large" onClick={p.handleCancel.bind(p)}>取消</Button>
+        <Button type="primary" size="large" onClick={p.handleSave.bind(p, 'confirm')}>确认出库</Button>
+        <Button type="primary" size="large" onClick={p.handleSave.bind(p, 'save')}>保存出库单</Button>
+      </div>
+    );
     const columns = [
-      { title: 'SKU代码', key: 'skuCode', dataIndex: 'skuCode', width: 150 },
-      { title: '商品名称', key: 'itemName', dataIndex: 'itemName', width: 200 },
+      { title: 'SKU代码', key: 'skuCode', dataIndex: 'skuCode', width: 100 },
+      { title: '商品名称', key: 'itemName', dataIndex: 'itemName', width: 160 },
       { title: '商品图片',
         key: 'skuPic',
         dataIndex: 'skuPic',
@@ -320,6 +339,7 @@ class OutModal extends Component {
         },
       },
       { title: '仓库名称', key: 'warehouseName', dataIndex: 'warehouseName', width: 100 },
+      { title: '货架号', key: 'positionNo', dataIndex: 'positionNo', width: 60 },
       { title: 'UPC', key: 'upc', dataIndex: 'upc', width: 100 },
       { title: '颜色', key: 'color', dataIndex: 'color', width: 80 },
       { title: '尺寸', key: 'scale', dataIndex: 'scale', width: 80 },
@@ -328,7 +348,6 @@ class OutModal extends Component {
       { title: '现货占用', key: 'lockedInv', dataIndex: 'lockedInv', width: 80 },
       { title: '在途库存', key: 'transInv', dataIndex: 'transInv', width: 80 },
       { title: '在途占用', key: 'lockedTransInv', dataIndex: 'lockedTransInv', width: 80 },
-      { title: '货架号', key: 'positionNo', dataIndex: 'positionNo', width: 60 },
     ];
     const paginationProps = {
       total,
@@ -431,7 +450,7 @@ class OutModal extends Component {
                   rules: [{ required: true, message: '该项必填' }],
                 })(
                   <Popover
-                    overlayStyle={{ width: 800 }}
+                    overlayStyle={{ width: 900 }}
                     content={renderInventoryContent(r.key)}
                     title="搜索SKU"
                     trigger="click"
@@ -507,7 +526,7 @@ class OutModal extends Component {
         title="出库明细"
         width={800}
         onCancel={this.handleCancel.bind(this)}
-        onOk={this.handleConfirmOut.bind(this)}
+        footer={footerContent}
         maskClosable={false}
       >
         <Form>

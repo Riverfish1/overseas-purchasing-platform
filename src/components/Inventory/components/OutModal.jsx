@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Select, Popover, Modal, Row, Col, Button, Table, Popconfirm } from 'antd';
+import { Form, Input, InputNumber, Select, Popover, Modal, Row, Col, Button, Table, Popconfirm, message } from 'antd';
 import { connect } from 'dva';
 
 const FormItem = Form.Item;
@@ -18,12 +18,67 @@ class OutModal extends Component {
       checkId: [],
     };
   }
-  handleCancel() {
-    const { form, close } = this.props;
-    form.resetFields();
-    close();
+  componentWillReceiveProps(...args) {
+    const data = args[0];
+    console.log(data);
+    if (data.data && data.data.inventoryOutDetailList && this.state.outDetailList && !this.state.outDetailList.length) {
+      this.setState({
+        outDetailList: data.data.inventoryOutDetailList.map((el, index) => {
+          el.key = index + 1;
+          return el;
+        }),
+      });
+    }
   }
-  handleConfirmOut() {}
+  handleConfirmOut() {
+    const p = this;
+    const { form, wareList, data = {} } = this.props;
+    const skuList = [];
+    form.validateFieldsAndScroll((err, fieldsSku) => {
+      if (err) { return; }
+      console.log(fieldsSku);
+      let count = 1;
+      let warehouseId;
+      const { warehouseName, remark } = fieldsSku;
+      const keys = Object.keys(fieldsSku);
+      wareList.forEach((el) => {
+        if (el.name === fieldsSku.warehouseName) {
+          warehouseId = el.id;
+        }
+      });
+      while (Object.prototype.hasOwnProperty.call(fieldsSku, `r_${count}_skuCode`)) {
+        const skuSingle = {};
+        keys.forEach((key) => {
+          if (key.match(`r_${count}_`)) {
+            skuSingle[key.split(`r_${count}_`)[1]] = fieldsSku[key];
+          }
+        });
+        if (!skuSingle.id) delete skuSingle.id;
+        if (skuSingle.skuPic) delete skuSingle.skuPic;
+        skuList.push(skuSingle);
+        count += 1;
+      }
+      if (skuList.length < 1) {
+        message.error('请至少填写一项出库信息');
+        return;
+      }
+      console.log(skuList);
+      const outObj = { inventoryOutDetailListStr: JSON.stringify(skuList), warehouseId, warehouseName, remark };
+      if (data.id) {
+        p.props.dispatch({
+          type: 'inventory/updateOut',
+          payload: { ...outObj, id: data.id },
+          cb() { p.handleCancel(); },
+        });
+      } else {
+        p.props.dispatch({
+          type: 'inventory/addOut',
+          payload: { ...outObj },
+          cb() { p.handleCancel(); },
+        });
+      }
+    });
+  }
   addEmptyLine(num) {
     let { outDetailList } = this.state;
     if (!outDetailList) outDetailList = [];
@@ -37,6 +92,7 @@ class OutModal extends Component {
       const newId = currentId;
       const newItem = {
         id: '',
+        inventoryAreaId: '',
         key: newId,
         skuCode: '',
         skuId: '',
@@ -96,17 +152,21 @@ class OutModal extends Component {
       isAddedItem = true;
       this.props.list.forEach((value) => {
         console.log(value);
-        if (value.skuCode.toString() === props[0].skuCode.toString()) {
+        if (value.skuCode && value.skuCode.toString() === props[0].skuCode.toString()) {
           outDetailList.forEach((el) => {
             console.log(el.key, props[0].key);
             if (el.key.toString() === props[0].key.toString()) {
-              el.skuId = value.id;
+              el.inventoryAreaId = value.id;
               el.skuCode = value.skuCode;
               el.skuPic = value.skuPic;
+              el.itemName = value.itemName;
+              el.warehouseName = value.warehouseName;
+              el.positionNo = value.positionNo;
+              el.upc = value.upc;
             }
           });
           // console.log('first value: ', value);
-          batchUpdateFormValues[`r_${props[0].key}_skuId`] = value.id;
+          batchUpdateFormValues[`r_${props[0].key}_inventoryAreaId`] = value.id;
           batchUpdateFormValues[`r_${props[0].key}_skuCode`] = value.skuCode;
         }
       });
@@ -117,6 +177,7 @@ class OutModal extends Component {
       // 检验重复
       let isDuplicated = false;
       for (let j = 0; j < outDetailList.length; j += 1) {
+        console.log(outDetailList, props[i]);
         if (outDetailList[j].skuCode.toString() === props[i].skuCode.toString()) {
           isDuplicated = true;
           break;
@@ -129,6 +190,7 @@ class OutModal extends Component {
         const newId = outDetailList[outDetailList.length - 1].key + 1;
         const newItem = {
           id: '',
+          inventoryAreaId: '',
           key: newId,
           skuCode: '',
           skuId: '',
@@ -142,13 +204,17 @@ class OutModal extends Component {
 
         this.props.list.forEach((value) => {
           console.log(value, props[i]);
-          if (value.skuCode.toString() === props[i].skuCode.toString()) {
-            newItem.skuId = value.id;
+          if (value.skuCode && value.skuCode.toString() === props[i].skuCode.toString()) {
+            newItem.inventoryAreaId = value.id;
             newItem.skuCode = value.skuCode;
             newItem.skuPic = value.skuPic;
+            newItem.itemName = value.itemName;
+            newItem.warehouseName = value.warehouseName;
+            newItem.positionNo = value.positionNo;
+            newItem.upc = value.upc;
             // console.log('value: ', value);
 
-            batchUpdateFormValues[`r_${newId}_skuId`] = value.id;
+            batchUpdateFormValues[`r_${newId}_inventoryAreaId`] = value.id;
             batchUpdateFormValues[`r_${newId}_skuCode`] = value.skuCode;
           }
         });
@@ -163,7 +229,7 @@ class OutModal extends Component {
         // this[`r_${key}_skuCode`].refs.input.click();
         setTimeout(() => {
           // this.clearSelectedSku();
-          this.setState({ selectedSku: [] }, () => { isOperating = false; });
+          this.setState({ checkId: [] }, () => { isOperating = false; });
           if (isAddedItem) isAdditional = true;
         }, 300);
       }, 0);
@@ -186,7 +252,7 @@ class OutModal extends Component {
     const newData = this.state.outDetailList.filter(el => el.key !== key);
     this.setState({ outDetailList: newData });
   }
-  handleBatchAdd(key) {
+  handleBatchAdd(key) { // 批量添加
     if (!isOperating) {
       isOperating = true;
       const { checkId } = this.state;
@@ -195,7 +261,6 @@ class OutModal extends Component {
         let j = -1;
         for (let i = 0; i < checkId.length; i += 1) {
           j += 1;
-
           batchSelectParams.push({ key: key + j, skuCode: checkId[i].skuCode });
         }
         if (batchSelectParams.length > 0) this.batchAddProduct(batchSelectParams, key);
@@ -205,11 +270,12 @@ class OutModal extends Component {
       console.log('执行中无法操作');
     }
   }
-  clearValue() {
-    const { form } = this.props;
+  handleCancel() {
+    const { form, close } = this.props;
     this.setState({ outDetailList: undefined }, () => {
       form.resetFields();
     });
+    close();
   }
   clearSelected(visible) {
     if (!visible) {
@@ -223,6 +289,7 @@ class OutModal extends Component {
     const { visible, wareList = [], form, data = {}, list = [], total } = this.props;
     const { getFieldDecorator } = form;
     const { outDetailList } = this.state;
+    console.log(outDetailList);
     const formItemLayout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
@@ -277,7 +344,7 @@ class OutModal extends Component {
     };
     function renderInventoryContent(key) {
       return (
-        <div style={{ width: 900 }}>
+        <div style={{ width: 750 }}>
           <Row>
             <Col span="7">
               <FormItem
@@ -323,7 +390,12 @@ class OutModal extends Component {
             </Col>
           </Row>
           <Row>
-            <Button type="primary" onClick={p.handleBatchAdd.bind(p, key)} style={{ position: 'absolute', bottom: 10, left: 0 }} disabled={p.state.checkId.length === 0}>批量添加</Button>
+            <Button
+              type="primary"
+              onClick={p.handleBatchAdd.bind(p, key)}
+              style={{ position: 'absolute', bottom: 10, left: 0 }}
+              disabled={p.state.checkId.length === 0}
+            >批量添加</Button>
             <Table
               columns={columns}
               dataSource={list}
@@ -343,7 +415,7 @@ class OutModal extends Component {
         { title: <font color="#00f">商品SKU</font>,
           dataIndex: 'skuCode',
           key: 'skuCode',
-          width: '10%',
+          width: 150,
           render(t, r) {
             return (
               <FormItem>
@@ -352,7 +424,7 @@ class OutModal extends Component {
                   rules: [{ required: true, message: '该项必填' }],
                 })(
                   <Popover
-                    overlayStyle={{ width: 1000 }}
+                    overlayStyle={{ width: 800 }}
                     content={renderInventoryContent(r.key)}
                     title="搜索SKU"
                     trigger="click"
@@ -365,40 +437,34 @@ class OutModal extends Component {
             );
           },
         },
-        { title: '货架号ID',
-          dataIndex: 'inventoryAreaId',
-          key: 'inventoryAreaId',
-          render(t, r) {
-            return (
-              <FormItem>
-                {getFieldDecorator(`r_${r.key}_inventoryAreaId`, {
-                  initialValue: t,
-                  rules: [{ required: true, message: '请选择' }],
-                })(
-                  <Input placeholder="请选择" />,
-                )}
-              </FormItem>
-            );
-          },
-        },
         { title: 'SKU数量',
           dataIndex: 'quantity',
           key: 'quantity',
+          width: 100,
           render(t, r) {
-            console.log(r);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_quantity`, {
                   initialValue: t,
                   rules: [{ required: true, message: '请输入' }],
                 })(
-                  <Input placeholder="请输入" />,
+                  <InputNumber placeholder="请输入" />,
+                )}
+                {getFieldDecorator(`r_${r.key}_inventoryAreaId`, {
+                  initialValue: r.inventoryAreaId,
+                })(
+                  <Input placeholder="请搜索" ref={(c) => { p[`r_${r.key}_inventoryAreaId`] = c; }} style={{ display: 'none' }} />,
                 )}
               </FormItem>
             );
           },
         },
-        { title: '商品名称', key: 'itemName', dataIndex: 'itemName', width: 200 },
+        { title: '商品名称', key: 'itemName', dataIndex: 'itemName', width: 150 },
+        { title: '仓库名称', key: 'warehouseName', dataIndex: 'warehouseName', width: 100 },
+        { title: 'UPC', key: 'upc', dataIndex: 'upc', width: 100 },
+        /* title: '尺码', key: 'scale', dataIndex: 'scale', width: 80 },
+        { title: '颜色', key: 'color', dataIndex: 'color', width: 80 },*/
+        { title: '货架号', key: 'positionNo', dataIndex: 'positionNo', width: 80 },
         { title: '商品图片',
           key: 'skuPic',
           dataIndex: 'skuPic',
@@ -432,7 +498,7 @@ class OutModal extends Component {
       <Modal
         visible={visible}
         title="出库明细"
-        width={800}
+        width={900}
         onCancel={this.handleCancel.bind(this)}
         onOk={this.handleConfirmOut.bind(this)}
         maskClosable={false}

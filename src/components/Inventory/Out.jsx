@@ -51,9 +51,10 @@ class Out extends Component {
   }
   closeModal() {
     this.props.dispatch({
-      type: 'saveOut',
+      type: 'inventory/saveOut',
       payload: {},
     });
+    this.handleSubmit();
     this.setState({ visible: false });
   }
   render() {
@@ -86,12 +87,11 @@ class Out extends Component {
       { title: '描述', key: 'remark', dataIndex: 'remark', width: 80 },
       { title: '操作',
         key: 'oper',
-        width: 130,
+        width: 80,
         render(text, record) {
           return (
             <div>
               <a onClick={p.showModal.bind(p, 'update', record)} style={{ marginRight: 10 }}>修改</a>
-              <a >查看明细</a>
             </div>
           );
         },

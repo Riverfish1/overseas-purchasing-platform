@@ -8,7 +8,7 @@ const { Option } = Select;
 let latestSearch = {};
 let isAdditional = false; // 是否追加
 let isOperating = false; // 是否正在添加
-
+let firstLoad = true;
 
 class OutModal extends Component {
   constructor() {
@@ -21,13 +21,14 @@ class OutModal extends Component {
   componentWillReceiveProps(...args) {
     const data = args[0];
     console.log(data);
-    if (data.data && data.data.inventoryOutDetailList && this.state.outDetailList && !this.state.outDetailList.length) {
+    if (data.data && data.data.inventoryOutDetailList && firstLoad) {
       this.setState({
         outDetailList: data.data.inventoryOutDetailList.map((el, index) => {
           el.key = index + 1;
           return el;
         }),
       });
+      firstLoad = false;
     }
   }
   handleConfirmOut() {
@@ -85,7 +86,10 @@ class OutModal extends Component {
     const skuLen = outDetailList ? outDetailList.length : 0;
     const lastId = skuLen < 1 ? 0 : outDetailList[outDetailList.length - 1].key;
     const looptime = typeof num === 'number' ? num : 1;
-
+    this.props.dispatch({
+      type: 'inventory/queryList',
+      payload: {},
+    });
     let currentId = parseInt(lastId, 10);
     for (let i = 0; i < looptime; i += 1) {
       currentId += 1;
@@ -152,7 +156,7 @@ class OutModal extends Component {
       isAddedItem = true;
       this.props.list.forEach((value) => {
         console.log(value);
-        if (value.skuCode && value.skuCode.toString() === props[0].skuCode.toString()) {
+        if (value.id && value.id.toString() === props[0].id.toString()) {
           outDetailList.forEach((el) => {
             console.log(el.key, props[0].key);
             if (el.key.toString() === props[0].key.toString()) {
@@ -204,7 +208,7 @@ class OutModal extends Component {
 
         this.props.list.forEach((value) => {
           console.log(value, props[i]);
-          if (value.skuCode && value.skuCode.toString() === props[i].skuCode.toString()) {
+          if (value.id && value.id.toString() === props[i].id.toString()) {
             newItem.inventoryAreaId = value.id;
             newItem.skuCode = value.skuCode;
             newItem.skuPic = value.skuPic;
@@ -237,7 +241,7 @@ class OutModal extends Component {
   }
   doSearch() {
     latestSearch = {
-      itemName: this.itemName && this.itemName.refs.input.value,
+      positionNo: this.positionNo && this.positionNo.refs.input.value,
       skuCode: this.skuCode && this.skuCode.refs.input.value,
       upc: this.upc && this.upc.refs.input.value,
     };
@@ -245,6 +249,7 @@ class OutModal extends Component {
       type: 'inventory/queryList',
       payload: {
         ...latestSearch,
+        pageIndex: 1,
       },
     });
   }
@@ -256,12 +261,13 @@ class OutModal extends Component {
     if (!isOperating) {
       isOperating = true;
       const { checkId } = this.state;
+      console.log(checkId);
       const batchSelectParams = [];
       setTimeout(() => {
         let j = -1;
         for (let i = 0; i < checkId.length; i += 1) {
           j += 1;
-          batchSelectParams.push({ key: key + j, skuCode: checkId[i].skuCode });
+          batchSelectParams.push({ key: key + j, skuCode: checkId[i].skuCode, id: checkId[i].id });
         }
         if (batchSelectParams.length > 0) this.batchAddProduct(batchSelectParams, key);
         else isOperating = false;
@@ -271,6 +277,7 @@ class OutModal extends Component {
     }
   }
   handleCancel() {
+    firstLoad = true;
     const { form, close } = this.props;
     this.setState({ outDetailList: undefined }, () => {
       form.resetFields();
@@ -348,14 +355,14 @@ class OutModal extends Component {
           <Row>
             <Col span="7">
               <FormItem
-                label="商品名称"
+                label="货架号"
                 labelCol={{ span: 6 }}
                 wrapperCol={{ span: 16 }}
               >
                 <Input
                   size="default"
-                  placeholder="请输入商品名称"
-                  ref={(c) => { p.itemName = c; }}
+                  placeholder="请输入货架号"
+                  ref={(c) => { p.positionNo = c; }}
                 />
               </FormItem>
             </Col>

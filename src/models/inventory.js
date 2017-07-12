@@ -68,7 +68,6 @@ export default {
           setTimeout(() => {
             dispatch({ type: 'queryOutList', payload: { pageIndex: 1 } });
             dispatch({ type: 'queryWareList', payload: { pageIndex: 1 } });
-            dispatch({ type: 'queryList', payload: { pageIndex: 1 } });
           }, 0);
         }
       });

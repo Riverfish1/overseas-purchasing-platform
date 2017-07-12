@@ -419,7 +419,7 @@ class OutModal extends Component {
     }
     const modalTableProps = {
       columns: [
-        { title: <font color="#00f">商品SKU</font>,
+        { title: '商品SKU',
           dataIndex: 'skuCode',
           key: 'skuCode',
           width: 150,
@@ -444,7 +444,7 @@ class OutModal extends Component {
             );
           },
         },
-        { title: 'SKU数量',
+        { title: '出库数量',
           dataIndex: 'quantity',
           key: 'quantity',
           width: 100,
@@ -467,7 +467,6 @@ class OutModal extends Component {
           },
         },
         { title: '商品名称', key: 'itemName', dataIndex: 'itemName', width: 150 },
-        { title: '仓库名称', key: 'warehouseName', dataIndex: 'warehouseName', width: 100 },
         { title: 'UPC', key: 'upc', dataIndex: 'upc', width: 100 },
         /* title: '尺码', key: 'scale', dataIndex: 'scale', width: 80 },
         { title: '颜色', key: 'color', dataIndex: 'color', width: 80 },*/
@@ -499,13 +498,14 @@ class OutModal extends Component {
         },
       ],
       dataSource: outDetailList,
+      bordered: true,
       pagination: false,
     };
     return (
       <Modal
         visible={visible}
         title="出库明细"
-        width={900}
+        width={800}
         onCancel={this.handleCancel.bind(this)}
         onOk={this.handleConfirmOut.bind(this)}
         maskClosable={false}
@@ -542,9 +542,9 @@ class OutModal extends Component {
           </Row>
           <Row style={{ paddingBottom: 10 }}>
             <Col style={{ float: 'left', marginTop: 6 }}>
-              <font size="3" color="#00f">出库单明细</font>
+              <font size="3">出库单明细</font>
             </Col>
-            <Col style={{ float: 'right', marginRight: 10 }}>
+            <Col style={{ float: 'right' }}>
               <Button type="primary" onClick={p.addEmptyLine.bind(p)}>添加出库明细</Button>
             </Col>
           </Row>

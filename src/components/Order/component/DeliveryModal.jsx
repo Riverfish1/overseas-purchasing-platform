@@ -267,7 +267,7 @@ class DeliveryModal extends Component {
                   })(
                     <Select placeholder="请选择物流公司名称" allowClear>
                       {deliveryCompanyList.map(v => (
-                        <Option value={v.name} key={v.name}>{v.name}</Option>
+                        <Option key={v.name}>{v.name}</Option>
                       ))}
                     </Select>,
                   )}

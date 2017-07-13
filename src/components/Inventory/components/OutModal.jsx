@@ -8,27 +8,25 @@ const { Option } = Select;
 let latestSearch = {};
 let isAdditional = false; // 是否追加
 let isOperating = false; // 是否正在添加
-let firstLoad = true;
 
 class OutModal extends Component {
   constructor() {
     super();
     this.state = {
-      outDetailList: [],
+      outDetailList: undefined,
       checkId: [],
     };
   }
   componentWillReceiveProps(...args) {
-    const data = args[0];
-    console.log(data);
-    if (data.data && data.data.inventoryOutDetailList && firstLoad) {
+    const props = args[0];
+    const { data } = props;
+    if (data && data.inventoryOutDetailList && this.state.outDetailList === undefined) {
       this.setState({
-        outDetailList: data.data.inventoryOutDetailList.map((el, index) => {
+        outDetailList: data.inventoryOutDetailList.map((el, index) => {
           el.key = index + 1;
           return el;
         }),
       });
-      firstLoad = false;
     }
   }
   handleSave(type) {
@@ -37,7 +35,6 @@ class OutModal extends Component {
     const skuList = [];
     form.validateFieldsAndScroll((err, fieldsSku) => {
       if (err) { return; }
-      console.log(fieldsSku);
       let count = 1;
       let warehouseId;
       const { warehouseName, remark } = fieldsSku;
@@ -63,7 +60,6 @@ class OutModal extends Component {
         message.error('请至少填写一项出库信息');
         return;
       }
-      console.log(skuList);
       const outObj = { inventoryOutDetailListStr: JSON.stringify(skuList), warehouseId, warehouseName, remark };
       switch (type) {
         case 'save':
@@ -131,7 +127,6 @@ class OutModal extends Component {
     });
   }
   batchAddProduct(props) {
-    console.log(props);
     let { outDetailList } = this.state;
     if (!outDetailList) outDetailList = [];
     const skuLen = outDetailList ? outDetailList.length : 0;
@@ -167,10 +162,8 @@ class OutModal extends Component {
 
       isAddedItem = true;
       this.props.list.forEach((value) => {
-        console.log(value);
         if (value.id && value.id.toString() === props[0].id.toString()) {
           outDetailList.forEach((el) => {
-            console.log(el.key, props[0].key);
             if (el.key.toString() === props[0].key.toString()) {
               el.inventoryAreaId = value.id;
               el.skuCode = value.skuCode;
@@ -181,7 +174,6 @@ class OutModal extends Component {
               el.upc = value.upc;
             }
           });
-          // console.log('first value: ', value);
           batchUpdateFormValues[`r_${props[0].key}_inventoryAreaId`] = value.id;
           batchUpdateFormValues[`r_${props[0].key}_skuCode`] = value.skuCode;
         }
@@ -193,7 +185,6 @@ class OutModal extends Component {
       // 检验重复
       let isDuplicated = false;
       for (let j = 0; j < outDetailList.length; j += 1) {
-        console.log(outDetailList, props[i]);
         if (outDetailList[j].skuCode.toString() === props[i].skuCode.toString()) {
           isDuplicated = true;
           break;
@@ -219,7 +210,6 @@ class OutModal extends Component {
         };
 
         this.props.list.forEach((value) => {
-          console.log(value, props[i]);
           if (value.id && value.id.toString() === props[i].id.toString()) {
             newItem.inventoryAreaId = value.id;
             newItem.skuCode = value.skuCode;
@@ -228,7 +218,6 @@ class OutModal extends Component {
             newItem.warehouseName = value.warehouseName;
             newItem.positionNo = value.positionNo;
             newItem.upc = value.upc;
-            // console.log('value: ', value);
 
             batchUpdateFormValues[`r_${newId}_inventoryAreaId`] = value.id;
             batchUpdateFormValues[`r_${newId}_skuCode`] = value.skuCode;
@@ -267,13 +256,15 @@ class OutModal extends Component {
   }
   handleDeleteDetail(key) {
     const newData = this.state.outDetailList.filter(el => el.key !== key);
+    newData.forEach((el) => {
+      if (el.key > key) { el.key -= 1; }
+    });
     this.setState({ outDetailList: newData });
   }
   handleBatchAdd(key) { // 批量添加
     if (!isOperating) {
       isOperating = true;
       const { checkId } = this.state;
-      console.log(checkId);
       const batchSelectParams = [];
       setTimeout(() => {
         let j = -1;
@@ -289,11 +280,12 @@ class OutModal extends Component {
     }
   }
   handleCancel() {
-    firstLoad = true;
     const { form, close } = this.props;
-    this.setState({ outDetailList: undefined }, () => {
-      form.resetFields();
-    });
+    setTimeout(() => {
+      this.setState({ outDetailList: undefined }, () => {
+        form.resetFields();
+      });
+    }, 300);
     close();
   }
   clearSelected(visible) {
@@ -308,7 +300,6 @@ class OutModal extends Component {
     const { visible, wareList = [], form, data = {}, list = [], total } = this.props;
     const { getFieldDecorator } = form;
     const { outDetailList } = this.state;
-    console.log(outDetailList);
     const formItemLayout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },

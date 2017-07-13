@@ -222,6 +222,9 @@ class ProductTable extends Component {
 
   handleDelete(key) {
     const newData = this.state.skuData.filter(el => el.key !== key);
+    newData.forEach((el) => {
+      if (el.key > key) { el.key -= 1; }
+    });
     this.setState({ skuData: newData });
   }
 

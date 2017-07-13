@@ -361,7 +361,7 @@ class OutModal extends Component {
     };
     function renderInventoryContent(key) {
       return (
-        <div style={{ width: 750 }}>
+        <div>
           <Row>
             <Col span="7">
               <FormItem

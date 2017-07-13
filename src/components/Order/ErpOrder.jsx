@@ -108,7 +108,6 @@ class ErpOrder extends Component {
   }
   closeErpOrder(type) { // 子订单关闭
     const p = this;
-    console.log(p.state.closeReason);
     const { dispatch } = this.props;
     switch (type) {
       case 'save':

@@ -144,6 +144,7 @@ class ShippingOrder extends Component {
           }
         },
       },
+      { title: '包裹状态', dataIndex: 'tplPkgStatus', key: 'tplPkgStatus', width: 80, render(text) { return text || '-'; } },
       { title: '创建者', dataIndex: 'userCreate', key: 'userCreate', width: 80, render(t) { return <font color="blue">{t}</font>; } },
       { title: '打印者', dataIndex: 'userPrinter', key: 'userPrinter', width: 80, render(t) { return <font color="red">{t}</font>; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 70, render(text) { return text || '-'; } },

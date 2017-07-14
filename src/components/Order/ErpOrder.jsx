@@ -365,13 +365,15 @@ class ErpOrder extends Component {
             case 4: return <font color="sienna">混合备货完成</font>;
             case 9: return <font color="red">已释放</font>;
             case 10: return <font color="blue">已备货</font>;
-            case 11: return <font color="#FF1493">预出库</font>;
+            case 11: return <font color="green">预出库</font>;
             default: return '-';
           }
         },
       },
       { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 80, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 110, render(text) { return text || '-'; } },
+      { title: '物流公司', dataIndex: 'logisticCompany', key: 'logisticCompany', width: 50, render(text) { return text || '-'; } },
+      { title: '物流单号', dataIndex: 'logisticNo', key: 'logisticNo', width: 100, render(text) { return <font color='purple'>{text}</font> || '-'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 70, render(text) { return text || '-'; } },
       { title: '尺码', dataIndex: 'scale', key: 'scale', width: 50, render(text) { return text || '-'; } },
       { title: '图片',
@@ -395,6 +397,7 @@ class ErpOrder extends Component {
       { title: '发货方式', dataIndex: 'logisticType', key: 'logisticType', width: 60, render(text) { return text === 0 ? '直邮' : (text === 1 ? '拼邮' : '-'); } },
       { title: '仓库名', dataIndex: 'warehouseName', key: 'warehouseName', width: 60, render(text) { return text || '-'; } },
       { title: '商品数量', dataIndex: 'quantity', key: 'quantity', width: 50, render(text) { return text || '-'; } },
+      { title: '商品单价', dataIndex: 'salePrice', key: 'salePrice', width: 80, render(text) { return text || '-'; } },
       // { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: 220 },
       // { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
       { title: '备注', dataIndex: 'remark', key: 'remark', render(text) { return text || '-'; } },

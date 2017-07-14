@@ -129,7 +129,7 @@ class ShippingOrder extends Component {
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 120, render(text) { return text || '-'; } },
       { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 80, render(text) { return text || '-'; } },
       { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 85, render(text) { return text || '-'; } },
-      { title: '物流订单号', dataIndex: 'logisticNo', key: 'logisticNo', width: 80, render(text) { return text || '-'; } },
+      { title: '物流订单号', dataIndex: 'logisticNo', key: 'logisticNo', width: 80, render(text) { return <font color='purple'>{text}</font> || '-'; } },
       { title: '物流公司名称', dataIndex: 'logisticCompany', width: 100, key: 'logisticCompany', render(text) { return text || '-'; } },
       { title: '物流状态',
         dataIndex: 'status',

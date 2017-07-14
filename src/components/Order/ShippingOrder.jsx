@@ -20,8 +20,9 @@ class ShippingOrder extends Component {
       showDetail: false,
     };
   }
-  handleSubmit(e, page) {
+  handleSubmit(e, page, pageSize) {
     if (e) e.preventDefault();
+    const { currentPageSize } = this.props;
     this.props.form.validateFields((err, values) => {
       if (err) return;
       if (values.orderTime && values.orderTime[0] && values.orderTime[1]) {
@@ -31,7 +32,11 @@ class ShippingOrder extends Component {
       delete values.orderTime;
       this.props.dispatch({
         type: 'order/queryShippingOrderList',
-        payload: { ...values, pageIndex: typeof page === 'number' ? page : 1 },
+        payload: {
+          ...values,
+          pageIndex: typeof page === 'number' ? page : 1,
+          pageSize: pageSize || currentPageSize,
+        },
       });
     });
   }
@@ -96,7 +101,7 @@ class ShippingOrder extends Component {
   }
   render() {
     const p = this;
-    const { shippingOrderList, shippingOrderTotal, currentPage, deliveryCompanyList = [], form, dispatch } = p.props;
+    const { shippingOrderList, shippingOrderTotal, currentPage, currentPageSize, deliveryCompanyList = [], form, dispatch } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { visible, data, shippingDetail, showDetail } = p.state;
 
@@ -112,11 +117,16 @@ class ShippingOrder extends Component {
     };
 
     const pagination = {
-      pageSize: 20,
+      pageSize: currentPageSize,
+      showSizeChanger: true,
       current: currentPage,
       total: shippingOrderTotal,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);
+      },
+      pageSizeOptions: ['20', '50', '100', '200', '500'],
+      onShowSizeChange(current, size) {
+        p.handleSubmit(null, 1, size);
       },
     };
 
@@ -129,7 +139,7 @@ class ShippingOrder extends Component {
       { title: '子订单号', dataIndex: 'erpNo', key: 'erpNo', width: 120, render(text) { return text || '-'; } },
       { title: '收件人', dataIndex: 'receiver', key: 'receiver', width: 80, render(text) { return text || '-'; } },
       { title: '联系电话', dataIndex: 'telephone', key: 'telephone', width: 85, render(text) { return text || '-'; } },
-      { title: '物流订单号', dataIndex: 'logisticNo', key: 'logisticNo', width: 80, render(text) { return <font color='purple'>{text}</font> || '-'; } },
+      { title: '物流订单号', dataIndex: 'logisticNo', key: 'logisticNo', width: 80, render(text) { return <font color="purple">{text}</font> || '-'; } },
       { title: '物流公司名称', dataIndex: 'logisticCompany', width: 100, key: 'logisticCompany', render(text) { return text || '-'; } },
       { title: '物流状态',
         dataIndex: 'status',
@@ -340,8 +350,8 @@ class ShippingOrder extends Component {
 }
 
 function mapStateToProps(state) {
-  const { shippingOrderList, deliveryCompanyList, shippingOrderTotal, shippingCurrentPage } = state.order;
-  return { shippingOrderList, deliveryCompanyList, shippingOrderTotal, currentPage: shippingCurrentPage };
+  const { shippingOrderList, deliveryCompanyList, shippingOrderTotal, shippingCurrentPage, shippingCurrentPageSize } = state.order;
+  return { shippingOrderList, deliveryCompanyList, shippingOrderTotal, currentPage: shippingCurrentPage, currentPageSize: shippingCurrentPageSize };
 }
 
 export default connect(mapStateToProps)(Form.create()(ShippingOrder));

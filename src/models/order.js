@@ -67,6 +67,7 @@ export default {
     // 发货单
     shippingOrderList: [],
     shippingCurrentPage: 1,
+    shippingCurrentPageSize: 20,
     shippingOrderTotal: 1,
     // 物流公司列表
     deliveryCompanyList: [],
@@ -111,6 +112,9 @@ export default {
     // 发货单
     saveShippingCurrentPage(state, { payload }) {
       return { ...state, shippingCurrentPage: payload.pageIndex };
+    },
+    saveShippingCurrentPageSize(state, { payload }) {
+      return { ...state, shippingCurrentPageSize: payload.pageSize };
     },
     saveShippingOrderList(state, { payload }) {
       return { ...state, shippingOrderList: payload.data, shippingOrderTotal: payload.totalCount };
@@ -316,11 +320,16 @@ export default {
     // 发货单
     * queryShippingOrderList({ payload }, { call, put, select }) {
       let pageIndex = yield select(({ order }) => order.shippingCurrentPage);
+      let pageSize = yield select(({ order }) => order.shippingCurrentPageSize);
       if (payload && payload.pageIndex) {
         pageIndex = payload.pageIndex;
         yield put({ type: 'saveShippingCurrentPage', payload });
       }
-      const data = yield call(queryShippingOrderList, { payload: { ...payload, pageIndex } });
+      if (payload && payload.pageSize) {
+        pageSize = payload.pageSize;
+        yield put({ type: 'saveShippingCurrentPageSize', payload });
+      }
+      const data = yield call(queryShippingOrderList, { payload: { ...payload, pageIndex, pageSize } });
       if (data.success) {
         yield put({
           type: 'saveShippingOrderList',

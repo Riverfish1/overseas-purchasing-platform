@@ -6,6 +6,7 @@ import check from '../../../utils/checkLib';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+let firstLoad = true;
 
 class DeliveryModal extends Component {
   constructor(props) {
@@ -16,8 +17,9 @@ class DeliveryModal extends Component {
   }
   componentWillReceiveProps(...args) {
     const { checkId, visible } = args[0];
-    if (checkId && visible) {
+    if (checkId && visible && firstLoad) {
       this.setState({ checkId });
+      firstLoad = false;
     }
   }
   handleSubmit() {
@@ -44,8 +46,11 @@ class DeliveryModal extends Component {
   }
   handleCancel() {
     const { form, closeModal } = this.props;
-    this.setState({ checkId: [] });
-    form.resetFields();
+    setTimeout(() => {
+      this.setState({ checkId: [] });
+      firstLoad = true;
+      form.resetFields();
+    }, 300);
     closeModal();
   }
   checkPhone(rules, value, cb) {

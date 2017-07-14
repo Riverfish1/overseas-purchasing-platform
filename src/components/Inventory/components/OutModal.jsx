@@ -33,6 +33,7 @@ class OutModal extends Component {
     const p = this;
     const { form, wareList, data = {} } = this.props;
     const skuList = [];
+    console.log(this.state.outDetailList);
     form.validateFieldsAndScroll((err, fieldsSku) => {
       if (err) { return; }
       let count = 1;
@@ -56,6 +57,7 @@ class OutModal extends Component {
         skuList.push(skuSingle);
         count += 1;
       }
+      console.log(skuList);
       if (skuList.length < 1) {
         message.error('请至少填写一项出库信息');
         return;
@@ -256,9 +258,9 @@ class OutModal extends Component {
   }
   handleDeleteDetail(key) {
     const newData = this.state.outDetailList.filter(el => el.key !== key);
-    newData.forEach((el) => {
-      if (el.key > key) { el.key -= 1; }
-    });
+    // newData.forEach((el) => {
+    //   if (el.key > key) { el.key -= 1; }
+    // });
     this.setState({ outDetailList: newData });
   }
   handleBatchAdd(key) { // 批量添加
@@ -304,6 +306,7 @@ class OutModal extends Component {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
     };
+    console.log(outDetailList);
     const footerContent = (
       <div>
         <Button type="ghost" size="large" onClick={p.handleCancel.bind(p)}>取消</Button>

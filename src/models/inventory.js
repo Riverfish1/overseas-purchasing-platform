@@ -198,7 +198,6 @@ export default {
       }
     },
     * queryOut({ payload }, { call, put }) {
-      console.log(payload);
       const data = yield call(queryOut, { payload });
       if (data.success) {
         yield put({

@@ -373,7 +373,7 @@ class ErpOrder extends Component {
       { title: '销售时间', dataIndex: 'orderTime', key: 'orderTime', width: 80, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 110, render(text) { return text || '-'; } },
       { title: '物流公司', dataIndex: 'logisticCompany', key: 'logisticCompany', width: 50, render(text) { return text || '-'; } },
-      { title: '物流单号', dataIndex: 'logisticNo', key: 'logisticNo', width: 100, render(text) { return <font color='purple'>{text}</font> || '-'; } },
+      { title: '物流单号', dataIndex: 'logisticNo', key: 'logisticNo', width: 100, render(text) { return <font color="purple">{text}</font> || '-'; } },
       { title: '颜色', dataIndex: 'color', key: 'color', width: 70, render(text) { return text || '-'; } },
       { title: '尺码', dataIndex: 'scale', key: 'scale', width: 50, render(text) { return text || '-'; } },
       { title: '图片',
@@ -400,7 +400,7 @@ class ErpOrder extends Component {
       { title: '商品单价', dataIndex: 'salePrice', key: 'salePrice', width: 80, render(text) { return text || '-'; } },
       // { title: '身份证号', dataIndex: 'idCard', key: 'idCard', width: 220 },
       // { title: '创建时间', dataIndex: 'gmtCreate', key: 'gmtCreate', width: 200 },
-      { title: '备注', dataIndex: 'remark', key: 'remark', render(text) { return text || '-'; } },
+      { title: '备注', dataIndex: 'remark', key: 'remark', width: 120, render(text) { return text || '-'; } },
       { title: '操作',
         dataIndex: 'operator',
         key: 'operator',
@@ -685,7 +685,7 @@ class ErpOrder extends Component {
           dataSource={erpOrderList}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: 1800, y: 500 }}
+          scroll={{ x: 2200, y: 500 }}
           bordered={true}
         />
         <ErpOrderModal

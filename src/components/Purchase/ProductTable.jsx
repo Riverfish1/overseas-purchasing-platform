@@ -48,21 +48,21 @@ class ProductTable extends Component {
       if (err) { return; }
       let count = 1;
       const keys = Object.keys(fieldsSku);
-      while (Object.prototype.hasOwnProperty.call(fieldsSku, `r_${count}_skuCode`)) {
-        const skuSingle = {};
-        keys.forEach((key) => {
-          // if (key === `r_${count}_taskStartTime`) fieldsSku[`r_${count}_taskStartTime`] = moment(fieldsSku[`r_${count}_taskStartTime`], 'YYYY-MM-DD');
-          // if (key === `r_${count}_taskEndTime`) fieldsSku[`r_${count}_taskEndTime`] = moment(fieldsSku[`r_${count}_taskEndTime`], 'YYYY-MM-DD');
-          if (key.match(`r_${count}_`)) {
-            skuSingle[key.split(`r_${count}_`)[1]] = fieldsSku[key];
-          }
-        });
-        skuSingle.taskStartTime = moment(skuSingle.taskStartTime).format('YYYY-MM-DD');
-        skuSingle.taskEndTime = moment(skuSingle.taskEndTime).format('YYYY-MM-DD');
-        if (!skuSingle.id) delete skuSingle.id;
-        if (skuSingle.skuPic) delete skuSingle.skuPic;
-        skuList.push(skuSingle);
-        count += 1;
+      for (let i = 1; i < keys.length; i += 1) {
+        if (`r_${count}_skuCode` in fieldsSku) {
+          const skuSingle = {};
+          keys.forEach((key) => {
+            if (key.match(`r_${count}_`)) {
+              skuSingle[key.split(`r_${count}_`)[1]] = fieldsSku[key];
+            }
+          });
+          skuSingle.taskStartTime = moment(skuSingle.taskStartTime).format('YYYY-MM-DD');
+          skuSingle.taskEndTime = moment(skuSingle.taskEndTime).format('YYYY-MM-DD');
+          if (!skuSingle.id) delete skuSingle.id;
+          if (skuSingle.skuPic) delete skuSingle.skuPic;
+          skuList.push(skuSingle);
+          count += 1;
+        } else count += 1;
       }
       if (skuList.length < 1) {
         message.error('请至少填写一项SKU信息');
@@ -222,9 +222,6 @@ class ProductTable extends Component {
 
   handleDelete(key) {
     const newData = this.state.skuData.filter(el => el.key !== key);
-    newData.forEach((el) => {
-      if (el.key > key) { el.key -= 1; }
-    });
     this.setState({ skuData: newData });
   }
 

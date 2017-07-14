@@ -45,17 +45,19 @@ class OutModal extends Component {
           warehouseId = el.id;
         }
       });
-      while (Object.prototype.hasOwnProperty.call(fieldsSku, `r_${count}_skuCode`)) {
-        const skuSingle = {};
-        keys.forEach((key) => {
-          if (key.match(`r_${count}_`)) {
-            skuSingle[key.split(`r_${count}_`)[1]] = fieldsSku[key];
-          }
-        });
-        if (!skuSingle.id) delete skuSingle.id;
-        if (skuSingle.skuPic) delete skuSingle.skuPic;
-        skuList.push(skuSingle);
-        count += 1;
+      for (let i = 1; i < keys.length; i += 1) {
+        if (`r_${count}_skuCode` in fieldsSku) {
+          const skuSingle = {};
+          keys.forEach((key) => {
+            if (key.match(`r_${count}_`)) {
+              skuSingle[key.split(`r_${count}_`)[1]] = fieldsSku[key];
+            }
+          });
+          if (!skuSingle.id) delete skuSingle.id;
+          if (skuSingle.skuPic) delete skuSingle.skuPic;
+          skuList.push(skuSingle);
+          count += 1;
+        } else count += 1;
       }
       console.log(skuList);
       if (skuList.length < 1) {

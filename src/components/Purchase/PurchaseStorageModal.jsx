@@ -60,7 +60,6 @@ class PurchaseModal extends Component {
       const realKey = key.split('__')[0];
       const res = this.props.buyerTaskList.filter(el => el.skuId.toString() === realKey.toString());
       if (res.length > 0) {
-        console.log(res[0]);
         res[0].type = 'add';
         res[0].price = 1;
         res[0].quantity = typeof (res[0].count) === 'number' && typeof (res[0].inCount === 'number') && (res[0].count - res[0].inCount);
@@ -218,7 +217,6 @@ class PurchaseModal extends Component {
     const itemName = this.itemName.refs.input.value;
     const buySite = this.buySite.refs.input.value;
     form.validateFields((err, values) => {
-      console.log(values, itemName, buySite);
       dispatch({
         type: 'purchaseStorage/queryBuyerTaskList',
         payload: {

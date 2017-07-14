@@ -145,7 +145,6 @@ class ProductTable extends Component {
       this.props.skuList.forEach((value) => {
         if (value.skuCode.toString() === props[0].skuCode.toString()) {
           skuData.forEach((el) => {
-            console.log(el.key, props[0].key);
             if (el.key.toString() === props[0].key.toString()) {
               el.skuId = value.id;
               el.skuCode = value.skuCode;
@@ -153,7 +152,6 @@ class ProductTable extends Component {
               el.purchaseNeed = value.purchaseNeed || undefined;
             }
           });
-          // console.log('first value: ', value);
           batchUpdateFormValues[`r_${props[0].key}_skuId`] = value.id;
           batchUpdateFormValues[`r_${props[0].key}_skuCode`] = value.skuCode;
           batchUpdateFormValues[`r_${props[0].key}_count`] = value.purchaseNeed;
@@ -195,7 +193,6 @@ class ProductTable extends Component {
             newItem.skuCode = value.skuCode;
             newItem.skuPic = value.skuPic;
             newItem.purchaseNeed = value.purchaseNeed || undefined;
-            // console.log('value: ', value);
 
             batchUpdateFormValues[`r_${newId}_skuId`] = value.id;
             batchUpdateFormValues[`r_${newId}_skuCode`] = value.skuCode;
@@ -434,8 +431,6 @@ class ProductTable extends Component {
             if (batchSelectParams.length > 0) p.batchAddProduct(batchSelectParams, key);
             else isOperating = false;
           }, 0);
-        } else {
-          console.log('执行中无法操作');
         }
       }
 
@@ -654,7 +649,6 @@ class ProductTable extends Component {
           key: 'buyerId',
           width: '8.5%',
           render(t, r) {
-            console.log(t, defaultBuyer);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_buyerId`, {

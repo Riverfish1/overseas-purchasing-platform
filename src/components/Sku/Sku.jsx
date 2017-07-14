@@ -127,7 +127,6 @@ class Sku extends Component {
     const p = this;
     const { skuList = {}, skuTotal, currentPageSkuIndex, skuData, brandList = [], productsList = [], form, tree = [], packageScales } = this.props;
     const { lockedPopoverVisible } = this.state;
-    console.log(lockedPopoverVisible);
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 10 },

@@ -16,7 +16,6 @@ export default class MainLayout extends Component {
     this.setState({ sidebarClose: status }, () => {
       if (status) localStorage.setItem('AIRUHUA_CLOSE_SIDEBAR', true);
       else {
-        console.log(status);
         localStorage.removeItem('AIRUHUA_CLOSE_SIDEBAR');
       }
     });

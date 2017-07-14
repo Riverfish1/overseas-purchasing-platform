@@ -16,7 +16,6 @@ class OutModal extends Component {
       outDetailList: undefined,
       checkId: [],
       warehouseIdChecked: undefined,
-      popoverVisible: false,
     };
   }
   componentWillReceiveProps(...args) {
@@ -35,7 +34,6 @@ class OutModal extends Component {
     const p = this;
     const { form, wareList, data = {} } = this.props;
     const skuList = [];
-    console.log(this.state.outDetailList);
     form.validateFieldsAndScroll((err, fieldsSku) => {
       if (err) { return; }
       let count = 1;
@@ -61,7 +59,6 @@ class OutModal extends Component {
           count += 1;
         } else count += 1;
       }
-      console.log(skuList);
       if (skuList.length < 1) {
         message.error('请至少填写一项出库信息');
         return;
@@ -282,14 +279,11 @@ class OutModal extends Component {
         if (batchSelectParams.length > 0) this.batchAddProduct(batchSelectParams, key);
         else isOperating = false;
       }, 0);
-    } else {
-      console.log('执行中无法操作');
     }
   }
   handleShowPop(value) {
-    console.log(value, this.state.popoverVisible);
     if (value) {
-      this.setState({ popoverVisible: true, warehouseIdChecked: value });
+      this.setState({ warehouseIdChecked: value });
     }
   }
   handleCancel() {
@@ -302,7 +296,6 @@ class OutModal extends Component {
     close();
   }
   clearSelected(visible) {
-    this.setState({ popoverVisible: !this.state.popoverVisible });
     if (!visible) {
       this.setState({ checkId: [] });
       isAdditional = false;
@@ -318,7 +311,6 @@ class OutModal extends Component {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
     };
-    console.log(outDetailList);
     const footerContent = (
       <div>
         <Button type="ghost" size="large" onClick={p.handleCancel.bind(p)}>取消</Button>
@@ -376,7 +368,7 @@ class OutModal extends Component {
     };
     function renderInventoryContent(key) {
       return (
-        <div>
+        <div id="popoverContainer">
           <Row>
             <Col span="5">
               <FormItem
@@ -387,8 +379,8 @@ class OutModal extends Component {
                 <Select
                   style={{ width: '100%' }}
                   placeholder="请选择"
-                  ref={(c) => { p.warehouseId = c; }}
                   onChange={p.handleShowPop.bind(p)}
+                  getPopupContainer={() => document.getElementById('popoverContainer')}
                 >
                   {wareList.map(el => <Option key={el.id && el.id.toString()}>{el.name}</Option>)}
                 </Select>
@@ -476,7 +468,6 @@ class OutModal extends Component {
                     content={renderInventoryContent(r.key)}
                     title="搜索SKU"
                     trigger="click"
-                    visible={p.state.popoverVisible}
                     onVisibleChange={p.clearSelected.bind(p)}
                   >
                     <Input placeholder="请搜索" ref={(c) => { p[`r_${r.key}_skuCode`] = c; }} value={t || undefined} />

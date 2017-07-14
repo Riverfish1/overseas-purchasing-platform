@@ -176,7 +176,6 @@ class BarcodeModal extends Component {
           obj.quantity = 1;
           const { storageList } = p.state;
           if (storageList.length) {
-            console.log(storageList);
             let first = true;
             storageList.forEach((el) => {
               if (el && el.id && el.id.toString() === obj.id.toString()) {

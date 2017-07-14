@@ -175,7 +175,6 @@ class ReturnOrder extends Component {
         p.handleSubmit(null, pageIndex);
       },
     };
-    console.log(agencyList);
     return (
       <div>
         <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>

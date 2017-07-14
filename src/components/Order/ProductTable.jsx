@@ -157,7 +157,6 @@ class ProductTable extends Component {
 
   handleSearch(num, size) {
     const { skuQuery } = this.state;
-    console.log(skuQuery);
     const payload = { ...skuQuery, pageIndex: typeof num === 'number' ? num : 1 };
     if (typeof size === 'number') payload.pageSize = size;
     this.props.dispatch({

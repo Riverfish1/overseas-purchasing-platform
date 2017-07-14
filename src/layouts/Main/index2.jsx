@@ -20,7 +20,6 @@ export default class MainLayout extends Component {
         const placeholder = document.querySelector('.table-placeholder');
         if (scrollTop > 320) {
           if (!floated) {
-            console.log('ok');
             placeholder.style.height = `${table.offsetHeight}px`;
             table.classList.add('table-abs');
             setTimeout(() => {

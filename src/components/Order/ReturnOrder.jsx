@@ -58,6 +58,28 @@ class ReturnOrder extends Component {
     });
   }
 
+  exportReturnOrder() {
+    const { form } = this.props;
+    const p = this;
+    form.validateFields((err, values) => {
+      let startGmtCreate;
+      let endGmtCreate;
+      if (values.orderTime && values.orderTime[0] && values.orderTime[1]) {
+        startGmtCreate = new Date(values.orderTime[0]).format('yyyy-MM-dd');
+        endGmtCreate = new Date(values.orderTime[1]).format('yyyy-MM-dd');
+        delete values.orderTime;
+      }
+      p.props.dispatch({
+        type: 'order/exportReturnOrder',
+        payload: {
+          ...values,
+          startGmtCreate,
+          endGmtCreate,
+        },
+      });
+    });
+  }
+
   handleEmptyInput(type) { // 清空内容
     const { setFieldsValue } = this.props.form;
     switch (type) {
@@ -81,7 +103,7 @@ class ReturnOrder extends Component {
 
   render() {
     const p = this;
-    const { form, dispatch, currentPage, returnOrderList = [], returnOrderTotal, returnOrderValues = {} } = p.props;
+    const { form, dispatch, currentPage, returnOrderList = [], returnOrderTotal, returnOrderValues = {}, agencyList = [] } = p.props;
     const { getFieldDecorator, resetFields } = form;
     const { visible } = p.state;
     const formItemLayout = {
@@ -153,7 +175,7 @@ class ReturnOrder extends Component {
         p.handleSubmit(null, pageIndex);
       },
     };
-
+    console.log(agencyList);
     return (
       <div>
         <div className="refresh-btn"><Button type="ghost" size="small" onClick={this._refreshData.bind(this)}>刷新</Button></div>
@@ -222,6 +244,36 @@ class ReturnOrder extends Component {
             </Col>
           </Row>
           <Row gutter={20} style={{ width: 800 }}>
+            <Col span={8}>
+              <FormItem
+                label="销售"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('salesName', {})(
+                  <Select placeholder="请选择销售" allowClear>
+                    {agencyList.map((el) => {
+                      return <Option key={el.id} value={el.name}>{el.name}</Option>;
+                    })}
+                  </Select>,
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem
+                label="退单类型"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('returnType', {})(
+                  <Select placeholder="请选择退单类型" allowClear>
+                    <Option key="1">只退款</Option>
+                    <Option key="2">只退货</Option>
+                    <Option key="3">既退款又退货</Option>
+                  </Select>,
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={20} style={{ width: 800 }}>
             <Col span="8">
               <FormItem
                 label="退单原因"
@@ -256,8 +308,12 @@ class ReturnOrder extends Component {
               <Button size="large" type="ghost" onClick={() => { resetFields(); }}>清空</Button>
             </Col>
           </Row>
-          <div className="operBtn" style={{ height: 20 }} />
         </Form>
+        <Row className="operBtn">
+          <Col>
+            <Button type="primary" style={{ float: 'right' }} size="large" onClick={this.exportReturnOrder.bind(this)}>导出退单</Button>
+          </Col>
+        </Row>
         <Row>
           <Col>
             <Table
@@ -285,11 +341,13 @@ class ReturnOrder extends Component {
 
 function mapStateToProps(state) {
   const { returnOrderList, returnOrderTotal, returnCurrentPage, returnOrderValues } = state.order;
+  const { list } = state.agency;
   return {
     returnOrderList,
     returnOrderTotal,
     returnCurrentPage,
     returnOrderValues,
+    agencyList: list,
   };
 }
 

@@ -15,6 +15,8 @@ class OutModal extends Component {
     this.state = {
       outDetailList: undefined,
       checkId: [],
+      warehouseIdChecked: undefined,
+      popoverVisible: false,
     };
   }
   componentWillReceiveProps(...args) {
@@ -246,6 +248,7 @@ class OutModal extends Component {
   }
   doSearch() {
     latestSearch = {
+      warehouseId: this.state.warehouseIdChecked,
       positionNo: this.positionNo && this.positionNo.refs.input.value,
       skuCode: this.skuCode && this.skuCode.refs.input.value,
       upc: this.upc && this.upc.refs.input.value,
@@ -283,6 +286,12 @@ class OutModal extends Component {
       console.log('执行中无法操作');
     }
   }
+  handleShowPop(value) {
+    console.log(value, this.state.popoverVisible);
+    if (value) {
+      this.setState({ popoverVisible: true, warehouseIdChecked: value });
+    }
+  }
   handleCancel() {
     const { form, close } = this.props;
     setTimeout(() => {
@@ -293,6 +302,7 @@ class OutModal extends Component {
     close();
   }
   clearSelected(visible) {
+    this.setState({ popoverVisible: !this.state.popoverVisible });
     if (!visible) {
       this.setState({ checkId: [] });
       isAdditional = false;
@@ -368,11 +378,27 @@ class OutModal extends Component {
       return (
         <div>
           <Row>
-            <Col span="7">
+            <Col span="5">
+              <FormItem
+                label="仓库名称"
+                labelCol={{ span: 9 }}
+                wrapperCol={{ span: 14 }}
+              >
+                <Select
+                  style={{ width: '100%' }}
+                  placeholder="请选择"
+                  ref={(c) => { p.warehouseId = c; }}
+                  onChange={p.handleShowPop.bind(p)}
+                >
+                  {wareList.map(el => <Option key={el.id && el.id.toString()}>{el.name}</Option>)}
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="5">
               <FormItem
                 label="货架号"
-                labelCol={{ span: 6 }}
-                wrapperCol={{ span: 16 }}
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
               >
                 <Input
                   size="default"
@@ -381,11 +407,11 @@ class OutModal extends Component {
                 />
               </FormItem>
             </Col>
-            <Col span="7">
+            <Col span="5">
               <FormItem
                 label="UPC"
-                labelCol={{ span: 6 }}
-                wrapperCol={{ span: 16 }}
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
               >
                 <Input
                   size="default"
@@ -394,11 +420,11 @@ class OutModal extends Component {
                 />
               </FormItem>
             </Col>
-            <Col span="7">
+            <Col span="6">
               <FormItem
                 label="SKU代码"
-                labelCol={{ span: 6 }}
-                wrapperCol={{ span: 16 }}
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
               >
                 <Input
                   size="default"
@@ -450,6 +476,7 @@ class OutModal extends Component {
                     content={renderInventoryContent(r.key)}
                     title="搜索SKU"
                     trigger="click"
+                    visible={p.state.popoverVisible}
                     onVisibleChange={p.clearSelected.bind(p)}
                   >
                     <Input placeholder="请搜索" ref={(c) => { p[`r_${r.key}_skuCode`] = c; }} value={t || undefined} />

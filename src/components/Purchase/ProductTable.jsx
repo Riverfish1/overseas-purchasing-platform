@@ -654,6 +654,7 @@ class ProductTable extends Component {
           key: 'buyerId',
           width: '8.5%',
           render(t, r) {
+            console.log(t, defaultBuyer);
             return (
               <FormItem>
                 {getFieldDecorator(`r_${r.key}_buyerId`, {

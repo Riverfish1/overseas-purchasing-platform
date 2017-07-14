@@ -414,6 +414,10 @@ export default {
       const param = qs.stringify(payload);
       window.open(`http://${location.host}/haierp1/erpOrder/erpOrderExport?${param}`);
     },
+    exportReturnOrder({ payload }) {
+      const param = qs.stringify(payload);
+      window.open(`http://${location.host}/haierp1/erpReturnOrder/erpReturnOrderExport?${param}`);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -441,6 +445,7 @@ export default {
         if (pathname === '/sale/returnOrder' && !window.existCacheState('/sale/returnOrder')) {
           setTimeout(() => {
             dispatch({ type: 'queryReturnOrderList', payload: query });
+            dispatch({ type: 'agency/queryAgencyList', payload: query });
           }, 0);
         }
       });

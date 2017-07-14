@@ -131,6 +131,7 @@ class ReturnOrder extends Component {
           );
         },
       },
+      { title: '销售员', dataIndex: 'salesName', key: 'salesName', width: 80, render(text) { return text || '-'; } },
       { title: '退单原因', dataIndex: 'returnReason', key: 'returnReason', width: 80, render(text) { return text || '-'; } },
       { title: '退单原因详情', dataIndex: 'returnReasonDetail', key: 'returnReasonDetail', width: 130, render(text) { return text ? text.slice(0, 10) : '-'; } },
       { title: '状态',
@@ -322,7 +323,7 @@ class ReturnOrder extends Component {
               size="large"
               rowKey={record => record.id}
               pagination={listPaginationProps}
-              scroll={{ x: 1620, y: 500 }}
+              scroll={{ x: 1700, y: 500 }}
             />
           </Col>
         </Row>

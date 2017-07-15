@@ -171,6 +171,7 @@ class ReturnOrder extends Component {
 
     const listPaginationProps = {
       total: returnOrderTotal,
+      pageSize: 20,
       current: currentPage,
       onChange(pageIndex) {
         p.handleSubmit(null, pageIndex);

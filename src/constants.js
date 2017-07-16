@@ -32,6 +32,7 @@ export const backendCfg = {
   reportSaleByBrand: 'report_sale_bybrand',
   reportItemListing: 'report_item_listing',
   reportShippingByDay: 'report_shipping_byday',
+  reportDeliveryByDate: 'report_delivery_bydate',
   // 内置
   overview: 'overview',
 };
@@ -86,6 +87,7 @@ export const routerCfg = {
   REPORT_SALE_BY_BRAND: 'reportSaleByBrand',
   REPORT_ITEM_LISTING: 'reportItemListing',
   REPORT_SHIPPING_BY_DAY: 'reportShippingByDay',
+  REPORT_DELIVERY_BY_DATE: 'reportDeliveryByDate',
 };
 
 export const originalNavigation = [
@@ -150,6 +152,7 @@ export const originalNavigation = [
       { key: routerCfg.REPORT_SALE_BY_BRAND, name: '销售报表(按品牌)' },
       { key: routerCfg.REPORT_ITEM_LISTING, name: '上新报表' },
       { key: routerCfg.REPORT_SHIPPING_BY_DAY, name: '发货报表' },
+      { key: routerCfg.REPORT_DELIVERY_BY_DATE, name: '发货报表(按人按天)' },
     ],
   },
 ];

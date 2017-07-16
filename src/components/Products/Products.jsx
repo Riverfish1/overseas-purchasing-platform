@@ -104,7 +104,7 @@ class Products extends Component {
     const { tree } = this.props;
     const data = this.interator(tree, value);
     if (data && data[0] && data[0].level !== 3) cb('只能选择最后一级类目');
-    cb();
+    else cb();
   }
 
   handleEmptyInput(type) { // 清空内容

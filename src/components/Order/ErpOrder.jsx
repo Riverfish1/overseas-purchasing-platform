@@ -685,7 +685,7 @@ class ErpOrder extends Component {
           dataSource={erpOrderList}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: 2200, y: 500 }}
+          scroll={{ x: 2080, y: 500 }}
           bordered={true}
         />
         <ErpOrderModal

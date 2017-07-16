@@ -346,7 +346,7 @@ function mapStateToProps(state) {
   return {
     returnOrderList,
     returnOrderTotal,
-    returnCurrentPage,
+    currentPage: returnCurrentPage,
     returnOrderValues,
     agencyList: list,
   };

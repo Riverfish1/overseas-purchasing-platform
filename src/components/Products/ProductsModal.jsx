@@ -123,7 +123,7 @@ class ProductsModal extends Component {
   closeModal() {
     const { form, close } = this.props;
     form.resetFields();
-    close(false);
+    close();
     // 清理skuTable
     setTimeout(() => {
       this.clearSkuValue();
@@ -152,7 +152,7 @@ class ProductsModal extends Component {
 
   checkEndDate(rules, value, cb) {
     const { getFieldValue } = this.props.form;
-    if (!value) cb('请选择');
+    if (!value) cb('请选择日期');
     if (!getFieldValue('startDate') && value) cb('请先填写开始时间');
     cb();
   }
@@ -447,7 +447,6 @@ class ProductsModal extends Component {
                   >
                     {getFieldDecorator('buySite', {
                       initialValue: toString(productData.buySite),
-                      rules: [{ message: '请输入采购站点' }],
                     })(
                       <Input placeholder="请输入采购站点" />,
                     )}
@@ -491,7 +490,7 @@ class ProductsModal extends Component {
                       initialValue: toString(productData.itemCode),
                       rules: [{ message: '请输入商品代码' }],
                     })(
-                      <Input disabled={true} placeholder="请输入商品代码" />,
+                      <Input disabled placeholder="请输入商品代码" />,
                     )}
                   </FormItem>
                 </Col>

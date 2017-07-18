@@ -30,10 +30,6 @@ class Products extends Component {
         }
         delete values.saleDate;
         this.props.dispatch({
-          type: 'products/saveSearchValues',
-          payload: { ...values },
-        });
-        this.props.dispatch({
           type: 'products/queryItemList',
           payload: {
             ...values,
@@ -47,9 +43,7 @@ class Products extends Component {
 
   updateModal(id) {
     const p = this;
-    this.setState({
-      modalVisible: true,
-    }, () => {
+    this.setState({ modalVisible: true }, () => {
       p.props.dispatch({ type: 'products/queryProduct', payload: { id } });
     });
   }
@@ -83,9 +77,7 @@ class Products extends Component {
         p.props.dispatch({
           type,
           payload: { itemIds: JSON.stringify(checkId) },
-          cb() {
-            p._refreshData();
-          },
+          cb() { p._refreshData(); },
         });
       },
     });
@@ -174,12 +166,7 @@ class Products extends Component {
           );
         },
       },
-      { title: '商品品牌',
-        dataIndex: 'brand',
-        key: 'brand',
-        width: 100,
-        render(text) { return text || '-'; },
-      },
+      { title: '商品品牌', dataIndex: 'brand', key: 'brand', width: 100, render(text) { return text || '-'; } },
       { title: '销售类型', dataIndex: 'saleType', key: 'saleType', width: 80, render(text) { return <span>{text === 0 ? '代购' : '现货' }</span>; } },
       { title: '商品类目',
         width: 100,

@@ -232,7 +232,7 @@ class SkuModal extends Component {
                 {getFieldDecorator('scale', {
                   initialValue: toString(skuModalData.scale),
                 })(
-                  <Input disabled={true} placeholder="请输入尺寸" />,
+                  <Input disabled placeholder="请输入尺寸" />,
                 )}
               </FormItem>
             </Col>
@@ -298,7 +298,7 @@ class SkuModal extends Component {
                 {getFieldDecorator('color', {
                   initialValue: toString(skuModalData.color),
                 })(
-                  <Input disabled={true} placeholder="请输入颜色" />,
+                  <Input disabled placeholder="请输入颜色" />,
                 )}
               </FormItem>
             </Col>
@@ -310,7 +310,7 @@ class SkuModal extends Component {
                 {getFieldDecorator('brand', {
                   initialValue: toString(skuModalData.brand, 'SELECT'),
                 })(
-                  <Select disabled={true} placeholder="请选择品牌" combobox>
+                  <Select disabled placeholder="请选择品牌" combobox>
                     {brandList.map(item => <Option key={item.id} value={item.name}>{item.name}</Option>)}
                   </Select>,
                 )}

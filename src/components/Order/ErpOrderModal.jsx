@@ -121,7 +121,7 @@ class ErpOrderModal extends Component {
                 {getFieldDecorator('color', {
                   initialValue: erpOrderData.color,
                 })(
-                  <Input disabled={true} placeholder="请输入颜色" />,
+                  <Input disabled placeholder="请输入颜色" />,
                 )}
               </FormItem>
             </Col>
@@ -133,7 +133,7 @@ class ErpOrderModal extends Component {
                 {getFieldDecorator('scale', {
                   initialValue: erpOrderData.scale,
                 })(
-                  <Input disabled={true} placeholder="请输入尺码" />)}
+                  <Input disabled placeholder="请输入尺码" />)}
               </FormItem>
             </Col>
           </Row>
@@ -193,7 +193,7 @@ class ErpOrderModal extends Component {
                 {getFieldDecorator('quantity', {
                   initialValue: erpOrderData.quantity,
                 })(
-                  <Input disabled={true} placeholder="请输入销售数量" />,
+                  <Input disabled placeholder="请输入销售数量" />,
                 )}
               </FormItem>
             </Col>

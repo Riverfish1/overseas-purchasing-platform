@@ -29,7 +29,6 @@ export default {
     currentPage: 1, // 默认页码
     currentPageSize: 20,
     tree: [], // 类目树
-    searchValues: {},
     brandList: [], // 品牌
     allBrands: [],
     brandValue: {},
@@ -42,7 +41,7 @@ export default {
     saveItemList(state, { payload }) {
       return { ...state, productsList: payload.rows, productsTotal: payload.total };
     },
-    saveAllBrand(state, { payload }) {
+    saveAllBrands(state, { payload }) {
       return { ...state, allBrands: payload.data };
     },
     saveBrands(state, { payload }) { // 保存品牌
@@ -56,9 +55,6 @@ export default {
     },
     saveCurrentPageSize(state, { payload }) {
       return { ...state, currentPageSize: payload.pageSize };
-    },
-    saveSearchValues(state, { payload }) {
-      return { ...state, searchValues: payload };
     },
     saveBrand(state, { payload }) {
       return { ...state, brandValue: payload };
@@ -122,7 +118,7 @@ export default {
       const data = yield call(queryAllBrand);
       if (data.success) {
         yield put({
-          type: 'saveAllBrand',
+          type: 'saveAllBrands',
           payload: data,
         });
       }

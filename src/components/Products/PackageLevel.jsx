@@ -185,7 +185,7 @@ class PackageLevel extends Component {
                 initialValue: toString(modalValues.packageEn),
                 rules: [{ required: true }],
               })(
-                <Input placeholder="请选择包装规格类别名称" disabled={true} />,
+                <Input placeholder="请选择包装规格类别名称" disabled />,
               )}
             </FormItem>
             <FormItem

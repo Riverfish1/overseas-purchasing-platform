@@ -36,6 +36,7 @@ import ReportSaleByBrand from './components/Report/ReportSaleByBrand';
 import ReportItemListing from './components/Report/ReportItemListing';
 import ReportShippingByDay from './components/Report/ReportShippingByDay';
 import ReportDeliveryByDate from './components/Report/ReportDeliveryByDate';
+import ReportSaleRefund from './components/Report/ReportSaleRefund';
 
 function redirectHelper(...args) {
   // 传入参数3，为onEnter
@@ -92,6 +93,7 @@ function RouterConfig({ history }) {
         <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_ITEM_LISTING}`} component={ReportItemListing} />
         <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_SHIPPING_BY_DAY}`} component={ReportShippingByDay} />
         <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_DELIVERY_BY_DATE}`} component={ReportDeliveryByDate} />
+        <Route path={`/${routerCfg.REPORT}/${routerCfg.REPORT_SALE_REFUND}`} component={ReportSaleRefund} />
         {/* 一级导航重定向 */}
         <Redirect from={`/${routerCfg.PERMISSION}`} to={`/${routerCfg.PERMISSION}/${routerCfg.RESOURCE}`} />
         <Redirect from={`/${routerCfg.PRODUCTS}`} to={`/${routerCfg.PRODUCTS}/${routerCfg.PRODUCTS_LIST}`} />

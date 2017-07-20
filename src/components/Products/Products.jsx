@@ -104,6 +104,7 @@ class Products extends Component {
     switch (type) {
       case 'name': setFieldsValue({ name: undefined }); break;
       case 'itemCode': setFieldsValue({ itemCode: undefined }); break;
+      case 'buySite': setFieldsValue({ buySite: undefined }); break;
       default: return false;
     }
   }
@@ -282,11 +283,23 @@ class Products extends Component {
                   </Select>)}
               </FormItem>
             </Col>
-            <Col span={16}>
+            <Col span="8">
+              <FormItem
+                label="采购站点"
+                {...formItemLayout}
+              >
+                {getFieldDecorator('buySite', {})(
+                  <Input placeholder="请输入采购站点" suffix={p.showClear('buySite')} />)}
+              </FormItem>
+            </Col>
+            
+          </Row>
+          <Row gutter={20} style={{ width: 800 }}>
+          	<Col span={24}>
               <FormItem
                 label="销售时间范围"
                 {...formItemLayout}
-                labelCol={{ span: 6 }}
+                labelCol={{ span: 3 }}
               >
                 {getFieldDecorator('saleDate')(<RangePicker />)}
               </FormItem>

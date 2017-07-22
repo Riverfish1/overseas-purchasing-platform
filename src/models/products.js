@@ -19,6 +19,7 @@ const addBrand = ({ payload }) => fetch.post('/haierp1/item/brand/add', { data: 
 const updateBrand = ({ payload }) => fetch.post('/haierp1/item/brand/update', { data: payload }).catch(e => e);
 const queryBrand = ({ payload }) => fetch.post('/haierp1/item/brand/query', { data: payload }).catch(e => e);
 const deleteBrand = ({ payload }) => fetch.post('/haierp1/item/brand/delete', { data: payload }).catch(e => e);
+const updateVirtualInvByItemId = ({ payload }) => fetch.post('/haierp1/item/updateVirtualInvByItemId', { data: payload }).catch(e => e);
 
 export default {
   namespace: 'products',
@@ -91,6 +92,13 @@ export default {
       const data = yield call(updateProducts, { payload });
       if (data.success) {
         message.success('修改商品成功');
+        cb();
+      }
+    },
+    * updateVirtualInvByItemId({ payload, cb }, { call }) { // 清除商品虚拟库存
+      const data = yield call(updateVirtualInvByItemId, { payload });
+      if (data.success) {
+        message.success('清除商品虚拟库存成功');
         cb();
       }
     },

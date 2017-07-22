@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect, Modal, Popover, Icon } from 'antd';
+import { Table, Input, Button, Row, Col, Select, DatePicker, Form, TreeSelect, Modal, Popover, Icon, Popconfirm } from 'antd';
 import ProductsModal from './ProductsModal';
 
 const FormItem = Form.Item;
@@ -45,6 +45,16 @@ class Products extends Component {
     const p = this;
     this.setState({ modalVisible: true }, () => {
       p.props.dispatch({ type: 'products/queryProduct', payload: { id } });
+    });
+  }
+  
+  cleanVirtualInvModal(itemId) {
+    const p = this;
+    alert(itemId);
+     p.props.dispatch({
+      type: 'products/updateVirtualInvByItemId',
+      payload: { itemId },
+      cb() { p._refreshData(); }
     });
   }
 
@@ -197,7 +207,13 @@ class Products extends Component {
         width: 50,
         render(text, record) {
           return (
-            <a onClick={p.updateModal.bind(p, record.id)}>修改</a>
+          	<div>
+	            <a href="javascript:void(0)" onClick={p.updateModal.bind(p, record.id)}>修改</a>
+	            <br/><br/>
+	            <Popconfirm title="确定清除虚拟库存吗？" onConfirm={p.cleanVirtualInvModal.bind(p, record.id)}>
+                		<a href="javascript:void(0)">清除虚拟库存</a>
+              	</Popconfirm>
+	         </div>
           );
         },
       },

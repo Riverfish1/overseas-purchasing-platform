@@ -50,7 +50,6 @@ class Products extends Component {
   
   cleanVirtualInvModal(itemId) {
     const p = this;
-    alert(itemId);
      p.props.dispatch({
       type: 'products/updateVirtualInvByItemId',
       payload: { itemId },

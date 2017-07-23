@@ -325,6 +325,8 @@ class ProductsModal extends Component {
                         <Option key="大童女款">大童女款</Option>
                         <Option key="小童男款">小童男款</Option>
                         <Option key="小童女款">小童女款</Option>
+                        <Option key="大童款">大童款</Option>
+                        <Option key="小童款">小童款</Option>
                         <Option key="婴儿款">婴儿款</Option>
                       </Select>,
                     )}

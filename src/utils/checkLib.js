@@ -65,7 +65,7 @@ exports.ChineseName = function(value, option) {
 
 //检查是否为中国的手机号码
 exports.phone = function (value) {
-    var pattern = /(^(13\d|15[^4,\D]|17[135678]|18\d)\d{8}|170[^346,\D]\d{7})$/;
+    var pattern = /(^(13\d|15[^4,\D]|17[135678]|18\d|14\d)\d{8}|170[^346,\D]\d{7})$/;
     return pattern.test(value);
 };
 

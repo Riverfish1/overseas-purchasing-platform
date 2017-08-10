@@ -94,6 +94,8 @@ class BatchDeliveryModal extends Component {
                   })(
                     <Select placeholder="请选择渠道" allowClear>
                       <Option value="1" key="1">包税线</Option>
+                      <Option value="4" key="4">USA-P</Option>
+                      <Option value="5" key="5">USA-C</Option>
                       <Option value="2" key="2">身份证线</Option>
                       <Option value="3" key="3">BC线</Option>
                     </Select>,
